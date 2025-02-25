@@ -1,0 +1,17 @@
+# NetBeans-specific files
+nbproject/private/
+build.xml
+manifest.mf
+
+# Compiled class files
+*.class
+
+# Build and dependency directories
+/build/
+/bin/
+/lib/
+/dist/
+
+# Logs
+/logs/
+*.log
