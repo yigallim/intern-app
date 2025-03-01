@@ -7,12 +7,16 @@ class Company {
     private String name;
     private String description;
     private Location location;
+    private String contactEmail;
+    private String contactPhone;
 
-    public Company(String id, String name, String description, Location location) {
+    public Company(String id, String name, String description, Location location, String contactEmail, String contactPhone) {
         this.id = id;
         this.name = name;
         this.description = description;
         this.location = location;
+        this.contactEmail = contactEmail;
+        this.contactPhone = contactPhone;
     }
 
     public String getId() {
@@ -46,4 +50,27 @@ class Company {
     public void setLocation(Location location) {
         this.location = location;
     }
+
+    public String getContactEmail() {
+        return contactEmail;
+    }
+
+    public void setContactEmail(String contactEmail) {
+        this.contactEmail = contactEmail;
+    }
+
+    public String getContactPhone() {
+        return contactPhone;
+    }
+
+    public void setContactPhone(String contactPhone) {
+        this.contactPhone = contactPhone;
+    }
+
+    @Override
+    public String toString() {
+        return "Company{" + ", name=" + name + ", description=" + description + ", location=" + location + ", contactEmail=" + contactEmail + ", contactPhone=" + contactPhone + '}';
+    }
+    
+    
 }
