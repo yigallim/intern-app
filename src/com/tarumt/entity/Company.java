@@ -1,7 +1,6 @@
+package com.tarumt.entity;
 
-import com.tarumt.entity.Location;
-
-class Company {
+public class Company {
 
     private String id;
     private String name;
