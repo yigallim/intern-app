@@ -1,5 +1,10 @@
 package com.tarumt.entity;
 
+/**
+ *
+ * @author mingzhe
+ */
+
 public class Company {
 
     private String id;

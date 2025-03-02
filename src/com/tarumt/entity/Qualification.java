@@ -1,89 +1,44 @@
 package com.tarumt.entity;
 
+/**
+ *
+ * @author mingzhe
+ */
+
 public class Qualification {
 
-    private String qualifyId;
-    private String name;
-    private int minimumYearsExperience;
-    private int CGPA;
-    private Level proficiencyLevel;
+    private String requirementType;
+    private Object requirementValue;
+    private boolean isMandatory;
 
-    public enum Level {
-        BEGINEER(1, "Beginner"),
-        INTERMEDIATE(2, "Beginner"),
-        ADVANCED(3, "Beginner"),
-        EXPERT(4, "Beginner");
-
-        private final int value;
-        private final String displayName;
-
-        Level(int value, String displayName) {
-            this.value = value;
-            this.displayName = displayName;
+    public Qualification(String requirementType, Object requirementValue, boolean isMandatory) {
+        this.requirementType = requirementType;
+        this.requirementValue = requirementValue;
+        this.isMandatory = isMandatory;
+    }
+    
+    // Automatic recognition and conversion of data types
+    private Object parseRequirementValue(String value) {
+        try {
+            return Double.parseDouble(value);
+        } catch (NumberFormatException e) {
+            try {
+                return Integer.parseInt(value);
+            } catch (NumberFormatException e2) {
+                return value;
+            }
         }
-
-        public int getValue() {
-            return value;
-        }
-
-        @Override
-        public String toString() {
-            return displayName;
-        }
-
     }
 
-    public Qualification(String qualifyId, String name, int minimumYearsExperience, int CGPA, Level proficiencyLevel) {
-        this.qualifyId = qualifyId;
-        this.name = name;
-        this.minimumYearsExperience = minimumYearsExperience;
-        this.CGPA = CGPA;
-        this.proficiencyLevel = proficiencyLevel;
-    }
+    public String getRequirementType() {return requirementType;}
 
-    public String getQualifyId() {
-        return qualifyId;
-    }
+    public Object getRequirementValue() {return requirementValue;}
 
-    public String getName() {
-        return name;
-    }
-
-    public int getMinimumYearsExperience() {
-        return minimumYearsExperience;
-    }
-
-    public int getCGPA() {
-        return CGPA;
-    }
-
-    public Level getProficiencyLevel() {
-        return proficiencyLevel;
-    }
-
-    public void setQualifyId(String qualifyId) {
-        this.qualifyId = qualifyId;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setMinimumYearsExperience(int minimumYearsExperience) {
-        this.minimumYearsExperience = minimumYearsExperience;
-    }
-
-    public void setCGPA(int CGPA) {
-        this.CGPA = CGPA;
-    }
-
-    public void setProficiencyLevel(Level proficiencyLevel) {
-        this.proficiencyLevel = proficiencyLevel;
-    }
+    public boolean isMandatory() {return isMandatory;}
 
     @Override
     public String toString() {
-        return "Qualification{" + ", name=" + name + ", minimumYearsExperience=" + minimumYearsExperience + ", CGPA=" + CGPA + ", proficiencyLevel=" + proficiencyLevel + '}';
+        return "Qualification{" + "requirementType=" + requirementType + ", requirementValue=" + requirementValue + ", isMandatory=" + isMandatory + '}';
     }
-
+    
 }

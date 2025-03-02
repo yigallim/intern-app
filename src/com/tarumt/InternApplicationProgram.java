@@ -9,6 +9,11 @@ public class InternApplicationProgram {
         System.out.println();
 
         // Start here
+        // Create and start the Job Posting UI
+        JobPostingUI jobUI = new JobPostingUI();
+        jobUI.start();
+        
+        
         System.out.println();
         Log.info("Intern Application Program shutting down");
     }
