@@ -3,7 +3,6 @@ package com.tarumt.control;
 import com.tarumt.adt.DoublyLinkedList;
 import com.tarumt.dao.JobPostingDAO;
 import com.tarumt.entity.Qualification;
-import com.tarumt.entity.ApplicantSkill;
 import com.tarumt.entity.JobPosting;
 import com.tarumt.entity.Company;
 

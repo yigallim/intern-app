@@ -2,7 +2,6 @@ package com.tarumt;
 
 import com.tarumt.adt.DoublyLinkedList;
 import com.tarumt.entity.Qualification;
-import com.tarumt.entity.ApplicantSkill;
 import com.tarumt.entity.JobPosting;
 import com.tarumt.entity.Company;
 import com.tarumt.entity.Location;
@@ -126,32 +125,116 @@ public class JobPostingUI {
     }
 
     private void updateJobPosting() {
-        Input localInput = input.withoutExitKey();
-        String jobId = localInput.getString("Enter Job ID to update: ", ConditionFactory.string().min(1, "Job ID cannot be empty"));
-        JobPosting.JobTitle title = localInput.getEnum("New Job Title (e.g., IT, ACCOUNTING, etc.): ", JobPosting.JobTitle.class);
+    Input localInput = input.withoutExitKey(); // Disable exit key for sub-inputs
 
-        // Simplified company update
-        String companyName = localInput.getString("New Company Name: ", ConditionFactory.string().min(1, "Company name cannot be empty"));
-        Company company = new Company("C" + jobId, companyName, "Updated Company Description", new Location(), "email@example.com", "123-456-7890");
+    System.out.println("\nEnter Job Update Details:");
+    String jobId = localInput.getString("Enter Job ID to update: ", ConditionFactory.string().min(1, "Job ID cannot be empty"));
 
-        double salaryMin = localInput.getDouble("New Minimum Salary: ", ConditionFactory.decimal().min(0));
-        double salaryMax = localInput.getDouble("New Maximum Salary: ", ConditionFactory.decimal().min(salaryMin));
-        String description = localInput.getString("New Description: ", ConditionFactory.string().min(1, "Description cannot be empty"));
+    // Find the existing JobPosting
+    JobPosting job = controller.readJobPosting(jobId);
+    if (job == null) {
+        System.out.println("Job not found or update failed.");
+        return;
+    }
 
-        DoublyLinkedList<Qualification> qualifications = createQualifications();
+    // Display current job details for reference
+    System.out.println("Current Job Details:\n" + job);
 
-        LocalDate postingLocalDate = getValidLocalDate("New Posting Date (yyyy-MM-dd): ", localInput);
-        LocalDate closingLocalDate = getValidLocalDate("New Closing Date (yyyy-MM-dd): ", localInput);
+    // Menu loop for flexible updates
+    boolean continueUpdating = true;
+    while (continueUpdating) {
+        System.out.println("\nWhich field would you like to update? (Enter the number or 'x' to finish)");
+        System.out.println("1. Job Title");
+        System.out.println("2. Company Name");
+        System.out.println("3. Minimum Salary");
+        System.out.println("4. Maximum Salary");
+        System.out.println("5. Description");
+        System.out.println("6. Qualifications");
+        System.out.println("7. Posting Date");
+        System.out.println("8. Closing Date");
+        System.out.println("9. Status");
+        System.out.println("0. Finish Updating");
 
-        JobPosting.Status status = localInput.getEnum("New Status (OPEN, CLOSED, FILLED): ", JobPosting.Status.class);
+        String choice = localInput.getString("Your choice: ", ConditionFactory.string().min(1, "Please select one choice !"));
 
-        if (controller.updateJobPosting(jobId, title, company, salaryMin, salaryMax, description,
-                qualifications, postingLocalDate, closingLocalDate, status)) {
-            System.out.println("Job posting updated successfully!");
-        } else {
-            System.out.println("Job not found or update failed.");
+        switch (choice) {
+            case "1":
+                JobPosting.JobTitle newTitle = localInput.getEnum("New Job Title (e.g., IT, ACCOUNTING, etc.): ", JobPosting.JobTitle.class);
+                job.setTitle(newTitle);
+                System.out.println("Job Title updated successfully!");
+                break;
+
+            case "2":
+                // Update Company (only name for simplicity, keeping other fields as is)
+                String newCompanyName = localInput.getString("New Company Name: ", ConditionFactory.string().min(1, "Company name cannot be empty"));
+                Company updatedCompany = new Company(job.getCompany().getId(), newCompanyName, job.getCompany().getDescription(),
+                        job.getCompany().getLocation(), job.getCompany().getContactEmail(), job.getCompany().getContactPhone());
+                job.setCompany(updatedCompany);
+                System.out.println("Company Name updated successfully!");
+                break;
+
+            case "3":
+                double newSalaryMin = localInput.getDouble("New Minimum Salary: ", ConditionFactory.decimal().min(0));
+                job.setSalaryMin(newSalaryMin);
+                System.out.println("Minimum Salary updated successfully!");
+                break;
+
+            case "4":
+                double newSalaryMax = localInput.getDouble("New Maximum Salary: ", ConditionFactory.decimal().min(job.getSalaryMin()));
+                job.setSalaryMax(newSalaryMax);
+                System.out.println("Maximum Salary updated successfully!");
+                break;
+
+            case "5":
+                String newDescription = localInput.getString("New Description: ", ConditionFactory.string().min(1, "Description cannot be empty"));
+                job.setDescription(newDescription);
+                System.out.println("Description updated successfully!");
+                break;
+
+            case "6":
+                DoublyLinkedList<Qualification> newQualifications = createQualifications();
+                job.setQualifications(newQualifications);
+                System.out.println("Qualifications updated successfully!");
+                break;
+
+            case "7":
+                LocalDate newPostingDate = getValidLocalDate("New Posting Date (yyyy-MM-dd): ", localInput);
+                job.setPostingDate(newPostingDate);
+                System.out.println("Posting Date updated successfully!");
+                break;
+
+            case "8":
+                LocalDate newClosingDate = getValidLocalDate("New Closing Date (yyyy-MM-dd): ", localInput);
+                job.setClosingDate(newClosingDate);
+                System.out.println("Closing Date updated successfully!");
+                break;
+
+            case "9":
+                JobPosting.Status newStatus = localInput.getEnum("New Status (OPEN, CLOSED, FILLED): ", JobPosting.Status.class);
+                job.setStatus(newStatus);
+                System.out.println("Status updated successfully!");
+                break;
+
+            case "0":
+            case "x":
+            case "X":
+                continueUpdating = false;
+                System.out.println("Update finished.");
+                break;
+
+            default:
+                System.out.println("Invalid choice. Please enter a number from 0-9 or 'x' to finish.");
         }
     }
+
+    // Save the updated JobPosting
+    if (controller.updateJobPosting(jobId, job.getTitle(), job.getCompany(), job.getSalaryMin(), job.getSalaryMax(),
+            job.getDescription(), job.getQualifications(), job.getPostingDate(), job.getClosingDate(), job.getStatus())) {
+        System.out.println("Job posting updated successfully with selected changes!");
+    } else {
+        System.out.println("Failed to save updates due to an error.");
+    }
+}
 
     private void deleteJobPosting() {
         Input localInput = input.withoutExitKey();
