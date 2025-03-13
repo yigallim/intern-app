@@ -1,0 +1,70 @@
+Business Analyst
+IBM
+8
+5
+7000
+Strong leadership, good communication skills
+y
+Project Manager
+Amazon
+13
+4
+9000
+Must be smart, poses responsibility, collaborative
+y
+Data Analyst
+Amazon
+10
+8
+6000
+Must be smart, poses responsibility, collaborative
+y
+Web Developer
+Tesla
+3
+3
+10000
+Strong programming background, continuous learner
+y
+Database Administrator
+Google
+10
+6
+11500
+Customer-focused, passionate about technology
+y
+Business Analyst
+Amazon
+15
+7
+11000
+Excellent problem-solving skills, team player
+y
+Project Manager
+Tesla
+6
+8
+5000
+Must be smart, poses responsibility, collaborative
+y
+DevOps Engineer
+Oracle
+5
+4
+8000
+Ability to multitask, good time management skills
+y
+Cybersecurity Specialist
+Google
+3
+5
+6000
+Customer-focused, passionate about technology
+y
+Project Manager
+Microsoft
+13
+2
+3500
+Creative problem solver, result-driven attitude
+y

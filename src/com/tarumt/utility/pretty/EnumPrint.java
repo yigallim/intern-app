@@ -1,0 +1,44 @@
+package com.tarumt.utility.pretty;
+
+import com.tarumt.entity.BaseEntity;
+import com.tarumt.utility.common.Strings;
+
+public class EnumPrint {
+
+    public static void multiColumnPrint(Object[] constants, int columns) {
+        multiColumnPrint(constants, columns, "", "", 0);
+    }
+
+    public static void multiColumnPrint(Object[] constants, int columns, String leading, String trailing) {
+        multiColumnPrint(constants, columns, leading, trailing, 0);
+    }
+
+    public static void multiColumnPrint(Object[] constants, int columns, String leading, String trailing, int columnWidth) {
+        if (constants == null || constants.length == 0 || columns <= 0) {
+            System.out.println("No values to display.");
+            return;
+        }
+
+        if (columnWidth == 0) {
+            int rows = (int) Math.ceil((double) constants.length / columns);
+            columnWidth = rows > 3 ? 34 : 28;
+        }
+        int rows = (int) Math.ceil((double) constants.length / columns);
+
+        for (int i = 0; i < rows; i++) {
+            System.out.print(leading);
+
+            for (int j = 0; j < columns; j++) {
+                int index = i + j * rows;
+                if (index < constants.length) {
+                    Object item = constants[index];
+                    String displayText = (index + 1) + ") " + (item instanceof BaseEntity ? ((BaseEntity) item).toShortString() : item.toString());
+                    System.out.printf("%-" + columnWidth + "s",
+                            Strings.truncate(displayText, columnWidth + (j == columns - 1 ? columnWidth / 4 : -2)));
+                }
+            }
+            System.out.println(trailing);
+        }
+    }
+
+}

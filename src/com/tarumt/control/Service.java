@@ -8,6 +8,8 @@ public interface Service {
 
     void read();
 
+    void search();
+
     void filter();
 
     void update();

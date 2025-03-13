@@ -1,0 +1,69 @@
+McDonalds
+We are a leading global fast-food chain serving billions of customers each year.
+15
+3
+info@mcdonalds.com
+60183862118
+
+Burger King
+A global flame-grilled fast-food chain serving quality burgers.
+12
+2
+contact@burgerking.com
+60182345678
+
+KFC
+Famous for its fried chicken, with outlets worldwide.
+10
+3
+contact@kfc.com
+60183912345
+
+Pizza Hut
+World-renowned pizza and pasta restaurant serving customers globally.
+8
+1
+support@pizzahut.com
+60182456789
+
+Starbucks
+A popular coffeehouse chain serving a variety of coffee and beverages.
+16
+4
+service@starbucks.com
+60183211222
+
+Domino's Pizza
+Global pizza delivery chain known for its fast delivery and variety of pizzas.
+14
+3
+order@dominos.com
+60183344556
+
+Subway
+Known for its custom sandwiches and fresh ingredients.
+13
+2
+support@subway.com
+60182349988
+
+Dunkin' Donuts
+Leading global doughnut and coffee shop serving millions of customers daily.
+9
+1
+contact@dunkindonuts.com
+60183765891
+
+Taco Bell
+An American fast-food chain offering Mexican-inspired cuisine.
+11
+2
+service@tacobell.com
+60182432312
+
+Chipotle
+A fast-casual chain offering Mexican food made with fresh ingredients.
+7
+1
+support@chipotle.com
+60183567890

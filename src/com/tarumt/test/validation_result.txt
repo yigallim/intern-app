@@ -1,0 +1,42 @@
+[Integer Test]
+Value = 1       => null
+Value = 0       => Value must be >= 1
+Value = 6       => Value must be <= 5
+Value = "1"     => null
+Value = "0"     => Value must be >= 1
+Value = 1.5     => Value must be an integer
+Value = 0.5     => Value must be an integer
+Value = "1.5"   => Value must be an integer
+Value = "0.5"   => Value must be an integer
+Value = "abc"   => Value must be an integer
+Value = 1   => null
+Value = "1"   => null
+
+
+
+[Decimal Test]
+Value = 2       => null
+Value = 4.5     => null
+Value = 5.0     => null
+Value = 5.1     => Value must be <= 5
+Value = -1      => Value must be >= 0
+Value = "4.5"   => null
+Value = "abc"   => Value must be a floating-point number
+Value = 0       => null
+Value = 5       => null
+
+
+
+[String Test]
+Value = "Hello"         => null
+Value = 123              => Value must be a string
+Value = 123 (custom msg) => Must be a string (custom)!
+Value = "Hi"            => String length must be >= 3 (override)
+Value = "Hello"         => null
+Value = "HelloWorld"     => String length must be <= 6 (override)
+Value = "ABC"           => null
+Value = "AbC"           => Must contain only uppercase letters
+Value = "A"             => Length must be >= 2
+Value = "hello"         => null
+Value = "hi"            => null
+Value = "bye"           => Only [hello, hi] allowed!

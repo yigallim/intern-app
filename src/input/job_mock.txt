@@ -1,0 +1,59 @@
+Business Analyst
+1
+3000-4500
+Strong leadership, excellent problem-solving skills
+5
+Y
+Data Analyst
+1
+3500-4200
+Attention to detail, strong analytical skills
+18
+Y
+Project Manager
+1
+4000-5500
+Excellent communication, strong organizational skills
+7
+Y
+HR Specialist
+1
+3200-4800
+Experience with recruitment, strong interpersonal skills
+3
+Y
+Business Analyst
+1
+2800-4000
+Strong leadership, good communication skills
+6
+Y
+Marketing Manager
+1
+3300-4700
+Creative thinking, experience with digital marketing
+8
+Y
+Financial Analyst
+1
+3500-4500
+Strong analytical skills, proficiency in Excel
+4
+Y
+Operations Manager
+1
+3600-4900
+Leadership experience, process improvement skills
+1
+Y
+Product Manager
+1
+4000-5300
+Strategic thinking, experience with product lifecycle
+6
+Y
+Business Analyst
+1
+3100-4400
+Strong leadership, excellent communication skills
+7
