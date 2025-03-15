@@ -119,21 +119,61 @@ public class ApplicantService implements Service {
 
         return new Applicant(name, contactEmail, desiredJobType, location, null);
     }
+    
 
     public void updateApplicantName(String id) {
+        Applicant applicant = BaseEntity.getById(id, applicants);
+        if (applicant == null) return;
+
+        String newName = applicantUI.getApplicantName();
+        applicant.setName(newName);
+
+        Log.info("Applicant's name updated successfully!");
+        applicantUI.printOriginalApplicantValue(applicant);
     }
 
     public void updateApplicantContactEmail(String id) {
+        Applicant applicant = BaseEntity.getById(id, applicants);
+        if (applicant == null) return;
+        
+        String newEmail = applicantUI.getApplicantContactEmail();
+        applicant.setContactEmail(newEmail);
+        
+        Log.info("Applicant's email updated successfully!");
+        applicantUI.printOriginalApplicantValue(applicant);
     }
 
     public void updateApplicantDesiredJobType(String id) {
-
+        Applicant applicant = BaseEntity.getById(id, applicants);
+        if (applicant == null) return;
+        
+        JobPosting.Type newJobType = applicantUI.getApplicantDesiredJobType();
+        applicant.setDesiredJobType(newJobType);
+        
+        Log.info("Applicant's desired job type updated successfully!");
+        applicantUI.printOriginalApplicantValue(applicant);
     }
 
     public void updateApplicantLocation(String id) {
+        Applicant applicant = BaseEntity.getById(id, applicants);
+        if (applicant == null) return;
+        
+        Location newLocation = locationUI.getLocation(); 
+        if (newLocation == null) return;
+        
+        applicant.setLocation(newLocation);
+
+        Log.info("Applicant's location updated successfully!");
+        applicantUI.printOriginalApplicantValue(applicant);
     }
 
     public void updateAllFields(String id) {
+        updateApplicantName(id);
+        updateApplicantContactEmail(id);
+        updateApplicantDesiredJobType(id);
+        updateApplicantLocation(id);
+
+        Log.info("All applicant details updated successfully!");
     }
 
     public void deleteByIndex() {
