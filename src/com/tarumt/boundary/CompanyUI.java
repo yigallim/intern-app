@@ -8,6 +8,7 @@ import com.tarumt.utility.pretty.TabularPrint;
 import com.tarumt.utility.common.Input;
 import com.tarumt.utility.common.Log;
 import com.tarumt.utility.common.Menu;
+import com.tarumt.utility.search.FuzzySearch;
 import com.tarumt.utility.validation.ConditionFactory;
 import com.tarumt.utility.validation.StringCondition;
 import com.tarumt.utility.validation.IntegerCondition;
@@ -15,6 +16,7 @@ import com.tarumt.utility.validation.ValidationFieldReflection;
 
 import java.lang.reflect.Field;
 import java.util.List;
+import java.util.Set;
 
 public class CompanyUI {
 
@@ -73,12 +75,36 @@ public class CompanyUI {
             return;
         }
         Log.info("Displaying " + companies.size() + " companies");
-        TabularPrint.printTabular(companies, true, "default");
+        TabularPrint.printTabular(companies, true);
         input.clickAnythingToContinue();
     }
 
-    public void printSearchCompanyMsg() {
-        System.out.println("");
+    public void printSearchCompanyMsg(List<Company> companies) {
+        if (companies == null || companies.isEmpty()) {
+            Log.info("No companies to search");
+            return;
+        }
+        System.out.println("<== Search Company [ X to Exit ] ==>");
+    }
+
+    public String getSearchCompanyQuery() {
+        StringCondition condition = ConditionFactory.string().min(1).max(50);
+        return input.getString("| Search Keyword => ", condition);
+    }
+
+    public void printSearchResult(FuzzySearch.Result<Company> result) {
+        List<Company> matchedCompanies = result.getSubList();
+        Set<String> matches = result.getMatches();
+        System.out.println();
+        if (matchedCompanies.isEmpty()) {
+            Log.info("No companies matched the search criteria");
+        } else {
+            System.out.println("Relevant Results => " + matches + "\n");
+            Log.info("Displaying " + matchedCompanies.size() + " companies");
+            TabularPrint.printTabular(matchedCompanies, true, matches);
+            input.clickAnythingToContinue();
+        }
+        System.out.println();
     }
 
     public String getCompanyName() {

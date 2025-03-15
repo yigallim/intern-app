@@ -10,6 +10,7 @@ import com.tarumt.utility.common.Context;
 import com.tarumt.utility.common.Input;
 import com.tarumt.utility.common.Log;
 import com.tarumt.utility.common.Menu;
+import com.tarumt.utility.search.FuzzySearch;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -63,7 +64,14 @@ public class CompanyService implements Service {
 
     @Override
     public void search() {
-        companyUI.printSearchCompanyMsg();
+        while (true) {
+            companyUI.printSearchCompanyMsg(companies);
+            if (this.companies.isEmpty()) return;
+            String query = companyUI.getSearchCompanyQuery();
+            if (query.equals(Input.STRING_EXIT_VALUE)) return;
+            FuzzySearch.Result<Company> result = FuzzySearch.searchList(Company.class, this.companies, query);
+            companyUI.printSearchResult(result);
+        }
     }
 
     @Override

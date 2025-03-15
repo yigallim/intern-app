@@ -8,6 +8,6 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.FIELD, ElementType.METHOD})
 public @interface Fuzzy {
-    double weightLevenshtein() default 0.5;
-    double weightCosine() default 0.5;
+    double dlThreshold() default 0.65;
+    double jwThreshold() default 0.85;
 }

@@ -2,6 +2,7 @@ package com.tarumt.entity;
 
 import com.tarumt.entity.location.Location;
 import com.tarumt.utility.pretty.annotation.OutputLength;
+import com.tarumt.utility.search.annotation.Fuzzy;
 import com.tarumt.utility.validation.annotation.Max;
 import com.tarumt.utility.validation.annotation.Min;
 import com.tarumt.utility.validation.annotation.Regex;
@@ -15,18 +16,23 @@ public class Company extends BaseEntity {
 
     @Min(1)
     @Max(30)
+    @Fuzzy
     @OutputLength(30)
     private String name;
     @Min(20)
     @Max(100)
+    @Fuzzy
     @OutputLength(70)
     private String description;
+    @Fuzzy
     @OutputLength(32)
     private Location location;
     @Regex(pattern = "^[\\w!#$%&amp;'*+/=?`{|}~^-]+(?:\\.[\\w!#$%&amp;'*+/=?`{|}~^-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,6}$", message = "Invalid email format")
+    @Fuzzy
     @OutputLength(26)
     private String contactEmail;
     @Regex(pattern = "^(\\+?6?01)[02-46-9]-*[0-9]{7}$|^(\\+?6?01)[1]-*[0-9]{8}$", message = "Invalid phone number format")
+    @Fuzzy
     @OutputLength(13)
     private String contactPhone;
 

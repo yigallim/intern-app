@@ -1,6 +1,10 @@
 package com.tarumt.utility.common;
 
 public class Strings {
+    public static String trimSymbols(String phrase) {
+        return phrase.replaceAll("^[^a-zA-Z0-9]+", "").replaceAll("[^a-zA-Z0-9]+$", "");
+    }
+
     public static String capitalizeWords(String[] words) {
         StringBuilder capitalized = new StringBuilder();
         for (String word : words) {

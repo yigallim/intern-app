@@ -19,13 +19,12 @@ public class SearchTableTest {
         while (true) {
             String query = input.getString("query (or type 'exit' to quit) => ", new StringCondition());
 
-            // Exit condition
             if (query.equalsIgnoreCase("exit")) {
                 System.out.println("Exiting search...");
                 break;
             }
 
-            FuzzySearch.FuzzyResult<JobPosting> result = FuzzySearch.fuzzySearch(JobPosting.class, jobPostings, query, 0.4);
+            FuzzySearch.Result<JobPosting> result = FuzzySearch.searchList(JobPosting.class, jobPostings, query);
             Set<String> matchSet = result.getMatches();
             List<String> matches = new LinkedList<>(matchSet);
 
@@ -40,7 +39,6 @@ public class SearchTableTest {
 
             TabularPrint.printTabular(result.getSubList(), true, matchSet, "default");
 
-            System.out.println("\n----------------------------------\n");
         }
     }
 }

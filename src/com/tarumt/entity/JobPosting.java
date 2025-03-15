@@ -21,9 +21,10 @@ public class JobPosting extends BaseEntity {
 
     @Min(3)
     @Max(30)
-    @Fuzzy(weightLevenshtein = 0.7, weightCosine = 0.3)
+    @Fuzzy
     @OutputLength(28)
     private String title;
+    @Fuzzy
     private Company company;
     @ExcludeKey("default")
     private int salaryMin;
@@ -31,10 +32,11 @@ public class JobPosting extends BaseEntity {
     private int salaryMax;
     @Min(20)
     @Max(100)
-    @Fuzzy(weightLevenshtein = 0.4, weightCosine = 0.6)
+    @Fuzzy
     @OutputLength(60)
     private String description;
-    @OutputLength(30)
+    @Fuzzy
+    @OutputLength(34)
     private Type type;
     @ExcludeKey("default")
     private List<Qualification> qualifications;

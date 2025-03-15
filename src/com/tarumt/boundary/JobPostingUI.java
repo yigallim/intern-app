@@ -1,6 +1,7 @@
 package com.tarumt.boundary;
 
 import com.tarumt.control.JobPostingService;
+import com.tarumt.dao.Initializer;
 import com.tarumt.entity.BaseEntity;
 import com.tarumt.entity.Company;
 import com.tarumt.entity.JobPosting;
@@ -8,10 +9,12 @@ import com.tarumt.utility.common.Input;
 import com.tarumt.utility.common.Log;
 import com.tarumt.utility.common.Menu;
 import com.tarumt.utility.pretty.TabularPrint;
+import com.tarumt.utility.search.FuzzySearch;
 import com.tarumt.utility.validation.*;
 
 import java.lang.reflect.Field;
 import java.util.List;
+import java.util.Set;
 
 public class JobPostingUI {
 
@@ -75,14 +78,42 @@ public class JobPostingUI {
         input.clickAnythingToContinue();
     }
 
+    public void printSearchJobPostingMsg(List<JobPosting> jobPostings) {
+        if (jobPostings == null || jobPostings.isEmpty()) {
+            Log.info("No job postings to search");
+            return;
+        }
+        System.out.println("<== Search Job Posting [ X to Exit ] ==>");
+    }
+
+    public String getSearchJobPostingQuery() {
+        StringCondition condition = ConditionFactory.string().min(1).max(50);
+        return input.getString("| Search Keyword => ", condition);
+    }
+
+    public void printSearchResult(FuzzySearch.Result<JobPosting> result) {
+        List<JobPosting> matchedJobs = result.getSubList();
+        Set<String> matches = result.getMatches();
+        System.out.println();
+        if (matchedJobs.isEmpty()) {
+            Log.info("No job postings matched the search criteria");
+        } else {
+            System.out.println(matches.size() + " Relevant Results => " + matches + "\n");
+            Log.info("Displaying " + matchedJobs.size() + " job postings");
+            TabularPrint.printTabular(matchedJobs, true, matches, "default");
+            input.clickAnythingToContinue();
+        }
+        System.out.println();
+    }
+
     public String getJobPostingTitle() {
         Field field = ValidationFieldReflection.getField(JobPosting.class, "title");
         StringCondition condition = (StringCondition) ConditionFactory.fromField(field);
         return input.getString("| Job Title => ", condition);
     }
 
-    public Company getJobPostingCompany(List<Company> companies) {
-        return input.getObjectFromList("|\n| Select Company => ", companies);
+    public Company getJobPostingCompany() {
+        return input.getObjectFromList("|\n| Select Company => ", Initializer.getCompanies());
     }
 
     public String getSalaryRange() {

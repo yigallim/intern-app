@@ -6,10 +6,10 @@ import com.tarumt.dao.Initializer;
 import com.tarumt.entity.BaseEntity;
 import com.tarumt.entity.Company;
 import com.tarumt.entity.JobPosting;
-import com.tarumt.entity.location.City;
-import com.tarumt.entity.location.Location;
+import com.tarumt.utility.common.Context;
 import com.tarumt.utility.common.Input;
 import com.tarumt.utility.common.Log;
+import com.tarumt.utility.search.FuzzySearch;
 
 import java.time.LocalDate;
 
@@ -19,13 +19,11 @@ import java.util.List;
 public class JobPostingService implements Service {
 
     private List<JobPosting> jobPostings = new LinkedList<>();
-    private List<Company> companies = new LinkedList<>();
     private final JobPostingUI jobPostingUI;
 
     public JobPostingService() {
         Input input = new Input();
         this.jobPostings = Initializer.getJobPostings();
-        this.companies = Initializer.getCompanies();
         this.jobPostingUI = new JobPostingUI(input);
     }
 
@@ -54,7 +52,14 @@ public class JobPostingService implements Service {
 
     @Override
     public void search() {
-        Log.na();
+        while (true) {
+            jobPostingUI.printSearchJobPostingMsg(jobPostings);
+            if (this.jobPostings.isEmpty()) return;
+            String query = jobPostingUI.getSearchJobPostingQuery();
+            if (query.equals(Input.STRING_EXIT_VALUE)) return;
+            FuzzySearch.Result<JobPosting> result = FuzzySearch.searchList(JobPosting.class, this.jobPostings, query);
+            jobPostingUI.printSearchResult(result);
+        }
     }
 
     @Override
@@ -137,7 +142,13 @@ public class JobPostingService implements Service {
         String title = jobPostingUI.getJobPostingTitle();
         if (title.equals(Input.STRING_EXIT_VALUE)) return null;
 
-        Company company = jobPostingUI.getJobPostingCompany(companies);
+        Company company;
+
+        if (Context.isEmployer()) {
+            company = Context.getCompany();
+        } else {
+            company = jobPostingUI.getJobPostingCompany();
+        }
         if (company == null) return null;
 
         String salaryRange = jobPostingUI.getSalaryRange();

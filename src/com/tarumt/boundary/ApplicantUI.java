@@ -9,10 +9,12 @@ import com.tarumt.utility.common.Input;
 import com.tarumt.utility.common.Log;
 import com.tarumt.utility.common.Menu;
 import com.tarumt.utility.pretty.TabularPrint;
+import com.tarumt.utility.search.FuzzySearch;
 import com.tarumt.utility.validation.*;
 
 import java.lang.reflect.Field;
 import java.util.List;
+import java.util.Set;
 
 public class ApplicantUI {
 
@@ -73,6 +75,34 @@ public class ApplicantUI {
         Log.info("Displaying " + applicants.size() + " applicants");
         TabularPrint.printTabular(applicants, true, "default");
         input.clickAnythingToContinue();
+    }
+
+    public void printSearchApplicantMsg(List<Applicant> applicants) {
+        if (applicants == null || applicants.isEmpty()) {
+            Log.info("No applicants to search");
+            return;
+        }
+        System.out.println("<== Search Applicant [ X to Exit ] ==>");
+    }
+
+    public String getSearchApplicantQuery() {
+        StringCondition condition = ConditionFactory.string().min(1).max(50);
+        return input.getString("| Search Keyword => ", condition);
+    }
+
+    public void printSearchResult(FuzzySearch.Result<Applicant> result) {
+        List<Applicant> matchedApplicants = result.getSubList();
+        Set<String> matches = result.getMatches();
+        System.out.println();
+        if (matchedApplicants.isEmpty()) {
+            Log.info("No applicants matched the search criteria");
+        } else {
+            System.out.println("Relevant Results => " + matches + "\n");
+            Log.info("Displaying " + matchedApplicants.size() + " applicants");
+            TabularPrint.printTabular(matchedApplicants, true, matches, "default");
+            input.clickAnythingToContinue();
+        }
+        System.out.println();
     }
 
     public String getApplicantName() {

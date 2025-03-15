@@ -1,7 +1,6 @@
 package com.tarumt.test;
 
 import com.tarumt.utility.search.JaroWinklerSimilarity;
-import com.tarumt.utility.search.LevenshteinSimilarity;
 import com.tarumt.utility.search.DamerauLevenshteinSimilarity;
 
 import java.util.ArrayList;
@@ -13,32 +12,59 @@ public class WordDistanceTest {
 
         // Print Table Header
         System.out.printf("%-15s %-15s %-20s %-20s %-25s%n",
-                "Word 1", "Word 2",
-                "Levenshtein Score", "Jaro-Winkler Score",
-                "Damerau-Levenshtein Score");
-        System.out.println("---------------------------------------------------------------------------------------------");
+                "Word 1", "Word 2", "Combined Score", "Jaro-Winkler", "Damerau-Levenshtein");
+        System.out.println("------------------------------------------------------------------------------------------------");
 
-        // Loop through word pairs and calculate similarity scores
         for (Pair pair : wordPairs) {
-            double levScore = LevenshteinSimilarity.score(pair.getS1(), pair.getS2());
             double jwScore = JaroWinklerSimilarity.score(pair.getS1(), pair.getS2());
             double dlsScore = DamerauLevenshteinSimilarity.score(pair.getS1(), pair.getS2());
 
+            // Compute combined score with Jaro-Winkler (40%) and Damerau-Levenshtein (60%)
+            double combinedScore = (0.4 * jwScore) + (0.6 * dlsScore);
+
+            // Determine difference indicator dynamically
+            double difference = Math.abs(jwScore - dlsScore);
+            String differenceIndicator = getDifferenceIndicator(difference);
+
             // Print formatted row
-            System.out.printf("%-15s %-15s %-20.4f %-20.4f %-25.4f%n",
+            System.out.printf("%-15s %-15s %-20.4f %-20.4f %-25.4f %s%n",
                     pair.getS1(), pair.getS2(),
-                    levScore, jwScore, dlsScore);
+                    combinedScore, jwScore, dlsScore, differenceIndicator);
         }
     }
+
+    private static String getDifferenceIndicator(double diff) {
+        if (diff > 0.3) {
+            return "BIG BIG DIFFERENCE";
+        } else if (diff > 0.2) {
+            return "BIG DIFFERENCE";
+        } else if (diff > 0.15) {
+            return "DIFFERENCE";
+        } else if (diff > 0.1) {
+            return "SMALL DIFFERENCE";
+        }
+        return "";
+    }
+
     public static List<Pair> getWordPairs() {
         List<Pair> pairs = new ArrayList<>();
 
         // 100 word pairs for testing distance algorithms
-        pairs.add(new Pair("big", "bgi")); // Small difference
-        pairs.add(new Pair("sun", "snu")); // Small difference
-        pairs.add(new Pair("cloud", "clud")); // Small difference
-        pairs.add(new Pair("cat", "hat")); // Small difference
-        pairs.add(new Pair("dog", "dig")); // Small difference
+        pairs.add(new Pair("haha", "data"));
+        pairs.add(new Pair("haha", "healthcare"));
+        pairs.add(new Pair("helo", "there"));
+        pairs.add(new Pair("helo", "welcome"));
+        pairs.add(new Pair("helo", "hello"));
+        pairs.add(new Pair("ise", "the"));
+        pairs.add(new Pair("big", "bgi"));
+        pairs.add(new Pair("sun", "snu"));
+        pairs.add(new Pair("cloud", "clud"));
+        pairs.add(new Pair("cat", "hat"));
+        pairs.add(new Pair("dog", "dig"));
+        pairs.add(new Pair("data", "database"));
+        pairs.add(new Pair("test", "just"));
+
+        // AI generated Test Case
         pairs.add(new Pair("book", "cook")); // Small difference
         pairs.add(new Pair("tree", "free")); // Small difference
         pairs.add(new Pair("kite", "bite")); // Small difference

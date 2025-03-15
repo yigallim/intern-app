@@ -3,11 +3,13 @@ package com.tarumt.utility.pretty;
 import com.tarumt.entity.BaseEntity;
 import com.tarumt.utility.common.Strings;
 
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 public class TabularPrint {
 
@@ -96,18 +98,20 @@ public class TabularPrint {
             return text;
         }
 
-        for (String word : highlight) {
-            Pattern pattern = Pattern.compile("(?i)" + Pattern.quote(word));
-            Matcher matcher = pattern.matcher(text);
-            StringBuffer highlightedText = new StringBuffer();
+        List<String> sortedHighlights = new LinkedList<>(highlight);
+        sortedHighlights.sort((a, b) -> Integer.compare(b.length(), a.length()));
 
-            while (matcher.find()) {
-                matcher.appendReplacement(highlightedText,
-                        PURPLE + matcher.group() + RESET);
-            }
-            matcher.appendTail(highlightedText);
-            text = highlightedText.toString();
+        String patternString = sortedHighlights.stream()
+                .map(Pattern::quote)
+                .collect(Collectors.joining("|"));
+        Pattern pattern = Pattern.compile("(?i)(" + patternString + ")");
+        Matcher matcher = pattern.matcher(text);
+        StringBuffer sb = new StringBuffer();
+
+        while (matcher.find()) {
+            matcher.appendReplacement(sb, PURPLE + matcher.group(1) + RESET);
         }
-        return text;
+        matcher.appendTail(sb);
+        return sb.toString();
     }
 }

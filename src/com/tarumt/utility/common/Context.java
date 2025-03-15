@@ -23,6 +23,14 @@ public class Context {
         Context.applicant = applicant;
     }
 
+    public static boolean isEmployer() {
+        return Context.company != null && Context.applicant == null;
+    }
+
+    public static boolean isApplicant() {
+        return Context.company == null && Context.applicant != null;
+    }
+
     public static boolean isAdmin() {
         return Context.company == null && Context.applicant == null;
     }

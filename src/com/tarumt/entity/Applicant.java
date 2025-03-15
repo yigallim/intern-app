@@ -4,6 +4,7 @@ import com.tarumt.entity.location.Location;
 import com.tarumt.entity.qualification.Qualification;
 import com.tarumt.utility.pretty.annotation.ExcludeKey;
 import com.tarumt.utility.pretty.annotation.OutputLength;
+import com.tarumt.utility.search.annotation.Fuzzy;
 import com.tarumt.utility.validation.annotation.Max;
 import com.tarumt.utility.validation.annotation.Min;
 import com.tarumt.utility.validation.annotation.Regex;
@@ -17,12 +18,16 @@ public class Applicant extends BaseEntity {
 
     @Min(3)
     @Max(30)
+    @Fuzzy
     @OutputLength(20)
     private String name;
+    @Fuzzy
     @Regex(pattern = "^[\\w!#$%&amp;'*+/=?`{|}~^-]+(?:\\.[\\w!#$%&amp;'*+/=?`{|}~^-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,6}$", message = "Invalid email format")
     private String contactEmail;
-    @OutputLength(30)
+    @Fuzzy
+    @OutputLength(34)
     private JobPosting.Type desiredJobType;
+    @Fuzzy
     @OutputLength(32)
     private Location location;
     @ExcludeKey("default")

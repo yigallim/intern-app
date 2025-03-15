@@ -3,7 +3,9 @@ package com.tarumt;
 import com.tarumt.control.AdminService;
 import com.tarumt.control.ApplicantService;
 import com.tarumt.control.CompanyService;
+import com.tarumt.utility.common.Context;
 import com.tarumt.utility.common.Log;
+import com.tarumt.utility.common.Menu;
 
 public class InternApplicationProgram {
 
@@ -15,25 +17,25 @@ public class InternApplicationProgram {
         Log.info("Intern Application Program starting");
         System.out.println();
 
-        adminService.run();
+//        adminService.run();
 //        companyService.accessEmployer();
 //        applicantService.accessApplicant();
 
-//        new Menu()
-//                .banner("Intern Application")
-//                .header("==> Intern Application Program <==")
-//                .choice(
-//                        new Menu.Choice("Access as Admin", adminService::run),
-//                        new Menu.Choice("Access as Employer", companyService::accessEmployer),
-//                        new Menu.Choice("Access as Applicant", applicantService::accessApplicant)
-//                )
-//                .exit("<Exit Program>")
-//                .beforeEach(System.out::println)
-//                .afterEach(() -> {
-//                    System.out.println();
-//                    Context.clearContext();
-//                })
-//                .run();
+        new Menu()
+                .banner("Intern Application")
+                .header("==> Intern Application Program <==")
+                .choice(
+                        new Menu.Choice("Access as Admin", adminService::run),
+                        new Menu.Choice("Access as Employer", companyService::accessEmployer),
+                        new Menu.Choice("Access as Applicant", applicantService::accessApplicant)
+                )
+                .exit("<Exit Program>")
+                .beforeEach(System.out::println)
+                .afterEach(() -> {
+                    System.out.println();
+                    Context.clearContext();
+                })
+                .run();
 
         System.out.println();
         Log.info("Intern Application Program shutting down");

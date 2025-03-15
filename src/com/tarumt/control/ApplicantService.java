@@ -11,6 +11,7 @@ import com.tarumt.utility.common.Context;
 import com.tarumt.utility.common.Input;
 import com.tarumt.utility.common.Log;
 import com.tarumt.utility.common.Menu;
+import com.tarumt.utility.search.FuzzySearch;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -64,7 +65,14 @@ public class ApplicantService implements Service {
 
     @Override
     public void search() {
-        Log.na();
+        while (true) {
+            applicantUI.printSearchApplicantMsg(applicants);
+            if (this.applicants.isEmpty()) return;
+            String query = applicantUI.getSearchApplicantQuery();
+            if (query.equals(Input.STRING_EXIT_VALUE)) return;
+            FuzzySearch.Result<Applicant> result = FuzzySearch.searchList(Applicant.class, this.applicants, query);
+            applicantUI.printSearchResult(result);
+        }
     }
 
     @Override
