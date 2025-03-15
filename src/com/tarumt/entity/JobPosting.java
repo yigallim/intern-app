@@ -200,38 +200,22 @@ public class JobPosting extends BaseEntity {
     }
 
     @Override
-    public String toString() {
-        StringBuilder sb = new StringBuilder("Job Posting Details:\n");
-        sb.append("  Job ID: ").append(getId()).append("\n");
-        sb.append("  Title: ").append(title).append("\n");
-        sb.append("  Company: \n").append(company.toString());
-        sb.append("  Salary (Min-Max): ").append(salaryMin).append(" - ").append(salaryMax).append("\n");
-        sb.append("  Description: ").append(description).append("\n");
-        sb.append("  Type: ").append(type).append("\n");
-        sb.append("  Qualifications:\n");
-        if (qualifications != null) {
-            for (Qualification qual : qualifications) {
-                sb.append("    - ").append(qual).append("\n");
-            }
-        }
-        sb.append("  Status: ").append(status).append("\n");
-        sb.append("  Created At: ").append(createdAt).append("\n");
-        sb.append("  Updated At: ").append(updatedAt);
-        return sb.toString();
-    }
-
-    @Override
     public String toShortString() {
         return this.getId() + ", " + this.getTitle();
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        if (!super.equals(o)) return false;
-
-        JobPosting that = (JobPosting) o;
-        return Double.compare(that.salaryMin, salaryMin) == 0 && Double.compare(that.salaryMax, salaryMax) == 0 && Objects.equals(title, that.title) && Objects.equals(company, that.company) && Objects.equals(description, that.description) && type == that.type && Objects.equals(qualifications, that.qualifications) && status == that.status && Objects.equals(createdAt, that.createdAt) && Objects.equals(updatedAt, that.updatedAt);
+    public String toString() {
+        return "Job Posting\n" +
+                "|  ID           => " + getId() + ",\n" +
+                "|  Title        => " + title + ",\n" +
+                "|  Company      => " + (company != null ? company.getName() : "N/A") + ",\n" +
+                "|  Salary Range => " + computedSalaryRange() + ",\n" +
+                "|  Description  => " + description + ",\n" +
+                "|  Type         => " + (type != null ? type.toString() : "N/A") + ",\n" +
+                "|  Status       => " + (status != null ? status.toString() : "N/A") + ",\n" +
+                "|  Created At   => " + (createdAt != null ? createdAt.toString() : "N/A") + ",\n" +
+                "|  Updated At   => " + (updatedAt != null ? updatedAt.toString() : "N/A");
     }
+
 }

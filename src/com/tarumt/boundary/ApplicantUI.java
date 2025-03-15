@@ -1,6 +1,8 @@
 package com.tarumt.boundary;
 
 import com.tarumt.control.ApplicantService;
+import com.tarumt.control.CompanyService;
+import com.tarumt.control.JobPostingService;
 import com.tarumt.entity.Applicant;
 import com.tarumt.entity.BaseEntity;
 import com.tarumt.entity.JobPosting;
@@ -29,13 +31,13 @@ public class ApplicantUI {
                 .banner("Applicant")
                 .header("==> Manage Applicant <==")
                 .choice(
-                        new Menu.Choice("Create Applicant", service::create),
-                        new Menu.Choice("Display Applicants", service::read),
-                        new Menu.Choice("Search Applicant", service::search),
-                        new Menu.Choice("Filter Applicant", service::filter),
-                        new Menu.Choice("Update Applicant", service::update),
-                        new Menu.Choice("Delete Applicant", service::delete),
-                        new Menu.Choice("Generate Report", service::report)
+                        new Menu.Choice("🆕 Create Applicant", service::create),
+                        new Menu.Choice("📋 Display Applicants", service::read),
+                        new Menu.Choice("🔍 Search Applicant", service::search),
+                        new Menu.Choice("📂 Filter Applicant", service::filter),
+                        new Menu.Choice("🔃 Update Applicant", service::update),
+                        new Menu.Choice("❌ Delete Applicant", service::delete),
+                        new Menu.Choice("📈 Generate Report", service::report)
                 )
                 .exit("<Return to Main Menu>")
                 .beforeEach(System.out::println)
@@ -145,7 +147,7 @@ public class ApplicantUI {
                         new Menu.Choice("Update Location", () -> service.updateApplicantLocation(id)),
                         new Menu.Choice("Update All Fields", () -> service.updateAllFields(id))
                 )
-                .exit("<Return to Main Menu>")
+                .exit("<Return>")
                 .beforeEach(System.out::println)
                 .afterEach(System.out::println)
                 .run();
@@ -194,9 +196,9 @@ public class ApplicantUI {
         return input.getInt("| Ending index => ", condition);
     }
 
-    public void printSuccessDeleteByIndexMsg(Applicant removedApplicant) {
+    public void printSuccessDeleteMsg(String id) {
         System.out.println();
-        Log.info("Deleted applicant ID => " + removedApplicant.getId());
+        Log.info("Deleted applicant ID => " + id);
     }
 
     public void printDeleteByRangeMsg() {
@@ -251,16 +253,17 @@ public class ApplicantUI {
         System.out.println();
     }
 
-    public void accessMenu() {
+    public void accessMenu(ApplicantService applicantService, CompanyService companyService) {
         String applicantName = Context.getApplicant().getName();
         new Menu()
                 .banner(applicantName)
                 .header("==> Welcome, Applicant \"" + applicantName + "\" <==")
                 .choice(
-                        new Menu.Choice("View Job Posting", Log::na),
-                        new Menu.Choice("View Companies", Log::na),
-                        new Menu.Choice("Display Applicant Profile", Log::na),
-                        new Menu.Choice("Update Applicant Profile", Log::na)
+                        new Menu.Choice("📝 Job Application", applicantService::accessJobApplicationMenu),
+                        new Menu.Choice("🏢 Display Companies", companyService::read),
+                        new Menu.Choice("🔍 Search Companies", companyService::search),
+                        new Menu.Choice("👤 Display Applicant Profile", applicantService::displayProfile),
+                        new Menu.Choice("🔃 Update Applicant Profile", Log::na)
                 )
                 .exit("<Logout>")
                 .beforeEach(System.out::println)
@@ -269,4 +272,24 @@ public class ApplicantUI {
         System.out.println();
         Log.warn("Logged out");
     }
+
+    public void jobApplicationMenu(JobPostingService jobPostingService) {
+        new Menu()
+                .header("==> Job Application <==")
+                .choice(
+                        new Menu.Choice("📋 Display All Job Postings", jobPostingService::read),
+                        new Menu.Choice("🔍 Search Job Postings", jobPostingService::search),
+                        new Menu.Choice("📂 Filter Job Postings", Log::na),
+                        new Menu.Choice("🔖 Display Recommended Job Postings", Log::na),
+                        new Menu.Choice("📝 Apply Job Posting", Log::na),
+                        new Menu.Choice("📄 Display Applied Job Postings", Log::na),
+                        new Menu.Choice("❌ Withdraw Applied Job Posting", Log::na)
+                )
+                .exit("<Return>")
+                .beforeEach(System.out::println)
+                .afterEach(System.out::println)
+                .run();
+        System.out.println();
+    }
+
 }

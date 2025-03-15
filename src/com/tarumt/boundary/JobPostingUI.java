@@ -29,13 +29,13 @@ public class JobPostingUI {
                 .banner("Job Posting")
                 .header("==> Manage Job Posting <==")
                 .choice(
-                        new Menu.Choice("Create Job Posting", service::create),
-                        new Menu.Choice("Display Job Posting", service::read),
-                        new Menu.Choice("Search Job Posting", service::search),
-                        new Menu.Choice("Filter Job Posting", service::filter),
-                        new Menu.Choice("Update Job Posting", service::update),
-                        new Menu.Choice("Delete Job Posting", service::delete),
-                        new Menu.Choice("Generate Report", service::report)
+                        new Menu.Choice("🆕 Create Job Posting", service::create),
+                        new Menu.Choice("📋 Display Job Posting", service::read),
+                        new Menu.Choice("🔍 Search Job Posting", service::search),
+                        new Menu.Choice("📂 Filter Job Posting", service::filter),
+                        new Menu.Choice("🔃 Update Job Posting", service::update),
+                        new Menu.Choice("❌ Delete Job Posting", service::delete),
+                        new Menu.Choice("📈 Generate Report", service::report)
                 )
                 .exit("<Return to Main Menu>")
                 .beforeEach(System.out::println)
@@ -203,9 +203,9 @@ public class JobPostingUI {
         System.out.println("<== Delete By ID [ X to Exit ] ==>");
     }
 
-    public void printSuccessDeleteByIndexMsg(JobPosting jobPostingRemoved) {
+    public void printSuccessDeleteMsg(String id) {
         System.out.println();
-        Log.info("Deleted job posting ID => " + jobPostingRemoved.getId());
+        Log.info("Deleted job posting ID => " + id);
     }
 
     public int getDeleteStartIndex(int size) {

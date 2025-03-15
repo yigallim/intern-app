@@ -91,8 +91,8 @@ public class JobPostingService implements Service {
         int index = jobPostingUI.getJobPostingIndex(this.jobPostings.size());
         if (index == Input.INT_EXIT_VALUE) return;
         if (jobPostingUI.confirmDelete()) {
-            JobPosting removed = jobPostings.remove(index - 1);
-            jobPostingUI.printSuccessDeleteByIndexMsg(removed);
+            JobPosting jobPosting = jobPostings.remove(index - 1);
+            jobPostingUI.printSuccessDeleteMsg(jobPosting.getId());
         }
     }
 
@@ -122,7 +122,7 @@ public class JobPostingService implements Service {
         if (jobPostingUI.confirmDelete()) {
             JobPosting jobPosting = BaseEntity.getById(id, jobPostings);
             jobPostings.remove(jobPosting);
-            jobPostingUI.printSuccessDeleteByIndexMsg(jobPosting);
+            jobPostingUI.printSuccessDeleteMsg(jobPosting.getId());
         }
     }
 

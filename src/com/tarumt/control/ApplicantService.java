@@ -36,7 +36,7 @@ public class ApplicantService implements Service {
 
         if (applicantExists) {
             boolean login = this.loginOrRegister();
-            if (login) applicantUI.accessMenu();
+            if (login) applicantUI.accessMenu(this, new CompanyService());
         }
     }
 
@@ -141,8 +141,8 @@ public class ApplicantService implements Service {
         int index = applicantUI.getApplicantIndex(applicants.size());
         if (index == Input.INT_EXIT_VALUE) return;
         if (applicantUI.confirmDelete()) {
-            Applicant removed = applicants.remove(index - 1);
-            applicantUI.printSuccessDeleteByIndexMsg(removed);
+            Applicant applicant = applicants.remove(index - 1);
+            applicantUI.printSuccessDeleteMsg(applicant.getId());
         }
     }
 
@@ -168,7 +168,7 @@ public class ApplicantService implements Service {
         if (applicantUI.confirmDelete()) {
             Applicant applicant = BaseEntity.getById(id, applicants);
             applicants.remove(applicant);
-            applicantUI.printSuccessDeleteByIndexMsg(applicant);
+            applicantUI.printSuccessDeleteMsg(applicant.getId());
         }
     }
 
@@ -205,5 +205,13 @@ public class ApplicantService implements Service {
             }
             throw new Menu.ExitMenuException();
         }
+    }
+
+    public void accessJobApplicationMenu() {
+        this.applicantUI.jobApplicationMenu(new JobPostingService());
+    }
+
+    public void displayProfile() {
+        System.out.println(Context.getApplicant());
     }
 }

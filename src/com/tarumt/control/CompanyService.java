@@ -103,8 +103,8 @@ public class CompanyService implements Service {
         if (index == Input.INT_EXIT_VALUE) return;
 
         if (companyUI.confirmDelete()) {
-            Company removed = companies.remove(index - 1);
-            companyUI.printSuccessDeleteByIndexMsg(removed);
+            Company company = companies.remove(index - 1);
+            companyUI.printSuccessDeleteMsg(company.getId());
         }
     }
 
@@ -131,9 +131,9 @@ public class CompanyService implements Service {
         if (id.equals(Input.STRING_EXIT_VALUE)) return;
 
         if (companyUI.confirmDelete()) {
-            Company toRemove = BaseEntity.getById(id, companies);
-            companies.remove(toRemove);
-            companyUI.printSuccessDeleteByIndexMsg(toRemove);
+            Company company = BaseEntity.getById(id, companies);
+            companies.remove(company);
+            companyUI.printSuccessDeleteMsg(company.getId());
         }
     }
 

@@ -31,12 +31,12 @@ public class CompanyUI {
                 .banner("Company")
                 .header("==> Manage Company <==")
                 .choice(
-                        new Menu.Choice("Create Company", service::create),
-                        new Menu.Choice("Display Company", service::read),
-                        new Menu.Choice("Search Company", service::search),
-                        new Menu.Choice("Filter Company", service::filter),
-                        new Menu.Choice("Update Company", service::update),
-                        new Menu.Choice("Delete Company", service::delete)
+                        new Menu.Choice("🏢 Create Company", service::create),
+                        new Menu.Choice("📊 Display Company", service::read),
+                        new Menu.Choice("🔍 Search Company", service::search),
+                        new Menu.Choice("📂 Filter Company", service::filter),
+                        new Menu.Choice("🔃 Update Company", service::update),
+                        new Menu.Choice("❌ Delete Company", service::delete)
                 )
                 .exit("<Return to Main Menu>")
                 .beforeEach(System.out::println)
@@ -190,9 +190,9 @@ public class CompanyUI {
         return input.getInt("| Select Company Index => ", condition);
     }
 
-    public void printSuccessDeleteByIndexMsg(Company companyRemoved) {
+    public void printSuccessDeleteMsg(String id) {
         System.out.println();
-        Log.info("Deleted company ID => " + companyRemoved.getId());
+        Log.info("Deleted company ID => " + id);
     }
 
     public int getDeleteStartIndex(int size) {
@@ -270,10 +270,10 @@ public class CompanyUI {
                 .banner(companyName)
                 .header("==> Welcome, Employer \"" + companyName + "\" <==")
                 .choice(
-                        new Menu.Choice("Manage Job Posting", Log::na),
-                        new Menu.Choice("View All Applicants", Log::na),
-                        new Menu.Choice("Display Company Profile", Log::na),
-                        new Menu.Choice("Update Company Profile", Log::na)
+                        new Menu.Choice("📋 Manage Job Posting", Log::na),
+                        new Menu.Choice("👥 View All Applicants", Log::na),
+                        new Menu.Choice("🏢 Display Company Profile", Log::na),
+                        new Menu.Choice("🔃 Update Company Profile", Log::na)
                 )
                 .exit("<Logout>")
                 .beforeEach(System.out::println)
@@ -282,4 +282,5 @@ public class CompanyUI {
         System.out.println();
         Log.warn("Logged out");
     }
+
 }

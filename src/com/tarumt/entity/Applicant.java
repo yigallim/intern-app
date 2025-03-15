@@ -10,6 +10,7 @@ import com.tarumt.utility.validation.annotation.Min;
 import com.tarumt.utility.validation.annotation.Regex;
 
 import java.util.List;
+import java.util.Objects;
 
 public class Applicant extends BaseEntity {
     static {
@@ -84,5 +85,15 @@ public class Applicant extends BaseEntity {
     @Override
     public String toShortString() {
         return this.getId() + ", " + this.getName();
+    }
+
+    @Override
+    public String toString() {
+        return "Applicant\n" +
+                "|  ID          => " + getId() + ",\n" +
+                "|  Name        => " + name + ",\n" +
+                "|  Email       => " + contactEmail + ",\n" +
+                "|  Desired Job => " + (desiredJobType != null ? desiredJobType : "N/A") + ",\n" +
+                "|  Location    => " + (location != null ? location.toString() : "N/A");
     }
 }

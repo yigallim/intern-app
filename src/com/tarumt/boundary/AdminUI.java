@@ -17,14 +17,15 @@ public class AdminUI {
                 .banner("Admin")
                 .header("==> Welcome, Admin <==")
                 .choice(
-                        new Menu.Choice("Company Management", service::manageCompany),
-                        new Menu.Choice("Job Management", service::manageJob),
-                        new Menu.Choice("Applicant Management", service::manageApplicant),
-                        new Menu.Choice("Matching Engine", Log::na)
+                        new Menu.Choice("📑 Company Management", service::manageCompany),
+                        new Menu.Choice("💼 Job Management", service::manageJob),
+                        new Menu.Choice("👤 Applicant Management", service::manageApplicant),
+                        new Menu.Choice("🔎 Matching Engine", Log::na)
                 )
                 .exit("<Logout>")
                 .beforeEach(System.out::println)
                 .afterEach(System.out::println)
                 .run();
     }
+
 }
