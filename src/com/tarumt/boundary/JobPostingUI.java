@@ -141,7 +141,7 @@ public class JobPostingUI {
     }
 
     public JobPosting.Status getJobPostingStatus() {
-        return input.getEnum("|\n| Job Status => ", JobPosting.Status.class, 10);
+        return input.getEnum("|\n| Job Status => ", JobPosting.Status.class, 20);
     }
     
     public void printUpdateMessage(String fieldName) {
@@ -169,6 +169,7 @@ public class JobPostingUI {
                 .header("Select Update Mode ==>")
                 .choice(
                         new Menu.Choice("Update Job Title", () -> service.updateJobTitle(id)),
+                        new Menu.Choice("Update Job Company", () -> service.updateJobCompany(id)),
                         new Menu.Choice("Update Salary Range", () -> service.updateSalaryRange(id)),
                         new Menu.Choice("Update Description", () -> service.updateDescription(id)),
                         new Menu.Choice("Update Job Type", () -> service.updateJobType(id)),

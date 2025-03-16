@@ -9,7 +9,6 @@ import com.tarumt.utility.common.Context;
 import com.tarumt.utility.common.Input;
 import com.tarumt.utility.common.Log;
 import com.tarumt.utility.search.FuzzySearch;
-import com.tarumt.utility.validation.IntegerCondition;
 
 import java.time.LocalDate;
 
@@ -198,72 +197,70 @@ public class JobPostingService implements Service {
     }
 
     public void updateJobTitle(String id) {
-        String fieldname = "Job Title";
+        String fieldName = "Job Title";
         JobPosting jobPosting = BaseEntity.getById(id, jobPostings);
         if (jobPosting == null) {
             return;
         }
 
-        jobPostingUI.printUpdateMessage(fieldname);
+        jobPostingUI.printUpdateMessage(fieldName);
         String newJobTitle = jobPostingUI.getJobPostingTitle();
         if (newJobTitle.equals(Input.STRING_EXIT_VALUE)) {
             return;
         }
         jobPosting.setTitle(newJobTitle);
         jobPosting.setUpdatedAt(LocalDate.now());
-        jobPostingUI.printUpdateSuccessMessage(jobPosting, fieldname);
+        jobPostingUI.printUpdateSuccessMessage(jobPosting, fieldName);
 
     }
 
-    public void updateSalaryRange(String id) {
-        String fieldname = "Salary Range";
+    public void updateJobCompany(String id) {
+        String fieldName = "Job Company";
         JobPosting jobPosting = BaseEntity.getById(id, jobPostings);
         if (jobPosting == null) {
             return;
         }
 
-        jobPostingUI.printUpdateMessage(fieldname);
+        jobPostingUI.printUpdateMessage(fieldName);
+        Company newCompany = jobPostingUI.getJobPostingCompany();
+        if (newCompany == null) {
+            return;
+        }
+        jobPosting.setCompany(newCompany);
+        jobPosting.setUpdatedAt(LocalDate.now());
+        jobPostingUI.printUpdateSuccessMessage(jobPosting, fieldName);
+    }
 
+    public void updateSalaryRange(String id) {
+        String fieldName = "Salary Range";
+        JobPosting jobPosting = BaseEntity.getById(id, jobPostings);
+        if (jobPosting == null) {
+            return;
+        }
+
+        jobPostingUI.printUpdateMessage(fieldName);
         String salaryRange = jobPostingUI.getSalaryRange();
         if (salaryRange.equals(Input.STRING_EXIT_VALUE)) {
             return;
         }
-
         String[] parts = salaryRange.split("-");
         int newMinSalary = Integer.parseInt(parts[0]);
         int newMaxSalary = Integer.parseInt(parts[1]);
 
-        IntegerCondition salaryCondition = new IntegerCondition()
-                .min(1000, "Minimum salary must be >= 1000");
-
-        String errorMessage = salaryCondition.safeValidate(newMinSalary);
-        if (errorMessage != null) {
-            System.out.println();
-            Log.error(errorMessage);
-            return;
-        }
-
-        if (newMaxSalary < newMinSalary) {
-            System.out.println();
-            Log.error("Maximum salary must be greater than or equal to minimum salary");
-            return;
-        }
-
         jobPosting.setSalaryMin(newMinSalary);
         jobPosting.setSalaryMax(newMaxSalary);
         jobPosting.setUpdatedAt(LocalDate.now());
-
-        jobPostingUI.printUpdateSuccessMessage(jobPosting, fieldname);
+        jobPostingUI.printUpdateSuccessMessage(jobPosting, fieldName);
     }
 
     public void updateDescription(String id) {
-        String fieldname = "Description";
+        String fieldName = "Description";
         JobPosting jobPosting = BaseEntity.getById(id, jobPostings);
         if (jobPosting == null) {
             return;
         }
 
-        jobPostingUI.printUpdateMessage(fieldname);
+        jobPostingUI.printUpdateMessage(fieldName);
 
         String newDescription = jobPostingUI.getJobPostingDescription();
         if (newDescription.equals(Input.STRING_EXIT_VALUE)) {
@@ -273,17 +270,17 @@ public class JobPostingService implements Service {
         jobPosting.setDescription(newDescription);
         jobPosting.setUpdatedAt(LocalDate.now());
 
-        jobPostingUI.printUpdateSuccessMessage(jobPosting, fieldname);
+        jobPostingUI.printUpdateSuccessMessage(jobPosting, fieldName);
     }
 
     public void updateJobType(String id) {
-        String fieldname = "Job Type";
+        String fieldName = "Job Type";
         JobPosting jobPosting = BaseEntity.getById(id, jobPostings);
         if (jobPosting == null) {
             return;
         }
 
-        jobPostingUI.printUpdateMessage(fieldname);
+        jobPostingUI.printUpdateMessage(fieldName);
 
         JobPosting.Type newType = jobPostingUI.getJobPostingType();
         if (newType == null) {
@@ -292,84 +289,64 @@ public class JobPostingService implements Service {
         jobPosting.setType(newType);
         jobPosting.setUpdatedAt(LocalDate.now());
 
-        jobPostingUI.printUpdateSuccessMessage(jobPosting, fieldname);
+        jobPostingUI.printUpdateSuccessMessage(jobPosting, fieldName);
     }
 
     public void updateStatus(String id) {
-        String fieldname = "Status";
+        String fieldName = "Status";
         JobPosting jobPosting = BaseEntity.getById(id, jobPostings);
         if (jobPosting == null) {
             return;
         }
 
-        jobPostingUI.printUpdateMessage(fieldname);
+        jobPostingUI.printUpdateMessage(fieldName);
 
         JobPosting.Status newStatus = jobPostingUI.getJobPostingStatus();
         if (newStatus == null) {
-            return; 
+            return;
         }
         jobPosting.setStatus(newStatus);
         jobPosting.setUpdatedAt(LocalDate.now());
 
-        jobPostingUI.printUpdateSuccessMessage(jobPosting, fieldname);
+        jobPostingUI.printUpdateSuccessMessage(jobPosting, fieldName);
     }
 
     public void updateAllField(String id) {
-        
+        final String fieldName = "All Fields";
         JobPosting jobPosting = BaseEntity.getById(id, jobPostings);
-    if (jobPosting == null) return;
-    
-    // Updated title
-    jobPostingUI.printUpdateMessage("Job Title");
-    String newTitle = jobPostingUI.getJobPostingTitle();
-    if (newTitle.equals(Input.STRING_EXIT_VALUE)) return;
-    jobPosting.setTitle(newTitle);
-    
-    // Updated salary ranges
-    jobPostingUI.printUpdateMessage("Salary Range");
-    String salaryRange = jobPostingUI.getSalaryRange();
-    if (salaryRange.equals(Input.STRING_EXIT_VALUE)) return;
-    String[] parts = salaryRange.split("-");
-    int newMinSalary = Integer.parseInt(parts[0]);
-    int newMaxSalary = Integer.parseInt(parts[1]);
-    IntegerCondition salaryCondition = new IntegerCondition()
-        .min(1000, "Minimum salary must be >= 1000");
-    String errorMessage = salaryCondition.safeValidate(newMinSalary);
-    if (errorMessage != null) {
-        System.out.println();
-        Log.error(errorMessage);
-        return;
-    }
-    if (newMaxSalary < newMinSalary) {
-        System.out.println();
-        Log.error("Maximum salary must be greater than or equal to minimum salary");
-        return;
-    }
-    jobPosting.setSalaryMin(newMinSalary);
-    jobPosting.setSalaryMax(newMaxSalary);
-    
-    // Update Description
-    jobPostingUI.printUpdateMessage("Description");
-    String newDescription = jobPostingUI.getJobPostingDescription();
-    if (newDescription.equals(Input.STRING_EXIT_VALUE)) return;
-    jobPosting.setDescription(newDescription);
-    
-    // Updated Job Types
-    jobPostingUI.printUpdateMessage("Job Type");
-    JobPosting.Type newType = jobPostingUI.getJobPostingType();
-    if (newType == null) return;
-    jobPosting.setType(newType);
-    
-    // Update Status
-    jobPostingUI.printUpdateMessage("Status");
-    JobPosting.Status newStatus = jobPostingUI.getJobPostingStatus();
-    if (newStatus == null) return;
-    jobPosting.setStatus(newStatus);
-    
-    // Update Revision Time
-    jobPosting.setUpdatedAt(LocalDate.now());
-   
-    jobPostingUI.printUpdateSuccessMessage(jobPosting, "All Fields");
+        jobPostingUI.printUpdateMessage(fieldName);
+
+        String newTitle = jobPostingUI.getJobPostingTitle();
+        if (newTitle.equals(Input.STRING_EXIT_VALUE)) return;
+
+        Company newCompany = null;
+        if (Context.isAdmin())
+            newCompany = jobPostingUI.getJobPostingCompany();
+
+        String salaryRange = jobPostingUI.getSalaryRange();
+        if (salaryRange.equals(Input.STRING_EXIT_VALUE)) return;
+        String[] parts = salaryRange.split("-");
+        int newMinSalary = Integer.parseInt(parts[0]);
+        int newMaxSalary = Integer.parseInt(parts[1]);
+
+        String newDescription = jobPostingUI.getJobPostingDescription();
+        if (newDescription.equals(Input.STRING_EXIT_VALUE)) return;
+
+        JobPosting.Type newType = jobPostingUI.getJobPostingType();
+        if (newType == null) return;
+
+        JobPosting.Status newStatus = jobPostingUI.getJobPostingStatus();
+        if (newStatus == null) return;
+
+        jobPosting.setTitle(newTitle);
+        if (newCompany != null) jobPosting.setCompany(newCompany);
+        jobPosting.setSalaryMin(newMinSalary);
+        jobPosting.setSalaryMax(newMaxSalary);
+        jobPosting.setDescription(newDescription);
+        jobPosting.setType(newType);
+        jobPosting.setStatus(newStatus);
+        jobPosting.setUpdatedAt(LocalDate.now());
+        jobPostingUI.printUpdateSuccessMessage(jobPosting, "All Fields");
     }
 
 }
