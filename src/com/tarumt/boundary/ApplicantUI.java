@@ -15,6 +15,7 @@ import com.tarumt.utility.search.FuzzySearch;
 import com.tarumt.utility.validation.*;
 
 import java.lang.reflect.Field;
+import java.sql.SQLOutput;
 import java.util.List;
 import java.util.Set;
 
@@ -151,6 +152,17 @@ public class ApplicantUI {
                 .beforeEach(System.out::println)
                 .afterEach(System.out::println)
                 .run();
+    }
+
+    public void printUpdateMessage(String fieldName) {
+        System.out.println("<== Updating Applicant '" + fieldName + "' [ X to Exit ] ==>");
+    }
+
+    public void printUpdateSuccessMessage(Applicant applicant, String fieldName) {
+        System.out.println();
+        Log.info("Applicant '" + fieldName + "' updated successfully");
+        this.printOriginalApplicantValue(applicant);
+        input.clickAnythingToContinue();
     }
 
     public void printOriginalApplicantValue(Applicant applicant) {

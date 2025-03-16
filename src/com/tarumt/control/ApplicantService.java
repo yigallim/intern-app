@@ -119,61 +119,81 @@ public class ApplicantService implements Service {
 
         return new Applicant(name, contactEmail, desiredJobType, location, null);
     }
-    
 
     public void updateApplicantName(String id) {
+        String fieldName = "Name";
         Applicant applicant = BaseEntity.getById(id, applicants);
         if (applicant == null) return;
 
+        applicantUI.printUpdateMessage(fieldName);
         String newName = applicantUI.getApplicantName();
-        applicant.setName(newName);
+        if (newName.equals(Input.STRING_EXIT_VALUE)) return;
 
-        Log.info("Applicant's name updated successfully!");
-        applicantUI.printOriginalApplicantValue(applicant);
+        applicant.setName(newName);
+        applicantUI.printUpdateSuccessMessage(applicant, fieldName);
     }
 
     public void updateApplicantContactEmail(String id) {
+        String fieldName = "Contact Email";
         Applicant applicant = BaseEntity.getById(id, applicants);
         if (applicant == null) return;
-        
+
+        applicantUI.printUpdateMessage(fieldName);
         String newEmail = applicantUI.getApplicantContactEmail();
+        if (newEmail.equals(Input.STRING_EXIT_VALUE)) return;
+
         applicant.setContactEmail(newEmail);
-        
-        Log.info("Applicant's email updated successfully!");
-        applicantUI.printOriginalApplicantValue(applicant);
+        applicantUI.printUpdateSuccessMessage(applicant, fieldName);
     }
 
     public void updateApplicantDesiredJobType(String id) {
+        String fieldName = "Desired Job Type";
         Applicant applicant = BaseEntity.getById(id, applicants);
         if (applicant == null) return;
-        
+
+        applicantUI.printUpdateMessage(fieldName);
         JobPosting.Type newJobType = applicantUI.getApplicantDesiredJobType();
+        if (newJobType == null) return;
+
         applicant.setDesiredJobType(newJobType);
-        
-        Log.info("Applicant's desired job type updated successfully!");
-        applicantUI.printOriginalApplicantValue(applicant);
+        applicantUI.printUpdateSuccessMessage(applicant, fieldName);
     }
 
     public void updateApplicantLocation(String id) {
+        String fieldName = "Location";
         Applicant applicant = BaseEntity.getById(id, applicants);
         if (applicant == null) return;
-        
-        Location newLocation = locationUI.getLocation(); 
-        if (newLocation == null) return;
-        
-        applicant.setLocation(newLocation);
 
-        Log.info("Applicant's location updated successfully!");
-        applicantUI.printOriginalApplicantValue(applicant);
+        applicantUI.printUpdateMessage(fieldName);
+        Location newLocation = locationUI.getLocation();
+        if (newLocation == null) return;
+
+        applicant.setLocation(newLocation);
+        applicantUI.printUpdateSuccessMessage(applicant, fieldName);
     }
 
     public void updateAllFields(String id) {
-        updateApplicantName(id);
-        updateApplicantContactEmail(id);
-        updateApplicantDesiredJobType(id);
-        updateApplicantLocation(id);
+        final String fieldName = "All Fields";
+        Applicant applicant = BaseEntity.getById(id, applicants);
+        applicantUI.printUpdateMessage(fieldName);
 
-        Log.info("All applicant details updated successfully!");
+        String name = applicantUI.getApplicantName();
+        if (name.equals(Input.STRING_EXIT_VALUE)) return;
+
+        String contactEmail = applicantUI.getApplicantContactEmail();
+        if (contactEmail.equals(Input.STRING_EXIT_VALUE)) return;
+
+        JobPosting.Type desiredJobType = applicantUI.getApplicantDesiredJobType();
+        if (desiredJobType == null) return;
+
+        Location location = locationUI.getLocation();
+        if (location == null) return;
+
+        applicant.setName(name);
+        applicant.setContactEmail(contactEmail);
+        applicant.setDesiredJobType(desiredJobType);
+        applicant.setLocation(location);
+        applicantUI.printUpdateSuccessMessage(applicant, fieldName);
     }
 
     public void deleteByIndex() {
