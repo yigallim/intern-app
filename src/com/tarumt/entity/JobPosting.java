@@ -209,7 +209,7 @@ public class JobPosting extends BaseEntity {
         return "Job Posting\n" +
                 "|  ID           => " + getId() + ",\n" +
                 "|  Title        => " + title + ",\n" +
-                "|  Company      => " + (company != null ? company.getName() : "N/A") + ",\n" +
+                "|  Company      => " + (company != null ? company.toShortString() : "N/A") + ",\n" +
                 "|  Salary Range => " + computedSalaryRange() + ",\n" +
                 "|  Description  => " + description + ",\n" +
                 "|  Type         => " + (type != null ? type.toString() : "N/A") + ",\n" +

@@ -140,6 +140,21 @@ public class JobPostingUI {
         return input.getEnum("|\n| Job Type => ", JobPosting.Type.class, 38);
     }
 
+    public JobPosting.Status getJobPostingStatus() {
+        return input.getEnum("|\n| Job Status => ", JobPosting.Status.class, 20);
+    }
+    
+    public void printUpdateMessage(String fieldName) {
+        System.out.println("<== Updating Job Posting '" + fieldName + "' [ X to Exit ] ==>");
+    }
+    
+    public void printUpdateSuccessMessage(JobPosting jobPosting, String fieldName) {
+        System.out.println();
+        Log.info("Job Posting '" + fieldName + "' updated successfully");
+        this.printOriginalJobValue(jobPosting);
+        input.clickAnythingToContinue();
+    }
+    
     public void printUpdateJobMsg(List<JobPosting> jobPosting) {
         if (jobPosting == null || jobPosting.isEmpty()) {
             Log.info("No job postings to update");
@@ -154,6 +169,7 @@ public class JobPostingUI {
                 .header("Select Update Mode ==>")
                 .choice(
                         new Menu.Choice("Update Job Title", () -> service.updateJobTitle(id)),
+                        new Menu.Choice("Update Job Company", () -> service.updateJobCompany(id)),
                         new Menu.Choice("Update Salary Range", () -> service.updateSalaryRange(id)),
                         new Menu.Choice("Update Description", () -> service.updateDescription(id)),
                         new Menu.Choice("Update Job Type", () -> service.updateJobType(id)),

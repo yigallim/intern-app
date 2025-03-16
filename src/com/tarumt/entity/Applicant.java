@@ -10,7 +10,6 @@ import com.tarumt.utility.validation.annotation.Min;
 import com.tarumt.utility.validation.annotation.Regex;
 
 import java.util.List;
-import java.util.Objects;
 
 public class Applicant extends BaseEntity {
     static {
