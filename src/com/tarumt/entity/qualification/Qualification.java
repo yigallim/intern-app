@@ -8,10 +8,6 @@ public abstract class Qualification {
         LOW, MEDIUM, HIGH
     }
 
-    public abstract boolean matches(Qualification other);
-
-    public abstract boolean getScore(Qualification other);
-
     public boolean isOptional() {
         return optional;
     }
@@ -27,4 +23,6 @@ public abstract class Qualification {
     public void setImportance(Importance importance) {
         this.importance = importance;
     }
+
+    public abstract double score();
 }
