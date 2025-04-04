@@ -117,7 +117,7 @@ public class ApplicantService implements Service {
         Location location = locationUI.getLocation();
         if (location == null) return null;
 
-        return new Applicant(name, contactEmail, desiredJobType, location, null);
+        return new Applicant(name, contactEmail, desiredJobType, location);
     }
 
     public void updateApplicantName(String id) {
