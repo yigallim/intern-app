@@ -263,7 +263,7 @@ public class CompanyUI {
         System.out.println();
     }
 
-    public void accessMenu() {
+    public void accessMenu(CompanyService service) {
         String companyName = Context.getCompany().getName();
 
         new Menu()
@@ -273,7 +273,27 @@ public class CompanyUI {
                         new Menu.Choice("📋 Manage Job Posting", Log::na),
                         new Menu.Choice("👥 View All Applicants", Log::na),
                         new Menu.Choice("🏢 Display Company Profile", Log::na),
-                        new Menu.Choice("🔃 Update Company Profile", Log::na)
+                        new Menu.Choice("🔃 Update Company Profile", Log::na),
+                        new Menu.Choice("Add Qualification", service::addQualification)
+                )
+                .exit("<Logout>")
+                .beforeEach(System.out::println)
+                .afterEach(System.out::println)
+                .run();
+        System.out.println();
+        Log.warn("Logged out");
+    }
+
+    public void addQualification(CompanyService service) {
+        
+        new Menu()
+                .banner("Qualification")
+                .header("Select a Qualification Category ⇒")
+                .choice(
+                        new Menu.Choice("📋Education & Academic", service::updateEducation),
+                        new Menu.Choice("👥 Work Experience", service::updateWorkExperience),
+                        new Menu.Choice("🏢Language Proficiency", service::updateLanguage),
+                        new Menu.Choice("🔃 Work Preferences & Availability", service::updateAvailability)
                 )
                 .exit("<Logout>")
                 .beforeEach(System.out::println)

@@ -30,12 +30,15 @@ public class CompanyService implements Service {
 
     public void accessEmployer() {
         boolean companyExists = !Initializer.getCompanies().isEmpty();
-        if (!companyExists)
+        if (!companyExists) {
             this.initCompany();
+        }
 
         if (companyExists) {
             boolean login = this.loginOrRegister();
-            if (login) companyUI.accessMenu();
+            if (login) {
+                companyUI.accessMenu(this);
+            }
         }
     }
 
@@ -50,10 +53,14 @@ public class CompanyService implements Service {
             companyUI.printCreateCompanyMsg();
             companyUI.printNextIDMsg();
             Company company = this.getCompany();
-            if (company == null) return;
+            if (company == null) {
+                return;
+            }
             companies.add(company);
             companyUI.printSuccessCreateCompanyMsg();
-            if (!companyUI.continueToCreateCompany()) return;
+            if (!companyUI.continueToCreateCompany()) {
+                return;
+            }
         }
     }
 
@@ -66,9 +73,13 @@ public class CompanyService implements Service {
     public void search() {
         while (true) {
             companyUI.printSearchCompanyMsg(companies);
-            if (this.companies.isEmpty()) return;
+            if (this.companies.isEmpty()) {
+                return;
+            }
             String query = companyUI.getSearchCompanyQuery();
-            if (query.equals(Input.STRING_EXIT_VALUE)) return;
+            if (query.equals(Input.STRING_EXIT_VALUE)) {
+                return;
+            }
             FuzzySearch.Result<Company> result = FuzzySearch.searchList(Company.class, this.companies, query);
             companyUI.printSearchResult(result);
         }
@@ -82,10 +93,14 @@ public class CompanyService implements Service {
     @Override
     public void update() {
         companyUI.printUpdateCompanyMsg(this.companies);
-        if (this.companies.isEmpty()) return;
+        if (this.companies.isEmpty()) {
+            return;
+        }
         List<String> ids = BaseEntity.getIds(companies);
         String id = companyUI.getCompanyId("| Select Company ID => ", ids);
-        if (id.equals(Input.STRING_EXIT_VALUE)) return;
+        if (id.equals(Input.STRING_EXIT_VALUE)) {
+            return;
+        }
 
         Company company = BaseEntity.getById(id, companies);
         companyUI.printOriginalCompanyValue(company);
@@ -100,7 +115,10 @@ public class CompanyService implements Service {
     public void deleteByIndex() {
         companyUI.printDeleteByIndexMsg();
         int index = companyUI.getCompanyIndex(companies.size());
-        if (index == Input.INT_EXIT_VALUE) return;
+        if (index == Input.INT_EXIT_VALUE) {
+            return;
+        }
+        
 
         if (companyUI.confirmDelete()) {
             Company company = companies.remove(index - 1);
@@ -111,10 +129,14 @@ public class CompanyService implements Service {
     public void deleteByRange() {
         companyUI.printDeleteByRangeMsg();
         int startIndex = companyUI.getDeleteStartIndex(companies.size());
-        if (startIndex == Input.INT_EXIT_VALUE) return;
+        if (startIndex == Input.INT_EXIT_VALUE) {
+            return;
+        }
 
         int endIndex = companyUI.getDeleteEndIndex(startIndex, companies.size());
-        if (endIndex == Input.INT_EXIT_VALUE) return;
+        if (endIndex == Input.INT_EXIT_VALUE) {
+            return;
+        }
 
         if (endIndex >= startIndex) {
             if (companyUI.confirmDelete()) {
@@ -128,7 +150,9 @@ public class CompanyService implements Service {
         companyUI.printDeleteByIdMsg();
         List<String> ids = BaseEntity.getIds(companies);
         String id = companyUI.getCompanyId("| Select Company ID => ", ids);
-        if (id.equals(Input.STRING_EXIT_VALUE)) return;
+        if (id.equals(Input.STRING_EXIT_VALUE)) {
+            return;
+        }
 
         if (companyUI.confirmDelete()) {
             Company company = BaseEntity.getById(id, companies);
@@ -151,19 +175,29 @@ public class CompanyService implements Service {
 
     private Company getCompany() {
         String name = companyUI.getCompanyName();
-        if (name.equals(Input.STRING_EXIT_VALUE)) return null;
+        if (name.equals(Input.STRING_EXIT_VALUE)) {
+            return null;
+        }
 
         String description = companyUI.getCompanyDescription();
-        if (description.equals(Input.STRING_EXIT_VALUE)) return null;
+        if (description.equals(Input.STRING_EXIT_VALUE)) {
+            return null;
+        }
 
         Location location = locationUI.getLocation();
-        if (location == null) return null;
+        if (location == null) {
+            return null;
+        }
 
         String email = companyUI.getCompanyEmail();
-        if (email.equals(Input.STRING_EXIT_VALUE)) return null;
+        if (email.equals(Input.STRING_EXIT_VALUE)) {
+            return null;
+        }
 
         String phone = companyUI.getCompanyPhone();
-        if (phone.equals(Input.STRING_EXIT_VALUE)) return null;
+        if (phone.equals(Input.STRING_EXIT_VALUE)) {
+            return null;
+        }
 
         return new Company(name, description, location, email, phone);
     }
@@ -213,4 +247,23 @@ public class CompanyService implements Service {
             throw new Menu.ExitMenuException();
         }
     }
+
+    public void addQualification() {
+        companyUI.addQualification(this);
+    }
+
+    public void updateEducation() {
+        
+    }
+
+    public void updateWorkExperience() {
+    }
+
+    public void updateLanguage() {
+    }
+
+    public void updateAvailability() {
+    }
+
+    
 }

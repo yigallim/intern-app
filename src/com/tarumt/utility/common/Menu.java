@@ -57,7 +57,7 @@ public class Menu {
     }
 
     private void printMenu() {
-        if (banner != null && !banner.isEmpty()) System.out.println(BananaUtils.bananaify(this.banner + " >>>", Font.ANSI_SHADOW));
+        if (banner != null && !banner.isEmpty()) System.out.println(BananaUtils.bananaify(this.banner + " >>>"));
         if (header != null && !header.isEmpty()) System.out.println(header);
 
         int index = 1;
