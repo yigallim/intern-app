@@ -1,7 +1,10 @@
 package com.tarumt.entity;
 
 import com.tarumt.entity.location.Location;
+import com.tarumt.entity.qualification.EducationLevel;
+import com.tarumt.entity.qualification.LanguageProficiency;
 import com.tarumt.entity.qualification.Qualification;
+import com.tarumt.entity.qualification.WorkExperience;
 import com.tarumt.utility.pretty.annotation.ExcludeKey;
 import com.tarumt.utility.pretty.annotation.OutputLength;
 import com.tarumt.utility.search.annotation.Fuzzy;
@@ -10,7 +13,6 @@ import com.tarumt.utility.validation.annotation.Min;
 import com.tarumt.utility.validation.annotation.Regex;
 
 import java.util.List;
-import java.util.Objects;
 
 public class Applicant extends BaseEntity {
     static {
@@ -32,14 +34,17 @@ public class Applicant extends BaseEntity {
     @OutputLength(32)
     private Location location;
     @ExcludeKey("default")
-    private List<Qualification> qualifications;
+    private EducationLevel educationLevel;
+    @ExcludeKey("default")
+    private List<WorkExperience> workExperiences;
+    @ExcludeKey("default")
+    private List<LanguageProficiency> languageProficiencies;
 
-    public Applicant(String name, String contactEmail, JobPosting.Type desiredJobType, Location location, List<Qualification> qualifications) {
+    public Applicant(String name, String contactEmail, JobPosting.Type desiredJobType, Location location) {
         this.name = name;
         this.contactEmail = contactEmail;
         this.desiredJobType = desiredJobType;
         this.location = location;
-        this.qualifications = qualifications;
     }
 
     public String getName() {
@@ -74,12 +79,28 @@ public class Applicant extends BaseEntity {
         this.location = location;
     }
 
-    public List<Qualification> getQualifications() {
-        return qualifications;
+    public EducationLevel getEducationLevel() {
+        return educationLevel;
     }
 
-    public void setQualifications(List<Qualification> qualifications) {
-        this.qualifications = qualifications;
+    public void setEducationLevel(EducationLevel educationLevel) {
+        this.educationLevel = educationLevel;
+    }
+
+    public List<WorkExperience> getWorkExperiences() {
+        return workExperiences;
+    }
+
+    public void setWorkExperiences(List<WorkExperience> workExperiences) {
+        this.workExperiences = workExperiences;
+    }
+
+    public List<LanguageProficiency> getLanguageProficiencies() {
+        return languageProficiencies;
+    }
+
+    public void setLanguageProficiencies(List<LanguageProficiency> languageProficiencies) {
+        this.languageProficiencies = languageProficiencies;
     }
 
     @Override
