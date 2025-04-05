@@ -5,6 +5,7 @@ import com.tarumt.control.CompanyService;
 import com.tarumt.control.JobPostingService;
 import com.tarumt.entity.Applicant;
 import com.tarumt.entity.BaseEntity;
+import com.tarumt.entity.JobApplication;
 import com.tarumt.entity.JobPosting;
 import com.tarumt.utility.common.Context;
 import com.tarumt.utility.common.Input;
@@ -153,6 +154,17 @@ public class ApplicantUI {
                 .run();
     }
 
+    public void printUpdateMessage(String fieldName) {
+        System.out.println("<== Updating Applicant '" + fieldName + "' [ X to Exit ] ==>");
+    }
+
+    public void printUpdateSuccessMessage(Applicant applicant, String fieldName) {
+        System.out.println();
+        Log.info("Applicant '" + fieldName + "' updated successfully");
+        this.printOriginalApplicantValue(applicant);
+        input.clickAnythingToContinue();
+    }
+
     public void printOriginalApplicantValue(Applicant applicant) {
         System.out.println("\n" + applicant);
     }
@@ -252,27 +264,42 @@ public class ApplicantUI {
         Log.info("Logged in as => " + applicant.getId() + ", " + applicant.getName() + " <=");
         System.out.println();
     }
-
+    
     public void accessMenu(ApplicantService applicantService, CompanyService companyService) {
-        String applicantName = Context.getApplicant().getName();
-        new Menu()
-                .banner(applicantName)
-                .header("==> Welcome, Applicant \"" + applicantName + "\" <==")
+        boolean running = true;
+
+        while (running) {
+            Applicant applicant = Context.getApplicant();
+            String name = applicant.getName();
+
+            new Menu()
+                .banner(name)
+                .header("==> Welcome, Applicant \"" + name + "\" <==")
                 .choice(
-                        new Menu.Choice("📝 Job Application", applicantService::accessJobApplicationMenu),
-                        new Menu.Choice("🏢 Display Companies", companyService::read),
-                        new Menu.Choice("🔍 Search Companies", companyService::search),
-                        new Menu.Choice("👤 Display Applicant Profile", applicantService::displayProfile),
-                        new Menu.Choice("🔃 Update Applicant Profile", Log::na)
+                    new Menu.Choice("📝 Job Application", applicantService::accessJobApplicationMenu),
+                    new Menu.Choice("🏢 Display Companies", companyService::read),
+                    new Menu.Choice("🔍 Search Companies", companyService::search),
+                    new Menu.Choice("👤 Display Applicant Profile", applicantService::displayProfile),
+                    new Menu.Choice("🔃 Update Applicant Profile", () -> {
+                        applicantService.updateUserProfile(applicant);
+
+                        Applicant updated = BaseEntity.getById(applicant.getId(), applicantService.getAllApplicants());
+                        Context.setApplicant(updated);
+                    })
                 )
                 .exit("<Logout>")
                 .beforeEach(System.out::println)
                 .afterEach(System.out::println)
                 .run();
+
+            running = false;
+        }
+
         System.out.println();
         Log.warn("Logged out");
     }
 
+ 
     public void jobApplicationMenu(JobPostingService jobPostingService) {
         new Menu()
                 .header("==> Job Application <==")
@@ -281,15 +308,73 @@ public class ApplicantUI {
                         new Menu.Choice("🔍 Search Job Postings", jobPostingService::search),
                         new Menu.Choice("📂 Filter Job Postings", Log::na),
                         new Menu.Choice("🔖 Display Recommended Job Postings", Log::na),
-                        new Menu.Choice("📝 Apply Job Posting", Log::na),
-                        new Menu.Choice("📄 Display Applied Job Postings", Log::na),
-                        new Menu.Choice("❌ Withdraw Applied Job Posting", Log::na)
+                        new Menu.Choice("📝 Apply Job Posting", jobPostingService::applyJob),
+                        new Menu.Choice("📄 Display Applied Job Postings", jobPostingService::displayJobApplication),
+                        new Menu.Choice("❌ Withdraw Applied Job Posting", jobPostingService::withdrawJobApplication)
                 )
                 .exit("<Return>")
                 .beforeEach(System.out::println)
                 .afterEach(System.out::println)
                 .run();
         System.out.println();
+    }
+    
+     public void reportMenu(ApplicantService service) {
+        System.out.println();
+        new Menu()
+                .header("==> Select Report Type <==")
+                .choice(
+                        new Menu.Choice(" Top 10 Locations", service::reportTopLocations),
+                        new Menu.Choice(" All Locations (Descending)", service::reportAllLocations),
+                        new Menu.Choice(" Top 10 Jobs", service::reportTopJobs),
+                        new Menu.Choice(" All Jobs (Descending)", service::reportAllJobs),
+                        new Menu.Choice(" Applicants Applied Status", () -> {
+                                               List<JobApplication> jobApplications = service.getAllJobApplications();
+                                               service.reportAllStatuses(jobApplications);
+                                           }),                        
+                        new Menu.Choice(" Full Report", service::reportFull)
+                    )
+                .exit("<Return>")
+                .beforeEach(System.out::println)
+                .afterEach(System.out::println)
+                .run();
+        System.out.println();
+    }
+     
+     public void updateUserApplicantMode(ApplicantService service, String id) {
+        System.out.println();
+
+        new Menu()
+            .header("Select Update Mode ==>")
+            .choice(
+                new Menu.Choice("Update Applicant Name", () -> {
+                    service.updateApplicantName(id);
+                    Context.setApplicant(service.getApplicantById(id)); 
+                }),
+                new Menu.Choice("Update Contact Email", () -> {
+                    service.updateApplicantContactEmail(id);
+                    Context.setApplicant(service.getApplicantById(id)); 
+                }),
+                new Menu.Choice("Update Desired Job Type", () -> {
+                    service.updateApplicantDesiredJobType(id);
+                    Context.setApplicant(service.getApplicantById(id)); 
+                }),
+                new Menu.Choice("Update Location", () -> {
+                    service.updateApplicantLocation(id);
+                    Context.setApplicant(service.getApplicantById(id)); 
+                }),
+                new Menu.Choice("Update All Fields", () -> {
+                    service.updateApplicantAllFields(id);
+                    Context.setApplicant(service.getApplicantById(id)); 
+                })
+            )
+            .exit("<Return>")
+            .beforeEach(System.out::println)
+            .afterEach(() -> {
+                System.out.println("Reloading latest applicant data...");
+                Context.setApplicant(service.getApplicantById(id)); 
+            })
+            .run();
     }
 
 }
