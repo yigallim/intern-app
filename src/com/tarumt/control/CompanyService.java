@@ -248,22 +248,5 @@ public class CompanyService implements Service {
         }
     }
 
-    public void addQualification() {
-        companyUI.addQualification(this);
-    }
-
-    public void updateEducation() {
-        
-    }
-
-    public void updateWorkExperience() {
-    }
-
-    public void updateLanguage() {
-    }
-
-    public void updateAvailability() {
-    }
-
     
 }
