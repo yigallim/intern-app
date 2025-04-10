@@ -5,16 +5,23 @@ import com.tarumt.boundary.LocationUI;
 import com.tarumt.dao.Initializer;
 import com.tarumt.entity.Applicant;
 import com.tarumt.entity.BaseEntity;
+import com.tarumt.entity.JobApplication;
 import com.tarumt.entity.JobPosting;
 import com.tarumt.entity.location.Location;
 import com.tarumt.utility.common.Context;
 import com.tarumt.utility.common.Input;
 import com.tarumt.utility.common.Log;
 import com.tarumt.utility.common.Menu;
+import com.tarumt.utility.pretty.Chart;
 import com.tarumt.utility.search.FuzzySearch;
+
+import java.util.ArrayList;
+import java.util.Arrays;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 public class ApplicantService implements Service {
 
@@ -27,6 +34,7 @@ public class ApplicantService implements Service {
         this.applicants = Initializer.getApplicants();
         this.applicantUI = new ApplicantUI(input);
         this.locationUI = new LocationUI(input);
+        this.jobApplications = new ArrayList<>();
     }
 
     public void accessApplicant() {
@@ -101,7 +109,165 @@ public class ApplicantService implements Service {
 
     @Override
     public void report() {
-        Log.na();
+        applicantUI.reportMenu(this);
+    }
+
+    public void reportTopJobs() {
+        if (applicants.isEmpty()) {
+            Log.warn("No applicant data available.");
+            return;
+        }
+
+        Map<JobPosting.Type, Long> jobCounts = applicants.stream()
+                .collect(Collectors.groupingBy(Applicant::getDesiredJobType, Collectors.counting()));
+
+        List<Map.Entry<JobPosting.Type, Long>> sortedJobs = jobCounts.entrySet().stream()
+                .sorted((a, b) -> Long.compare(b.getValue(), a.getValue()))
+                .limit(5)
+                .collect(Collectors.toList());
+
+        List<String> jobTypes = sortedJobs.stream().map(entry -> entry.getKey().toString()).collect(Collectors.toList());
+        List<Integer> counts = sortedJobs.stream().map(e -> e.getValue().intValue()).collect(Collectors.toList());
+
+        int maxLength = jobTypes.stream().mapToInt(String::length).max().orElse(20);
+        List<String> formattedJobTypes = jobTypes.stream()
+                .map(type -> String.format("%-" + maxLength + "s", type))
+                .collect(Collectors.toList());
+
+        Chart.barChart(formattedJobTypes, counts, "Top 5 Desired Job Types", 30, '█', true);
+    }
+
+    public void reportAllJobs() {
+        if (applicants.isEmpty()) {
+            Log.warn("No applicant data available.");
+            return;
+        }
+
+        Map<JobPosting.Type, Long> jobCounts = applicants.stream()
+                .collect(Collectors.groupingBy(Applicant::getDesiredJobType, Collectors.counting()));
+
+        List<Map.Entry<JobPosting.Type, Long>> sortedJobs = jobCounts.entrySet().stream()
+                .sorted((a, b) -> Long.compare(b.getValue(), a.getValue()))
+                .collect(Collectors.toList());
+
+        List<String> jobTypes = sortedJobs.stream().map(entry -> entry.getKey().toString()).collect(Collectors.toList());
+        List<Integer> counts = sortedJobs.stream().map(e -> e.getValue().intValue()).collect(Collectors.toList());
+
+        int maxLength = jobTypes.stream().mapToInt(String::length).max().orElse(20);
+        List<String> formattedJobTypes = jobTypes.stream()
+                .map(type -> String.format("%-" + maxLength + "s", type))
+                .collect(Collectors.toList());
+
+        Chart.barChart(formattedJobTypes, counts, "All Desired Job Types", 30, '█', true);
+    }
+
+    public void reportTopLocations() {
+        if (applicants.isEmpty()) {
+            Log.warn("No applicant data available.");
+            return;
+        }
+
+        Map<Location, Long> locationCounts = applicants.stream()
+                .collect(Collectors.groupingBy(Applicant::getLocation, Collectors.counting()));
+
+        List<Map.Entry<Location, Long>> sortedLocations = locationCounts.entrySet().stream()
+                .sorted((a, b) -> Long.compare(b.getValue(), a.getValue()))
+                .limit(10)
+                .collect(Collectors.toList());
+
+        List<String> locations = sortedLocations.stream().map(entry -> entry.getKey().toString()).collect(Collectors.toList());
+        List<Integer> counts = sortedLocations.stream().map(e -> e.getValue().intValue()).collect(Collectors.toList());
+
+        int maxLength = locations.stream().mapToInt(String::length).max().orElse(20);
+        List<String> formattedLocations = locations.stream()
+                .map(loc -> String.format("%-" + maxLength + "s", loc))
+                .collect(Collectors.toList());
+
+        Chart.barChart(formattedLocations, counts, "Top 10 Applicant Locations", 30, '█', true);
+    }
+
+    public void reportAllLocations() {
+        if (applicants.isEmpty()) {
+            Log.warn("No applicant data available.");
+            return;
+        }
+
+        Map<Location, Long> locationCounts = applicants.stream()
+                .collect(Collectors.groupingBy(Applicant::getLocation, Collectors.counting()));
+
+        List<Map.Entry<Location, Long>> sortedLocations = locationCounts.entrySet().stream()
+                .sorted((a, b) -> Long.compare(b.getValue(), a.getValue()))
+                .collect(Collectors.toList());
+
+        List<String> locations = sortedLocations.stream().map(entry -> entry.getKey().toString()).collect(Collectors.toList());
+        List<Integer> counts = sortedLocations.stream().map(e -> e.getValue().intValue()).collect(Collectors.toList());
+
+        int maxLength = locations.stream().mapToInt(String::length).max().orElse(20);
+        List<String> formattedLocations = locations.stream()
+                .map(loc -> String.format("%-" + maxLength + "s", loc))
+                .collect(Collectors.toList());
+
+        Chart.barChart(formattedLocations, counts, "All Applicant Locations", 30, '█', true);
+    }
+
+    private List<JobApplication> jobApplications;
+
+    public List<JobApplication> getAllJobApplications() {
+        if (jobApplications == null) {
+            return new ArrayList<>();
+        }
+        return jobApplications;
+    }
+
+    public void reportAllStatuses(List<JobApplication> jobApplications) {
+        if (jobApplications == null || jobApplications.isEmpty()) {
+            Log.warn("No job applications available.");
+            return;
+        }
+
+        Map<JobApplication.Status, Long> statusCounts = jobApplications.stream()
+                .collect(Collectors.groupingBy(JobApplication::getStatus, Collectors.counting()));
+
+        List<String> statuses = Arrays.stream(JobApplication.Status.values())
+                .map(Enum::toString)
+                .collect(Collectors.toList());
+
+        List<Integer> counts = statuses.stream()
+                .map(status -> statusCounts.getOrDefault(JobApplication.Status.valueOf(status), 0L).intValue())
+                .collect(Collectors.toList());
+
+        int maxLength = statuses.stream()
+                .mapToInt(String::length)
+                .max()
+                .orElse(20);
+
+        List<String> formattedStatuses = statuses.stream()
+                .map(status -> String.format("%-" + maxLength + "s", status))
+                .collect(Collectors.toList());
+
+        Chart.barChart(formattedStatuses, counts, "All Job Application Statuses", 30, '█', true);
+    }
+
+    public void reportFull() {
+        System.out.println();
+        System.out.println("==> Generating Full Report...");
+
+        reportTopJobs();
+        System.out.println();
+
+        reportAllJobs();
+        System.out.println();
+
+        reportTopLocations();
+        System.out.println();
+
+        reportAllLocations();
+        System.out.println();
+
+        reportAllStatuses(getAllJobApplications());
+        System.out.println();
+
+        System.out.println("[INFO] Full report generation completed.");
     }
 
     private Applicant getApplicant() {
@@ -274,4 +440,92 @@ public class ApplicantService implements Service {
     public void displayProfile() {
         System.out.println(Context.getApplicant());
     }
+
+    public Applicant getApplicantById(String id) {
+        for (Applicant applicant : applicants) {
+            if (applicant.getId().equals(id)) {
+                return applicant;
+            }
+        }
+        return null;
+    }
+
+    public void updateUserProfile(Applicant applicant) {
+        if (applicant == null) return;
+
+        applicantUI.printOriginalApplicantValue(applicant);
+        applicantUI.updateUserApplicantMode(this, applicant.getId());
+        Context.setApplicant(applicant);
+    }
+
+    public void updateOwnName(Applicant applicant) {
+        String fieldName = "Name";
+        applicantUI.printUpdateMessage(fieldName);
+        String newName = applicantUI.getApplicantName();
+        if (newName.equals(Input.STRING_EXIT_VALUE)) return;
+        applicant.setName(newName);
+        applicantUI.printUpdateSuccessMessage(applicant, fieldName);
+        Context.setApplicant(applicant);
+    }
+
+    public void updateOwnContactEmail(Applicant applicant) {
+        String fieldName = "Contact Email";
+        applicantUI.printUpdateMessage(fieldName);
+        String newEmail = applicantUI.getApplicantContactEmail();
+        if (newEmail.equals(Input.STRING_EXIT_VALUE)) return;
+        applicant.setContactEmail(newEmail);
+        applicantUI.printUpdateSuccessMessage(applicant, fieldName);
+        Context.setApplicant(applicant);
+    }
+
+    public void updateOwnDesiredJobType(Applicant applicant) {
+        String fieldName = "Desired Job Type";
+        applicantUI.printUpdateMessage(fieldName);
+        JobPosting.Type newType = applicantUI.getApplicantDesiredJobType();
+        if (newType == null) return;
+        applicant.setDesiredJobType(newType);
+        applicantUI.printUpdateSuccessMessage(applicant, fieldName);
+        Context.setApplicant(applicant);
+    }
+
+    public void updateOwnLocation(Applicant applicant) {
+        String fieldName = "Location";
+        applicantUI.printUpdateMessage(fieldName);
+        Location newLocation = locationUI.getLocation();
+        if (newLocation == null) return;
+        applicant.setLocation(newLocation);
+        applicantUI.printUpdateSuccessMessage(applicant, fieldName);
+        Context.setApplicant(applicant);
+    }
+
+    public void updateApplicantAllFields(String id) {
+        final String fieldName = "All Fields";
+        Applicant applicant = BaseEntity.getById(id, applicants);
+        applicantUI.printUpdateMessage(fieldName);
+
+        String name = applicantUI.getApplicantName();
+        if (name.equals(Input.STRING_EXIT_VALUE)) return;
+
+        String contactEmail = applicantUI.getApplicantContactEmail();
+        if (contactEmail.equals(Input.STRING_EXIT_VALUE)) return;
+
+        JobPosting.Type desiredJobType = applicantUI.getApplicantDesiredJobType();
+        if (desiredJobType == null) return;
+
+        Location location = locationUI.getLocation();
+        if (location == null) return;
+
+        applicant.setName(name);
+        applicant.setContactEmail(contactEmail);
+        applicant.setDesiredJobType(desiredJobType);
+        applicant.setLocation(location);
+        applicantUI.printUpdateSuccessMessage(applicant, fieldName);
+
+        Context.setApplicant(applicant);
+    }
+
+    public List<Applicant> getAllApplicants() {
+        return this.applicants;
+    }
+
 }
