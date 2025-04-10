@@ -273,7 +273,7 @@ public class CompanyUI {
                         new Menu.Choice("📋 Manage Job Posting", Log::na),
                         new Menu.Choice("👥 View All Applicants", Log::na),
                         new Menu.Choice("🏢 Display Company Profile", Log::na),
-                        new Menu.Choice("🔃 Update Company Profile", Log::na),
+                        new Menu.Choice("🔃 Update Company Profile", Log::na)
                 )
                 .exit("<Logout>")
                 .beforeEach(System.out::println)
