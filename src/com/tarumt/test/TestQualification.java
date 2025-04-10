@@ -1,24 +1,22 @@
 package com.tarumt.test;
 
-import com.tarumt.entity.qualification.EducationLevel;
-import com.tarumt.entity.qualification.LanguageProficiency;
-import com.tarumt.entity.qualification.WorkExperience;
-import com.tarumt.utility.pretty.annotation.ExcludeKey;
-
-import java.util.List;
+import com.tarumt.control.QualificationService;
+import com.tarumt.utility.common.Menu;
 
 public class TestQualification {
     public static void main(String[] args) {
-        EducationLevel educationLevel = null;
-        List<WorkExperience> workExperiences = null;
-        List<LanguageProficiency> languageProficiencies = null;
+        QualificationService service = new QualificationService();
 
-        // input qualifications
-        // ...
-
-        System.out.println(educationLevel);
-        System.out.println(workExperiences);
-        System.out.println(languageProficiencies);
-
+        new Menu()
+                .banner("Qualification Management")
+                .header("Select an option:")
+                .choice(
+                        new Menu.Choice("➕ Add Qualifications", service::manageQualifications),
+                        new Menu.Choice("📋 View Qualifications", service::displayQualifications)
+                )
+                .exit("<Exit Program>")
+                .beforeEach(System.out::println)
+                .afterEach(System.out::println)
+                .run();
     }
 }

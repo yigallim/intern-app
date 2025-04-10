@@ -4,7 +4,7 @@ public abstract class Qualification {
     private boolean optional;
     private Importance importance;
 
-    public enum Importance {
+    public enum Importance {    
         LOW, MEDIUM, HIGH
     }
 

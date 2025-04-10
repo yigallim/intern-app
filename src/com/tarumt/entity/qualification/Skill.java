@@ -1,11 +1,16 @@
 package com.tarumt.entity.qualification;
 
-public class WorkExperience extends Qualification {
+public class Skill extends Qualification {
 
-    private Industry industry;
-    private int years;
+    private final SkillCategory category;
+    private final String skillName;
+    private final ProficiencyLevel proficiencyLevel;
 
-    public enum Industry {
+    public enum ProficiencyLevel {
+        BEGINNER, INTERMEDIATE, ADVANCED, EXPERT
+    }
+
+    public enum SkillCategory {
         ADMIN_OFFICE("Admin & Office Support"),
         ACCOUNTING("Accounting"),
         DESIGN_ARCH("Design & Architecture"),
@@ -35,8 +40,7 @@ public class WorkExperience extends Qualification {
 
         private final String displayName;
 
-        Industry(String displayName
-        ) {
+        SkillCategory(String displayName) {
             this.displayName = displayName;
         }
 
@@ -46,39 +50,33 @@ public class WorkExperience extends Qualification {
         }
     }
 
-    public WorkExperience(Industry industry, int years, boolean optional, Importance importance) {
-        this.industry = industry;
-        this.years = years;
+    public Skill(SkillCategory category, String skillName, ProficiencyLevel proficiencyLevel, boolean optional, Importance importance) {
+        this.category = category;
+        this.skillName = skillName;
+        this.proficiencyLevel = proficiencyLevel;
         setOptional(optional);
         setImportance(importance);
     }
 
-    public Industry getIndustry() {
-        return industry;
+    public SkillCategory getCategory() {
+        return category;
     }
 
-    public void setIndustry(Industry industry) {
-        this.industry = industry;
+    public String getSkillName() {
+        return skillName;
     }
 
-    public int getYears() {
-        return years;
-    }
-
-    public void setYears(int years) {
-        this.years = years;
+    public ProficiencyLevel getProficiencyLevel() {
+        return proficiencyLevel;
     }
 
     @Override
     public double score() {
-        return years * 1.5; // Example scoring: each year gives 1.5 points
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
     @Override
     public String toString() {
-        return "WorkExperience{"
-                + "industry='" + industry + '\''
-                + ", years=" + years
-                + '}';
+        return category + " - " + skillName + " (" + proficiencyLevel + ")";
     }
-} 
+}
