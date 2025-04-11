@@ -168,27 +168,326 @@ public class JobPostingService implements Service {
             return;
         }
         
-        // Define salary ranges for the chart
-        int[] ranges = {0, 3000, 5000, 7000, 9000, 11000, Integer.MAX_VALUE};
-        String[] labels = {"< 3,000", "3,000-4,999", "5,000-6,999", "7,000-8,999", "9,000-10,999", "> 11,000"};
+        // Generate various report data
+        List<Object> reportData = new LinkedList<>();
         
-        // Count job postings in each salary range (using minimum salary)
-        int[] counts = new int[ranges.length - 1];
+        // 1. Statistics on job type distribution
+        List<JobTypeStatistic> jobTypeStats = generateJobTypeStats();
+        reportData.add(jobTypeStats);
         
+        // 2. Statistics on company job count
+        List<CompanyJobStatistic> companyJobStats = generateCompanyJobStats();
+        reportData.add(companyJobStats);
+        
+        // 3. Job status distribution
+        List<StatusStatistic> statusStats = generateStatusStats();
+        reportData.add(statusStats);
+        
+        // 4. Job posting trends by month
+        List<TrendStatistic> postingTrends = generatePostingTrends();
+        reportData.add(postingTrends);
+        
+        // 5. Application count statistics
+        List<ApplicationStatistic> applicationStats = generateApplicationStats();
+        reportData.add(applicationStats);
+        
+        // 6. Salary range statistics
+        List<SalaryStatistic> salaryStats = generateSalaryStats();
+        reportData.add(salaryStats);
+        
+        // Pass report data to UI layer for display
+        jobPostingUI.displayReports(reportData);
+    }
+    
+    // Inner class for job type statistics - make it public static
+    public static class JobTypeStatistic {
+        private JobPosting.Type type;
+        private int count;
+        
+        public JobTypeStatistic(JobPosting.Type type, int count) {
+            this.type = type;
+            this.count = count;
+        }
+        
+        public JobPosting.Type getType() {
+            return type;
+        }
+        
+        public int getCount() {
+            return count;
+        }
+    }
+    
+    // Generate job type statistics
+    private List<JobTypeStatistic> generateJobTypeStats() {
+        List<JobTypeStatistic> typeStats = new LinkedList<>();
+        
+        // Initialize statistics for all job types
+        for (JobPosting.Type type : JobPosting.Type.values()) {
+            typeStats.add(new JobTypeStatistic(type, 0));
+        }
+        
+        // Count jobs by type
         for (JobPosting job : jobPostings) {
-            int minSalary = job.getSalaryMin();
-            for (int i = 0; i < ranges.length - 1; i++) {
-                if (minSalary >= ranges[i] && minSalary < ranges[i + 1]) {
-                    counts[i]++;
+            JobPosting.Type jobType = job.getType();
+            for (JobTypeStatistic stat : typeStats) {
+                if (stat.getType().equals(jobType)) {
+                    stat.count++;
                     break;
                 }
             }
         }
         
-        // Display the salary distribution chart
-        jobPostingUI.displaySalaryChart(labels, counts);
+        return typeStats;
     }
-
+    
+    // Inner class for company job statistics - make it public static
+    public static class CompanyJobStatistic {
+        private String companyName;
+        private int count;
+        
+        public CompanyJobStatistic(String companyName, int count) {
+            this.companyName = companyName;
+            this.count = count;
+        }
+        
+        public String getCompanyName() {
+            return companyName;
+        }
+        
+        public int getCount() {
+            return count;
+        }
+    }
+    
+    // Generate company job count statistics
+    private List<CompanyJobStatistic> generateCompanyJobStats() {
+        List<CompanyJobStatistic> companyStats = new LinkedList<>();
+        
+        for (JobPosting job : jobPostings) {
+            String companyName = job.getCompany().getName();
+            boolean found = false;
+            
+            // Check if company already exists in the list
+            for (CompanyJobStatistic stat : companyStats) {
+                if (stat.getCompanyName().equals(companyName)) {
+                    stat.count++;
+                    found = true;
+                    break;
+                }
+            }
+            
+            // If company not found, add it to the list
+            if (!found) {
+                companyStats.add(new CompanyJobStatistic(companyName, 1));
+            }
+        }
+        
+        return companyStats;
+    }
+    
+    // Inner class for status statistics - make it public static
+    public static class StatusStatistic {
+        private JobPosting.Status status;
+        private int count;
+        
+        public StatusStatistic(JobPosting.Status status, int count) {
+            this.status = status;
+            this.count = count;
+        }
+        
+        public JobPosting.Status getStatus() {
+            return status;
+        }
+        
+        public int getCount() {
+            return count;
+        }
+    }
+    
+    // Generate job status statistics
+    private List<StatusStatistic> generateStatusStats() {
+        List<StatusStatistic> statusStats = new LinkedList<>();
+        
+        // Initialize statistics for all statuses
+        for (JobPosting.Status status : JobPosting.Status.values()) {
+            statusStats.add(new StatusStatistic(status, 0));
+        }
+        
+        // Count jobs by status
+        for (JobPosting job : jobPostings) {
+            JobPosting.Status jobStatus = job.getStatus();
+            for (StatusStatistic stat : statusStats) {
+                if (stat.getStatus().equals(jobStatus)) {
+                    stat.count++;
+                    break;
+                }
+            }
+        }
+        
+        return statusStats;
+    }
+    
+    // Inner class for trend statistics - make it public static
+    public static class TrendStatistic {
+        private String monthYear;
+        private int count;
+        
+        public TrendStatistic(String monthYear, int count) {
+            this.monthYear = monthYear;
+            this.count = count;
+        }
+        
+        public String getMonthYear() {
+            return monthYear;
+        }
+        
+        public int getCount() {
+            return count;
+        }
+    }
+    
+    // Generate job posting trends by month
+    private List<TrendStatistic> generatePostingTrends() {
+        List<TrendStatistic> trendStats = new LinkedList<>();
+        
+        // Count jobs by month and year
+        for (JobPosting job : jobPostings) {
+            LocalDate createdDate = job.getCreatedAt();
+            String monthYear = createdDate.getMonth().toString() + " " + createdDate.getYear();
+            boolean found = false;
+            
+            // Check if month-year already exists in the list
+            for (TrendStatistic stat : trendStats) {
+                if (stat.getMonthYear().equals(monthYear)) {
+                    stat.count++;
+                    found = true;
+                    break;
+                }
+            }
+            
+            // If month-year not found, add it to the list
+            if (!found) {
+                trendStats.add(new TrendStatistic(monthYear, 1));
+            }
+        }
+        
+        // Sort by month and year
+        trendStats.sort((a, b) -> {
+            String[] partsA = a.getMonthYear().split(" ");
+            String[] partsB = b.getMonthYear().split(" ");
+            
+            int yearA = Integer.parseInt(partsA[1]);
+            int yearB = Integer.parseInt(partsB[1]);
+            
+            if (yearA != yearB) {
+                return Integer.compare(yearA, yearB);
+            }
+            
+            return a.getMonthYear().compareTo(b.getMonthYear());
+        });
+        
+        return trendStats;
+    }
+    
+    // Inner class for application statistics - make it public static
+    public static class ApplicationStatistic {
+        private String jobTitle;
+        private String jobId;
+        private int count;
+        
+        public ApplicationStatistic(String jobTitle, String jobId, int count) {
+            this.jobTitle = jobTitle;
+            this.jobId = jobId;
+            this.count = count;
+        }
+        
+        public String getJobTitle() {
+            return jobTitle;
+        }
+        
+        public String getJobId() {
+            return jobId;
+        }
+        
+        public int getCount() {
+            return count;
+        }
+        
+        public String getDisplayName() {
+            return jobTitle + " (" + jobId + ")";
+        }
+    }
+    
+    // Generate application count statistics
+    private List<ApplicationStatistic> generateApplicationStats() {
+        List<ApplicationStatistic> applicationStats = new LinkedList<>();
+        
+        // Initialize statistics for all job postings
+        for (JobPosting job : jobPostings) {
+            applicationStats.add(new ApplicationStatistic(job.getTitle(), job.getId(), 0));
+        }
+        
+        // Count applications for each job
+        for (JobApplication application : jobApplications) {
+            JobPosting job = application.getJobPosting();
+            for (ApplicationStatistic stat : applicationStats) {
+                if (stat.getJobId().equals(job.getId())) {
+                    stat.count++;
+                    break;
+                }
+            }
+        }
+        
+        return applicationStats;
+    }
+    
+    // Inner class for salary statistics - make it public static
+    public static class SalaryStatistic {
+        private String range;
+        private int count;
+        
+        public SalaryStatistic(String range, int count) {
+            this.range = range;
+            this.count = count;
+        }
+        
+        public String getRange() {
+            return range;
+        }
+        
+        public int getCount() {
+            return count;
+        }
+    }
+    
+    // Generate salary range statistics
+    private List<SalaryStatistic> generateSalaryStats() {
+        List<SalaryStatistic> salaryStats = new LinkedList<>();
+        
+        // Define salary ranges
+        int[] ranges = {0, 3000, 5000, 7000, 9000, 11000, Integer.MAX_VALUE};
+        String[] labels = {"< 3,000", "3,000-4,999", "5,000-6,999", "7,000-8,999", "9,000-10,999", "> 11,000"};
+        
+        // Initialize statistics for all salary ranges
+        for (String label : labels) {
+            salaryStats.add(new SalaryStatistic(label, 0));
+        }
+        
+        // Count jobs by salary range
+        for (JobPosting job : jobPostings) {
+            int minSalary = job.getSalaryMin();
+            for (int i = 0; i < ranges.length - 1; i++) {
+                if (minSalary >= ranges[i] && minSalary < ranges[i + 1]) {
+                    salaryStats.get(i).count++;
+                    break;
+                }
+            }
+        }
+        
+        return salaryStats;
+    }
+    
     private JobPosting getJobPosting() {
         String title = jobPostingUI.getJobPostingTitle();
         if (title.equals(Input.STRING_EXIT_VALUE)) {

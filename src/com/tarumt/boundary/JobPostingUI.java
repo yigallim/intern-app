@@ -17,6 +17,7 @@ import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.Map;
 import java.util.Set;
 
 public class JobPostingUI {
@@ -265,17 +266,186 @@ public class JobPostingUI {
         Log.info("Deleted all job postings");
     }
 
-    public void displaySalaryChart(String[] labels, int[] counts) {
+    @SuppressWarnings("unchecked")
+    public void displayReports(List<Object> reportData) {
         
-        // Convert arrays to Lists for the Chart utility
+        // Display report options menu
+        new Menu()
+            .header("<== Job Posting Reports ==>")
+            .choice(
+                new Menu.Choice("Job Type Distribution", () -> displayJobTypeReport(reportData)),
+                new Menu.Choice("Company Job Count", () -> displayCompanyJobReport(reportData)),
+                new Menu.Choice("Job Status Distribution", () -> displayStatusReport(reportData)),
+                new Menu.Choice("Posting Trends by Month", () -> displayTrendReport(reportData)),
+                new Menu.Choice("Application Count by Job", () -> displayApplicationReport(reportData)),
+                new Menu.Choice("Salary Distribution", () -> displaySalaryReport(reportData))
+            )
+            .exit("<Return>")
+            .beforeEach(System.out::println)
+            .afterEach(System.out::println)
+            .run();
+    }
+    
+    @SuppressWarnings("unchecked")
+    private void displayJobTypeReport(List<Object> reportData) {
+        List<JobPostingService.JobTypeStatistic> typeStats = (List<JobPostingService.JobTypeStatistic>) reportData.get(0);
+        
+        if (typeStats == null || typeStats.isEmpty()) {
+            System.out.println("No job type statistics available.");
+            return;
+        }
+        
+        // Convert to arrays for chart display
+        String[] labels = new String[typeStats.size()];
+        int[] counts = new int[typeStats.size()];
+        
+        for (int i = 0; i < typeStats.size(); i++) {
+            JobPostingService.JobTypeStatistic stat = typeStats.get(i);
+            labels[i] = stat.getType().toString();
+            counts[i] = stat.getCount();
+        }
+        
+        // Display chart
+        displayChart(labels, counts, "Job Type Distribution");
+    }
+    
+    @SuppressWarnings("unchecked")
+    private void displayCompanyJobReport(List<Object> reportData) {
+        List<JobPostingService.CompanyJobStatistic> companyStats = 
+            (List<JobPostingService.CompanyJobStatistic>) reportData.get(1);
+        
+        if (companyStats == null || companyStats.isEmpty()) {
+            System.out.println("No company job statistics available.");
+            return;
+        }
+        
+        // Sort by job count (descending)
+        companyStats.sort((a, b) -> Integer.compare(b.getCount(), a.getCount()));
+        
+        // Convert to arrays for chart display
+        String[] labels = new String[companyStats.size()];
+        int[] counts = new int[companyStats.size()];
+        
+        for (int i = 0; i < companyStats.size(); i++) {
+            JobPostingService.CompanyJobStatistic stat = companyStats.get(i);
+            labels[i] = stat.getCompanyName();
+            counts[i] = stat.getCount();
+        }
+        
+        // Display chart
+        displayChart(labels, counts, "Company Job Count Distribution");
+    }
+    
+    @SuppressWarnings("unchecked")
+    private void displayStatusReport(List<Object> reportData) {
+        List<JobPostingService.StatusStatistic> statusStats = 
+            (List<JobPostingService.StatusStatistic>) reportData.get(2);
+        
+        if (statusStats == null || statusStats.isEmpty()) {
+            System.out.println("No job status statistics available.");
+            return;
+        }
+        
+        // Convert to arrays for chart display
+        String[] labels = new String[statusStats.size()];
+        int[] counts = new int[statusStats.size()];
+        
+        for (int i = 0; i < statusStats.size(); i++) {
+            JobPostingService.StatusStatistic stat = statusStats.get(i);
+            labels[i] = stat.getStatus().toString();
+            counts[i] = stat.getCount();
+        }
+        
+        // Display chart
+        displayChart(labels, counts, "Job Status Distribution");
+    }
+    
+    @SuppressWarnings("unchecked")
+    private void displayTrendReport(List<Object> reportData) {
+        List<JobPostingService.TrendStatistic> trendStats = 
+            (List<JobPostingService.TrendStatistic>) reportData.get(3);
+        
+        if (trendStats == null || trendStats.isEmpty()) {
+            System.out.println("No posting trend statistics available.");
+            return;
+        }
+        
+        // Convert to arrays for chart display
+        String[] labels = new String[trendStats.size()];
+        int[] counts = new int[trendStats.size()];
+        
+        for (int i = 0; i < trendStats.size(); i++) {
+            JobPostingService.TrendStatistic stat = trendStats.get(i);
+            labels[i] = stat.getMonthYear();
+            counts[i] = stat.getCount();
+        }
+        
+        // Display chart
+        displayChart(labels, counts, "Job Posting Trends by Month");
+    }
+    
+    @SuppressWarnings("unchecked")
+    private void displayApplicationReport(List<Object> reportData) {
+        List<JobPostingService.ApplicationStatistic> applicationStats = 
+            (List<JobPostingService.ApplicationStatistic>) reportData.get(4);
+        
+        if (applicationStats == null || applicationStats.isEmpty()) {
+            System.out.println("No application statistics available.");
+            return;
+        }
+        
+        // Sort by application count (descending)
+        applicationStats.sort((a, b) -> Integer.compare(b.getCount(), a.getCount()));
+        
+        // Convert to arrays for chart display
+        String[] labels = new String[applicationStats.size()];
+        int[] counts = new int[applicationStats.size()];
+        
+        for (int i = 0; i < applicationStats.size(); i++) {
+            JobPostingService.ApplicationStatistic stat = applicationStats.get(i);
+            labels[i] = stat.getDisplayName();
+            counts[i] = stat.getCount();
+        }
+        
+        // Display chart
+        displayChart(labels, counts, "Application Count by Job");
+    }
+    
+    @SuppressWarnings("unchecked")
+    private void displaySalaryReport(List<Object> reportData) {
+        List<JobPostingService.SalaryStatistic> salaryStats = 
+            (List<JobPostingService.SalaryStatistic>) reportData.get(5);
+        
+        if (salaryStats == null || salaryStats.isEmpty()) {
+            System.out.println("No salary statistics available.");
+            return;
+        }
+        
+        // Convert to arrays for chart display
+        String[] labels = new String[salaryStats.size()];
+        int[] counts = new int[salaryStats.size()];
+        
+        for (int i = 0; i < salaryStats.size(); i++) {
+            JobPostingService.SalaryStatistic stat = salaryStats.get(i);
+            labels[i] = stat.getRange();
+            counts[i] = stat.getCount();
+        }
+        
+        // Display chart
+        displayChart(labels, counts, "Salary Range Distribution");
+    }
+    
+    // Generic chart display method
+    private void displayChart(String[] labels, int[] counts, String title) {
+        // Convert arrays to lists
         List<String> categories = Arrays.asList(labels);
         List<Integer> values = Arrays.stream(counts).boxed().collect(Collectors.toList());
         
-        // Use the Chart utility to display the bar chart
+        // Use Chart utility to display bar chart
         Chart.barChart(
             categories,
             values,
-            "Salary Range Distribution (Minimum Salary)",
+            title,
             50,  // maxBarLength
             '█', // barChar
             true // showValues
