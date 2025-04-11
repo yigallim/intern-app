@@ -7,8 +7,6 @@ import com.tarumt.utility.validation.annotation.Max;
 import com.tarumt.utility.validation.annotation.Min;
 import com.tarumt.utility.validation.annotation.Regex;
 
-import java.util.Objects;
-
 public class Company extends BaseEntity {
     static {
         BaseEntity.registerPrefix(Company.class, "c");

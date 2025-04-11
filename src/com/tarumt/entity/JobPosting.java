@@ -12,7 +12,6 @@ import com.tarumt.utility.validation.annotation.Min;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Objects;
 
 public class JobPosting extends BaseEntity {
     static {

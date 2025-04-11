@@ -2,6 +2,7 @@ package com.tarumt.control;
 
 import com.tarumt.boundary.JobPostingUI;
 import com.tarumt.dao.Initializer;
+import com.tarumt.entity.Applicant;
 import com.tarumt.entity.BaseEntity;
 import com.tarumt.entity.Company;
 import com.tarumt.entity.JobPosting;
@@ -9,21 +10,29 @@ import com.tarumt.utility.common.Context;
 import com.tarumt.utility.common.Input;
 import com.tarumt.utility.common.Log;
 import com.tarumt.utility.search.FuzzySearch;
+import com.tarumt.entity.JobApplication;
+import com.tarumt.utility.validation.ConditionFactory;
+import com.tarumt.utility.validation.StringCondition;
 
 import java.time.LocalDate;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class JobPostingService implements Service {
 
     private List<JobPosting> jobPostings = new LinkedList<>();
     private final JobPostingUI jobPostingUI;
+    private Applicant currentApplicant;
+    private final List<JobApplication> jobApplications;
 
     public JobPostingService() {
         Input input = new Input();
         this.jobPostings = Initializer.getJobPostings();
         this.jobPostingUI = new JobPostingUI(input);
+        this.jobApplications = Initializer.getJobApplication();
+
     }
 
     @Override
@@ -347,6 +356,187 @@ public class JobPostingService implements Service {
         jobPosting.setStatus(newStatus);
         jobPosting.setUpdatedAt(LocalDate.now());
         jobPostingUI.printUpdateSuccessMessage(jobPosting, "All Fields");
+    }
+
+    public void applyJob() {
+        System.out.println("\n=== Apply for a Job Posting ===");
+
+        currentApplicant = Context.getApplicant();
+
+        if (currentApplicant == null) {
+            System.out.println("No applicant logged in. Please log in to apply.");
+            return;
+        }
+
+        if (jobPostings.isEmpty()) {
+            System.out.println("No job postings available.");
+            return;
+        }
+
+        Input input = new Input();
+
+        while (true) {
+            System.out.println("Available Job Postings:");
+            jobPostings.forEach(jp -> System.out.printf(" [%s] %s - %s\n",
+                    jp.getId(), jp.getTitle(), jp.getCompany().getName()));
+
+            List<String> validJobIds = jobPostings.stream()
+                    .map(JobPosting::getId)
+                    .collect(Collectors.toList());
+
+            StringCondition jobIdCondition = ConditionFactory.string()
+                    .min(1, "Job ID cannot be empty")
+                    .enumeration(validJobIds, "Please enter a valid Job ID from the list above (or 'x' to cancel)");
+
+            String jobId = input.getString("Enter Job ID to apply (or 'x' to cancel): ", jobIdCondition);
+            if (jobId.equals(Input.STRING_EXIT_VALUE)) {
+                System.out.println("Application process cancelled.");
+                return;
+            }
+
+            JobPosting selectedJob = BaseEntity.getById(jobId, jobPostings);
+            if (selectedJob == null) {
+                System.out.println("Invalid Job ID.");
+                continue;
+            }
+
+            if (selectedJob.getStatus() != JobPosting.Status.OPEN) {
+                System.out.println("Sorry, this job is not open for applications.");
+                continue;
+            }
+
+            boolean alreadyApplied = jobApplications.stream()
+                    .anyMatch(ja -> ja.getApplicant().equals(currentApplicant) && ja.getJobPosting().equals(selectedJob));
+            if (alreadyApplied) {
+                System.out.println("You have already applied for this job.");
+                continue;
+            }
+
+            boolean confirmed = input.confirm("Are you sure you want to apply for '" + selectedJob.getTitle() + "'? (y/x): ");
+            if (!confirmed) {
+                System.out.println("Application cancelled.");
+                continue;
+            }
+
+            JobApplication jobApplication = new JobApplication(
+                    selectedJob,
+                    currentApplicant,
+                    JobApplication.Status.PENDING,
+                    LocalDate.now()
+            );
+            jobApplications.add(jobApplication);
+            System.out.println("Successfully applied for '" + selectedJob.getTitle() + "'!");
+
+            boolean applyAnother = input.confirm("Do you want to apply for another job? (y/x): ");
+            if (!applyAnother) {
+                System.out.println("Returning to menu...");
+                return;
+            }
+            System.out.println("\n=== Apply for Another Job Posting ===");
+        }
+    }
+
+    public void displayJobApplication() {
+        System.out.println("\n=== Display Job Applications ===");
+
+        if (currentApplicant == null) {
+            System.out.println("No applicant logged in. Please log in to view applications.");
+            return;
+        }
+
+        if (jobApplications.isEmpty()) {
+            System.out.println("No job applications found in the system.");
+            return;
+        }
+
+        Input input = new Input();
+
+        List<JobApplication> applicantApplications = jobApplications.stream()
+                .filter(ja -> ja.getApplicant().equals(currentApplicant))
+                .collect(Collectors.toList());
+
+        if (applicantApplications.isEmpty()) {
+            System.out.println("You have not applied for any jobs yet.");
+            return;
+        }
+
+        System.out.println("Your Job Applications:");
+        applicantApplications.forEach(ja -> System.out.printf(" [%s] %s - %s | Status: %s | Applied: %s\n",
+                ja.getId(), ja.getJobPosting().getTitle(), ja.getJobPosting().getCompany().getName(),
+                ja.getStatus(), ja.getApplicationDate()));
+
+        input.clickAnythingToContinue();
+    }
+
+    public void withdrawJobApplication() {
+        System.out.println("\n=== Withdraw Job Application ===");
+
+        if (currentApplicant == null) {
+            System.out.println("No applicant logged in. Please log in to withdraw applications.");
+            return;
+        }
+
+        if (jobApplications.isEmpty()) {
+            System.out.println("No job applications found in the system.");
+            return;
+        }
+
+        Input input = new Input();
+
+        List<JobApplication> withdrawableApplications = jobApplications.stream()
+                .filter(ja -> ja.getApplicant().equals(currentApplicant) &&
+                        ja.getStatus() != JobApplication.Status.WITHDRAWN &&
+                        ja.getStatus() != JobApplication.Status.ACCEPTED &&
+                        ja.getStatus() != JobApplication.Status.REJECTED)
+                .collect(Collectors.toList());
+
+        if (withdrawableApplications.isEmpty()) {
+            System.out.println("No applications available to withdraw.");
+            return;
+        }
+
+        System.out.println("Your Withdrawable Applications:");
+        withdrawableApplications.forEach(ja -> System.out.printf(" [%s] %s - %s | Status: %s | Applied: %s\n",
+                ja.getId(), ja.getJobPosting().getTitle(), ja.getJobPosting().getCompany().getName(),
+                ja.getStatus(), ja.getApplicationDate()));
+
+        List<String> validApplicationIds = withdrawableApplications.stream()
+                .map(JobApplication::getId)
+                .collect(Collectors.toList());
+
+        StringCondition applicationIdCondition = ConditionFactory.string()
+                .min(1, "Application ID cannot be empty")
+                .enumeration(validApplicationIds, "Please enter a valid Application ID from the list above (or 'x' to cancel)");
+
+        String applicationId = input.getString("Enter Application ID to withdraw (or 'x' to cancel): ", applicationIdCondition);
+        if (applicationId.equals(Input.STRING_EXIT_VALUE)) {
+            System.out.println("Withdrawal process cancelled.");
+            return;
+        }
+
+        JobApplication selectedApplication = BaseEntity.getById(applicationId, jobApplications);
+        if (selectedApplication == null || !selectedApplication.getApplicant().equals(currentApplicant)) {
+            System.out.println("Invalid Application ID or you don't have permission to withdraw this application.");
+            return;
+        }
+
+        if (selectedApplication.getStatus() == JobApplication.Status.WITHDRAWN ||
+                selectedApplication.getStatus() == JobApplication.Status.ACCEPTED ||
+                selectedApplication.getStatus() == JobApplication.Status.REJECTED) {
+            System.out.println("This application cannot be withdrawn due to its current status.");
+            return;
+        }
+
+        boolean confirmed = input.confirm("Are you sure you want to withdraw application '" +
+                selectedApplication.getJobPosting().getTitle() + "'? (y/x): ");
+        if (!confirmed) {
+            System.out.println("Withdrawal cancelled.");
+            return;
+        }
+
+        selectedApplication.setStatus(JobApplication.Status.WITHDRAWN);
+        selectedApplication.setApplicationDate(LocalDate.now());
+        System.out.println("Application '" + selectedApplication.getJobPosting().getTitle() + "' successfully withdrawn!");
     }
 
 }

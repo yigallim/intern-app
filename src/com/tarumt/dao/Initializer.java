@@ -2,6 +2,7 @@ package com.tarumt.dao;
 
 import com.tarumt.entity.Applicant;
 import com.tarumt.entity.Company;
+import com.tarumt.entity.JobApplication;
 import com.tarumt.entity.JobPosting;
 import com.tarumt.entity.location.City;
 import com.tarumt.entity.location.Location;
@@ -14,6 +15,7 @@ public class Initializer {
     private static final List<Company> companies = new LinkedList<>();
     private static final List<JobPosting> jobPostings = new LinkedList<>();
     private static final List<Applicant> applicants = new LinkedList<>();
+    private static final List<JobApplication> jobApplications = new LinkedList<>(); 
 
     static {
         Initializer.init();
@@ -24,6 +26,7 @@ public class Initializer {
             Class.forName("com.tarumt.entity.Applicant");
             Class.forName("com.tarumt.entity.Company");
             Class.forName("com.tarumt.entity.JobPosting");
+            Class.forName("com.tarumt.entity.JobApplication");
         } catch (ClassNotFoundException e) {
             System.exit(0);
         }
@@ -154,57 +157,111 @@ public class Initializer {
         jobPostings.add(new JobPosting("Project Manager", companies.get(14), 7000, 10000, "Manage space projects", JobPosting.Type.ADMIN_OFFICE, null, JobPosting.Status.OPEN, LocalDate.now().minusDays(4), LocalDate.now()));
 
         // 50 Applicants (Hard-Coded, Qualifications set to null, Using Malaysian Cities)
-        applicants.add(new Applicant("Alice Johnson", "alice.johnson@email.com", JobPosting.Type.IT_COMM_TEC, new Location(City.JOHOR_BAHRU), null));
-        applicants.add(new Applicant("Bob Smith", "bob.smith@email.com", JobPosting.Type.SCIENCE_TECH, new Location(City.KUALA_LUMPUR), null));
-        applicants.add(new Applicant("Charlie Brown", "charlie.brown@email.com", JobPosting.Type.BANK_FIN_SERV, new Location(City.PENANG_HILL), null));
-        applicants.add(new Applicant("Daisy Williams", "daisy.williams@email.com", JobPosting.Type.HEALTH_MED, new Location(City.IPOH), null));
-        applicants.add(new Applicant("Ethan Lee", "ethan.lee@email.com", JobPosting.Type.DESIGN_ARCH, new Location(City.KUCHING), null));
-        applicants.add(new Applicant("Fiona Davis", "fiona.davis@email.com", JobPosting.Type.IT_COMM_TEC, new Location(City.KOTA_KINABALU), null));
-        applicants.add(new Applicant("George Wilson", "george.wilson@email.com", JobPosting.Type.SCIENCE_TECH, new Location(City.MELAKA), null));
-        applicants.add(new Applicant("Hannah Moore", "hannah.moore@email.com", JobPosting.Type.SALES, new Location(City.SEREMBAN), null));
-        applicants.add(new Applicant("Ian Taylor", "ian.taylor@email.com", JobPosting.Type.CALL_CUST_SVC, new Location(City.KUANTAN_PAHANG), null));
-        applicants.add(new Applicant("Julia Anderson", "julia.anderson@email.com", JobPosting.Type.IT_COMM_TEC, new Location(City.SUNGAI_PETANI), null));
-        applicants.add(new Applicant("Kevin White", "kevin.white@email.com", JobPosting.Type.HEALTH_MED, new Location(City.KOTA_BHARU), null));
-        applicants.add(new Applicant("Laura Martinez", "laura.martinez@email.com", JobPosting.Type.IT_COMM_TEC, new Location(City.SHAH_ALAM), null));
-        applicants.add(new Applicant("Mike Brown", "mike.brown@email.com", JobPosting.Type.SCIENCE_TECH, new Location(City.KULIM), null));
-        applicants.add(new Applicant("Nina Harris", "nina.harris@email.com", JobPosting.Type.BANK_FIN_SERV, new Location(City.TAIPING), null));
-        applicants.add(new Applicant("Oliver Clark", "oliver.clark@email.com", JobPosting.Type.DESIGN_ARCH, new Location(City.ALOR_SETAR), null));
-        applicants.add(new Applicant("Pamela Lewis", "pamela.lewis@email.com", JobPosting.Type.IT_COMM_TEC, new Location(City.JOHOR_BAHRU), null));
-        applicants.add(new Applicant("Quincy Adams", "quincy.adams@email.com", JobPosting.Type.SCIENCE_TECH, new Location(City.KUALA_LUMPUR), null));
-        applicants.add(new Applicant("Rachel Green", "rachel.green@email.com", JobPosting.Type.SALES, new Location(City.PENANG_HILL), null));
-        applicants.add(new Applicant("Sam Evans", "sam.evans@email.com", JobPosting.Type.HEALTH_MED, new Location(City.IPOH), null));
-        applicants.add(new Applicant("Tina Walker", "tina.walker@email.com", JobPosting.Type.DESIGN_ARCH, new Location(City.KUCHING), null));
-        applicants.add(new Applicant("Umar Khan", "umar.khan@email.com", JobPosting.Type.IT_COMM_TEC, new Location(City.KOTA_KINABALU), null));
-        applicants.add(new Applicant("Vera Scott", "vera.scott@email.com", JobPosting.Type.SCIENCE_TECH, new Location(City.MELAKA), null));
-        applicants.add(new Applicant("Will Turner", "will.turner@email.com", JobPosting.Type.BANK_FIN_SERV, new Location(City.SEREMBAN), null));
-        applicants.add(new Applicant("Xena Brooks", "xena.brooks@email.com", JobPosting.Type.CALL_CUST_SVC, new Location(City.KUANTAN_PAHANG), null));
-        applicants.add(new Applicant("Yara King", "yara.king@email.com", JobPosting.Type.IT_COMM_TEC, new Location(City.SUNGAI_PETANI), null));
-        applicants.add(new Applicant("Zack Miller", "zack.miller@email.com", JobPosting.Type.HEALTH_MED, new Location(City.KOTA_BHARU), null));
-        applicants.add(new Applicant("Amy Carter", "amy.carter@email.com", JobPosting.Type.IT_COMM_TEC, new Location(City.SHAH_ALAM), null));
-        applicants.add(new Applicant("Ben Foster", "ben.foster@email.com", JobPosting.Type.SCIENCE_TECH, new Location(City.KULIM), null));
-        applicants.add(new Applicant("Clara Hayes", "clara.hayes@email.com", JobPosting.Type.SALES, new Location(City.TAIPING), null));
-        applicants.add(new Applicant("Dan Price", "dan.price@email.com", JobPosting.Type.DESIGN_ARCH, new Location(City.ALOR_SETAR), null));
-        applicants.add(new Applicant("Ella Reed", "ella.reed@email.com", JobPosting.Type.IT_COMM_TEC, new Location(City.JOHOR_BAHRU), null));
-        applicants.add(new Applicant("Finn Cole", "finn.cole@email.com", JobPosting.Type.SCIENCE_TECH, new Location(City.KUALA_LUMPUR), null));
-        applicants.add(new Applicant("Gina Bell", "gina.bell@email.com", JobPosting.Type.BANK_FIN_SERV, new Location(City.PENANG_HILL), null));
-        applicants.add(new Applicant("Hank Ford", "hank.ford@email.com", JobPosting.Type.HEALTH_MED, new Location(City.IPOH), null));
-        applicants.add(new Applicant("Iris Lane", "iris.lane@email.com", JobPosting.Type.DESIGN_ARCH, new Location(City.KUCHING), null));
-        applicants.add(new Applicant("Jack Gray", "jack.gray@email.com", JobPosting.Type.IT_COMM_TEC, new Location(City.KOTA_KINABALU), null));
-        applicants.add(new Applicant("Kara Hill", "kara.hill@email.com", JobPosting.Type.SCIENCE_TECH, new Location(City.MELAKA), null));
-        applicants.add(new Applicant("Liam Ward", "liam.ward@email.com", JobPosting.Type.SALES, new Location(City.SEREMBAN), null));
-        applicants.add(new Applicant("Maya Ross", "maya.ross@email.com", JobPosting.Type.CALL_CUST_SVC, new Location(City.KUANTAN_PAHANG), null));
-        applicants.add(new Applicant("Nate Fox", "nate.fox@email.com", JobPosting.Type.IT_COMM_TEC, new Location(City.SUNGAI_PETANI), null));
-        applicants.add(new Applicant("Opal Dean", "opal.dean@email.com", JobPosting.Type.HEALTH_MED, new Location(City.KOTA_BHARU), null));
-        applicants.add(new Applicant("Paul Hart", "paul.hart@email.com", JobPosting.Type.IT_COMM_TEC, new Location(City.SHAH_ALAM), null));
-        applicants.add(new Applicant("Quinn Cole", "quinn.cole@email.com", JobPosting.Type.SCIENCE_TECH, new Location(City.KULIM), null));
-        applicants.add(new Applicant("Rita Lane", "rita.lane@email.com", JobPosting.Type.BANK_FIN_SERV, new Location(City.TAIPING), null));
-        applicants.add(new Applicant("Seth Owen", "seth.owen@email.com", JobPosting.Type.DESIGN_ARCH, new Location(City.ALOR_SETAR), null));
-        applicants.add(new Applicant("Tara Bell", "tara.bell@email.com", JobPosting.Type.IT_COMM_TEC, new Location(City.JOHOR_BAHRU), null));
-        applicants.add(new Applicant("Uma West", "uma.west@email.com", JobPosting.Type.SCIENCE_TECH, new Location(City.KUALA_LUMPUR), null));
-        applicants.add(new Applicant("Vince Ray", "vince.ray@email.com", JobPosting.Type.SALES, new Location(City.PENANG_HILL), null));
-        applicants.add(new Applicant("Wendy Fox", "wendy.fox@email.com", JobPosting.Type.HEALTH_MED, new Location(City.IPOH), null));
-        applicants.add(new Applicant("Xander Lee", "xander.lee@email.com", JobPosting.Type.DESIGN_ARCH, new Location(City.KUCHING), null));
+        applicants.add(new Applicant("Alice Johnson", "alice.johnson@email.com", JobPosting.Type.IT_COMM_TEC, new Location(City.JOHOR_BAHRU)));
+        applicants.add(new Applicant("Bob Smith", "bob.smith@email.com", JobPosting.Type.SCIENCE_TECH, new Location(City.KUALA_LUMPUR)));
+        applicants.add(new Applicant("Charlie Brown", "charlie.brown@email.com", JobPosting.Type.BANK_FIN_SERV, new Location(City.PENANG_HILL)));
+        applicants.add(new Applicant("Daisy Williams", "daisy.williams@email.com", JobPosting.Type.HEALTH_MED, new Location(City.IPOH)));
+        applicants.add(new Applicant("Ethan Lee", "ethan.lee@email.com", JobPosting.Type.DESIGN_ARCH, new Location(City.KUCHING)));
+        applicants.add(new Applicant("Fiona Davis", "fiona.davis@email.com", JobPosting.Type.IT_COMM_TEC, new Location(City.KOTA_KINABALU)));
+        applicants.add(new Applicant("George Wilson", "george.wilson@email.com", JobPosting.Type.SCIENCE_TECH, new Location(City.MELAKA)));
+        applicants.add(new Applicant("Hannah Moore", "hannah.moore@email.com", JobPosting.Type.SALES, new Location(City.SEREMBAN)));
+        applicants.add(new Applicant("Ian Taylor", "ian.taylor@email.com", JobPosting.Type.CALL_CUST_SVC, new Location(City.KUANTAN_PAHANG)));
+        applicants.add(new Applicant("Julia Anderson", "julia.anderson@email.com", JobPosting.Type.IT_COMM_TEC, new Location(City.SUNGAI_PETANI)));
+        applicants.add(new Applicant("Kevin White", "kevin.white@email.com", JobPosting.Type.HEALTH_MED, new Location(City.KOTA_BHARU)));
+        applicants.add(new Applicant("Laura Martinez", "laura.martinez@email.com", JobPosting.Type.IT_COMM_TEC, new Location(City.SHAH_ALAM)));
+        applicants.add(new Applicant("Mike Brown", "mike.brown@email.com", JobPosting.Type.SCIENCE_TECH, new Location(City.KULIM)));
+        applicants.add(new Applicant("Nina Harris", "nina.harris@email.com", JobPosting.Type.BANK_FIN_SERV, new Location(City.TAIPING)));
+        applicants.add(new Applicant("Oliver Clark", "oliver.clark@email.com", JobPosting.Type.DESIGN_ARCH, new Location(City.ALOR_SETAR)));
+        applicants.add(new Applicant("Pamela Lewis", "pamela.lewis@email.com", JobPosting.Type.IT_COMM_TEC, new Location(City.JOHOR_BAHRU)));
+        applicants.add(new Applicant("Quincy Adams", "quincy.adams@email.com", JobPosting.Type.SCIENCE_TECH, new Location(City.KUALA_LUMPUR)));
+        applicants.add(new Applicant("Rachel Green", "rachel.green@email.com", JobPosting.Type.SALES, new Location(City.PENANG_HILL)));
+        applicants.add(new Applicant("Sam Evans", "sam.evans@email.com", JobPosting.Type.HEALTH_MED, new Location(City.IPOH)));
+        applicants.add(new Applicant("Tina Walker", "tina.walker@email.com", JobPosting.Type.DESIGN_ARCH, new Location(City.KUCHING)));
+        applicants.add(new Applicant("Umar Khan", "umar.khan@email.com", JobPosting.Type.IT_COMM_TEC, new Location(City.KOTA_KINABALU)));
+        applicants.add(new Applicant("Vera Scott", "vera.scott@email.com", JobPosting.Type.SCIENCE_TECH, new Location(City.MELAKA)));
+        applicants.add(new Applicant("Will Turner", "will.turner@email.com", JobPosting.Type.BANK_FIN_SERV, new Location(City.SEREMBAN)));
+        applicants.add(new Applicant("Xena Brooks", "xena.brooks@email.com", JobPosting.Type.CALL_CUST_SVC, new Location(City.KUANTAN_PAHANG)));
+        applicants.add(new Applicant("Yara King", "yara.king@email.com", JobPosting.Type.IT_COMM_TEC, new Location(City.SUNGAI_PETANI)));
+        applicants.add(new Applicant("Zack Miller", "zack.miller@email.com", JobPosting.Type.HEALTH_MED, new Location(City.KOTA_BHARU)));
+        applicants.add(new Applicant("Amy Carter", "amy.carter@email.com", JobPosting.Type.IT_COMM_TEC, new Location(City.SHAH_ALAM)));
+        applicants.add(new Applicant("Ben Foster", "ben.foster@email.com", JobPosting.Type.SCIENCE_TECH, new Location(City.KULIM)));
+        applicants.add(new Applicant("Clara Hayes", "clara.hayes@email.com", JobPosting.Type.SALES, new Location(City.TAIPING)));
+        applicants.add(new Applicant("Dan Price", "dan.price@email.com", JobPosting.Type.DESIGN_ARCH, new Location(City.ALOR_SETAR)));
+        applicants.add(new Applicant("Ella Reed", "ella.reed@email.com", JobPosting.Type.IT_COMM_TEC, new Location(City.JOHOR_BAHRU)));
+        applicants.add(new Applicant("Finn Cole", "finn.cole@email.com", JobPosting.Type.SCIENCE_TECH, new Location(City.KUALA_LUMPUR)));
+        applicants.add(new Applicant("Gina Bell", "gina.bell@email.com", JobPosting.Type.BANK_FIN_SERV, new Location(City.PENANG_HILL)));
+        applicants.add(new Applicant("Hank Ford", "hank.ford@email.com", JobPosting.Type.HEALTH_MED, new Location(City.IPOH)));
+        applicants.add(new Applicant("Iris Lane", "iris.lane@email.com", JobPosting.Type.DESIGN_ARCH, new Location(City.KUCHING)));
+        applicants.add(new Applicant("Jack Gray", "jack.gray@email.com", JobPosting.Type.IT_COMM_TEC, new Location(City.KOTA_KINABALU)));
+        applicants.add(new Applicant("Kara Hill", "kara.hill@email.com", JobPosting.Type.SCIENCE_TECH, new Location(City.MELAKA)));
+        applicants.add(new Applicant("Liam Ward", "liam.ward@email.com", JobPosting.Type.SALES, new Location(City.SEREMBAN)));
+        applicants.add(new Applicant("Maya Ross", "maya.ross@email.com", JobPosting.Type.CALL_CUST_SVC, new Location(City.KUANTAN_PAHANG)));
+        applicants.add(new Applicant("Nate Fox", "nate.fox@email.com", JobPosting.Type.IT_COMM_TEC, new Location(City.SUNGAI_PETANI)));
+        applicants.add(new Applicant("Opal Dean", "opal.dean@email.com", JobPosting.Type.HEALTH_MED, new Location(City.KOTA_BHARU)));
+        applicants.add(new Applicant("Paul Hart", "paul.hart@email.com", JobPosting.Type.IT_COMM_TEC, new Location(City.SHAH_ALAM)));
+        applicants.add(new Applicant("Quinn Cole", "quinn.cole@email.com", JobPosting.Type.SCIENCE_TECH, new Location(City.KULIM)));
+        applicants.add(new Applicant("Rita Lane", "rita.lane@email.com", JobPosting.Type.BANK_FIN_SERV, new Location(City.TAIPING)));
+        applicants.add(new Applicant("Seth Owen", "seth.owen@email.com", JobPosting.Type.DESIGN_ARCH, new Location(City.ALOR_SETAR)));
+        applicants.add(new Applicant("Tara Bell", "tara.bell@email.com", JobPosting.Type.IT_COMM_TEC, new Location(City.JOHOR_BAHRU)));
+        applicants.add(new Applicant("Uma West", "uma.west@email.com", JobPosting.Type.SCIENCE_TECH, new Location(City.KUALA_LUMPUR)));
+        applicants.add(new Applicant("Vince Ray", "vince.ray@email.com", JobPosting.Type.SALES, new Location(City.PENANG_HILL)));
+        applicants.add(new Applicant("Wendy Fox", "wendy.fox@email.com", JobPosting.Type.HEALTH_MED, new Location(City.IPOH)));
+        applicants.add(new Applicant("Xander Lee", "xander.lee@email.com", JobPosting.Type.DESIGN_ARCH, new Location(City.KUCHING)));
         // endregion
+        
+        //51 job applications
+        jobApplications.add(new JobApplication(jobPostings.get(0), applicants.get(0), JobApplication.Status.PENDING, LocalDate.of(2025, 3, 1)));
+        jobApplications.add(new JobApplication(jobPostings.get(40), applicants.get(19), JobApplication.Status.WITHDRAWN, LocalDate.of(2025, 3, 29)));
+        jobApplications.add(new JobApplication(jobPostings.get(28), applicants.get(35), JobApplication.Status.OFFERED, LocalDate.of(2025, 3, 9)));
+        jobApplications.add(new JobApplication(jobPostings.get(14), applicants.get(20), JobApplication.Status.REVIEWING, LocalDate.of(2025, 3, 28)));
+        jobApplications.add(new JobApplication(jobPostings.get(33), applicants.get(6), JobApplication.Status.REJECTED, LocalDate.of(2025, 3, 14)));
+        jobApplications.add(new JobApplication(jobPostings.get(48), applicants.get(10), JobApplication.Status.PENDING, LocalDate.of(2025, 4, 12)));
+        jobApplications.add(new JobApplication(jobPostings.get(17), applicants.get(2), JobApplication.Status.INTERVIEW, LocalDate.of(2025, 3, 18)));
+        jobApplications.add(new JobApplication(jobPostings.get(11), applicants.get(4), JobApplication.Status.ACCEPTED, LocalDate.of(2025, 4, 2)));
+        jobApplications.add(new JobApplication(jobPostings.get(7), applicants.get(26), JobApplication.Status.OFFERED, LocalDate.of(2025, 3, 7)));
+        jobApplications.add(new JobApplication(jobPostings.get(0), applicants.get(0), JobApplication.Status.PENDING, LocalDate.of(2025, 3, 1)));
+        jobApplications.add(new JobApplication(jobPostings.get(21), applicants.get(9), JobApplication.Status.REJECTED, LocalDate.of(2025, 3, 25)));
+        jobApplications.add(new JobApplication(jobPostings.get(5), applicants.get(14), JobApplication.Status.REVIEWING, LocalDate.of(2025, 4, 10)));
+        jobApplications.add(new JobApplication(jobPostings.get(36), applicants.get(23), JobApplication.Status.WITHDRAWN, LocalDate.of(2025, 3, 19)));
+        jobApplications.add(new JobApplication(jobPostings.get(19), applicants.get(8), JobApplication.Status.ACCEPTED, LocalDate.of(2025, 3, 11)));
+        jobApplications.add(new JobApplication(jobPostings.get(46), applicants.get(33), JobApplication.Status.INTERVIEW, LocalDate.of(2025, 3, 17)));
+        jobApplications.add(new JobApplication(jobPostings.get(30), applicants.get(12), JobApplication.Status.PENDING, LocalDate.of(2025, 3, 3)));
+        jobApplications.add(new JobApplication(jobPostings.get(25), applicants.get(38), JobApplication.Status.OFFERED, LocalDate.of(2025, 3, 27)));
+        jobApplications.add(new JobApplication(jobPostings.get(3), applicants.get(1), JobApplication.Status.REVIEWING, LocalDate.of(2025, 3, 16)));
+        jobApplications.add(new JobApplication(jobPostings.get(31), applicants.get(29), JobApplication.Status.INTERVIEW, LocalDate.of(2025, 3, 22)));
+        jobApplications.add(new JobApplication(jobPostings.get(42), applicants.get(11), JobApplication.Status.REJECTED, LocalDate.of(2025, 3, 8)));
+        jobApplications.add(new JobApplication(jobPostings.get(15), applicants.get(5), JobApplication.Status.REVIEWING, LocalDate.of(2025, 3, 20)));
+        jobApplications.add(new JobApplication(jobPostings.get(2), applicants.get(18), JobApplication.Status.OFFERED, LocalDate.of(2025, 3, 24)));
+        jobApplications.add(new JobApplication(jobPostings.get(6), applicants.get(24), JobApplication.Status.ACCEPTED, LocalDate.of(2025, 4, 1)));
+        jobApplications.add(new JobApplication(jobPostings.get(37), applicants.get(41), JobApplication.Status.INTERVIEW, LocalDate.of(2025, 3, 12)));
+        jobApplications.add(new JobApplication(jobPostings.get(45), applicants.get(13), JobApplication.Status.REJECTED, LocalDate.of(2025, 3, 5)));
+        jobApplications.add(new JobApplication(jobPostings.get(12), applicants.get(22), JobApplication.Status.WITHDRAWN, LocalDate.of(2025, 3, 26)));
+        jobApplications.add(new JobApplication(jobPostings.get(23), applicants.get(28), JobApplication.Status.REVIEWING, LocalDate.of(2025, 3, 13)));
+        jobApplications.add(new JobApplication(jobPostings.get(50), applicants.get(16), JobApplication.Status.PENDING, LocalDate.of(2025, 3, 21)));
+        jobApplications.add(new JobApplication(jobPostings.get(10), applicants.get(30), JobApplication.Status.OFFERED, LocalDate.of(2025, 3, 10)));
+        jobApplications.add(new JobApplication(jobPostings.get(38), applicants.get(32), JobApplication.Status.ACCEPTED, LocalDate.of(2025, 3, 4)));
+        jobApplications.add(new JobApplication(jobPostings.get(18), applicants.get(25), JobApplication.Status.REVIEWING, LocalDate.of(2025, 3, 6)));
+        jobApplications.add(new JobApplication(jobPostings.get(13), applicants.get(34), JobApplication.Status.REJECTED, LocalDate.of(2025, 3, 30)));
+        jobApplications.add(new JobApplication(jobPostings.get(27), applicants.get(17), JobApplication.Status.WITHDRAWN, LocalDate.of(2025, 3, 2)));
+        jobApplications.add(new JobApplication(jobPostings.get(1), applicants.get(36), JobApplication.Status.INTERVIEW, LocalDate.of(2025, 3, 31)));
+        jobApplications.add(new JobApplication(jobPostings.get(35), applicants.get(15), JobApplication.Status.ACCEPTED, LocalDate.of(2025, 3, 15)));
+        jobApplications.add(new JobApplication(jobPostings.get(8), applicants.get(31), JobApplication.Status.REVIEWING, LocalDate.of(2025, 3, 23)));
+        jobApplications.add(new JobApplication(jobPostings.get(22), applicants.get(37), JobApplication.Status.REJECTED, LocalDate.of(2025, 3, 18)));
+        jobApplications.add(new JobApplication(jobPostings.get(9), applicants.get(39), JobApplication.Status.PENDING, LocalDate.of(2025, 3, 28)));
+        jobApplications.add(new JobApplication(jobPostings.get(26), applicants.get(7), JobApplication.Status.OFFERED, LocalDate.of(2025, 3, 17)));
+        jobApplications.add(new JobApplication(jobPostings.get(47), applicants.get(43), JobApplication.Status.WITHDRAWN, LocalDate.of(2025, 4, 5)));
+        jobApplications.add(new JobApplication(jobPostings.get(34), applicants.get(40), JobApplication.Status.REVIEWING, LocalDate.of(2025, 3, 6)));
+        jobApplications.add(new JobApplication(jobPostings.get(16), applicants.get(21), JobApplication.Status.ACCEPTED, LocalDate.of(2025, 4, 4)));
+        jobApplications.add(new JobApplication(jobPostings.get(39), applicants.get(45), JobApplication.Status.PENDING, LocalDate.of(2025, 3, 1)));
+        jobApplications.add(new JobApplication(jobPostings.get(43), applicants.get(27), JobApplication.Status.REJECTED, LocalDate.of(2025, 3, 30)));
+        jobApplications.add(new JobApplication(jobPostings.get(4), applicants.get(44), JobApplication.Status.REVIEWING, LocalDate.of(2025, 3, 22)));
+        jobApplications.add(new JobApplication(jobPostings.get(29), applicants.get(42), JobApplication.Status.OFFERED, LocalDate.of(2025, 4, 3)));
+        jobApplications.add(new JobApplication(jobPostings.get(49), applicants.get(46), JobApplication.Status.INTERVIEW, LocalDate.of(2025, 3, 9)));
+        jobApplications.add(new JobApplication(jobPostings.get(24), applicants.get(48), JobApplication.Status.ACCEPTED, LocalDate.of(2025, 3, 11)));
+        jobApplications.add(new JobApplication(jobPostings.get(32), applicants.get(47), JobApplication.Status.REVIEWING, LocalDate.of(2025, 3, 19)));
+        jobApplications.add(new JobApplication(jobPostings.get(20), applicants.get(49), JobApplication.Status.PENDING, LocalDate.of(2025, 3, 26)));
+
+
     }
 
     public static List<Company> getCompanies() {
@@ -217,5 +274,9 @@ public class Initializer {
 
     public static List<Applicant> getApplicants() {
         return applicants;
+    }
+    
+    public static List<JobApplication> getJobApplication() {
+        return jobApplications;
     }
 }

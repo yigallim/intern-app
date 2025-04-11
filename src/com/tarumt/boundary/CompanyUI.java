@@ -263,7 +263,7 @@ public class CompanyUI {
         System.out.println();
     }
 
-    public void accessMenu() {
+    public void accessMenu(CompanyService service) {
         String companyName = Context.getCompany().getName();
 
         new Menu()

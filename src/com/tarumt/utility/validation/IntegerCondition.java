@@ -72,4 +72,4 @@ public class IntegerCondition extends Condition {
         }, customMessage));
         return this;
     }
-}
+} 

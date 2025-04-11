@@ -1,7 +1,5 @@
 package com.tarumt.entity.location;
 
-import com.tarumt.utility.common.Strings;
-
 import java.util.LinkedList;
 import java.util.Arrays;
 import java.util.List;
