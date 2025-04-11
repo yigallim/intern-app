@@ -13,6 +13,9 @@ public class InternApplicationProgram {
     private static final CompanyService companyService = new CompanyService();
     private static final ApplicantService applicantService = new ApplicantService();
 
+    // At the beginning of your main method
+    
+
     public static void main(String[] args) {
         Log.info("Intern Application Program starting");
         System.out.println();

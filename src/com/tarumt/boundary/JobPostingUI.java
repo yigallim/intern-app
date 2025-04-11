@@ -9,22 +9,30 @@ import com.tarumt.utility.common.Input;
 import com.tarumt.utility.common.Log;
 import com.tarumt.utility.common.Menu;
 import com.tarumt.utility.pretty.TabularPrint;
+import com.tarumt.utility.pretty.Chart;
 import com.tarumt.utility.search.FuzzySearch;
 import com.tarumt.utility.validation.*;
 
 import java.lang.reflect.Field;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 import java.util.Set;
 
 public class JobPostingUI {
 
     private final Input input;
+    private List<JobPosting> jobPostings; // Add this field
 
     public JobPostingUI(Input input) {
         this.input = input;
+        this.jobPostings = Initializer.getJobPostings(); // Initialize the field
     }
-
+    
     public void menu(JobPostingService service) {
+        // Set console encoding to UTF-8 (this helps with emoji display)
+        System.setProperty("file.encoding", "UTF-8");
+        
         new Menu()
                 .banner("Job Posting")
                 .header("==> Manage Job Posting <==")
@@ -255,5 +263,25 @@ public class JobPostingUI {
     public void printSuccessDeleteAllMsg() {
         System.out.println();
         Log.info("Deleted all job postings");
+    }
+
+    public void displaySalaryChart(String[] labels, int[] counts) {
+        
+        // Convert arrays to Lists for the Chart utility
+        List<String> categories = Arrays.asList(labels);
+        List<Integer> values = Arrays.stream(counts).boxed().collect(Collectors.toList());
+        
+        // Use the Chart utility to display the bar chart
+        Chart.barChart(
+            categories,
+            values,
+            "Salary Range Distribution (Minimum Salary)",
+            50,  // maxBarLength
+            '█', // barChar
+            true // showValues
+        );
+        
+        System.out.println("Total Job Postings: " + jobPostings.size());
+        input.clickAnythingToContinue();
     }
 }

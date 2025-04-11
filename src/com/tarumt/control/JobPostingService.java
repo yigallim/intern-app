@@ -163,7 +163,30 @@ public class JobPostingService implements Service {
 
     @Override
     public void report() {
-        Log.na();
+        if (jobPostings.isEmpty()) {
+            Log.info("No job postings available to generate report");
+            return;
+        }
+        
+        // Define salary ranges for the chart
+        int[] ranges = {0, 3000, 5000, 7000, 9000, 11000, Integer.MAX_VALUE};
+        String[] labels = {"< 3,000", "3,000-4,999", "5,000-6,999", "7,000-8,999", "9,000-10,999", "> 11,000"};
+        
+        // Count job postings in each salary range (using minimum salary)
+        int[] counts = new int[ranges.length - 1];
+        
+        for (JobPosting job : jobPostings) {
+            int minSalary = job.getSalaryMin();
+            for (int i = 0; i < ranges.length - 1; i++) {
+                if (minSalary >= ranges[i] && minSalary < ranges[i + 1]) {
+                    counts[i]++;
+                    break;
+                }
+            }
+        }
+        
+        // Display the salary distribution chart
+        jobPostingUI.displaySalaryChart(labels, counts);
     }
 
     private JobPosting getJobPosting() {
