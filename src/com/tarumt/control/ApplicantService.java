@@ -7,6 +7,7 @@ import com.tarumt.entity.Applicant;
 import com.tarumt.entity.BaseEntity;
 import com.tarumt.entity.JobApplication;
 import com.tarumt.entity.JobPosting;
+import com.tarumt.entity.location.City;
 import com.tarumt.entity.location.Location;
 import com.tarumt.utility.common.Context;
 import com.tarumt.utility.common.Input;
@@ -19,12 +20,11 @@ import java.util.Arrays;
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 public class ApplicantService implements Service {
 
     private List<Applicant> applicants = new LinkedList<>();
+    private List<JobApplication> jobApplications = new LinkedList<>(); 
     private final ApplicantUI applicantUI;
     private final LocationUI locationUI;
 
@@ -33,7 +33,7 @@ public class ApplicantService implements Service {
         this.applicants = Initializer.getApplicants();
         this.applicantUI = new ApplicantUI(input);
         this.locationUI = new LocationUI(input);
-        this.jobApplications = new ArrayList<>();
+        this.jobApplications = Initializer.getJobApplication();
     }
 
     public void accessApplicant() {
@@ -117,73 +117,111 @@ public class ApplicantService implements Service {
             return;
         }
 
-        Map<JobPosting.Type, Long> jobCounts = applicants.stream()
-            .collect(Collectors.groupingBy(Applicant::getDesiredJobType, Collectors.counting()));
+        int[] counts = new int[JobPosting.Type.values().length];
+        for (Applicant applicant : applicants) {
+            counts[applicant.getDesiredJobType().ordinal()]++;
+        }
 
-        List<Map.Entry<JobPosting.Type, Long>> sortedJobs = jobCounts.entrySet().stream()
-            .sorted((a, b) -> Long.compare(b.getValue(), a.getValue())) 
-            .limit(5)
-            .toList();
+        List<Integer> indexList = new ArrayList<>();
+        for (int i = 0; i < counts.length; i++) {
+            indexList.add(i);
+        }
 
-        List<String> jobTypes = sortedJobs.stream().map(entry -> entry.getKey().toString()).toList();
-        List<Integer> counts = sortedJobs.stream().map(e -> e.getValue().intValue()).toList();
+        indexList.sort((i1, i2) -> Integer.compare(counts[i2], counts[i1]));
 
-        int maxLength = jobTypes.stream().mapToInt(String::length).max().orElse(20);
-        List<String> formattedJobTypes = jobTypes.stream()
-            .map(type -> String.format("%-" + maxLength + "s", type))
-            .toList();
+        int topN = Math.min(5, indexList.size());
+        int total = Arrays.stream(counts).sum();
 
-        Chart.barChart(formattedJobTypes, counts, "Top 5 Desired Job Types", 30, '█', true);
+        List<String> labels = new ArrayList<>();
+        List<Integer> values = new ArrayList<>();
+
+        for (int i = 0; i < topN; i++) {
+            int index = indexList.get(i);
+            String label = JobPosting.Type.values()[index].toString();
+            labels.add(label);
+            values.add(counts[index]);
+        }
+
+        Chart.barChart(labels, values, "Top 5 Desired Job Types", 30, '█', true);
+
+        for (int i = 0; i < topN; i++) {
+            double percent = values.get(i) * 100.0 / total;
+            System.out.printf("%-15s %.1f%%%n", labels.get(i), percent);
+        }
     }
+
     
-    public void reportAllJobs() {
+   public void reportAllJobs() {
         if (applicants.isEmpty()) {
             Log.warn("No applicant data available.");
             return;
         }
 
-        Map<JobPosting.Type, Long> jobCounts = applicants.stream()
-            .collect(Collectors.groupingBy(Applicant::getDesiredJobType, Collectors.counting()));
+        int[] counts = new int[JobPosting.Type.values().length];
+        for (Applicant applicant : applicants) {
+            counts[applicant.getDesiredJobType().ordinal()]++;
+        }
 
-        List<Map.Entry<JobPosting.Type, Long>> sortedJobs = jobCounts.entrySet().stream()
-            .sorted((a, b) -> Long.compare(b.getValue(), a.getValue())) 
-            .toList();
+        int total = Arrays.stream(counts).sum();
 
-        List<String> jobTypes = sortedJobs.stream().map(entry -> entry.getKey().toString()).toList();
-        List<Integer> counts = sortedJobs.stream().map(e -> e.getValue().intValue()).toList();
+        List<String> labels = new ArrayList<>();
+        List<Integer> values = new ArrayList<>();
 
-        int maxLength = jobTypes.stream().mapToInt(String::length).max().orElse(20);
-        List<String> formattedJobTypes = jobTypes.stream()
-            .map(type -> String.format("%-" + maxLength + "s", type))
-            .toList();
+        for (int i = 0; i < counts.length; i++) {
+            String label = JobPosting.Type.values()[i].toString();
+            labels.add(label);
+            values.add(counts[i]);
+        }
 
-        Chart.barChart(formattedJobTypes, counts, "All Desired Job Types", 30, '█', true);
+        Chart.barChart(labels, values, "All Desired Job Types", 30, '█', true);
+
+        for (int i = 0; i < labels.size(); i++) {
+            double percent = values.get(i) * 100.0 / total;
+            System.out.printf("%-15s %.1f%%%n", labels.get(i), percent);
+        }
     }
-    
+
     public void reportTopLocations() {
         if (applicants.isEmpty()) {
             Log.warn("No applicant data available.");
             return;
         }
 
-        Map<Location, Long> locationCounts = applicants.stream()
-            .collect(Collectors.groupingBy(Applicant::getLocation, Collectors.counting()));
+        City[] cities = City.values();
+        int[] counts = new int[cities.length];
 
-        List<Map.Entry<Location, Long>> sortedLocations = locationCounts.entrySet().stream()
-            .sorted((a, b) -> Long.compare(b.getValue(), a.getValue())) 
-            .limit(10)
-            .toList();
+        for (Applicant applicant : applicants) {
+            City city = applicant.getLocation().getCity();
+            counts[city.ordinal()]++;
+        }
 
-        List<String> locations = sortedLocations.stream().map(entry -> entry.getKey().toString()).toList();
-        List<Integer> counts = sortedLocations.stream().map(e -> e.getValue().intValue()).toList();
+        List<Integer> indexList = new ArrayList<>();
+        for (int i = 0; i < counts.length; i++) {
+            indexList.add(i);
+        }
 
-        int maxLength = locations.stream().mapToInt(String::length).max().orElse(20);
-        List<String> formattedLocations = locations.stream()
-            .map(loc -> String.format("%-" + maxLength + "s", loc))
-            .toList();
+        indexList.sort((i1, i2) -> Integer.compare(counts[i2], counts[i1]));
 
-        Chart.barChart(formattedLocations, counts, "Top 10 Applicant Locations", 30, '█', true);
+        int topN = Math.min(10, indexList.size());
+        int total = Arrays.stream(counts).sum();
+
+        List<String> labels = new ArrayList<>();
+        List<Integer> values = new ArrayList<>();
+
+        for (int i = 0; i < topN; i++) {
+            int index = indexList.get(i);
+            labels.add(cities[index].toString());
+            values.add(counts[index]);
+        }
+
+        Chart.barChart(labels, values, "Top 10 Applicant Locations", 30, '█', true);
+
+        for (int i = 0; i < topN; i++) {
+            double percent = values.get(i) * 100.0 / total;
+            System.out.printf("%-30s %.1f%%%n", labels.get(i), percent);
+        }
     }
+
 
     public void reportAllLocations() {
         if (applicants.isEmpty()) {
@@ -191,26 +229,31 @@ public class ApplicantService implements Service {
             return;
         }
 
-        Map<Location, Long> locationCounts = applicants.stream()
-            .collect(Collectors.groupingBy(Applicant::getLocation, Collectors.counting()));
+        City[] cities = City.values();
+        int[] counts = new int[cities.length];
 
-        List<Map.Entry<Location, Long>> sortedLocations = locationCounts.entrySet().stream()
-            .sorted((a, b) -> Long.compare(b.getValue(), a.getValue())) 
-            .toList();
+        for (Applicant applicant : applicants) {
+            City city = applicant.getLocation().getCity();
+            counts[city.ordinal()]++;
+        }
 
-        List<String> locations = sortedLocations.stream().map(entry -> entry.getKey().toString()).toList();
-        List<Integer> counts = sortedLocations.stream().map(e -> e.getValue().intValue()).toList();
+        int total = Arrays.stream(counts).sum();
 
-        int maxLength = locations.stream().mapToInt(String::length).max().orElse(20);
-        List<String> formattedLocations = locations.stream()
-            .map(loc -> String.format("%-" + maxLength + "s", loc))
-            .toList();
+        List<String> labels = new ArrayList<>();
+        List<Integer> values = new ArrayList<>();
 
-        Chart.barChart(formattedLocations, counts, "All Applicant Locations", 30, '█', true);
+        for (int i = 0; i < cities.length; i++) {
+            labels.add(cities[i].toString());
+            values.add(counts[i]);
+        }
+
+        Chart.barChart(labels, values, "All Applicant Locations", 30, '█', true);
+
+        for (int i = 0; i < labels.size(); i++) {
+            double percent = values.get(i) * 100.0 / total;
+            System.out.printf("%-30s %.1f%%%n", labels.get(i), percent);
+        }
     }
-    
-    private List<JobApplication> jobApplications; 
-
 
     public List<JobApplication> getAllJobApplications() {
         if (jobApplications == null) {
@@ -219,33 +262,40 @@ public class ApplicantService implements Service {
         return jobApplications;
     }
     
-    public void reportAllStatuses(List<JobApplication> jobApplications) {
+    public void reportAllStatuses() {
         if (jobApplications == null || jobApplications.isEmpty()) {
             Log.warn("No job applications available.");
             return;
         }
 
-        Map<JobApplication.Status, Long> statusCounts = jobApplications.stream()
-            .collect(Collectors.groupingBy(JobApplication::getStatus, Collectors.counting()));
+        JobApplication.Status[] statuses = JobApplication.Status.values();
+        int[] counts = new int[statuses.length];
 
-        List<String> statuses = Arrays.stream(JobApplication.Status.values())
-            .map(Enum::toString)
-            .collect(Collectors.toList());
+        for (JobApplication app : jobApplications) {
+            counts[app.getStatus().ordinal()]++;
+        }
 
-        List<Integer> counts = statuses.stream()
-            .map(status -> statusCounts.getOrDefault(JobApplication.Status.valueOf(status), 0L).intValue())
-            .collect(Collectors.toList());
+        int total = Arrays.stream(counts).sum();
+        if (total == 0) {
+            Log.warn("No valid job application statuses found.");
+            return;
+        }
 
-        int maxLength = statuses.stream()
-            .mapToInt(String::length)
-            .max()
-            .orElse(20);
+        List<String> labels = new ArrayList<>();
+        List<Integer> values = new ArrayList<>();
 
-        List<String> formattedStatuses = statuses.stream()
-            .map(status -> String.format("%-" + maxLength + "s", status))
-            .collect(Collectors.toList());
+        for (int i = 0; i < statuses.length; i++) {
+            labels.add(statuses[i].toString());
+            values.add(counts[i]);
+        }
 
-        Chart.barChart(formattedStatuses, counts, "All Job Application Statuses", 30, '█', true);
+        Chart.barChart(labels, values, "All Job Application Statuses", 30, '█', true);
+
+        System.out.println("\n==> Job Application Status Breakdown <==");
+        for (int i = 0; i < labels.size(); i++) {
+            double percent = values.get(i) * 100.0 / total;
+            System.out.printf("%-12s : %-3d (%.1f%%)%n", labels.get(i), values.get(i), percent);
+        }
     }
 
     public void reportFull() {
@@ -264,7 +314,7 @@ public class ApplicantService implements Service {
         reportAllLocations();
         System.out.println();
 
-        reportAllStatuses(getAllJobApplications());
+        reportAllStatuses();
         System.out.println();
 
         System.out.println("[INFO] Full report generation completed.");
@@ -451,12 +501,14 @@ public class ApplicantService implements Service {
         return null; 
     }
     
-    public void updateUserProfile(Applicant applicant){
+    public void updateUserProfile(Applicant applicant) {
         if (applicant == null) return;
 
-        applicantUI.printOriginalApplicantValue(applicant); 
-        applicantUI.updateUserApplicantMode(this, applicant.getId());
-        Context.setApplicant(applicant);
+        applicantUI.printOriginalApplicantValue(applicant);
+        applicantUI.updateUserApplicantMode(this, applicant.getId(), applicantUI);
+
+        Applicant updatedApplicant = getApplicantById(applicant.getId());
+        Context.setApplicant(updatedApplicant);
     }
     
     public void updateOwnName(Applicant applicant) {
@@ -499,9 +551,8 @@ public class ApplicantService implements Service {
         Context.setApplicant(applicant);
     }
     
-    public void updateApplicantAllFields(String id) {
+    public void updateOwnAllFields(Applicant applicant) {
         final String fieldName = "All Fields";
-        Applicant applicant = BaseEntity.getById(id, applicants);
         applicantUI.printUpdateMessage(fieldName);
 
         String name = applicantUI.getApplicantName();
