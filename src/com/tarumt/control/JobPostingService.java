@@ -11,6 +11,7 @@ import com.tarumt.utility.common.Input;
 import com.tarumt.utility.common.Log;
 import com.tarumt.utility.search.FuzzySearch;
 import com.tarumt.entity.JobApplication;
+import com.tarumt.utility.common.Strings;
 import com.tarumt.utility.validation.ConditionFactory;
 import com.tarumt.utility.validation.StringCondition;
 
@@ -18,7 +19,6 @@ import java.time.LocalDate;
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class JobPostingService implements Service {
 
@@ -377,12 +377,29 @@ public class JobPostingService implements Service {
 
         while (true) {
             System.out.println("Available Job Postings:");
-            jobPostings.forEach(jp -> System.out.printf(" [%s] %s - %s\n", 
-                jp.getId(), jp.getTitle(), jp.getCompany().getName()));
+            
+            int columns = 3;
+            int colWidth = 50;
 
-            List<String> validJobIds = jobPostings.stream()
-                .map(JobPosting::getId)
-                .collect(Collectors.toList());
+            for (int i = 0; i < jobPostings.size(); i++) {
+                JobPosting jp = jobPostings.get(i);
+
+                String label = String.format("%-4d) %-5s", i + 1, jp.getId());
+                String content = Strings.truncate(jp.getTitle() + " - " + jp.getCompany().getName(),
+                                                  colWidth - label.length() - 1);
+
+                String cell = String.format("| %s%s", label, content);
+                System.out.printf("%-" + colWidth + "s", cell);
+
+                if ((i + 1) % columns == 0 || i == jobPostings.size() - 1) {
+                    System.out.println();
+                }
+            }          
+
+            List<String> validJobIds = new LinkedList<>();
+            for (JobPosting jp : jobPostings) {
+                validJobIds.add(jp.getId());
+            }
 
             StringCondition jobIdCondition = ConditionFactory.string()
                 .min(1, "Job ID cannot be empty")
@@ -451,9 +468,12 @@ public class JobPostingService implements Service {
         
         Input input = new Input();
 
-        List<JobApplication> applicantApplications = jobApplications.stream()
-            .filter(ja -> ja.getApplicant().equals(currentApplicant))
-            .toList();
+        List<JobApplication> applicantApplications = new LinkedList<>();
+        for (JobApplication ja : jobApplications) {
+            if (ja.getApplicant().equals(currentApplicant)) {
+                applicantApplications.add(ja);
+            }
+        }
 
         if (applicantApplications.isEmpty()) {
             System.out.println("You have not applied for any jobs yet.");
@@ -483,12 +503,15 @@ public class JobPostingService implements Service {
         
         Input input = new Input();
 
-        List<JobApplication> withdrawableApplications = jobApplications.stream()
-            .filter(ja -> ja.getApplicant().equals(currentApplicant) &&
+        List<JobApplication> withdrawableApplications = new LinkedList<>();
+        for (JobApplication ja : jobApplications) {
+            if (ja.getApplicant().equals(currentApplicant) &&
                 ja.getStatus() != JobApplication.Status.WITHDRAWN &&
                 ja.getStatus() != JobApplication.Status.ACCEPTED &&
-                ja.getStatus() != JobApplication.Status.REJECTED)
-            .toList();
+                ja.getStatus() != JobApplication.Status.REJECTED) {
+                withdrawableApplications.add(ja);
+            }
+        }
 
         if (withdrawableApplications.isEmpty()) {
             System.out.println("No applications available to withdraw.");
@@ -500,9 +523,10 @@ public class JobPostingService implements Service {
             ja.getId(), ja.getJobPosting().getTitle(), ja.getJobPosting().getCompany().getName(),
             ja.getStatus(), ja.getApplicationDate()));
 
-        List<String> validApplicationIds = withdrawableApplications.stream()
-            .map(JobApplication::getId)
-            .collect(Collectors.toList());
+        List<String> validApplicationIds = new LinkedList<>();
+        for (JobApplication ja : withdrawableApplications) {
+            validApplicationIds.add(ja.getId());
+        }
 
         StringCondition applicationIdCondition = ConditionFactory.string()
             .min(1, "Application ID cannot be empty")
