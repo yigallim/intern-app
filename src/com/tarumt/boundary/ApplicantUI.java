@@ -5,7 +5,6 @@ import com.tarumt.control.CompanyService;
 import com.tarumt.control.JobPostingService;
 import com.tarumt.entity.Applicant;
 import com.tarumt.entity.BaseEntity;
-import com.tarumt.entity.JobApplication;
 import com.tarumt.entity.JobPosting;
 import com.tarumt.utility.common.Context;
 import com.tarumt.utility.common.Input;
@@ -299,7 +298,6 @@ public class ApplicantUI {
         Log.warn("Logged out");
     }
 
- 
     public void jobApplicationMenu(JobPostingService jobPostingService) {
         new Menu()
                 .header("==> Job Application <==")
@@ -324,14 +322,11 @@ public class ApplicantUI {
         new Menu()
                 .header("==> Select Report Type <==")
                 .choice(
-                        new Menu.Choice(" Top 10 Locations", service::reportTopLocations),
-                        new Menu.Choice(" All Locations (Descending)", service::reportAllLocations),
-                        new Menu.Choice(" Top 10 Jobs", service::reportTopJobs),
-                        new Menu.Choice(" All Jobs (Descending)", service::reportAllJobs),
-                        new Menu.Choice(" Applicants Applied Status", () -> {
-                                               List<JobApplication> jobApplications = service.getAllJobApplications();
-                                               service.reportAllStatuses(jobApplications);
-                                           }),                        
+                        new Menu.Choice(" Top Locations", service::reportTopLocations),
+                        new Menu.Choice(" All Locations", service::reportAllLocations),
+                        new Menu.Choice(" Top Jobs", service::reportTopJobs),
+                        new Menu.Choice(" All Jobs", service::reportAllJobs),
+                        new Menu.Choice(" Applicants Applied Status", service::reportAllStatuses),                       
                         new Menu.Choice(" Full Report", service::reportFull)
                     )
                 .exit("<Return>")
@@ -341,40 +336,56 @@ public class ApplicantUI {
         System.out.println();
     }
      
-     public void updateUserApplicantMode(ApplicantService service, String id) {
+     public void updateUserApplicantMode(ApplicantService service, String id, ApplicantUI applicantUI) {
         System.out.println();
 
         new Menu()
             .header("Select Update Mode ==>")
             .choice(
                 new Menu.Choice("Update Applicant Name", () -> {
-                    service.updateApplicantName(id);
-                    Context.setApplicant(service.getApplicantById(id)); 
+                    Applicant applicant = service.getApplicantById(id);
+                    service.updateOwnName(applicant);
+                    Applicant updatedApplicant = service.getApplicantById(id);
+                    Context.setApplicant(updatedApplicant); 
+                    applicantUI.printOriginalApplicantValue(updatedApplicant); 
                 }),
                 new Menu.Choice("Update Contact Email", () -> {
-                    service.updateApplicantContactEmail(id);
-                    Context.setApplicant(service.getApplicantById(id)); 
+                    Applicant applicant = service.getApplicantById(id);
+                    service.updateOwnContactEmail(applicant);
+                    Applicant updatedApplicant = service.getApplicantById(id);
+                    Context.setApplicant(updatedApplicant); 
+                    applicantUI.printOriginalApplicantValue(updatedApplicant);
                 }),
                 new Menu.Choice("Update Desired Job Type", () -> {
-                    service.updateApplicantDesiredJobType(id);
-                    Context.setApplicant(service.getApplicantById(id)); 
+                    Applicant applicant = service.getApplicantById(id);
+                    service.updateOwnDesiredJobType(applicant);
+                    Applicant updatedApplicant = service.getApplicantById(id);
+                    Context.setApplicant(updatedApplicant); 
+                    applicantUI.printOriginalApplicantValue(updatedApplicant); 
                 }),
                 new Menu.Choice("Update Location", () -> {
-                    service.updateApplicantLocation(id);
-                    Context.setApplicant(service.getApplicantById(id)); 
+                    Applicant applicant = service.getApplicantById(id);
+                    service.updateOwnLocation(applicant);
+                    Applicant updatedApplicant = service.getApplicantById(id);
+                    Context.setApplicant(updatedApplicant); 
+                    applicantUI.printOriginalApplicantValue(updatedApplicant); 
                 }),
                 new Menu.Choice("Update All Fields", () -> {
-                    service.updateApplicantAllFields(id);
-                    Context.setApplicant(service.getApplicantById(id)); 
+                    Applicant applicant = service.getApplicantById(id);
+                    service.updateOwnAllFields(applicant);
+                    Applicant updatedApplicant = service.getApplicantById(id);
+                    Context.setApplicant(updatedApplicant); 
+                    applicantUI.printOriginalApplicantValue(updatedApplicant); 
                 })
             )
             .exit("<Return>")
             .beforeEach(System.out::println)
             .afterEach(() -> {
-                System.out.println("Reloading latest applicant data...");
-                Context.setApplicant(service.getApplicantById(id)); 
+                Applicant updatedApplicant = Context.getApplicant();
+                applicantUI.printOriginalApplicantValue(updatedApplicant);  
+                System.out.println();
             })
             .run();
     }
-
+     
 }
