@@ -209,59 +209,56 @@ public class Initializer {
         applicants.add(new Applicant("Xander Lee", "xander.lee@email.com", JobPosting.Type.DESIGN_ARCH, new Location(City.KUCHING)));
         // endregion
         
-        //51 job applications
-        jobApplications.add(new JobApplication(jobPostings.get(0), applicants.get(0), JobApplication.Status.PENDING, LocalDate.of(2025, 3, 1)));
-        jobApplications.add(new JobApplication(jobPostings.get(40), applicants.get(19), JobApplication.Status.WITHDRAWN, LocalDate.of(2025, 3, 29)));
-        jobApplications.add(new JobApplication(jobPostings.get(28), applicants.get(35), JobApplication.Status.OFFERED, LocalDate.of(2025, 3, 9)));
-        jobApplications.add(new JobApplication(jobPostings.get(14), applicants.get(20), JobApplication.Status.REVIEWING, LocalDate.of(2025, 3, 28)));
-        jobApplications.add(new JobApplication(jobPostings.get(33), applicants.get(6), JobApplication.Status.REJECTED, LocalDate.of(2025, 3, 14)));
+        //job applications
+        jobApplications.add(new JobApplication(jobPostings.get(0), applicants.get(0), JobApplication.Status.PENDING, LocalDate.of(2025, 4, 1)));
+        jobApplications.add(new JobApplication(jobPostings.get(40), applicants.get(19), JobApplication.Status.WITHDRAWN, LocalDate.of(2025, 4, 29)));
+        jobApplications.add(new JobApplication(jobPostings.get(28), applicants.get(35), JobApplication.Status.OFFERED, LocalDate.of(2025, 4, 9)));
+        jobApplications.add(new JobApplication(jobPostings.get(14), applicants.get(20), JobApplication.Status.REVIEWING, LocalDate.of(2025, 4, 28)));
+        jobApplications.add(new JobApplication(jobPostings.get(33), applicants.get(6), JobApplication.Status.REJECTED, LocalDate.of(2025, 4, 14)));
         jobApplications.add(new JobApplication(jobPostings.get(48), applicants.get(10), JobApplication.Status.PENDING, LocalDate.of(2025, 4, 12)));
-        jobApplications.add(new JobApplication(jobPostings.get(17), applicants.get(2), JobApplication.Status.INTERVIEW, LocalDate.of(2025, 3, 18)));
+        jobApplications.add(new JobApplication(jobPostings.get(17), applicants.get(2), JobApplication.Status.INTERVIEW, LocalDate.of(2025, 4, 18)));
         jobApplications.add(new JobApplication(jobPostings.get(11), applicants.get(4), JobApplication.Status.ACCEPTED, LocalDate.of(2025, 4, 2)));
-        jobApplications.add(new JobApplication(jobPostings.get(7), applicants.get(26), JobApplication.Status.OFFERED, LocalDate.of(2025, 3, 7)));
-        jobApplications.add(new JobApplication(jobPostings.get(0), applicants.get(0), JobApplication.Status.PENDING, LocalDate.of(2025, 3, 1)));
-        jobApplications.add(new JobApplication(jobPostings.get(21), applicants.get(9), JobApplication.Status.REJECTED, LocalDate.of(2025, 3, 25)));
+        jobApplications.add(new JobApplication(jobPostings.get(7), applicants.get(26), JobApplication.Status.OFFERED, LocalDate.of(2025, 4, 7)));
+        jobApplications.add(new JobApplication(jobPostings.get(21), applicants.get(9), JobApplication.Status.REJECTED, LocalDate.of(2025, 4, 25)));
         jobApplications.add(new JobApplication(jobPostings.get(5), applicants.get(14), JobApplication.Status.REVIEWING, LocalDate.of(2025, 4, 10)));
-        jobApplications.add(new JobApplication(jobPostings.get(36), applicants.get(23), JobApplication.Status.WITHDRAWN, LocalDate.of(2025, 3, 19)));
-        jobApplications.add(new JobApplication(jobPostings.get(19), applicants.get(8), JobApplication.Status.ACCEPTED, LocalDate.of(2025, 3, 11)));
-        jobApplications.add(new JobApplication(jobPostings.get(46), applicants.get(33), JobApplication.Status.INTERVIEW, LocalDate.of(2025, 3, 17)));
-        jobApplications.add(new JobApplication(jobPostings.get(30), applicants.get(12), JobApplication.Status.PENDING, LocalDate.of(2025, 3, 3)));
-        jobApplications.add(new JobApplication(jobPostings.get(25), applicants.get(38), JobApplication.Status.OFFERED, LocalDate.of(2025, 3, 27)));
-        jobApplications.add(new JobApplication(jobPostings.get(3), applicants.get(1), JobApplication.Status.REVIEWING, LocalDate.of(2025, 3, 16)));
-        jobApplications.add(new JobApplication(jobPostings.get(31), applicants.get(29), JobApplication.Status.INTERVIEW, LocalDate.of(2025, 3, 22)));
-        jobApplications.add(new JobApplication(jobPostings.get(42), applicants.get(11), JobApplication.Status.REJECTED, LocalDate.of(2025, 3, 8)));
-        jobApplications.add(new JobApplication(jobPostings.get(15), applicants.get(5), JobApplication.Status.REVIEWING, LocalDate.of(2025, 3, 20)));
-        jobApplications.add(new JobApplication(jobPostings.get(2), applicants.get(18), JobApplication.Status.OFFERED, LocalDate.of(2025, 3, 24)));
+        jobApplications.add(new JobApplication(jobPostings.get(36), applicants.get(23), JobApplication.Status.WITHDRAWN, LocalDate.of(2025, 4, 19)));
+        jobApplications.add(new JobApplication(jobPostings.get(19), applicants.get(8), JobApplication.Status.ACCEPTED, LocalDate.of(2025, 4, 11)));
+        jobApplications.add(new JobApplication(jobPostings.get(46), applicants.get(33), JobApplication.Status.INTERVIEW, LocalDate.of(2025, 4, 17)));
+        jobApplications.add(new JobApplication(jobPostings.get(30), applicants.get(12), JobApplication.Status.PENDING, LocalDate.of(2025, 4, 3)));
+        jobApplications.add(new JobApplication(jobPostings.get(25), applicants.get(38), JobApplication.Status.OFFERED, LocalDate.of(2025, 4, 27)));
+        jobApplications.add(new JobApplication(jobPostings.get(3), applicants.get(1), JobApplication.Status.REVIEWING, LocalDate.of(2025, 4, 16)));
+        jobApplications.add(new JobApplication(jobPostings.get(31), applicants.get(29), JobApplication.Status.INTERVIEW, LocalDate.of(2025, 4, 22)));
+        jobApplications.add(new JobApplication(jobPostings.get(42), applicants.get(11), JobApplication.Status.REJECTED, LocalDate.of(2025, 4, 8)));
+        jobApplications.add(new JobApplication(jobPostings.get(15), applicants.get(5), JobApplication.Status.REVIEWING, LocalDate.of(2025, 4, 20)));
+        jobApplications.add(new JobApplication(jobPostings.get(2), applicants.get(18), JobApplication.Status.OFFERED, LocalDate.of(2025, 4, 24)));
         jobApplications.add(new JobApplication(jobPostings.get(6), applicants.get(24), JobApplication.Status.ACCEPTED, LocalDate.of(2025, 4, 1)));
-        jobApplications.add(new JobApplication(jobPostings.get(37), applicants.get(41), JobApplication.Status.INTERVIEW, LocalDate.of(2025, 3, 12)));
-        jobApplications.add(new JobApplication(jobPostings.get(45), applicants.get(13), JobApplication.Status.REJECTED, LocalDate.of(2025, 3, 5)));
-        jobApplications.add(new JobApplication(jobPostings.get(12), applicants.get(22), JobApplication.Status.WITHDRAWN, LocalDate.of(2025, 3, 26)));
-        jobApplications.add(new JobApplication(jobPostings.get(23), applicants.get(28), JobApplication.Status.REVIEWING, LocalDate.of(2025, 3, 13)));
-        jobApplications.add(new JobApplication(jobPostings.get(50), applicants.get(16), JobApplication.Status.PENDING, LocalDate.of(2025, 3, 21)));
-        jobApplications.add(new JobApplication(jobPostings.get(10), applicants.get(30), JobApplication.Status.OFFERED, LocalDate.of(2025, 3, 10)));
-        jobApplications.add(new JobApplication(jobPostings.get(38), applicants.get(32), JobApplication.Status.ACCEPTED, LocalDate.of(2025, 3, 4)));
-        jobApplications.add(new JobApplication(jobPostings.get(18), applicants.get(25), JobApplication.Status.REVIEWING, LocalDate.of(2025, 3, 6)));
-        jobApplications.add(new JobApplication(jobPostings.get(13), applicants.get(34), JobApplication.Status.REJECTED, LocalDate.of(2025, 3, 30)));
-        jobApplications.add(new JobApplication(jobPostings.get(27), applicants.get(17), JobApplication.Status.WITHDRAWN, LocalDate.of(2025, 3, 2)));
-        jobApplications.add(new JobApplication(jobPostings.get(1), applicants.get(36), JobApplication.Status.INTERVIEW, LocalDate.of(2025, 3, 31)));
-        jobApplications.add(new JobApplication(jobPostings.get(35), applicants.get(15), JobApplication.Status.ACCEPTED, LocalDate.of(2025, 3, 15)));
-        jobApplications.add(new JobApplication(jobPostings.get(8), applicants.get(31), JobApplication.Status.REVIEWING, LocalDate.of(2025, 3, 23)));
-        jobApplications.add(new JobApplication(jobPostings.get(22), applicants.get(37), JobApplication.Status.REJECTED, LocalDate.of(2025, 3, 18)));
-        jobApplications.add(new JobApplication(jobPostings.get(9), applicants.get(39), JobApplication.Status.PENDING, LocalDate.of(2025, 3, 28)));
-        jobApplications.add(new JobApplication(jobPostings.get(26), applicants.get(7), JobApplication.Status.OFFERED, LocalDate.of(2025, 3, 17)));
+        jobApplications.add(new JobApplication(jobPostings.get(37), applicants.get(41), JobApplication.Status.INTERVIEW, LocalDate.of(2025, 4, 12)));
+        jobApplications.add(new JobApplication(jobPostings.get(45), applicants.get(13), JobApplication.Status.REJECTED, LocalDate.of(2025, 4, 5)));
+        jobApplications.add(new JobApplication(jobPostings.get(12), applicants.get(22), JobApplication.Status.WITHDRAWN, LocalDate.of(2025, 4, 26)));
+        jobApplications.add(new JobApplication(jobPostings.get(23), applicants.get(28), JobApplication.Status.REVIEWING, LocalDate.of(2025, 4, 13)));
+        jobApplications.add(new JobApplication(jobPostings.get(50), applicants.get(16), JobApplication.Status.PENDING, LocalDate.of(2025, 4, 21)));
+        jobApplications.add(new JobApplication(jobPostings.get(10), applicants.get(30), JobApplication.Status.OFFERED, LocalDate.of(2025, 4, 10)));
+        jobApplications.add(new JobApplication(jobPostings.get(38), applicants.get(32), JobApplication.Status.ACCEPTED, LocalDate.of(2025, 4, 4)));
+        jobApplications.add(new JobApplication(jobPostings.get(18), applicants.get(25), JobApplication.Status.REVIEWING, LocalDate.of(2025, 4, 6)));
+        jobApplications.add(new JobApplication(jobPostings.get(13), applicants.get(34), JobApplication.Status.REJECTED, LocalDate.of(2025, 4, 30)));
+        jobApplications.add(new JobApplication(jobPostings.get(27), applicants.get(17), JobApplication.Status.WITHDRAWN, LocalDate.of(2025, 4, 2)));
+        jobApplications.add(new JobApplication(jobPostings.get(1), applicants.get(36), JobApplication.Status.INTERVIEW, LocalDate.of(2025, 4, 30)));
+        jobApplications.add(new JobApplication(jobPostings.get(35), applicants.get(15), JobApplication.Status.ACCEPTED, LocalDate.of(2025, 4, 15)));
+        jobApplications.add(new JobApplication(jobPostings.get(8), applicants.get(31), JobApplication.Status.REVIEWING, LocalDate.of(2025, 4, 23)));
+        jobApplications.add(new JobApplication(jobPostings.get(22), applicants.get(37), JobApplication.Status.REJECTED, LocalDate.of(2025, 4, 18)));
+        jobApplications.add(new JobApplication(jobPostings.get(9), applicants.get(39), JobApplication.Status.PENDING, LocalDate.of(2025, 4, 28)));
+        jobApplications.add(new JobApplication(jobPostings.get(26), applicants.get(7), JobApplication.Status.OFFERED, LocalDate.of(2025, 4, 17)));
         jobApplications.add(new JobApplication(jobPostings.get(47), applicants.get(43), JobApplication.Status.WITHDRAWN, LocalDate.of(2025, 4, 5)));
-        jobApplications.add(new JobApplication(jobPostings.get(34), applicants.get(40), JobApplication.Status.REVIEWING, LocalDate.of(2025, 3, 6)));
+        jobApplications.add(new JobApplication(jobPostings.get(34), applicants.get(40), JobApplication.Status.REVIEWING, LocalDate.of(2025, 4, 6)));
         jobApplications.add(new JobApplication(jobPostings.get(16), applicants.get(21), JobApplication.Status.ACCEPTED, LocalDate.of(2025, 4, 4)));
-        jobApplications.add(new JobApplication(jobPostings.get(39), applicants.get(45), JobApplication.Status.PENDING, LocalDate.of(2025, 3, 1)));
-        jobApplications.add(new JobApplication(jobPostings.get(43), applicants.get(27), JobApplication.Status.REJECTED, LocalDate.of(2025, 3, 30)));
-        jobApplications.add(new JobApplication(jobPostings.get(4), applicants.get(44), JobApplication.Status.REVIEWING, LocalDate.of(2025, 3, 22)));
+        jobApplications.add(new JobApplication(jobPostings.get(39), applicants.get(45), JobApplication.Status.PENDING, LocalDate.of(2025, 4, 1)));
+        jobApplications.add(new JobApplication(jobPostings.get(43), applicants.get(27), JobApplication.Status.REJECTED, LocalDate.of(2025, 4, 30)));
+        jobApplications.add(new JobApplication(jobPostings.get(4), applicants.get(44), JobApplication.Status.REVIEWING, LocalDate.of(2025, 4, 22)));
         jobApplications.add(new JobApplication(jobPostings.get(29), applicants.get(42), JobApplication.Status.OFFERED, LocalDate.of(2025, 4, 3)));
-        jobApplications.add(new JobApplication(jobPostings.get(49), applicants.get(46), JobApplication.Status.INTERVIEW, LocalDate.of(2025, 3, 9)));
-        jobApplications.add(new JobApplication(jobPostings.get(24), applicants.get(48), JobApplication.Status.ACCEPTED, LocalDate.of(2025, 3, 11)));
-        jobApplications.add(new JobApplication(jobPostings.get(32), applicants.get(47), JobApplication.Status.REVIEWING, LocalDate.of(2025, 3, 19)));
-        jobApplications.add(new JobApplication(jobPostings.get(20), applicants.get(49), JobApplication.Status.PENDING, LocalDate.of(2025, 3, 26)));
-
-
+        jobApplications.add(new JobApplication(jobPostings.get(49), applicants.get(46), JobApplication.Status.INTERVIEW, LocalDate.of(2025, 4, 9)));
+        jobApplications.add(new JobApplication(jobPostings.get(24), applicants.get(48), JobApplication.Status.ACCEPTED, LocalDate.of(2025, 4, 11)));
+        jobApplications.add(new JobApplication(jobPostings.get(32), applicants.get(47), JobApplication.Status.REVIEWING, LocalDate.of(2025, 4, 19)));
+        jobApplications.add(new JobApplication(jobPostings.get(20), applicants.get(49), JobApplication.Status.PENDING, LocalDate.of(2025, 4, 26)));
     }
 
     public static List<Company> getCompanies() {
