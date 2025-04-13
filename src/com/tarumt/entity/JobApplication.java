@@ -23,7 +23,6 @@ public class JobApplication extends BaseEntity {
     private LocalDate applicationDate;
 
     public JobApplication(JobPosting jobPosting, Applicant applicant, Status status, LocalDate applicationDate) {
-        super(); 
         this.jobPosting = jobPosting;
         this.applicant = applicant;
         this.status = status;
