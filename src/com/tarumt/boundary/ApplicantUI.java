@@ -15,8 +15,9 @@ import com.tarumt.utility.search.FuzzySearch;
 import com.tarumt.utility.validation.*;
 
 import java.lang.reflect.Field;
-import java.util.List;
-import java.util.Set;
+import java.time.LocalDate;
+import java.util.List; //
+import java.util.Set; //
 
 public class ApplicantUI {
 
@@ -324,9 +325,10 @@ public class ApplicantUI {
                 .choice(
                         new Menu.Choice(" Top Locations", service::reportTopLocations),
                         new Menu.Choice(" All Locations", service::reportAllLocations),
-                        new Menu.Choice(" Top Jobs", service::reportTopJobs),
-                        new Menu.Choice(" All Jobs", service::reportAllJobs),
                         new Menu.Choice(" Applicants Applied Status", service::reportAllStatuses),                       
+                        new Menu.Choice(" Application Sorted by Date", service::reportApplicationsByDate),
+                        new Menu.Choice(" Application by Month", service::reportApplicationsByMonth),
+                        new Menu.Choice(" Peak Application Date", service::reportTop5ApplicationDates),
                         new Menu.Choice(" Full Report", service::reportFull)
                     )
                 .exit("<Return>")
@@ -389,3 +391,4 @@ public class ApplicantUI {
     }
      
 }
+
