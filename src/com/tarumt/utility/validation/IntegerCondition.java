@@ -1,6 +1,6 @@
 package com.tarumt.utility.validation;
 
-import java.util.List;
+import com.tarumt.adt.list.List;
 
 public class IntegerCondition extends Condition {
 

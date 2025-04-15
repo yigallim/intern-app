@@ -2,6 +2,7 @@ package com.tarumt.boundary;
 
 import com.tarumt.control.ApplicantService;
 import com.tarumt.control.CompanyService;
+import com.tarumt.control.JobApplicationService;
 import com.tarumt.control.JobPostingService;
 import com.tarumt.entity.Applicant;
 import com.tarumt.entity.BaseEntity;
@@ -15,8 +16,10 @@ import com.tarumt.utility.search.FuzzySearch;
 import com.tarumt.utility.validation.*;
 
 import java.lang.reflect.Field;
-import java.util.List;
-import java.util.Set;
+
+import com.tarumt.adt.list.List;
+
+import com.tarumt.adt.set.Set;
 
 public class ApplicantUI {
 
@@ -26,19 +29,18 @@ public class ApplicantUI {
         this.input = input;
     }
 
-    public void menu(ApplicantService service) {
+    public void menu() {
+        ApplicantService applicantService = ApplicantService.getInstance();
         new Menu()
-                .banner("Applicant")
                 .header("==> Manage Applicant <==")
                 .choice(
-                        new Menu.Choice("🆕 Create Applicant", service::create),
-                        new Menu.Choice("📋 Display Applicants", service::read),
-                        new Menu.Choice("🔍 Search Applicant", service::search),
-                        new Menu.Choice("📂 Filter Applicant", service::filter),
-                        new Menu.Choice("🔃 Update Applicant", service::update),
-                        new Menu.Choice("❌ Delete Applicant", service::delete),
-                        new Menu.Choice("📈 Generate Report", service::report)
-                )
+                        new Menu.Choice("🆕 Create Applicant", applicantService::create),
+                        new Menu.Choice("📋 Display Applicants", applicantService::read),
+                        new Menu.Choice("🔍 Search Applicant", applicantService::search),
+                        new Menu.Choice("📂 Filter Applicant", applicantService::filter),
+                        new Menu.Choice("🔃 Update Applicant", applicantService::update),
+                        new Menu.Choice("❌ Delete Applicant", applicantService::delete),
+                        new Menu.Choice("📈 Generate Report", applicantService::report))
                 .exit("<Return to Main Menu>")
                 .beforeEach(System.out::println)
                 .afterEach(System.out::println)
@@ -69,7 +71,7 @@ public class ApplicantUI {
         return false;
     }
 
-    public void displayAllApplicants(List<Applicant> applicants) {
+    public void printAllApplicants(List<Applicant> applicants) {
         if (applicants == null || applicants.isEmpty()) {
             Log.info("No applicants to display");
             return;
@@ -119,6 +121,12 @@ public class ApplicantUI {
         return input.getString("| Applicant Contact Email => ", condition);
     }
 
+    public String getApplicantContactPhone() {
+        Field field = ValidationFieldReflection.getField(Applicant.class, "contactPhone");
+        StringCondition condition = (StringCondition) ConditionFactory.fromField(field);
+        return input.getString("| Applicant Contact Phone => ", condition);
+    }
+
     public JobPosting.Type getApplicantDesiredJobType() {
         return input.getEnum("|\n| Desired Job Type => ", JobPosting.Type.class, 38);
     }
@@ -136,24 +144,25 @@ public class ApplicantUI {
         System.out.println("<== Update Applicant [ X to Exit ] ==>");
     }
 
-    public void updateApplicantMode(ApplicantService service, String id) {
+    public void updateApplicantMode(String id) {
+        ApplicantService service = ApplicantService.getInstance();
         System.out.println();
         new Menu()
                 .header("Select Update Mode ==>")
                 .choice(
-                        new Menu.Choice("Update Applicant Name", () -> service.updateApplicantName(id)),
+                        new Menu.Choice("Update Name", () -> service.updateApplicantName(id)),
                         new Menu.Choice("Update Contact Email", () -> service.updateApplicantContactEmail(id)),
+                        new Menu.Choice("Update Contact Phone", () -> service.updateApplicantContactPhone(id)),
                         new Menu.Choice("Update Desired Job Type", () -> service.updateApplicantDesiredJobType(id)),
                         new Menu.Choice("Update Location", () -> service.updateApplicantLocation(id)),
-                        new Menu.Choice("Update All Fields", () -> service.updateAllFields(id))
-                )
+                        new Menu.Choice("Update All Fields", () -> service.updateAllFields(id)))
                 .exit("<Return>")
                 .beforeEach(System.out::println)
                 .afterEach(System.out::println)
                 .run();
     }
 
-    public void printUpdateMessage(String fieldName) {
+    public void printUpdateFieldMessage(String fieldName) {
         System.out.println("<== Updating Applicant '" + fieldName + "' [ X to Exit ] ==>");
     }
 
@@ -168,9 +177,10 @@ public class ApplicantUI {
         System.out.println("\n" + applicant);
     }
 
-    public void deleteMenu(ApplicantService service, List<Applicant> applicants) {
+    public void deleteMenu(List<Applicant> applicants) {
+        ApplicantService service = ApplicantService.getInstance();
         if (applicants == null || applicants.isEmpty()) {
-            Log.info("No applicant to delete");
+            Log.info("No applicants to delete");
             return;
         }
         new Menu()
@@ -179,8 +189,7 @@ public class ApplicantUI {
                         new Menu.Choice("Delete By Index", service::deleteByIndex),
                         new Menu.Choice("Delete By Index Range", service::deleteByRange),
                         new Menu.Choice("Delete By ID", service::deleteById),
-                        new Menu.Choice("Delete All", service::deleteAll)
-                )
+                        new Menu.Choice("Delete All", service::deleteAll))
                 .exit("<Return>")
                 .beforeEach(System.out::println)
                 .afterEach(System.out::println)
@@ -232,6 +241,7 @@ public class ApplicantUI {
     public void printSuccessDeleteAllMsg() {
         System.out.println();
         Log.info("Deleted all applicants");
+        input.clickAnythingToContinue();
     }
 
     public void printNoExistingMsg() {
@@ -239,14 +249,14 @@ public class ApplicantUI {
         System.out.println();
     }
 
-    public void loginOrRegisterMenu(ApplicantService service) {
+    public void loginOrRegisterMenu() {
+        ApplicantService service = ApplicantService.getInstance();
         new Menu()
                 .banner("Applicant")
                 .header("==> Applicant Section <==")
                 .choice(
                         new Menu.Choice("Login", service::login),
-                        new Menu.Choice("Register New Applicant", service::create)
-                )
+                        new Menu.Choice("Register New Applicant", service::create))
                 .exit("<Return>")
                 .beforeEach(System.out::println)
                 .afterEach(System.out::println)
@@ -264,43 +274,102 @@ public class ApplicantUI {
         System.out.println();
     }
 
-    public void accessMenu(ApplicantService applicantService, CompanyService companyService) {
-        String applicantName = Context.getApplicant().getName();
-        new Menu()
-                .banner(applicantName)
-                .header("==> Welcome, Applicant \"" + applicantName + "\" <==")
-                .choice(
-                        new Menu.Choice("📝 Job Application", applicantService::accessJobApplicationMenu),
-                        new Menu.Choice("🏢 Display Companies", companyService::read),
-                        new Menu.Choice("🔍 Search Companies", companyService::search),
-                        new Menu.Choice("👤 Display Applicant Profile", applicantService::displayProfile),
-                        new Menu.Choice("🔃 Update Applicant Profile", Log::na)
-                )
-                .exit("<Logout>")
-                .beforeEach(System.out::println)
-                .afterEach(System.out::println)
-                .run();
+    public void accessMenu() {
+        ApplicantService applicantService = ApplicantService.getInstance();
+        JobApplicationService jobApplicationService = JobApplicationService.getInstance();
+
+        Applicant applicant = Context.getApplicant();
+
+        try {
+            new Menu()
+                    .banner(applicant::getName)
+                    .header(() -> "==> Welcome, Applicant \"" + applicant.getName() + "\" <==")
+                    .choice(
+                            new Menu.Choice("🔎 Explore Jobs & Companies", applicantService::exploreJobsAndCompanies),
+                            new Menu.Choice("📄 Manage Job Application", jobApplicationService::accessApplicant),
+                            new Menu.Choice("🗓️ Manage Interview Schedule", Log::na),
+                            new Menu.Choice("👤 Manage Applicant Profile", applicantService::manageProfile))
+                    .exit("<Logout>")
+                    .beforeEach(System.out::println)
+                    .afterEach(System.out::println)
+                    .run();
+        } catch (Menu.ExitMenuException ignored) {
+        }
+
         System.out.println();
         Log.warn("Logged out");
     }
 
-    public void jobApplicationMenu(JobPostingService jobPostingService) {
+    public void exploreJobsAndCompaniesMenu() {
+        JobPostingService jobPostingService = JobPostingService.getInstance();
+        CompanyService companyService = CompanyService.getInstance();
         new Menu()
-                .header("==> Job Application <==")
+                .header("==> Explore Jobs & Companies <==")
                 .choice(
                         new Menu.Choice("📋 Display All Job Postings", jobPostingService::read),
                         new Menu.Choice("🔍 Search Job Postings", jobPostingService::search),
                         new Menu.Choice("📂 Filter Job Postings", Log::na),
                         new Menu.Choice("🔖 Display Recommended Job Postings", Log::na),
-                        new Menu.Choice("📝 Apply Job Posting", Log::na),
-                        new Menu.Choice("📄 Display Applied Job Postings", Log::na),
-                        new Menu.Choice("❌ Withdraw Applied Job Posting", Log::na)
-                )
+                        new Menu.Choice("🏢 Display Companies", companyService::read),
+                        new Menu.Choice("🔍 Search Companies", companyService::search))
+                .exit("<Return>")
+                .beforeEach(System.out::println)
+                .afterEach(System.out::println)
+                .run();
+    }
+
+    public void manageProfileMenu() {
+        ApplicantService applicantService = ApplicantService.getInstance();
+        new Menu()
+                .header("==> Manage Applicant Profile <==")
+                .choice(
+                        new Menu.Choice("📋 Display Applicant Profile", applicantService::displayProfile),
+                        new Menu.Choice("🔃 Update Applicant Profile", applicantService::updateProfile),
+                        new Menu.Choice("❌ Delete Applicant Profile", applicantService::deleteProfile))
+                .exit("<Return>")
+                .beforeEach(System.out::println)
+                .afterEach(System.out::println)
+                .run();
+    }
+
+    public void printProfile(boolean pause) {
+        System.out.println(Context.getApplicant());
+        if (pause)
+            input.clickAnythingToContinue();
+    }
+
+    public void printDeleteProfileMsg() {
+        System.out.println("<== Delete Profile ==>");
+        System.out.println("| Warning: This action cannot be undone");
+        System.out.println("| Your profile will be permanently deleted from the system");
+    }
+
+    public boolean confirmDeleteProfile() {
+        return input.confirm("Are you sure you want to delete your profile? [ Y / X ] => ");
+    }
+
+    public void printSuccessDeleteProfileMsg() {
+        System.out.println();
+        Log.info("Your profile has been successfully deleted");
+        Log.info("You will be logged out automatically");
+        input.clickAnythingToContinue();
+    }
+
+    public void reportMenu() {
+        System.out.println();
+        new Menu()
+                .header("==> Select Report Type <==")
+                .choice(
+                        new Menu.Choice(" Top 10 Locations", Log::na),
+                        new Menu.Choice(" All Locations (Descending)", Log::na),
+                        new Menu.Choice(" Top 10 Jobs", Log::na),
+                        new Menu.Choice(" All Jobs (Descending)", Log::na),
+                        new Menu.Choice(" Applicants Applied Status", Log::na),
+                        new Menu.Choice(" Full Report", Log::na))
                 .exit("<Return>")
                 .beforeEach(System.out::println)
                 .afterEach(System.out::println)
                 .run();
         System.out.println();
     }
-
 }

@@ -1,10 +1,9 @@
 package com.tarumt.control;
 
 import com.tarumt.boundary.JobPostingUI;
+import com.tarumt.boundary.QualificationUI;
 import com.tarumt.dao.Initializer;
-import com.tarumt.entity.BaseEntity;
-import com.tarumt.entity.Company;
-import com.tarumt.entity.JobPosting;
+import com.tarumt.entity.*;
 import com.tarumt.utility.common.Context;
 import com.tarumt.utility.common.Input;
 import com.tarumt.utility.common.Log;
@@ -12,28 +11,56 @@ import com.tarumt.utility.search.FuzzySearch;
 
 import java.time.LocalDate;
 
-import java.util.LinkedList;
-import java.util.List;
+import com.tarumt.adt.list.List;
+import com.tarumt.adt.list.DoublyLinkedList;
+import com.tarumt.entity.qualification.EducationLevel;
+import com.tarumt.entity.qualification.LanguageProficiency;
+import com.tarumt.entity.qualification.Qualification;
+import com.tarumt.entity.qualification.Skill;
+import com.tarumt.entity.qualification.WorkExperience;
 
 public class JobPostingService implements Service {
 
-    private List<JobPosting> jobPostings = new LinkedList<>();
+    private static JobPostingService instance;
+    private List<JobPosting> jobPostings = new DoublyLinkedList<>();
     private final JobPostingUI jobPostingUI;
+    private final QualificationUI qualificationUI;
 
-    public JobPostingService() {
+    private JobPostingService() {
         Input input = new Input();
         this.jobPostings = Initializer.getJobPostings();
         this.jobPostingUI = new JobPostingUI(input);
+        this.qualificationUI = new QualificationUI();
+
+    }
+
+    public static JobPostingService getInstance() {
+        if (instance == null) {
+            instance = new JobPostingService();
+        }
+        return instance;
+    }
+
+    private List<JobPosting> getEmployerJobPostings() {
+        Company company = Context.getCompany();
+        if (company == null) {
+            return new DoublyLinkedList<>();
+        }
+        return jobPostings.filter(jobPosting
+                -> jobPosting.getCompany() != null
+                && jobPosting.getCompany().getId().equals(company.getId())
+        );
     }
 
     @Override
     public void run() {
-        this.jobPostingUI.menu(this);
+        this.jobPostingUI.menu();
     }
 
     @Override
     public void create() {
         while (true) {
+
             jobPostingUI.printCreateJobPostingMsg();
             jobPostingUI.printNextIDMsg();
             JobPosting job = this.getJobPosting();
@@ -50,105 +77,432 @@ public class JobPostingService implements Service {
 
     @Override
     public void read() {
-        this.jobPostingUI.displayAllJobs(this.jobPostings);
+        if (Context.isEmployer()) {
+            this.jobPostingUI.printAllJobs(this.getEmployerJobPostings());
+        } else {
+            this.jobPostingUI.printAllJobs(this.jobPostings);
+        }
     }
 
     @Override
     public void search() {
         while (true) {
-            jobPostingUI.printSearchJobPostingMsg(jobPostings);
-            if (this.jobPostings.isEmpty()) {
+            List<JobPosting> accessiblePostings = Context.isEmployer()
+                    ? this.getEmployerJobPostings() : this.jobPostings;
+
+            jobPostingUI.printSearchJobPostingMsg(accessiblePostings);
+            if (accessiblePostings.isEmpty()) {
                 return;
             }
             String query = jobPostingUI.getSearchJobPostingQuery();
             if (query.equals(Input.STRING_EXIT_VALUE)) {
                 return;
             }
-            FuzzySearch.Result<JobPosting> result = FuzzySearch.searchList(JobPosting.class, this.jobPostings, query);
+            FuzzySearch.Result<JobPosting> result = FuzzySearch.searchList(JobPosting.class, accessiblePostings, query, Context.isEmployer() ? "employer" : null);
             jobPostingUI.printSearchResult(result);
         }
     }
 
     @Override
     public void filter() {
-        Log.na();
+        List<JobPosting> accessiblePostings = Context.isEmployer()
+                ? this.getEmployerJobPostings()
+                : this.jobPostings;
+        if (accessiblePostings.isEmpty()) {
+            Log.info("No job postings to filter");
+            return;
+        }
+        List<Applicant> allApplicants = Initializer.getApplicants();
+
+        for (JobPosting job : accessiblePostings) {
+            System.out.println("\n\uD83D\uDD0D Matching for Job: " + job.getTitle());
+            System.out.printf("| %-20s | %-30s | %-15s | %-6s |\n",
+                    "Applicant", "Email", "Phone", "Score");
+            System.out.println("|----------------------|--------------------------------|-----------------|--------|");
+
+            List<ApplicantMatch> matches = new DoublyLinkedList<>();
+            for (Applicant applicant : allApplicants) {
+                double totalScore = 0.0;
+                boolean disqualified = false;
+
+                // --- Education Match ---
+                EducationLevel requiredEdu = job.getEducationLevel();
+                EducationLevel applicantEdu = applicant.getEducationLevel();
+                if (requiredEdu != null && applicantEdu != null) {
+                    // Degree Level Match
+                    if (requiredEdu.getDegreeLevel() != null) {
+                        boolean match = requiredEdu.getDegreeLevel() == applicantEdu.getDegreeLevel();
+                        if (!match && !requiredEdu.isOptional()) {
+                            disqualified = true;
+                        } else if (match) {
+                            totalScore += applyWeight(1.0, requiredEdu.getImportance());
+                        }
+                    }
+
+                    // Field of Study Match
+                    if (requiredEdu.getFieldOfStudy() != null) {
+                        boolean match = requiredEdu.getFieldOfStudy() == applicantEdu.getFieldOfStudy();
+                        if (!match && !requiredEdu.isOptional()) {
+                            disqualified = true;
+                        } else if (match) {
+                            totalScore += applyWeight(1.0, requiredEdu.getImportance());
+                        }
+                    }
+
+                    // CGPA Match
+                    double requiredCgpa = requiredEdu.getCgpa();
+                    double applicantCgpa = applicantEdu.getCgpa();
+                    double cgpaScore =  applicantCgpa / requiredCgpa;
+                    if (cgpaScore < 0.5 && !requiredEdu.isOptional()) {  // 可以调整阈值
+                        disqualified = true;
+                    } else {
+                        totalScore += applyWeight(cgpaScore, requiredEdu.getImportance());
+                    }
+                }
+
+//               // Education Match
+//                EducationLevel requiredEdu = job.getEducationLevel();
+//                EducationLevel applicantEdu = applicant.getEducationLevel();
+//                if (requiredEdu != null) {
+//                    double score = requiredEdu.scoreMatch(applicantEdu);
+//                    if (score == -1 && !requiredEdu.isOptional()) {
+//                        disqualified = true;
+//                    } else {
+//                        totalScore += applyWeight(score, requiredEdu.getImportance());
+//                    }
+//                }
+                // Work Experience Match
+                List<WorkExperience> requiredExp = job.getWorkExperiences();
+                if (requiredExp != null && applicant.getWorkExperiences() != null) {
+                    for (WorkExperience req : requiredExp) {
+                        boolean matched = false;
+                        for (WorkExperience appExp : applicant.getWorkExperiences()) {
+                            if (req.getIndustry().equals(appExp.getIndustry())) {
+                                double score = Math.min(appExp.getYears(), req.getYears());
+                                totalScore += applyWeight(score, req.getImportance());
+                                matched = true;
+                                break;
+                            }
+                        }
+                        if (!matched && !req.isOptional()) {
+                            disqualified = true;
+                        }
+                    }
+                }
+
+                // Language Match
+                List<LanguageProficiency> requiredLangs = job.getLanguageProficiencies();
+                if (requiredLangs != null && applicant.getLanguageProficiencies() != null) {
+                    for (LanguageProficiency req : requiredLangs) {
+                        boolean matched = false;
+                        for (LanguageProficiency appLang : applicant.getLanguageProficiencies()) {
+                            if (req.getLanguage().equals(appLang.getLanguage())) {
+                                double score = req.scoreMatch(appLang);
+                                totalScore += applyWeight(score, req.getImportance());
+                                matched = true;
+                                break;
+                            }
+                        }
+                        if (!matched && !req.isOptional()) {
+                            disqualified = true;
+                        }
+                    }
+                }
+
+                // Skill Match
+                List<Skill> requiredSkills = job.getSkills();
+                if (requiredSkills != null && applicant.getSkills() != null) {
+                    for (Skill req : requiredSkills) {
+                        boolean matched = false;
+                        for (Skill appSkill : applicant.getSkills()) {
+                            if (req.getSkillName().equalsIgnoreCase(appSkill.getSkillName())) {
+                                double score = req.scoreMatch(appSkill);
+                                totalScore += applyWeight(score, req.getImportance());
+                                matched = true;
+                                break;
+                            }
+                        }
+                        if (!matched && !req.isOptional()) {
+                            disqualified = true;
+                        }
+                    }
+                }
+
+                if (!disqualified) {
+                    matches.add(new ApplicantMatch(applicant, totalScore));
+                }
+            }
+            //debugging only
+            matches.sort((a, b) -> Double.compare(b.score, a.score));
+            if (!matches.isEmpty()) {
+                ApplicantMatch top = matches.get(0);
+                Applicant applicant = top.applicant;
+                System.out.println("\n🧠 Debug Score Breakdown for Top Applicant: " + applicant.getName());
+
+                double debugTotal = 0.0;
+
+                // --- Education ---
+                EducationLevel requiredEdu = job.getEducationLevel();
+                EducationLevel applicantEdu = applicant.getEducationLevel();
+                if (requiredEdu != null && applicantEdu != null) {
+                    // 1. Degree level
+                    if (requiredEdu.getDegreeLevel() != null) {
+                        boolean match = requiredEdu.getDegreeLevel() == applicantEdu.getDegreeLevel();
+                        if (match) {
+                            double weighted = applyWeight(1.0, requiredEdu.getImportance());
+                            System.out.printf("  [Education: Degree Level] 1.00 (weighted %.2f)\n", weighted);
+                            debugTotal += weighted;
+                        }
+                    }
+
+                    // 2. Field of Study
+                    if (requiredEdu.getFieldOfStudy() != null) {
+                        boolean match = requiredEdu.getFieldOfStudy() == applicantEdu.getFieldOfStudy();
+                        if (match) {
+                            double weighted = applyWeight(1.0, requiredEdu.getImportance());
+                            System.out.printf("  [Education: Field of Study] 1.00 (weighted %.2f)\n", weighted);
+                            debugTotal += weighted;
+                        }
+                    }
+
+                    // 3. CGPA
+                    double requiredCgpa = requiredEdu.getCgpa();
+                    double applicantCgpa = applicantEdu.getCgpa();
+                    double cgpaScore = applicantCgpa / requiredCgpa;
+                    double weighted = applyWeight(cgpaScore, requiredEdu.getImportance());
+                    System.out.printf("  [Education: CGPA] %.2f (weighted %.2f)\n", cgpaScore, weighted);
+                    debugTotal += weighted;
+                }
+
+                // --- Work Exp ---
+                if (job.getWorkExperiences() != null && applicant.getWorkExperiences() != null) {
+                    for (WorkExperience req : job.getWorkExperiences()) {
+                        for (WorkExperience appExp : applicant.getWorkExperiences()) {
+                            if (req.getIndustry().equals(appExp.getIndustry())) {
+                                double raw = Math.min(appExp.getYears(), req.getYears());
+                                double weight = applyWeight(raw, req.getImportance());
+                                System.out.printf("  [WorkExp: %s] %.2f (weighted %.2f)\n", req.getIndustry(), raw, weight);
+                                debugTotal += weight;
+                                break;
+                            }
+                        }
+                    }
+                }
+
+                // --- Language ---
+                if (job.getLanguageProficiencies() != null && applicant.getLanguageProficiencies() != null) {
+                    for (LanguageProficiency req : job.getLanguageProficiencies()) {
+                        for (LanguageProficiency appLang : applicant.getLanguageProficiencies()) {
+                            if (req.getLanguage().equals(appLang.getLanguage())) {
+                                double raw = req.scoreMatch(appLang);
+                                double weight = applyWeight(raw, req.getImportance());
+                                System.out.printf("  [Language: %s] %.2f (weighted %.2f)\n", req.getLanguage(), raw, weight);
+                                debugTotal += weight;
+                                break;
+                            }
+                        }
+                    }
+                }
+
+                // --- Skills ---
+                if (job.getSkills() != null && applicant.getSkills() != null) {
+                    for (Skill req : job.getSkills()) {
+                        for (Skill appSkill : applicant.getSkills()) {
+                            if (req.getSkillName().equalsIgnoreCase(appSkill.getSkillName())) {
+                                double raw = req.scoreMatch(appSkill);
+                                double weight = applyWeight(raw, req.getImportance());
+                                System.out.printf("  [Skill: %s] %.2f (weighted %.2f)\n", req.getSkillName(), raw, weight);
+                                debugTotal += weight;
+                                break;
+                            }
+                        }
+                    }
+                }
+
+                System.out.printf("  ✅ Total Score: %.2f\n", debugTotal);
+            }
+
+            for (ApplicantMatch match : matches) {
+                Applicant a = match.applicant;
+                System.out.printf("| %-20s | %-30s | %-15s | %6.2f |\n",
+                        a.getName(), a.getContactEmail(), a.getContactPhone(), match.score);
+            }
+//        System.out.println("\n🔍 Matching for Job: " + job.getTitle());
+            System.out.println("[Required Education]:");
+            if (job.getEducationLevel() != null) {
+                EducationLevel e = job.getEducationLevel();
+                System.out.printf(" - Degree: %s\n", e.getDegreeLevel());
+                System.out.printf(" - Field of Study: %s\n", e.getFieldOfStudy());
+                System.out.printf(" - University: %s (Not counted in matching)\n", e.getUniversity().getDisplayName());
+                System.out.printf(" - CGPA: %.2f\n", e.getCgpa());
+                System.out.printf(" - Optional: %s\n", e.isOptional() ? "Yes" : "No");
+                System.out.printf(" - Importance: %s\n", e.getImportance());
+            } else {
+                System.out.println(" - N/A");
+            }
+
+            System.out.println("[Required Work Experience]:");
+            if (job.getWorkExperiences() != null && !job.getWorkExperiences().isEmpty()) {
+                for (WorkExperience we : job.getWorkExperiences()) {
+                    System.out.printf(" - %s (%d years) | Optional: %s | Importance: %s\n",
+                            we.getIndustry(), we.getYears(),
+                            we.isOptional() ? "Yes" : "No",
+                            we.getImportance());
+                }
+            } else {
+                System.out.println(" - N/A");
+            }
+
+            System.out.println("[Required Language Proficiency]:");
+            if (job.getLanguageProficiencies() != null && !job.getLanguageProficiencies().isEmpty()) {
+                for (LanguageProficiency lang : job.getLanguageProficiencies()) {
+                    System.out.printf(" - %s (%s) | Optional: %s | Importance: %s\n",
+                            lang.getLanguage(), lang.getProficiency(),
+                            lang.isOptional() ? "Yes" : "No",
+                            lang.getImportance());
+                }
+            } else {
+                System.out.println(" - N/A");
+            }
+
+            System.out.println("[Required Skills]:");
+            if (job.getSkills() != null && !job.getSkills().isEmpty()) {
+                for (Skill s : job.getSkills()) {
+                    System.out.printf(" - %s - %s (%s) | Optional: %s | Importance: %s\n",
+                            s.getCategory(), s.getSkillName(), s.getProficiencyLevel(),
+                            s.isOptional() ? "Yes" : "No",
+                            s.getImportance());
+                }
+            } else {
+                System.out.println(" - N/A");
+            }
+
+        }
+    }
+
+    private double applyWeight(double score, Qualification.Importance importance) {
+        switch (importance) {
+            case HIGH:
+                return score * 2.0;
+            case MEDIUM:
+                return score * 1.5;
+            case LOW:
+                return score;
+            default:
+                return 0;
+        }
+    }
+
+    private static class ApplicantMatch {
+
+        Applicant applicant;
+        double score;
+
+        ApplicantMatch(Applicant applicant, double score) {
+            this.applicant = applicant;
+            this.score = score;
+        }
     }
 
     @Override
     public void update() {
-        jobPostingUI.printUpdateJobMsg(this.jobPostings);
-        if (this.jobPostings.isEmpty()) {
+        List<JobPosting> accessiblePostings = Context.isEmployer()
+                ? this.getEmployerJobPostings() : this.jobPostings;
+
+        jobPostingUI.printUpdateJobMsg(accessiblePostings);
+        if (accessiblePostings.isEmpty()) {
             return;
         }
 
-        List<String> ids = BaseEntity.getIds(jobPostings);
-        String id = jobPostingUI.getJobPostingId("| Select Job Posting ID => ", ids);
+        List<String> ids = BaseEntity.getIds(accessiblePostings);
+        String id = jobPostingUI.getJobPostingId(ids);
         if (id.equals(Input.STRING_EXIT_VALUE)) {
             return;
         }
 
-        JobPosting jobPosting = BaseEntity.getById(id, jobPostings);
+        JobPosting jobPosting = BaseEntity.getById(id, accessiblePostings);
         jobPostingUI.printOriginalJobValue(jobPosting);
         jobPostingUI.updateJobMode(this, jobPosting.getId());
     }
 
     @Override
     public void delete() {
-        jobPostingUI.deleteMenu(this, this.jobPostings);
+        List<JobPosting> accessiblePostings = Context.isEmployer()
+                ? this.getEmployerJobPostings() : this.jobPostings;
+
+        jobPostingUI.deleteMenu(this, accessiblePostings);
     }
 
     public void deleteByIndex() {
+        List<JobPosting> accessiblePostings = Context.isEmployer()
+                ? this.getEmployerJobPostings() : this.jobPostings;
+
         jobPostingUI.printDeleteByIndexMsg();
-        int index = jobPostingUI.getJobPostingIndex(this.jobPostings.size());
+        int index = jobPostingUI.getJobPostingIndex(accessiblePostings.size());
         if (index == Input.INT_EXIT_VALUE) {
             return;
         }
         if (jobPostingUI.confirmDelete()) {
-            JobPosting jobPosting = jobPostings.remove(index - 1);
+            JobPosting jobPosting = accessiblePostings.get(index - 1);
+            jobPostings.remove(jobPosting);
             jobPostingUI.printSuccessDeleteMsg(jobPosting.getId());
         }
     }
 
     public void deleteByRange() {
+        List<JobPosting> accessiblePostings = Context.isEmployer()
+                ? this.getEmployerJobPostings() : this.jobPostings;
+
         jobPostingUI.printDeleteByRangeMsg();
-        int startIndex = jobPostingUI.getDeleteStartIndex(this.jobPostings.size());
+        int startIndex = jobPostingUI.getDeleteStartIndex(accessiblePostings.size());
         if (startIndex == Input.INT_EXIT_VALUE) {
             return;
         }
 
-        int endIndex = jobPostingUI.getDeleteEndIndex(startIndex, this.jobPostings.size());
+        int endIndex = jobPostingUI.getDeleteEndIndex(startIndex, accessiblePostings.size());
         if (endIndex == Input.INT_EXIT_VALUE) {
             return;
         }
 
         if (endIndex >= startIndex) {
             if (jobPostingUI.confirmDelete()) {
-                jobPostings.subList(startIndex - 1, endIndex).clear();
+                List<JobPosting> toRemove = accessiblePostings.subList(startIndex - 1, endIndex);
+                jobPostings.removeAll(toRemove);
                 jobPostingUI.printSuccessDeleteByRangeMsg(startIndex, endIndex);
             }
         }
-
     }
 
     public void deleteById() {
+        List<JobPosting> accessiblePostings = Context.isEmployer()
+                ? this.getEmployerJobPostings() : this.jobPostings;
+
         jobPostingUI.printDeleteByIdMsg();
-        List<String> ids = BaseEntity.getIds(jobPostings);
-        String id = jobPostingUI.getJobPostingId("| Select Job Posting ID => ", ids);
+        List<String> ids = BaseEntity.getIds(accessiblePostings);
+        String id = jobPostingUI.getJobPostingId(ids);
         if (id.equals(Input.STRING_EXIT_VALUE)) {
             return;
         }
 
         if (jobPostingUI.confirmDelete()) {
-            JobPosting jobPosting = BaseEntity.getById(id, jobPostings);
+            JobPosting jobPosting = BaseEntity.getById(id, accessiblePostings);
             jobPostings.remove(jobPosting);
             jobPostingUI.printSuccessDeleteMsg(jobPosting.getId());
         }
     }
 
     public void deleteAll() {
-        if (jobPostingUI.confirmDelete()) {
-            jobPostings.clear();
-            jobPostingUI.printSuccessDeleteAllMsg();
+        if (Context.isEmployer()) {
+            List<JobPosting> employerPostings = this.getEmployerJobPostings();
+            if (jobPostingUI.confirmDelete()) {
+                jobPostings.removeAll(employerPostings);
+                jobPostingUI.printSuccessDeleteAllMsg();
+            }
+        } else {
+            if (jobPostingUI.confirmDelete()) {
+                jobPostings.clear();
+                jobPostingUI.printSuccessDeleteAllMsg();
+            }
         }
     }
 
@@ -193,7 +547,18 @@ public class JobPostingService implements Service {
         }
 
         LocalDate createdAt = LocalDate.now(), updatedAt = LocalDate.now();
-        return new JobPosting(title, company, salaryMin, salaryMax, description, type, null, JobPosting.Status.OPEN, createdAt, updatedAt);
+        EducationLevel education = qualificationUI.getEducationInput();
+        List<WorkExperience> workExps = qualificationUI.getWorkExperienceInput();
+        List<LanguageProficiency> langs = qualificationUI.getLanguageProficiencyInput();
+        List<Skill> skills = qualificationUI.getSkillInput();
+
+        return new JobPosting(
+                title, company, salaryMin, salaryMax, description, type,
+                education, workExps, langs, skills,
+                JobPosting.Status.OPEN,
+                createdAt, updatedAt
+        );
+
     }
 
     public void updateJobTitle(String id) {
@@ -203,7 +568,7 @@ public class JobPostingService implements Service {
             return;
         }
 
-        jobPostingUI.printUpdateMessage(fieldName);
+        jobPostingUI.printUpdateFieldMessage(fieldName);
         String newJobTitle = jobPostingUI.getJobPostingTitle();
         if (newJobTitle.equals(Input.STRING_EXIT_VALUE)) {
             return;
@@ -221,7 +586,7 @@ public class JobPostingService implements Service {
             return;
         }
 
-        jobPostingUI.printUpdateMessage(fieldName);
+        jobPostingUI.printUpdateFieldMessage(fieldName);
         Company newCompany = jobPostingUI.getJobPostingCompany();
         if (newCompany == null) {
             return;
@@ -238,7 +603,7 @@ public class JobPostingService implements Service {
             return;
         }
 
-        jobPostingUI.printUpdateMessage(fieldName);
+        jobPostingUI.printUpdateFieldMessage(fieldName);
         String salaryRange = jobPostingUI.getSalaryRange();
         if (salaryRange.equals(Input.STRING_EXIT_VALUE)) {
             return;
@@ -260,7 +625,7 @@ public class JobPostingService implements Service {
             return;
         }
 
-        jobPostingUI.printUpdateMessage(fieldName);
+        jobPostingUI.printUpdateFieldMessage(fieldName);
 
         String newDescription = jobPostingUI.getJobPostingDescription();
         if (newDescription.equals(Input.STRING_EXIT_VALUE)) {
@@ -280,7 +645,7 @@ public class JobPostingService implements Service {
             return;
         }
 
-        jobPostingUI.printUpdateMessage(fieldName);
+        jobPostingUI.printUpdateFieldMessage(fieldName);
 
         JobPosting.Type newType = jobPostingUI.getJobPostingType();
         if (newType == null) {
@@ -299,7 +664,7 @@ public class JobPostingService implements Service {
             return;
         }
 
-        jobPostingUI.printUpdateMessage(fieldName);
+        jobPostingUI.printUpdateFieldMessage(fieldName);
 
         JobPosting.Status newStatus = jobPostingUI.getJobPostingStatus();
         if (newStatus == null) {
@@ -314,32 +679,45 @@ public class JobPostingService implements Service {
     public void updateAllField(String id) {
         final String fieldName = "All Fields";
         JobPosting jobPosting = BaseEntity.getById(id, jobPostings);
-        jobPostingUI.printUpdateMessage(fieldName);
+        jobPostingUI.printUpdateFieldMessage(fieldName);
 
         String newTitle = jobPostingUI.getJobPostingTitle();
-        if (newTitle.equals(Input.STRING_EXIT_VALUE)) return;
+        if (newTitle.equals(Input.STRING_EXIT_VALUE)) {
+            return;
+        }
 
         Company newCompany = null;
-        if (Context.isAdmin())
+        if (Context.isAdmin()) {
             newCompany = jobPostingUI.getJobPostingCompany();
+        }
 
         String salaryRange = jobPostingUI.getSalaryRange();
-        if (salaryRange.equals(Input.STRING_EXIT_VALUE)) return;
+        if (salaryRange.equals(Input.STRING_EXIT_VALUE)) {
+            return;
+        }
         String[] parts = salaryRange.split("-");
         int newMinSalary = Integer.parseInt(parts[0]);
         int newMaxSalary = Integer.parseInt(parts[1]);
 
         String newDescription = jobPostingUI.getJobPostingDescription();
-        if (newDescription.equals(Input.STRING_EXIT_VALUE)) return;
+        if (newDescription.equals(Input.STRING_EXIT_VALUE)) {
+            return;
+        }
 
         JobPosting.Type newType = jobPostingUI.getJobPostingType();
-        if (newType == null) return;
+        if (newType == null) {
+            return;
+        }
 
         JobPosting.Status newStatus = jobPostingUI.getJobPostingStatus();
-        if (newStatus == null) return;
+        if (newStatus == null) {
+            return;
+        }
 
         jobPosting.setTitle(newTitle);
-        if (newCompany != null) jobPosting.setCompany(newCompany);
+        if (newCompany != null) {
+            jobPosting.setCompany(newCompany);
+        }
         jobPosting.setSalaryMin(newMinSalary);
         jobPosting.setSalaryMax(newMaxSalary);
         jobPosting.setDescription(newDescription);
@@ -348,5 +726,4 @@ public class JobPostingService implements Service {
         jobPosting.setUpdatedAt(LocalDate.now());
         jobPostingUI.printUpdateSuccessMessage(jobPosting, "All Fields");
     }
-
 }

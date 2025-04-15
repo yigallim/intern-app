@@ -1,8 +1,9 @@
 package com.tarumt.utility.validation;
 
-import java.util.Arrays;
-import java.util.List;
 import java.util.regex.Pattern;
+
+import com.tarumt.adt.Arrays;
+import com.tarumt.adt.list.List;
 
 public class StringCondition extends Condition {
 

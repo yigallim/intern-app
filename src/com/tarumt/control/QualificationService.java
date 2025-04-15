@@ -8,19 +8,20 @@ import com.tarumt.utility.common.Menu;
 import com.tarumt.entity.qualification.Skill;
 import com.tarumt.entity.qualification.Skill.SkillCategory;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+
+import com.tarumt.adt.list.List;
+import com.tarumt.adt.list.DoublyLinkedList;
 
 public class QualificationService {
 
     private final QualificationUI qualificationUI;
     private EducationLevel educationLevel;  // Store a single object instead of a list
 
-    private final List<WorkExperience> workExperiences = new ArrayList<>();
-    private final List<LanguageProficiency> languageProficiencies = new ArrayList<>();
-    private final Map<SkillCategory, List<Skill>> skills = new HashMap<>();
+    private final List<WorkExperience> workExperiences = new DoublyLinkedList<>();
+    private final List<LanguageProficiency> languageProficiencies = new DoublyLinkedList<>();
+    private final List<Skill> skills = new DoublyLinkedList<>();
 
     public QualificationService() {
         this.qualificationUI = new QualificationUI();
@@ -76,9 +77,7 @@ public class QualificationService {
         List<Skill> selectedSkills = qualificationUI.getSkillInput(); // Get skills from user input
 
         if (selectedSkills != null && !selectedSkills.isEmpty()) {
-            for (Skill skill : selectedSkills) {
-                skills.computeIfAbsent(skill.getCategory(), k -> new ArrayList<>()).add(skill);
-            }
+            skills.addAll(selectedSkills);  // Just add directly to the doubly linked list
             System.out.println("✅ Skills added successfully!");
         } else {
             System.out.println("❌ No skills added.");

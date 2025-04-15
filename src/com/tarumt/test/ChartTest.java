@@ -2,7 +2,7 @@ package com.tarumt.test;
 
 import com.tarumt.utility.pretty.Chart;
 
-import java.util.Arrays;
+import com.tarumt.adt.Arrays;
 
 public class ChartTest {
     public static void main(String[] args) {

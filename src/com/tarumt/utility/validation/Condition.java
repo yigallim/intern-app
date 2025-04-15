@@ -1,12 +1,13 @@
 package com.tarumt.utility.validation;
 
-import java.util.LinkedList;
-import java.util.List;
+import com.tarumt.adt.list.List;
+import com.tarumt.adt.list.DoublyLinkedList;
+
 import java.util.function.Predicate;
 
 public class Condition {
 
-    protected final List<Constraint> constraints = new LinkedList<>();
+    protected final List<Constraint> constraints = new DoublyLinkedList<>();
 
     public void validate(Object value) throws ValidationException {
         for (Constraint constraint : constraints) {
@@ -33,7 +34,6 @@ public class Condition {
         addConstraint(new Constraint(predicate, customMessage));
         return this;
     }
-
 
     public static class Constraint {
         private final Predicate<Object> predicate;

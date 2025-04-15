@@ -156,6 +156,16 @@ public class EducationLevel extends Qualification {
         setImportance(importance);
     }
 
+    public EducationLevel(DegreeLevel degreeLevel, FieldOfStudy fieldOfStudy, University university, double cgpa) {
+        this.degreeLevel = degreeLevel;
+        this.fieldOfStudy = fieldOfStudy;
+        this.cgpa = cgpa;
+        this.university = university;
+        setOptional(true); // default
+        setImportance(Importance.LOW); // default
+
+    }
+
     public DegreeLevel getDegreeLevel() {
         return degreeLevel;
     }
@@ -186,6 +196,17 @@ public class EducationLevel extends Qualification {
 
     public void setUniversity(University university) {
         this.university = university;
+    }
+
+    public double scoreMatch(EducationLevel other) {
+        if (other == null) {
+            return 0;
+        }
+        if (this.degreeLevel != other.degreeLevel) {
+            return 0;
+        }
+        // Score is ratio of CGPA
+        return Math.min(1.0, other.getCgpa() / this.getCgpa());
     }
 
     @Override

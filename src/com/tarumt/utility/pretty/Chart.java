@@ -1,8 +1,9 @@
 package com.tarumt.utility.pretty;
 
+import com.tarumt.adt.list.DoublyLinkedList;
 import com.tarumt.utility.common.Strings;
 
-import java.util.List;
+import com.tarumt.adt.list.List;
 
 public class Chart {
 
@@ -24,9 +25,11 @@ public class Chart {
         }
 
         // Determine maximum value to normalize the bars.
-        int maxValue = values.stream().max(Integer::compareTo).orElse(1);
+        int maxValue = values.max(Integer::compareTo).orElse(1);
         // Determine optimal category label width (at least 15 characters)
-        int categoryWidth = Math.max(15, categories.stream().mapToInt(String::length).max().orElse(15));
+        List<Integer> lengths = new DoublyLinkedList<>();
+        categories.forEach(category -> lengths.add(category.length()));
+        int categoryWidth = Math.max(15, lengths.max(Integer::compareTo).orElse(15));
         // Calculate the total width for the chart borders.
         int chartWidth = categoryWidth + maxBarLength + 10;
 

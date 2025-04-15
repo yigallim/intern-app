@@ -6,8 +6,9 @@ import com.tarumt.utility.validation.annotation.Regex;
 import com.tarumt.utility.validation.annotation.Enumeration;
 
 import java.lang.reflect.Field;
-import java.util.LinkedList;
-import java.util.List;
+
+import com.tarumt.adt.list.List;
+import com.tarumt.adt.list.DoublyLinkedList;
 
 public final class ConditionFactory {
 
@@ -152,7 +153,7 @@ public final class ConditionFactory {
             }
         } else if (condition instanceof IntegerCondition) {
             IntegerCondition integerCondition = (IntegerCondition) condition;
-            List<Integer> values = new LinkedList<>();
+            List<Integer> values = new DoublyLinkedList<>();
             for (String val : allowedValues) {
                 try {
                     values.add(Integer.valueOf(val));
@@ -168,7 +169,7 @@ public final class ConditionFactory {
             }
         } else if (condition instanceof DecimalCondition) {
             DecimalCondition decimalCondition = (DecimalCondition) condition;
-            List<Double> values = new LinkedList<>();
+            List<Double> values = new DoublyLinkedList<>();
             for (String val : allowedValues) {
                 try {
                     values.add(Double.valueOf(val));

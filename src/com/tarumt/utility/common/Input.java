@@ -3,9 +3,10 @@ package com.tarumt.utility.common;
 import com.tarumt.utility.pretty.EnumPrint;
 import com.tarumt.utility.validation.*;
 
-import java.util.List;
 import java.util.Scanner;
 import java.util.function.BiFunction;
+
+import com.tarumt.adt.list.List;
 
 public class Input {
     private final Scanner scanner;
@@ -136,43 +137,6 @@ public class Input {
         return (T) constants[choice - 1];
     }
 
-    @SuppressWarnings("unchecked")
-    public <T extends Enum<T>> T getEnum(String message, List<T> subset) {
-        return getEnum(message, subset, (min, max) -> "Choose an option [" + min + "-" + max + "] => ", 32);
-    }
-
-    @SuppressWarnings("unchecked")
-    public <T extends Enum<T>> T getEnum(String message, List<T> subset, BiFunction<Integer, Integer, String> customMessage) {
-        return getEnum(message, subset, customMessage, 32);
-    }
-
-    @SuppressWarnings("unchecked")
-    public <T extends Enum<T>> T getEnum(String message, List<T> subset, BiFunction<Integer, Integer, String> customMessage, int columnWidth) {
-        if (subset == null || subset.isEmpty()) {
-            System.out.println(message);
-            System.out.println("No options available!");
-            return null;
-        }
-
-        System.out.println(message);
-
-        Enum<?>[] enumArray = subset.toArray(new Enum<?>[0]);
-        EnumPrint.multiColumnPrint(enumArray, 3, "| ", "", columnWidth);
-
-        int min = 1;
-        int max = subset.size();
-
-        IntegerCondition condition = ConditionFactory.integer().min(min).max(max);
-
-        int choice = this.getInt(customMessage.apply(min, max), condition);
-        if (exitKeyEnabled && choice == INT_EXIT_VALUE) {
-            return null;
-        }
-
-        this.reloadExitKey();
-        return (T) subset.get(choice - 1);
-    }
-
     public <T> T getObjectFromList(String message, List<T> options) {
         return getObjectFromList(message, options, 32);
     }
@@ -193,7 +157,7 @@ public class Input {
         }
 
         System.out.println(message);
-        EnumPrint.multiColumnPrint(options.toArray(), 3, "| ", "", columnWidth);
+        EnumPrint.multiColumnPrint(options, 3, "| ", "", columnWidth);
 
         int min = 1, max = options.size();
         IntegerCondition condition = ConditionFactory.integer().min(min).max(max);

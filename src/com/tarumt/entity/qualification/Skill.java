@@ -58,6 +58,14 @@ public class Skill extends Qualification {
         setImportance(importance);
     }
 
+    public Skill(SkillCategory category, String skillName, ProficiencyLevel proficiencyLevel) {
+        this.category = category;
+        this.skillName = skillName;
+        this.proficiencyLevel = proficiencyLevel;
+        setOptional(true); // default
+        setImportance(Importance.LOW); // default
+    }
+
     public SkillCategory getCategory() {
         return category;
     }
@@ -68,6 +76,28 @@ public class Skill extends Qualification {
 
     public ProficiencyLevel getProficiencyLevel() {
         return proficiencyLevel;
+    }
+
+    public double scoreMatch(Skill other) {
+        if (other == null) {
+            return 0;
+        }
+        if (!this.skillName.equalsIgnoreCase(other.skillName)) {
+            return 0;
+        }
+
+        switch (other.getProficiencyLevel()) {
+            case EXPERT:
+                return 1.0;
+            case ADVANCED:
+                return 0.8;
+            case INTERMEDIATE:
+                return 0.5;
+            case BEGINNER:
+                return 0.2;
+            default:
+                return 0.0;
+        }
     }
 
     @Override

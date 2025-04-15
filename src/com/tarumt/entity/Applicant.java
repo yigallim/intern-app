@@ -3,7 +3,6 @@ package com.tarumt.entity;
 import com.tarumt.entity.location.Location;
 import com.tarumt.entity.qualification.EducationLevel;
 import com.tarumt.entity.qualification.LanguageProficiency;
-import com.tarumt.entity.qualification.Qualification;
 import com.tarumt.entity.qualification.WorkExperience;
 import com.tarumt.utility.pretty.annotation.ExcludeKey;
 import com.tarumt.utility.pretty.annotation.OutputLength;
@@ -12,9 +11,11 @@ import com.tarumt.utility.validation.annotation.Max;
 import com.tarumt.utility.validation.annotation.Min;
 import com.tarumt.utility.validation.annotation.Regex;
 
-import java.util.List;
+import com.tarumt.adt.list.List;
+import com.tarumt.entity.qualification.Skill;
 
 public class Applicant extends BaseEntity {
+
     static {
         BaseEntity.registerPrefix(Applicant.class, "a");
     }
@@ -24,9 +25,14 @@ public class Applicant extends BaseEntity {
     @Fuzzy
     @OutputLength(20)
     private String name;
-    @Fuzzy
     @Regex(pattern = "^[\\w!#$%&amp;'*+/=?`{|}~^-]+(?:\\.[\\w!#$%&amp;'*+/=?`{|}~^-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,6}$", message = "Invalid email format")
+    @Fuzzy
+    @OutputLength(26)
     private String contactEmail;
+    @Regex(pattern = "^(\\+?6?01)[02-46-9]-*[0-9]{7}$|^(\\+?6?01)[1]-*[0-9]{8}$", message = "Invalid phone number format")
+    @Fuzzy
+    @OutputLength(13)
+    private String contactPhone;
     @Fuzzy
     @OutputLength(34)
     private JobPosting.Type desiredJobType;
@@ -39,12 +45,25 @@ public class Applicant extends BaseEntity {
     private List<WorkExperience> workExperiences;
     @ExcludeKey("default")
     private List<LanguageProficiency> languageProficiencies;
+    @ExcludeKey("default")
+    private List<Skill> skills;
 
-    public Applicant(String name, String contactEmail, JobPosting.Type desiredJobType, Location location) {
+    public Applicant(String name, String contactEmail, String contactPhone, JobPosting.Type desiredJobType, Location location,
+            EducationLevel educationLevel, List<WorkExperience> workExperiences,
+            List<LanguageProficiency> languageProficiencies, List<Skill> skills) {
         this.name = name;
         this.contactEmail = contactEmail;
+        this.contactPhone = contactPhone;
         this.desiredJobType = desiredJobType;
         this.location = location;
+        this.educationLevel = educationLevel;
+        this.workExperiences = workExperiences;
+        this.languageProficiencies = languageProficiencies;
+        this.skills = skills;
+    }
+
+    public Applicant(String name, String contactEmail, String contactPhone, JobPosting.Type desiredJobType, Location location) {
+        this(name, contactEmail, contactPhone, desiredJobType, location, null, null, null,null);
     }
 
     public String getName() {
@@ -61,6 +80,14 @@ public class Applicant extends BaseEntity {
 
     public void setContactEmail(String contactEmail) {
         this.contactEmail = contactEmail;
+    }
+
+    public String getContactPhone() {
+        return contactPhone;
+    }
+
+    public void setContactPhone(String contactPhone) {
+        this.contactPhone = contactPhone;
     }
 
     public JobPosting.Type getDesiredJobType() {
@@ -103,6 +130,14 @@ public class Applicant extends BaseEntity {
         this.languageProficiencies = languageProficiencies;
     }
 
+    public List<Skill> getSkills() {
+        return skills;
+    }
+
+    public void setSkills(List<Skill> skills) {
+        this.skills = skills;
+    }
+
     @Override
     public String toShortString() {
         return this.getId() + ", " + this.getName();
@@ -110,11 +145,13 @@ public class Applicant extends BaseEntity {
 
     @Override
     public String toString() {
-        return "Applicant\n" +
-                "|  ID          => " + getId() + ",\n" +
-                "|  Name        => " + name + ",\n" +
-                "|  Email       => " + contactEmail + ",\n" +
-                "|  Desired Job => " + (desiredJobType != null ? desiredJobType : "N/A") + ",\n" +
-                "|  Location    => " + (location != null ? location.toString() : "N/A");
+        return "Applicant\n"
+                + "|  ID          => " + getId() + ",\n"
+                + "|  Name        => " + name + ",\n"
+                + "|  Email       => " + contactEmail + ",\n"
+                + "|  Phone       => " + contactPhone + ",\n"
+                + "|  Desired Job => " + (desiredJobType != null ? desiredJobType : "N/A") + ",\n"
+                + "|  Location    => " + (location != null ? location.toString() : "N/A");
     }
+
 }

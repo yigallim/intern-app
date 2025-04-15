@@ -5,6 +5,7 @@ import com.tarumt.dao.Initializer;
 import com.tarumt.entity.BaseEntity;
 import com.tarumt.entity.Company;
 import com.tarumt.entity.JobPosting;
+import com.tarumt.utility.common.Context;
 import com.tarumt.utility.common.Input;
 import com.tarumt.utility.common.Log;
 import com.tarumt.utility.common.Menu;
@@ -13,33 +14,82 @@ import com.tarumt.utility.search.FuzzySearch;
 import com.tarumt.utility.validation.*;
 
 import java.lang.reflect.Field;
-import java.util.List;
-import java.util.Set;
+
+import com.tarumt.adt.list.List;
+import com.tarumt.adt.set.Set;
 
 public class JobPostingUI {
+
+    private final QualificationUI qualificationUI;
 
     private final Input input;
 
     public JobPostingUI(Input input) {
         this.input = input;
+        this.qualificationUI = new QualificationUI(); // instantiate it
+
     }
 
-    public void menu(JobPostingService service) {
+    public void menu() {
+        JobPostingService jobPostingService = JobPostingService.getInstance();
+
         new Menu()
-                .banner("Job Posting")
                 .header("==> Manage Job Posting <==")
                 .choice(
-                        new Menu.Choice("🆕 Create Job Posting", service::create),
-                        new Menu.Choice("📋 Display Job Posting", service::read),
-                        new Menu.Choice("🔍 Search Job Posting", service::search),
-                        new Menu.Choice("📂 Filter Job Posting", service::filter),
-                        new Menu.Choice("🔃 Update Job Posting", service::update),
-                        new Menu.Choice("❌ Delete Job Posting", service::delete),
-                        new Menu.Choice("📈 Generate Report", service::report)
+                        new Menu.Choice("🆕 Create Job Posting", jobPostingService::create),
+                        new Menu.Choice("📋 Display Job Posting", jobPostingService::read),
+                        new Menu.Choice("🔍 Search Job Posting", jobPostingService::search),
+                        new Menu.Choice("📂 Filter Job Posting", jobPostingService::filter),
+                        new Menu.Choice("🔃 Update Job Posting", jobPostingService::update),
+                        new Menu.Choice("❌ Delete Job Posting", jobPostingService::delete),
+                        new Menu.Choice("📈 Generate Report", jobPostingService::report)
                 )
                 .exit("<Return to Main Menu>")
                 .beforeEach(System.out::println)
                 .afterEach(System.out::println)
+                .run();
+    }
+
+    // For updateJobMode method, we need to modify it to get the singleton instance
+    public void updateJobMode(String id) {
+        JobPostingService service = JobPostingService.getInstance();
+        System.out.println();
+        new Menu()
+                .header("Select Update Mode ==>")
+                .choice(
+                        new Menu.Choice("Update Job Title", () -> service.updateJobTitle(id)),
+                        new Menu.Choice("Update Job Company", () -> service.updateJobCompany(id)),
+                        new Menu.Choice("Update Salary Range", () -> service.updateSalaryRange(id)),
+                        new Menu.Choice("Update Description", () -> service.updateDescription(id)),
+                        new Menu.Choice("Update Job Type", () -> service.updateJobType(id)),
+                        new Menu.Choice("Update Status", () -> service.updateStatus(id)),
+                        new Menu.Choice("Update All Fields", () -> service.updateAllField(id))
+                )
+                .exit("<Return>")
+                .beforeEach(System.out::println)
+                .afterEach(System.out::println)
+                .run();
+    }
+
+    // For deleteMenu method, we need to modify it to get the singleton instance
+    public void deleteMenu(List<JobPosting> jobPostings) {
+        JobPostingService service = JobPostingService.getInstance();
+        if (jobPostings == null || jobPostings.isEmpty()) {
+            Log.info("No job posting to delete");
+            return;
+        }
+        new Menu()
+                .header("<== Delete Job Posting ==>")
+                .choice(
+                        new Menu.Choice("Delete By Index", service::deleteByIndex),
+                        new Menu.Choice("Delete By Index Range", service::deleteByRange),
+                        new Menu.Choice("Delete By ID", service::deleteById),
+                        new Menu.Choice("Delete All", service::deleteAll)
+                )
+                .exit("<Return>")
+                .beforeEach(System.out::println)
+                .afterEach(System.out::println)
+                .terminate(jobPostings::isEmpty)
                 .run();
     }
 
@@ -68,13 +118,14 @@ public class JobPostingUI {
         return false;
     }
 
-    public void displayAllJobs(List<JobPosting> jobPostings) {
+    public void printAllJobs(List<JobPosting> jobPostings) {
         if (jobPostings == null || jobPostings.isEmpty()) {
             Log.info("No job postings to display");
             return;
         }
         Log.info("Displaying " + jobPostings.size() + " job postings");
-        TabularPrint.printTabular(jobPostings, true, "default");
+        String[] excludeKeys = Context.isAdmin() ? new String[]{"default"} : new String[]{"default", "employer"};
+        TabularPrint.printTabular(jobPostings, true, excludeKeys);
         input.clickAnythingToContinue();
     }
 
@@ -100,7 +151,8 @@ public class JobPostingUI {
         } else {
             System.out.println(matches.size() + " Relevant Results => " + matches + "\n");
             Log.info("Displaying " + matchedJobs.size() + " job postings");
-            TabularPrint.printTabular(matchedJobs, true, matches, "default");
+            String[] excludeKeys = Context.isAdmin() ? new String[]{"default"} : new String[]{"default", "employer"};
+            TabularPrint.printTabular(matchedJobs, true, matches, excludeKeys);
             input.clickAnythingToContinue();
         }
         System.out.println();
@@ -121,7 +173,9 @@ public class JobPostingUI {
                 .regex("^(\\d+)-(\\d+)$", "Invalid format, please input in correct format <min>-<max> (e.g., 1500-3000), and no negative values")
                 .custom(value -> {
                     String[] parts = ((String) value).split("-");
-                    if (parts.length != 2) return false;
+                    if (parts.length != 2) {
+                        return false;
+                    }
                     int min = Integer.parseInt(parts[0]);
                     int max = Integer.parseInt(parts[1]);
                     return min <= max;
@@ -143,18 +197,18 @@ public class JobPostingUI {
     public JobPosting.Status getJobPostingStatus() {
         return input.getEnum("|\n| Job Status => ", JobPosting.Status.class, 20);
     }
-    
-    public void printUpdateMessage(String fieldName) {
+
+    public void printUpdateFieldMessage(String fieldName) {
         System.out.println("<== Updating Job Posting '" + fieldName + "' [ X to Exit ] ==>");
     }
-    
+
     public void printUpdateSuccessMessage(JobPosting jobPosting, String fieldName) {
         System.out.println();
         Log.info("Job Posting '" + fieldName + "' updated successfully");
         this.printOriginalJobValue(jobPosting);
         input.clickAnythingToContinue();
     }
-    
+
     public void printUpdateJobMsg(List<JobPosting> jobPosting) {
         if (jobPosting == null || jobPosting.isEmpty()) {
             Log.info("No job postings to update");
@@ -243,9 +297,9 @@ public class JobPostingUI {
         Log.info("Deleted job postings from index " + startIndex + " to " + endIndex);
     }
 
-    public String getJobPostingId(String msg, List<String> ids) {
+    public String getJobPostingId(List<String> ids) {
         StringCondition condition = ConditionFactory.string().enumeration(ids, "ID doesn't exists, try again");
-        return input.getString(msg, condition);
+        return input.getString("| Select Job Posting ID => ", condition);
     }
 
     public boolean confirmDelete() {
@@ -255,5 +309,6 @@ public class JobPostingUI {
     public void printSuccessDeleteAllMsg() {
         System.out.println();
         Log.info("Deleted all job postings");
+        input.clickAnythingToContinue();
     }
 }

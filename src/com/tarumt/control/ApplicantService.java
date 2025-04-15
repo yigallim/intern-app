@@ -13,20 +13,28 @@ import com.tarumt.utility.common.Log;
 import com.tarumt.utility.common.Menu;
 import com.tarumt.utility.search.FuzzySearch;
 
-import java.util.LinkedList;
-import java.util.List;
+import com.tarumt.adt.list.List;
+import com.tarumt.adt.list.DoublyLinkedList;
 
 public class ApplicantService implements Service {
 
-    private List<Applicant> applicants = new LinkedList<>();
+    private static ApplicantService instance;
+    private List<Applicant> applicants = new DoublyLinkedList<>();
     private final ApplicantUI applicantUI;
     private final LocationUI locationUI;
 
-    public ApplicantService() {
+    private ApplicantService() {
         Input input = new Input();
         this.applicants = Initializer.getApplicants();
         this.applicantUI = new ApplicantUI(input);
         this.locationUI = new LocationUI(input);
+    }
+
+    public static ApplicantService getInstance() {
+        if (instance == null) {
+            instance = new ApplicantService();
+        }
+        return instance;
     }
 
     public void accessApplicant() {
@@ -36,13 +44,14 @@ public class ApplicantService implements Service {
 
         if (applicantExists) {
             boolean login = this.loginOrRegister();
-            if (login) applicantUI.accessMenu(this, new CompanyService());
+            if (login)
+                applicantUI.accessMenu();
         }
     }
 
     @Override
     public void run() {
-        this.applicantUI.menu(this);
+        this.applicantUI.menu();
     }
 
     @Override
@@ -51,25 +60,29 @@ public class ApplicantService implements Service {
             applicantUI.printCreateApplicantMsg();
             applicantUI.printNextIDMsg();
             Applicant applicant = getApplicant();
-            if (applicant == null) return;
+            if (applicant == null)
+                return;
             applicants.add(applicant);
             applicantUI.printSuccessCreateApplicantMsg();
-            if (!applicantUI.continueToCreateApplicant()) return;
+            if (!applicantUI.continueToCreateApplicant())
+                return;
         }
     }
 
     @Override
     public void read() {
-        this.applicantUI.displayAllApplicants(applicants);
+        this.applicantUI.printAllApplicants(applicants);
     }
 
     @Override
     public void search() {
         while (true) {
             applicantUI.printSearchApplicantMsg(applicants);
-            if (this.applicants.isEmpty()) return;
+            if (this.applicants.isEmpty())
+                return;
             String query = applicantUI.getSearchApplicantQuery();
-            if (query.equals(Input.STRING_EXIT_VALUE)) return;
+            if (query.equals(Input.STRING_EXIT_VALUE))
+                return;
             FuzzySearch.Result<Applicant> result = FuzzySearch.searchList(Applicant.class, this.applicants, query);
             applicantUI.printSearchResult(result);
         }
@@ -83,51 +96,63 @@ public class ApplicantService implements Service {
     @Override
     public void update() {
         applicantUI.printUpdateApplicantMsg(applicants);
-        if (applicants.isEmpty()) return;
+        if (applicants.isEmpty())
+            return;
 
         List<String> ids = BaseEntity.getIds(applicants);
         String id = applicantUI.getApplicantId("| Select Applicant ID => ", ids);
-        if (id.equals(Input.STRING_EXIT_VALUE)) return;
+        if (id.equals(Input.STRING_EXIT_VALUE))
+            return;
 
         Applicant applicant = BaseEntity.getById(id, applicants);
         applicantUI.printOriginalApplicantValue(applicant);
-        applicantUI.updateApplicantMode(this, applicant.getId());
+        applicantUI.updateApplicantMode(applicant.getId());
     }
 
     @Override
     public void delete() {
-        applicantUI.deleteMenu(this, this.applicants);
+        applicantUI.deleteMenu(this.applicants);
     }
 
     @Override
     public void report() {
-        Log.na();
+        applicantUI.reportMenu();
     }
 
     private Applicant getApplicant() {
         String name = applicantUI.getApplicantName();
-        if (name.equals(Input.STRING_EXIT_VALUE)) return null;
+        if (name.equals(Input.STRING_EXIT_VALUE))
+            return null;
 
         String contactEmail = applicantUI.getApplicantContactEmail();
-        if (contactEmail.equals(Input.STRING_EXIT_VALUE)) return null;
+        if (contactEmail.equals(Input.STRING_EXIT_VALUE))
+            return null;
+
+        String contactPhone = applicantUI.getApplicantContactPhone();
+        if (contactPhone.equals(Input.STRING_EXIT_VALUE))
+            return null;
 
         JobPosting.Type desiredJobType = applicantUI.getApplicantDesiredJobType();
-        if (desiredJobType == null) return null;
+        if (desiredJobType == null)
+            return null;
 
         Location location = locationUI.getLocation();
-        if (location == null) return null;
+        if (location == null)
+            return null;
 
-        return new Applicant(name, contactEmail, desiredJobType, location);
+        return new Applicant(name, contactEmail, contactPhone, desiredJobType, location);
     }
 
     public void updateApplicantName(String id) {
         String fieldName = "Name";
         Applicant applicant = BaseEntity.getById(id, applicants);
-        if (applicant == null) return;
+        if (applicant == null)
+            return;
 
-        applicantUI.printUpdateMessage(fieldName);
+        applicantUI.printUpdateFieldMessage(fieldName);
         String newName = applicantUI.getApplicantName();
-        if (newName.equals(Input.STRING_EXIT_VALUE)) return;
+        if (newName.equals(Input.STRING_EXIT_VALUE))
+            return;
 
         applicant.setName(newName);
         applicantUI.printUpdateSuccessMessage(applicant, fieldName);
@@ -136,24 +161,43 @@ public class ApplicantService implements Service {
     public void updateApplicantContactEmail(String id) {
         String fieldName = "Contact Email";
         Applicant applicant = BaseEntity.getById(id, applicants);
-        if (applicant == null) return;
+        if (applicant == null)
+            return;
 
-        applicantUI.printUpdateMessage(fieldName);
+        applicantUI.printUpdateFieldMessage(fieldName);
         String newEmail = applicantUI.getApplicantContactEmail();
-        if (newEmail.equals(Input.STRING_EXIT_VALUE)) return;
+        if (newEmail.equals(Input.STRING_EXIT_VALUE))
+            return;
 
         applicant.setContactEmail(newEmail);
+        applicantUI.printUpdateSuccessMessage(applicant, fieldName);
+    }
+
+    public void updateApplicantContactPhone(String id) {
+        String fieldName = "Contact Phone";
+        Applicant applicant = BaseEntity.getById(id, applicants);
+        if (applicant == null)
+            return;
+
+        applicantUI.printUpdateFieldMessage(fieldName);
+        String newPhone = applicantUI.getApplicantContactPhone();
+        if (newPhone.equals(Input.STRING_EXIT_VALUE))
+            return;
+
+        applicant.setContactPhone(newPhone);
         applicantUI.printUpdateSuccessMessage(applicant, fieldName);
     }
 
     public void updateApplicantDesiredJobType(String id) {
         String fieldName = "Desired Job Type";
         Applicant applicant = BaseEntity.getById(id, applicants);
-        if (applicant == null) return;
+        if (applicant == null)
+            return;
 
-        applicantUI.printUpdateMessage(fieldName);
+        applicantUI.printUpdateFieldMessage(fieldName);
         JobPosting.Type newJobType = applicantUI.getApplicantDesiredJobType();
-        if (newJobType == null) return;
+        if (newJobType == null)
+            return;
 
         applicant.setDesiredJobType(newJobType);
         applicantUI.printUpdateSuccessMessage(applicant, fieldName);
@@ -162,44 +206,60 @@ public class ApplicantService implements Service {
     public void updateApplicantLocation(String id) {
         String fieldName = "Location";
         Applicant applicant = BaseEntity.getById(id, applicants);
-        if (applicant == null) return;
+        if (applicant == null)
+            return;
 
-        applicantUI.printUpdateMessage(fieldName);
+        applicantUI.printUpdateFieldMessage(fieldName);
         Location newLocation = locationUI.getLocation();
-        if (newLocation == null) return;
+        if (newLocation == null)
+            return;
 
         applicant.setLocation(newLocation);
         applicantUI.printUpdateSuccessMessage(applicant, fieldName);
     }
 
     public void updateAllFields(String id) {
-        final String fieldName = "All Fields";
+        String fieldName = "All Fields";
         Applicant applicant = BaseEntity.getById(id, applicants);
-        applicantUI.printUpdateMessage(fieldName);
+        if (applicant == null)
+            return;
 
-        String name = applicantUI.getApplicantName();
-        if (name.equals(Input.STRING_EXIT_VALUE)) return;
+        applicantUI.printUpdateFieldMessage(fieldName);
 
-        String contactEmail = applicantUI.getApplicantContactEmail();
-        if (contactEmail.equals(Input.STRING_EXIT_VALUE)) return;
+        String newName = applicantUI.getApplicantName();
+        if (newName.equals(Input.STRING_EXIT_VALUE))
+            return;
 
-        JobPosting.Type desiredJobType = applicantUI.getApplicantDesiredJobType();
-        if (desiredJobType == null) return;
+        String newEmail = applicantUI.getApplicantContactEmail();
+        if (newEmail.equals(Input.STRING_EXIT_VALUE))
+            return;
 
-        Location location = locationUI.getLocation();
-        if (location == null) return;
+        String newPhone = applicantUI.getApplicantContactPhone();
+        if (newPhone.equals(Input.STRING_EXIT_VALUE))
+            return;
 
-        applicant.setName(name);
-        applicant.setContactEmail(contactEmail);
-        applicant.setDesiredJobType(desiredJobType);
-        applicant.setLocation(location);
+        JobPosting.Type newDesiredJobType = applicantUI.getApplicantDesiredJobType();
+        if (newDesiredJobType == null)
+            return;
+
+        Location newLocation = locationUI.getLocation();
+        if (newLocation == null)
+            return;
+
+        applicant.setName(newName);
+        applicant.setContactEmail(newEmail);
+        applicant.setContactPhone(newPhone);
+        applicant.setDesiredJobType(newDesiredJobType);
+        applicant.setLocation(newLocation);
+
         applicantUI.printUpdateSuccessMessage(applicant, fieldName);
     }
 
     public void deleteByIndex() {
         applicantUI.printDeleteByIndexMsg();
         int index = applicantUI.getApplicantIndex(applicants.size());
-        if (index == Input.INT_EXIT_VALUE) return;
+        if (index == Input.INT_EXIT_VALUE)
+            return;
         if (applicantUI.confirmDelete()) {
             Applicant applicant = applicants.remove(index - 1);
             applicantUI.printSuccessDeleteMsg(applicant.getId());
@@ -209,12 +269,15 @@ public class ApplicantService implements Service {
     public void deleteByRange() {
         applicantUI.printDeleteByRangeMsg();
         int startIndex = applicantUI.getDeleteStartIndex(applicants.size());
-        if (startIndex == Input.INT_EXIT_VALUE) return;
+        if (startIndex == Input.INT_EXIT_VALUE)
+            return;
         int endIndex = applicantUI.getDeleteEndIndex(startIndex, applicants.size());
-        if (endIndex == Input.INT_EXIT_VALUE) return;
+        if (endIndex == Input.INT_EXIT_VALUE)
+            return;
         if (endIndex >= startIndex) {
             if (applicantUI.confirmDelete()) {
-                applicants.subList(startIndex - 1, endIndex).clear();
+                List<Applicant> toRemove = applicants.subList(startIndex - 1, endIndex);
+                applicants.removeAll(toRemove);
                 applicantUI.printSuccessDeleteByRangeMsg(startIndex, endIndex);
             }
         }
@@ -224,7 +287,8 @@ public class ApplicantService implements Service {
         applicantUI.printDeleteByIdMsg();
         List<String> ids = BaseEntity.getIds(applicants);
         String id = applicantUI.getApplicantId("| Select Applicant ID => ", ids);
-        if (id.equals(Input.STRING_EXIT_VALUE)) return;
+        if (id.equals(Input.STRING_EXIT_VALUE))
+            return;
         if (applicantUI.confirmDelete()) {
             Applicant applicant = BaseEntity.getById(id, applicants);
             applicants.remove(applicant);
@@ -246,7 +310,7 @@ public class ApplicantService implements Service {
 
     public boolean loginOrRegister() {
         try {
-            this.applicantUI.loginOrRegisterMenu(this);
+            this.applicantUI.loginOrRegisterMenu();
         } catch (Menu.ExitMenuException ex) {
             return true;
         }
@@ -267,11 +331,35 @@ public class ApplicantService implements Service {
         }
     }
 
-    public void accessJobApplicationMenu() {
-        this.applicantUI.jobApplicationMenu(new JobPostingService());
+    public void exploreJobsAndCompanies() {
+        this.applicantUI.exploreJobsAndCompaniesMenu();
+    }
+
+    public void manageProfile() {
+        this.applicantUI.manageProfileMenu();
     }
 
     public void displayProfile() {
-        System.out.println(Context.getApplicant());
+        this.applicantUI.printProfile(true);
+    }
+
+    public void updateProfile() {
+        Applicant applicant = Context.getApplicant();
+        this.applicantUI.printProfile(false);
+        applicantUI.updateApplicantMode(applicant.getId());
+    }
+
+    public void deleteProfile() {
+        Applicant applicant = Context.getApplicant();
+        if (applicant == null)
+            return;
+            
+        applicantUI.printDeleteProfileMsg();
+        if (applicantUI.confirmDeleteProfile()) {
+            applicants.remove(applicant);
+            applicantUI.printSuccessDeleteProfileMsg();
+            Context.setApplicant(null);
+            throw new Menu.ExitMenuException();
+        }
     }
 }

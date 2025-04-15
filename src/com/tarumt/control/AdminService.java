@@ -4,32 +4,33 @@ import com.tarumt.boundary.AdminUI;
 import com.tarumt.utility.common.Input;
 
 public class AdminService {
+    private static AdminService instance;
     private final AdminUI adminUI;
-    private final CompanyService companyService;
-    private final JobPostingService jobPostingService;
-    private final ApplicantService applicantService;
 
-    public AdminService() {
-        Input input = new Input();
-        this.adminUI = new AdminUI(input);
-        this.companyService = new CompanyService();
-        this.jobPostingService = new JobPostingService();
-        this.applicantService = new ApplicantService();
+    private AdminService() {
+        this.adminUI = new AdminUI();
+    }
+
+    public static AdminService getInstance() {
+        if (instance == null) {
+            instance = new AdminService();
+        }
+        return instance;
     }
 
     public void run() {
-        this.adminUI.menu(this);
+        this.adminUI.menu();
     }
 
     public void manageCompany() {
-        this.companyService.run();
+        CompanyService.getInstance().run();
     }
 
     public void manageJob() {
-        this.jobPostingService.run();
+        JobPostingService.getInstance().run();
     }
 
     public void manageApplicant() {
-        this.applicantService.run();
+        ApplicantService.getInstance().run();
     }
 }

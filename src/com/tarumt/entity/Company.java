@@ -90,12 +90,12 @@ public class Company extends BaseEntity {
     @Override
     public String toString() {
         return "Company\n" +
-                "|  ID           => " + getId() + ",\n" +
-                "|  Name         => " + name + ",\n" +
-                "|  Description  => " + description + ",\n" +
-                "|  Location     => " + (location != null ? location.toString() : "N/A") + ",\n" +
-                "|  Contact Email=> " + contactEmail + ",\n" +
-                "|  Contact Phone=> " + contactPhone;
+                "|  ID            => " + getId() + ",\n" +
+                "|  Name          => " + name + ",\n" +
+                "|  Description   => " + description + ",\n" +
+                "|  Location      => " + (location != null ? location.toString() : "N/A") + ",\n" +
+                "|  Contact Email => " + contactEmail + ",\n" +
+                "|  Contact Phone => " + contactPhone;
     }
 
 }

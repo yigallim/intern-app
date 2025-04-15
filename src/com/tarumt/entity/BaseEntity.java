@@ -2,9 +2,10 @@ package com.tarumt.entity;
 
 import java.io.Serializable;
 import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
+
+import com.tarumt.adt.list.List;
+import com.tarumt.adt.list.DoublyLinkedList;
 
 public abstract class BaseEntity implements Serializable {
     private final String id;
@@ -52,7 +53,7 @@ public abstract class BaseEntity implements Serializable {
     }
 
     public static <T extends BaseEntity> List<String> getIds(List<T> entities) {
-        List<String> ids = new LinkedList<>();
+        List<String> ids = new DoublyLinkedList<>();
         for (T entity : entities) ids.add(entity.getId());
         return ids;
     }

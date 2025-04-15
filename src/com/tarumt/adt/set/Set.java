@@ -1,8 +1,10 @@
-package com.tarumt.adt;
+package com.tarumt.adt.set;
+
+import com.tarumt.adt.Collection;
 
 import java.util.Iterator;
 
-public interface Collection<E> extends Iterable<E> {
+public interface Set<E> extends Collection<E> {
     int size();
 
     boolean isEmpty();
@@ -29,4 +31,3 @@ public interface Collection<E> extends Iterable<E> {
 
     int hashCode();
 }
-

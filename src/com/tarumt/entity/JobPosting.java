@@ -11,19 +11,26 @@ import com.tarumt.utility.validation.annotation.Max;
 import com.tarumt.utility.validation.annotation.Min;
 
 import java.time.LocalDate;
-import java.util.List;
 
+import com.tarumt.adt.list.List;
+import com.tarumt.entity.qualification.EducationLevel;
+import com.tarumt.entity.qualification.LanguageProficiency;
+import com.tarumt.entity.qualification.Skill;
+import com.tarumt.entity.qualification.WorkExperience;
+
+// TODO : CLOSED job cant be updated or displayed, FILLED job can be reopen and displayed
 public class JobPosting extends BaseEntity {
+
     static {
         BaseEntity.registerPrefix(JobPosting.class, "j");
     }
-
     @Min(3)
     @Max(30)
     @Fuzzy
     @OutputLength(28)
     private String title;
     @Fuzzy
+    @ExcludeKey("employer")
     private Company company;
     @ExcludeKey("default")
     private int salaryMin;
@@ -38,7 +45,13 @@ public class JobPosting extends BaseEntity {
     @OutputLength(34)
     private Type type;
     @ExcludeKey("default")
-    private List<Qualification> qualifications;
+    private EducationLevel educationLevel;
+    @ExcludeKey("default")
+    private List<WorkExperience> workExperiences;
+    @ExcludeKey("default")
+    private List<LanguageProficiency> languageProficiencies;
+    @ExcludeKey("default")
+    private List<Skill> skills;
     @OutputLength(8)
     private Status status;
     @OutputLength(12)
@@ -46,14 +59,17 @@ public class JobPosting extends BaseEntity {
     @OutputLength(12)
     private LocalDate updatedAt;
 
-    public JobPosting(String title, Company company, int salaryMin, int salaryMax, String description, Type type, List<Qualification> qualifications, Status status, LocalDate createdAt, LocalDate updatedAt) {
+    public JobPosting(String title, Company company, int salaryMin, int salaryMax, String description, Type type, EducationLevel educationLevel, List<WorkExperience> workExperiences, List<LanguageProficiency> languageProficiencies, List<Skill> skills, Status status, LocalDate createdAt, LocalDate updatedAt) {
         this.title = title;
         this.company = company;
         this.salaryMin = salaryMin;
         this.salaryMax = salaryMax;
         this.description = description;
         this.type = type;
-        this.qualifications = qualifications;
+        this.educationLevel = educationLevel;
+        this.workExperiences = workExperiences;
+        this.languageProficiencies = languageProficiencies;
+        this.skills = skills;
         this.status = status;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
@@ -100,9 +116,8 @@ public class JobPosting extends BaseEntity {
     }
 
     public enum Status {
-        OPEN,
-        CLOSED,
-        FILLED;
+        OPEN, // Applicant able to view and apply
+        FILLED; // Applicant able to view, can't apply
 
         @Override
         public String toString() {
@@ -114,8 +129,11 @@ public class JobPosting extends BaseEntity {
     @ColumnIndex(3)
     @Computed("Salary")
     private String computedSalaryRange() {
-        if (salaryMin == salaryMax) return Integer.toString(this.salaryMin);
-        else return this.salaryMin + "-" + this.salaryMax;
+        if (salaryMin == salaryMax) {
+            return Integer.toString(this.salaryMin);
+        } else {
+            return this.salaryMin + "-" + this.salaryMax;
+        }
     }
 
     public String getTitle() {
@@ -166,14 +184,6 @@ public class JobPosting extends BaseEntity {
         this.type = type;
     }
 
-    public List<Qualification> getQualifications() {
-        return qualifications;
-    }
-
-    public void setQualifications(List<Qualification> qualifications) {
-        this.qualifications = qualifications;
-    }
-
     public Status getStatus() {
         return status;
     }
@@ -198,6 +208,38 @@ public class JobPosting extends BaseEntity {
         this.updatedAt = updatedAt;
     }
 
+    public EducationLevel getEducationLevel() {
+        return educationLevel;
+    }
+
+    public void setEducationLevel(EducationLevel educationLevel) {
+        this.educationLevel = educationLevel;
+    }
+
+    public List<WorkExperience> getWorkExperiences() {
+        return workExperiences;
+    }
+
+    public void setWorkExperiences(List<WorkExperience> workExperiences) {
+        this.workExperiences = workExperiences;
+    }
+
+    public List<LanguageProficiency> getLanguageProficiencies() {
+        return languageProficiencies;
+    }
+
+    public void setLanguageProficiencies(List<LanguageProficiency> languageProficiencies) {
+        this.languageProficiencies = languageProficiencies;
+    }
+
+    public List<Skill> getSkills() {
+        return skills;
+    }
+
+    public void setSkills(List<Skill> skills) {
+        this.skills = skills;
+    }
+
     @Override
     public String toShortString() {
         return this.getId() + ", " + this.getTitle();
@@ -205,16 +247,15 @@ public class JobPosting extends BaseEntity {
 
     @Override
     public String toString() {
-        return "Job Posting\n" +
-                "|  ID           => " + getId() + ",\n" +
-                "|  Title        => " + title + ",\n" +
-                "|  Company      => " + (company != null ? company.toShortString() : "N/A") + ",\n" +
-                "|  Salary Range => " + computedSalaryRange() + ",\n" +
-                "|  Description  => " + description + ",\n" +
-                "|  Type         => " + (type != null ? type.toString() : "N/A") + ",\n" +
-                "|  Status       => " + (status != null ? status.toString() : "N/A") + ",\n" +
-                "|  Created At   => " + (createdAt != null ? createdAt.toString() : "N/A") + ",\n" +
-                "|  Updated At   => " + (updatedAt != null ? updatedAt.toString() : "N/A");
+        return "Job Posting\n"
+                + "|  ID           => " + getId() + ",\n"
+                + "|  Title        => " + title + ",\n"
+                + "|  Company      => " + (company != null ? company.toShortString() : "N/A") + ",\n"
+                + "|  Salary Range => " + computedSalaryRange() + ",\n"
+                + "|  Description  => " + description + ",\n"
+                + "|  Type         => " + (type != null ? type.toString() : "N/A") + ",\n"
+                + "|  Status       => " + (status != null ? status.toString() : "N/A") + ",\n"
+                + "|  Created At   => " + (createdAt != null ? createdAt.toString() : "N/A") + ",\n"
+                + "|  Updated At   => " + (updatedAt != null ? updatedAt.toString() : "N/A");
     }
-
 }

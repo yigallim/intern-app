@@ -3,13 +3,13 @@ package com.tarumt.utility.pretty;
 import com.tarumt.entity.BaseEntity;
 import com.tarumt.utility.common.Strings;
 
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
+
+import com.tarumt.adt.set.Set;
+import com.tarumt.adt.list.List;
+import com.tarumt.adt.list.DoublyLinkedList;
 
 public class TabularPrint {
 
@@ -98,12 +98,20 @@ public class TabularPrint {
             return text;
         }
 
-        List<String> sortedHighlights = new LinkedList<>(highlight);
+        List<String> sortedHighlights = new DoublyLinkedList<>(highlight);
         sortedHighlights.sort((a, b) -> Integer.compare(b.length(), a.length()));
 
-        String patternString = sortedHighlights.stream()
-                .map(Pattern::quote)
-                .collect(Collectors.joining("|"));
+        List<String> quotedHighlights = sortedHighlights.map(Pattern::quote);
+        StringBuilder builder = new StringBuilder();
+        boolean first = true;
+        for (String quoted : quotedHighlights) {
+            if (!first) {
+                builder.append("|");
+            }
+            builder.append(quoted);
+            first = false;
+        }
+        String patternString = builder.toString();
         Pattern pattern = Pattern.compile("(?i)(" + patternString + ")");
         Matcher matcher = pattern.matcher(text);
         StringBuffer sb = new StringBuffer();
