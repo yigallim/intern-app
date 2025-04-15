@@ -1,11 +1,14 @@
 package com.tarumt.utility.common;
 
+import com.tarumt.entity.BaseEntity;
 import com.tarumt.utility.pretty.EnumPrint;
 import com.tarumt.utility.validation.*;
 
-import java.util.List;
 import java.util.Scanner;
-import java.util.function.BiFunction;
+
+import com.tarumt.adt.function.SingleArgLambda;
+import com.tarumt.adt.function.DualArgLambda;
+import com.tarumt.adt.list.ListInterface;
 
 public class Input {
     private final Scanner scanner;
@@ -113,12 +116,12 @@ public class Input {
     }
 
     @SuppressWarnings("unchecked")
-    public <T> T getEnum(String message, Class<T> enumType, BiFunction<Integer, Integer, String> customMessage) {
+    public <T> T getEnum(String message, Class<T> enumType, DualArgLambda<Integer, Integer, String> customMessage) {
         return getEnum(message, enumType, customMessage, 32);
     }
 
     @SuppressWarnings("unchecked")
-    public <T> T getEnum(String message, Class<T> enumType, BiFunction<Integer, Integer, String> customMessage, int columnWidth) {
+    public <T> T getEnum(String message, Class<T> enumType, DualArgLambda<Integer, Integer, String> customMessage, int columnWidth) {
         Object[] constants = enumType.getEnumConstants();
         System.out.println(message);
         EnumPrint.multiColumnPrint(constants, 3, "| ", "", columnWidth);
@@ -136,56 +139,36 @@ public class Input {
         return (T) constants[choice - 1];
     }
 
-    @SuppressWarnings("unchecked")
-    public <T extends Enum<T>> T getEnum(String message, List<T> subset) {
-        return getEnum(message, subset, (min, max) -> "Choose an option [" + min + "-" + max + "] => ", 32);
-    }
-
-    @SuppressWarnings("unchecked")
-    public <T extends Enum<T>> T getEnum(String message, List<T> subset, BiFunction<Integer, Integer, String> customMessage) {
-        return getEnum(message, subset, customMessage, 32);
-    }
-
-    @SuppressWarnings("unchecked")
-    public <T extends Enum<T>> T getEnum(String message, List<T> subset, BiFunction<Integer, Integer, String> customMessage, int columnWidth) {
-        if (subset == null || subset.isEmpty()) {
-            System.out.println(message);
-            System.out.println("No options available!");
-            return null;
-        }
-
-        System.out.println(message);
-
-        Enum<?>[] enumArray = subset.toArray(new Enum<?>[0]);
-        EnumPrint.multiColumnPrint(enumArray, 3, "| ", "", columnWidth);
-
-        int min = 1;
-        int max = subset.size();
-
-        IntegerCondition condition = ConditionFactory.integer().min(min).max(max);
-
-        int choice = this.getInt(customMessage.apply(min, max), condition);
-        if (exitKeyEnabled && choice == INT_EXIT_VALUE) {
-            return null;
-        }
-
-        this.reloadExitKey();
-        return (T) subset.get(choice - 1);
-    }
-
-    public <T> T getObjectFromList(String message, List<T> options) {
+    public <T> T getObjectFromList(String message, ListInterface<T> options) {
         return getObjectFromList(message, options, 32);
     }
 
-    public <T> T getObjectFromList(String message, List<T> options, int columnWidth) {
+    public <T> T getObjectFromList(String message, ListInterface<T> options, int columnWidth) {
         return getObjectFromList(message, options, (min, max) -> "Choose an option [" + min + "-" + max + "] => ", columnWidth);
     }
 
-    public <T> T getObjectFromList(String message, List<T> options, BiFunction<Integer, Integer, String> customMessage) {
+    public <T> T getObjectFromList(String message, ListInterface<T> options, DualArgLambda<Integer, Integer, String> customMessage) {
         return getObjectFromList(message, options, customMessage, 32);
     }
 
-    public <T> T getObjectFromList(String message, List<T> options, BiFunction<Integer, Integer, String> customMessage, int columnWidth) {
+    public <T> T getObjectFromList(String message, ListInterface<T> options, DualArgLambda<Integer, Integer, String> customMessage, int columnWidth) {
+        return getObjectFromList(message, options, customMessage, columnWidth, item ->
+                item instanceof BaseEntity ? ((BaseEntity) item).toShortString() : item.toString());
+    }
+
+    public <T> T getObjectFromList(String message, ListInterface<T> options, SingleArgLambda<T, String> formatter) {
+        return getObjectFromList(message, options, 32, formatter);
+    }
+
+    public <T> T getObjectFromList(String message, ListInterface<T> options, int columnWidth, SingleArgLambda<T, String> formatter) {
+        return getObjectFromList(message, options, (min, max) -> "Choose an option [" + min + "-" + max + "] => ", columnWidth, formatter);
+    }
+
+    public <T> T getObjectFromList(String message, ListInterface<T> options, DualArgLambda<Integer, Integer, String> customMessage, SingleArgLambda<T, String> formatter) {
+        return getObjectFromList(message, options, customMessage, 32, formatter);
+    }
+
+    public <T> T getObjectFromList(String message, ListInterface<T> options, DualArgLambda<Integer, Integer, String> customMessage, int columnWidth, SingleArgLambda<T, String> formatter) {
         if (options == null || options.isEmpty()) {
             System.out.println(message);
             System.out.println("No options available!");
@@ -193,7 +176,7 @@ public class Input {
         }
 
         System.out.println(message);
-        EnumPrint.multiColumnPrint(options.toArray(), 3, "| ", "", columnWidth);
+        EnumPrint.multiColumnPrint(options, 3, "| ", "", columnWidth, formatter);
 
         int min = 1, max = options.size();
         IntegerCondition condition = ConditionFactory.integer().min(min).max(max);

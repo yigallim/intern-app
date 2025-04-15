@@ -3,8 +3,8 @@ package com.tarumt.test;
 import com.tarumt.utility.validation.Condition;
 import com.tarumt.utility.validation.ConditionFactory;
 
-import java.util.LinkedList;
-import java.util.Arrays;
+import com.tarumt.adt.list.DoublyLinkedList;
+import com.tarumt.adt.list.Arrays;
 
 public class ValidationTest {
     public static void main(String[] args) {
@@ -59,10 +59,10 @@ public class ValidationTest {
         String msg10 = condition.safeValidate("abc");
         System.out.println("Value = \"abc\"   => " + msg10);
 
-        String msg11 = ConditionFactory.integer().enumeration(new LinkedList<Integer>(Arrays.asList(1, 2, 3, 4, 5))).safeValidate(1);
+        String msg11 = ConditionFactory.integer().enumeration(new DoublyLinkedList<Integer>(Arrays.asList(1, 2, 3, 4, 5))).safeValidate(1);
         System.out.println("Value = 1   => " + msg11);
 
-        String msg12 = ConditionFactory.integer().enumeration(new LinkedList<Integer>(Arrays.asList(1, 2, 3, 4, 5))).safeValidate("1");
+        String msg12 = ConditionFactory.integer().enumeration(new DoublyLinkedList<Integer>(Arrays.asList(1, 2, 3, 4, 5))).safeValidate("1");
         System.out.println("Value = \"1\"   => " + msg12);
     }
 

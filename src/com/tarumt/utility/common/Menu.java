@@ -1,48 +1,70 @@
 package com.tarumt.utility.common;
 
+import com.tarumt.adt.list.Arrays;
+import com.tarumt.adt.function.ProviderLambda;
 import com.tarumt.utility.pretty.banana.BananaUtils;
-import com.tarumt.utility.pretty.banana.Font;
 import com.tarumt.utility.validation.IntegerCondition;
 
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.function.BooleanSupplier;
+import java.util.Objects;
+
+import com.tarumt.adt.list.ListInterface;
+import com.tarumt.adt.list.DoublyLinkedList;
 
 public class Menu {
-
     private final Input input = new Input();
-    private final List<Choice> choices = new LinkedList<>();
-    private String banner = "";
-    private String header = "";
-    private String footer = "";
-    private String exitLabel;
+    private final ListInterface<Choice> choices = new DoublyLinkedList<>();
+    private ProviderLambda<String> bannerProvider = () -> "";
+    private ProviderLambda<String> headerProvider = () -> "";
+    private ProviderLambda<String> footerProvider = () -> "";
+    private ProviderLambda<String> exitLabelProvider;
     private Runnable beforeEachRunnable;
     private Runnable afterEachRunnable;
-    private BooleanSupplier terminationCondition;
+    private ProviderLambda<Boolean> terminationCondition;
 
     public Menu banner(String banner) {
-        this.banner = banner;
+        this.bannerProvider = () -> banner;
+        return this;
+    }
+
+    public Menu banner(ProviderLambda<String> bannerProvider) {
+        this.bannerProvider = bannerProvider;
         return this;
     }
 
     public Menu header(String header) {
-        this.header += header;
+        String currentHeader = this.headerProvider.get();
+        this.headerProvider = () -> currentHeader + header;
+        return this;
+    }
+
+    public Menu header(ProviderLambda<String> headerProvider) {
+        String currentHeader = this.headerProvider.get();
+        this.headerProvider = () -> currentHeader + headerProvider.get();
         return this;
     }
 
     public Menu choice(Choice... choices) {
-        this.choices.addAll(Arrays.asList(choices));
+        this.choices.merge(Arrays.asList(choices).filter(Objects::nonNull));
         return this;
     }
 
     public Menu footer(String footer) {
-        this.footer = footer;
+        this.footerProvider = () -> footer;
+        return this;
+    }
+
+    public Menu footer(ProviderLambda<String> footerProvider) {
+        this.footerProvider = footerProvider;
         return this;
     }
 
     public Menu exit(String exitLabel) {
-        this.exitLabel = exitLabel;
+        this.exitLabelProvider = () -> exitLabel;
+        return this;
+    }
+
+    public Menu exit(ProviderLambda<String> exitLabelProvider) {
+        this.exitLabelProvider = exitLabelProvider;
         return this;
     }
 
@@ -57,8 +79,15 @@ public class Menu {
     }
 
     private void printMenu() {
-        if (banner != null && !banner.isEmpty()) System.out.println(BananaUtils.bananaify(this.banner + " >>>"));
-        if (header != null && !header.isEmpty()) System.out.println(header);
+        String banner = bannerProvider.get();
+        String header = headerProvider.get();
+        String footer = footerProvider.get();
+        String exitLabel = exitLabelProvider.get();
+
+        if (banner != null && !banner.isEmpty())
+            System.out.println(BananaUtils.bananaify(banner + " >>>"));
+        if (header != null && !header.isEmpty())
+            System.out.println(header);
 
         int index = 1;
         for (Choice choice : choices) {
@@ -67,7 +96,8 @@ public class Menu {
         }
         printLabel(index, exitLabel);
 
-        if (footer != null && !footer.isEmpty()) System.out.println(footer);
+        if (footer != null && !footer.isEmpty())
+            System.out.println(footer);
 
         System.out.println();
     }
@@ -76,15 +106,15 @@ public class Menu {
         System.out.println(index + ". " + label);
     }
 
-    private List<Integer> getNumRange() {
-        LinkedList<Integer> list = new LinkedList<>();
+    private ListInterface<Integer> getNumRange() {
+        DoublyLinkedList<Integer> list = new DoublyLinkedList<>();
         for (int i = 1; i <= choices.size() + 1; i++) {
             list.add(i);
         }
         return list;
     }
 
-    public Menu terminate(BooleanSupplier condition) {
+    public Menu terminate(ProviderLambda<Boolean> condition) {
         this.terminationCondition = condition;
         return this;
     }
@@ -111,7 +141,7 @@ public class Menu {
             }
             choice.execute();
 
-            if (terminationCondition != null && terminationCondition.getAsBoolean()) {
+            if (terminationCondition != null && terminationCondition.get()) {
                 break;
             }
 

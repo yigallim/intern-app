@@ -52,9 +52,10 @@ public class Log {
     }
 
     private static void writeLog(String level, String message) {
+        String coloredLevel = highlightLevel("[" + level + "]", level);
+        String coloredMessage = highlightLevel(message, level);
 
-        String consoleLog = String.format("[%s] %s", level, message);
-        System.out.println(consoleLog);
+        System.out.printf("%s %s%n", coloredLevel, coloredMessage);
 
         String timestamp = LocalDateTime.now().format(FORMATTER);
         String fileLog = String.format("%s [%s] %s", timestamp, level, message);
@@ -62,9 +63,21 @@ public class Log {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(LOG_FILE, true))) {
             writer.write(fileLog);
             writer.newLine();
-            writer.flush();
         } catch (IOException ex) {
             System.err.println("[ERROR] Failed to write log: " + ex.getMessage());
+        }
+    }
+
+    private static String highlightLevel(String text, String level) {
+        switch (level) {
+            case "INFO":
+                return Strings.infoHighlight(text);
+            case "WARN":
+                return Strings.warnHighlight(text);
+            case "ERROR":
+                return Strings.errorHighlight(text);
+            default:
+                return text;
         }
     }
 }

@@ -11,12 +11,13 @@ import com.tarumt.utility.validation.annotation.Max;
 import com.tarumt.utility.validation.annotation.Min;
 
 import java.time.LocalDate;
-import java.util.List;
 
+import com.tarumt.adt.list.ListInterface;
+
+// TODO : CLOSED job cant be updated or displayed, FILLED job can be reopen and displayed
 public class JobPosting extends BaseEntity {
-    static {
-        BaseEntity.registerPrefix(JobPosting.class, "j");
-    }
+    private static final String PREFIX = "j";
+    private static int counter = 1;
 
     @Min(3)
     @Max(30)
@@ -24,6 +25,7 @@ public class JobPosting extends BaseEntity {
     @OutputLength(28)
     private String title;
     @Fuzzy
+    @ExcludeKey("employer")
     private Company company;
     @ExcludeKey("default")
     private int salaryMin;
@@ -38,7 +40,7 @@ public class JobPosting extends BaseEntity {
     @OutputLength(34)
     private Type type;
     @ExcludeKey("default")
-    private List<Qualification> qualifications;
+    private ListInterface<Qualification> qualifications;
     @OutputLength(8)
     private Status status;
     @OutputLength(12)
@@ -46,7 +48,8 @@ public class JobPosting extends BaseEntity {
     @OutputLength(12)
     private LocalDate updatedAt;
 
-    public JobPosting(String title, Company company, int salaryMin, int salaryMax, String description, Type type, List<Qualification> qualifications, Status status, LocalDate createdAt, LocalDate updatedAt) {
+    public JobPosting(String title, Company company, int salaryMin, int salaryMax, String description, Type type, ListInterface<Qualification> qualifications, Status status, LocalDate createdAt, LocalDate updatedAt) {
+        super(generateId());
         this.title = title;
         this.company = company;
         this.salaryMin = salaryMin;
@@ -57,6 +60,16 @@ public class JobPosting extends BaseEntity {
         this.status = status;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
+    }
+
+    private static String generateId() {
+        String id = PREFIX + counter;
+        counter++;
+        return id;
+    }
+
+    public static String getNextId() {
+        return PREFIX + counter;
     }
 
     public enum Type {
@@ -100,9 +113,8 @@ public class JobPosting extends BaseEntity {
     }
 
     public enum Status {
-        OPEN,
-        CLOSED,
-        FILLED;
+        OPEN, // Applicant able to view and apply
+        FILLED; // Applicant able to view, can't apply
 
         @Override
         public String toString() {
@@ -111,7 +123,7 @@ public class JobPosting extends BaseEntity {
     }
 
     @OutputLength(14)
-    @ColumnIndex(3)
+    @ColumnIndex(4)
     @Computed("Salary")
     private String computedSalaryRange() {
         if (salaryMin == salaryMax) return Integer.toString(this.salaryMin);
@@ -166,11 +178,11 @@ public class JobPosting extends BaseEntity {
         this.type = type;
     }
 
-    public List<Qualification> getQualifications() {
+    public ListInterface<Qualification> getQualifications() {
         return qualifications;
     }
 
-    public void setQualifications(List<Qualification> qualifications) {
+    public void setQualifications(ListInterface<Qualification> qualifications) {
         this.qualifications = qualifications;
     }
 
@@ -216,5 +228,4 @@ public class JobPosting extends BaseEntity {
                 "|  Created At   => " + (createdAt != null ? createdAt.toString() : "N/A") + ",\n" +
                 "|  Updated At   => " + (updatedAt != null ? updatedAt.toString() : "N/A");
     }
-
 }

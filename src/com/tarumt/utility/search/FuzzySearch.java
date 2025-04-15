@@ -1,41 +1,32 @@
 package com.tarumt.utility.search;
 
+import com.tarumt.adt.set.HashSet;
 import com.tarumt.entity.BaseEntity;
+
 import com.tarumt.utility.common.Strings;
 import com.tarumt.utility.search.annotation.Fuzzy;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.*;
+
+import com.tarumt.adt.list.ListInterface;
+import com.tarumt.adt.list.DoublyLinkedList;
+import com.tarumt.adt.set.SetInterface;
 
 public class FuzzySearch {
 
-    public static Set<String> findFuzzyMatches_v4(String query, String sentence) {
+    public static SetInterface<String> findFuzzyMatches_v4(String query, String sentence) {
         return findFuzzyMatches_v4(query, sentence, 0.85, 0.65);
     }
 
-    /**
-     * Uses Damerau-Levenshtein and Jaro-Winkler based similarity to find fuzzy
-     * matches. For each token in the sentence, if the Damerau-Levenshtein
-     * similarity with any query token is at least dlThreshold, or if it fails
-     * that then its Jaro-Winkler similarity is at least jwWinkler, then the
-     * token is considered a match.
-     *
-     * @param query the search term (one or more words)
-     * @param sentence the sentence to search through
-     * @param dlThreshold the minimum Damerau-Levenshtein similarity threshold
-     * @param jwThreshold the minimum Jaro-Winkler similarity threshold
-     * @return a set of matched phrase(s) from the sentence, trimmed of
-     * leading/trailing symbols.
-     */
-    public static Set<String> findFuzzyMatches_v4(String query, String sentence, double dlThreshold,
-            double jwThreshold) {
-        // Tokenize both query and sentence
+    public static SetInterface<String> findFuzzyMatches_v4(String query, String sentence, double dlThreshold,
+                                                           double jwThreshold) {
+
         String[] queryTokens = query.split("\\s+");
         String[] sentenceTokens = sentence.split("\\s+");
 
-        List<Integer> matchedIndices = new ArrayList<>();
+        ListInterface<Integer> matchedIndices = new DoublyLinkedList<>();
 
         for (int i = 0; i < sentenceTokens.length; i++) {
             String token = sentenceTokens[i];
@@ -58,7 +49,7 @@ public class FuzzySearch {
             }
         }
 
-        Set<String> results = new HashSet<>();
+        SetInterface<String> results = new HashSet<>();
 
         if (queryTokens.length == 1) {
             for (int index : matchedIndices) {
@@ -73,8 +64,8 @@ public class FuzzySearch {
             return results;
         }
 
-        List<List<Integer>> groups = new ArrayList<>();
-        List<Integer> currentGroup = new ArrayList<>();
+        ListInterface<ListInterface<Integer>> groups = new DoublyLinkedList<>();
+        ListInterface<Integer> currentGroup = new DoublyLinkedList<>();
         currentGroup.add(matchedIndices.get(0));
 
         for (int i = 1; i < matchedIndices.size(); i++) {
@@ -84,13 +75,13 @@ public class FuzzySearch {
                 currentGroup.add(curr);
             } else {
                 groups.add(currentGroup);
-                currentGroup = new ArrayList<>();
+                currentGroup = new DoublyLinkedList<>();
                 currentGroup.add(curr);
             }
         }
         groups.add(currentGroup);
 
-        for (List<Integer> group : groups) {
+        for (ListInterface<Integer> group : groups) {
             int start = group.get(0);
             int end = group.get(group.size() - 1);
             StringBuilder sb = new StringBuilder();
@@ -105,41 +96,32 @@ public class FuzzySearch {
         return results;
     }
 
-    /**
-     * Performs a fuzzy search on the provided list of child-class instances
-     * (extending BaseEntity) for any String fields or no-argument
-     * String-returning methods annotated with @Fuzzy. Returns a FuzzyResult
-     * containing the set of matching phrases and the list of entities that had
-     * at least one match.
-     *
-     * @param clazz the child class (e.g. JobPosting.class)
-     * @param entities the list of instances of that class
-     * @param query the query string for fuzzy matching
-     * @param <T> the type parameter extending BaseEntity
-     * @return a FuzzyResult containing matching phrases and the corresponding
-     * sub-list of entities
-     */
-    public static <T extends BaseEntity> Result<T> searchList(Class<T> clazz, List<T> entities, String query) {
-        Set<String> results = new HashSet<>();
-        List<T> matchedEntities = new ArrayList<>();
+    public static <T extends BaseEntity> Result<T> searchList(Class<T> clazz, ListInterface<T> entities, String query,
+                                                              String... excludeKeys) {
+        SetInterface<String> results = new HashSet<>();
+        ListInterface<T> matchedEntities = new DoublyLinkedList<>();
 
         for (T instance : entities) {
             boolean entityMatched = false;
 
             for (Field field : clazz.getDeclaredFields()) {
                 if (field.isAnnotationPresent(Fuzzy.class)) {
+
+                    if (shouldExcludeField(field, excludeKeys)) {
+                        continue;
+                    }
+
                     field.setAccessible(true);
                     try {
                         Object valueObj = field.get(instance);
                         if (valueObj != null) {
                             String valueStr = valueObj.toString();
                             Fuzzy fuzzyAnnotation = field.getAnnotation(Fuzzy.class);
-                            Set<String> matchesForField = findFuzzyMatches_v4(
+                            SetInterface<String> matchesForField = findFuzzyMatches_v4(
                                     query,
                                     valueStr,
                                     fuzzyAnnotation.dlThreshold(),
-                                    fuzzyAnnotation.jwThreshold()
-                            );
+                                    fuzzyAnnotation.jwThreshold());
                             if (!matchesForField.isEmpty()) {
                                 results.addAll(matchesForField);
                                 entityMatched = true;
@@ -153,18 +135,22 @@ public class FuzzySearch {
 
             for (Method method : clazz.getDeclaredMethods()) {
                 if (method.isAnnotationPresent(Fuzzy.class) && method.getParameterCount() == 0) {
+
+                    if (shouldExcludeMethod(method, excludeKeys)) {
+                        continue;
+                    }
+
                     method.setAccessible(true);
                     try {
                         Object resultObj = method.invoke(instance);
                         if (resultObj != null) {
                             String resultStr = resultObj.toString();
                             Fuzzy fuzzyAnnotation = method.getAnnotation(Fuzzy.class);
-                            Set<String> matchesForMethod = findFuzzyMatches_v4(
+                            SetInterface<String> matchesForMethod = findFuzzyMatches_v4(
                                     query,
                                     resultStr,
                                     fuzzyAnnotation.dlThreshold(),
-                                    fuzzyAnnotation.jwThreshold()
-                            );
+                                    fuzzyAnnotation.jwThreshold());
                             if (!matchesForMethod.isEmpty()) {
                                 results.addAll(matchesForMethod);
                                 entityMatched = true;
@@ -183,29 +169,90 @@ public class FuzzySearch {
         return new Result<>(results, matchedEntities);
     }
 
+    private static boolean shouldExcludeField(Field field, String... excludeKeys) {
+        if (excludeKeys == null || excludeKeys.length == 0) {
+            return false;
+        }
+
+        if (field.isAnnotationPresent(com.tarumt.utility.pretty.annotation.ExcludeKey.class)) {
+            com.tarumt.utility.pretty.annotation.ExcludeKey annotation = field
+                    .getAnnotation(com.tarumt.utility.pretty.annotation.ExcludeKey.class);
+            String[] annotationKeys = annotation.value();
+
+            for (String excludeKey : excludeKeys) {
+                for (String annotationKey : annotationKeys) {
+                    if (excludeKey != null && excludeKey.equals(annotationKey)) {
+                        return true;
+                    }
+                }
+            }
+        }
+
+        String fieldName = field.getName();
+        for (String excludeKey : excludeKeys) {
+            if (fieldName.equals(excludeKey)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private static boolean shouldExcludeMethod(Method method, String... excludeKeys) {
+        if (excludeKeys == null || excludeKeys.length == 0) {
+            return false;
+        }
+
+        if (method.isAnnotationPresent(com.tarumt.utility.pretty.annotation.ExcludeKey.class)) {
+            com.tarumt.utility.pretty.annotation.ExcludeKey annotation = method
+                    .getAnnotation(com.tarumt.utility.pretty.annotation.ExcludeKey.class);
+            String[] annotationKeys = annotation.value();
+
+            for (String excludeKey : excludeKeys) {
+                for (String annotationKey : annotationKeys) {
+                    if (excludeKey != null && excludeKey.equals(annotationKey)) {
+                        return true;
+                    }
+                }
+            }
+        }
+
+        String methodName = method.getName();
+
+        if (methodName.startsWith("get") && methodName.length() > 3) {
+            methodName = Character.toLowerCase(methodName.charAt(3)) + methodName.substring(4);
+        }
+
+        for (String excludeKey : excludeKeys) {
+            if (methodName.equals(excludeKey)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public static class Result<T extends BaseEntity> {
+        SetInterface<String> matches;
+        ListInterface<T> subList;
 
-        Set<String> matches;
-        List<T> subList;
-
-        public Result(Set<String> matches, List<T> subList) {
+        public Result(SetInterface<String> matches, ListInterface<T> subList) {
             this.matches = matches;
             this.subList = subList;
         }
 
-        public Set<String> getMatches() {
+        public SetInterface<String> getMatches() {
             return matches;
         }
 
-        public void setMatches(Set<String> matches) {
+        public void setMatches(SetInterface<String> matches) {
             this.matches = matches;
         }
 
-        public List<T> getSubList() {
+        public ListInterface<T> getSubList() {
             return subList;
         }
 
-        public void setSubList(List<T> subList) {
+        public void setSubList(ListInterface<T> subList) {
             this.subList = subList;
         }
     }

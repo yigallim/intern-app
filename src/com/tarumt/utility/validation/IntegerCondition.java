@@ -1,6 +1,6 @@
 package com.tarumt.utility.validation;
 
-import java.util.List;
+import com.tarumt.adt.list.ListInterface;
 
 public class IntegerCondition extends Condition {
 
@@ -60,11 +60,11 @@ public class IntegerCondition extends Condition {
         return this;
     }
 
-    public IntegerCondition enumeration(List<Integer> allowedValues) {
+    public IntegerCondition enumeration(ListInterface<Integer> allowedValues) {
         return enumeration(allowedValues, "Value must be one of: " + allowedValues);
     }
 
-    public IntegerCondition enumeration(List<Integer> allowedValues, String customMessage) {
+    public IntegerCondition enumeration(ListInterface<Integer> allowedValues, String customMessage) {
         addConstraint(new Constraint(value -> {
             Integer valInt = ValueParser.asInteger(value);
             if (valInt == null) return false;

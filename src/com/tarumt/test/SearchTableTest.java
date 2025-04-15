@@ -1,9 +1,5 @@
 package com.tarumt.test;
 
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
-
 import com.tarumt.dao.Initializer;
 import com.tarumt.entity.JobPosting;
 import com.tarumt.utility.common.Input;
@@ -11,9 +7,13 @@ import com.tarumt.utility.pretty.TabularPrint;
 import com.tarumt.utility.search.FuzzySearch;
 import com.tarumt.utility.validation.StringCondition;
 
+import com.tarumt.adt.set.SetInterface;
+import com.tarumt.adt.list.ListInterface;
+import com.tarumt.adt.list.DoublyLinkedList;
+
 public class SearchTableTest {
     public static void main(String[] args) {
-        List<JobPosting> jobPostings = Initializer.getJobPostings();
+        ListInterface<JobPosting> jobPostings = Initializer.getJobPostings();
         Input input = new Input();
 
         while (true) {
@@ -25,8 +25,10 @@ public class SearchTableTest {
             }
 
             FuzzySearch.Result<JobPosting> result = FuzzySearch.searchList(JobPosting.class, jobPostings, query);
-            Set<String> matchSet = result.getMatches();
-            List<String> matches = new LinkedList<>(matchSet);
+            SetInterface<String> matchSet = result.getMatches();
+            ListInterface<String> matches = new DoublyLinkedList<>();
+            for (String match: matchSet)
+                matches.add(match);
 
             System.out.print("\nRelated Results => ");
             for (int i = 0; i < matches.size(); i++) {

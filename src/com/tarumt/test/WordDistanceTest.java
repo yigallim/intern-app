@@ -3,12 +3,12 @@ package com.tarumt.test;
 import com.tarumt.utility.search.JaroWinklerSimilarity;
 import com.tarumt.utility.search.DamerauLevenshteinSimilarity;
 
-import java.util.ArrayList;
-import java.util.List;
+import com.tarumt.adt.list.ListInterface;
+import com.tarumt.adt.list.DoublyLinkedList;
 
 public class WordDistanceTest {
     public static void main(String[] args) {
-        List<Pair> wordPairs = getWordPairs();
+        ListInterface<Pair> wordPairs = getWordPairs();
 
         // Print Table Header
         System.out.printf("%-15s %-15s %-20s %-20s %-25s%n",
@@ -46,8 +46,8 @@ public class WordDistanceTest {
         return "";
     }
 
-    public static List<Pair> getWordPairs() {
-        List<Pair> pairs = new ArrayList<>();
+    public static ListInterface<Pair> getWordPairs() {
+        ListInterface<Pair> pairs = new DoublyLinkedList<>();
 
         // 100 word pairs for testing distance algorithms
         pairs.add(new Pair("haha", "data"));

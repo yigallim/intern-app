@@ -1,8 +1,9 @@
 package com.tarumt.utility.pretty;
 
+import com.tarumt.adt.list.DoublyLinkedList;
 import com.tarumt.utility.common.Strings;
 
-import java.util.List;
+import com.tarumt.adt.list.ListInterface;
 
 public class Chart {
 
@@ -17,16 +18,20 @@ public class Chart {
      * @param barChar      The character to be used for the bars.
      * @param showValues   Whether to display the numeric value at the end of the bar.
      */
-    public static void barChart(List<String> categories, List<Integer> values,
+    public static void barChart(ListInterface<String> categories, ListInterface<Integer> values,
                                 String title, int maxBarLength, char barChar, boolean showValues) {
         if (categories.size() != values.size()) {
             throw new IllegalArgumentException("Categories and values must have the same length.");
         }
 
         // Determine maximum value to normalize the bars.
-        int maxValue = values.stream().max(Integer::compareTo).orElse(1);
+        int maxValue = values.max(Integer::compareTo).orElse(1);
         // Determine optimal category label width (at least 15 characters)
-        int categoryWidth = Math.max(15, categories.stream().mapToInt(String::length).max().orElse(15));
+        ListInterface<Integer> lengths = new DoublyLinkedList<>();
+        for (String s : categories) {
+            lengths.add(s.length());
+        }
+        int categoryWidth = Math.max(15, lengths.max(Integer::compareTo).orElse(15));
         // Calculate the total width for the chart borders.
         int chartWidth = categoryWidth + maxBarLength + 10;
 

@@ -2,42 +2,50 @@ package com.tarumt.control;
 
 import com.tarumt.boundary.JobPostingUI;
 import com.tarumt.dao.Initializer;
-import com.tarumt.entity.Applicant;
-import com.tarumt.entity.BaseEntity;
-import com.tarumt.entity.Company;
-import com.tarumt.entity.JobPosting;
+import com.tarumt.entity.*;
 import com.tarumt.utility.common.Context;
 import com.tarumt.utility.common.Input;
 import com.tarumt.utility.common.Log;
 import com.tarumt.utility.search.FuzzySearch;
-import com.tarumt.entity.JobApplication;
-import com.tarumt.utility.validation.ConditionFactory;
-import com.tarumt.utility.validation.StringCondition;
 
 import java.time.LocalDate;
 
-import java.util.LinkedList;
-import java.util.List;
-import java.util.stream.Collectors;
+import com.tarumt.adt.list.ListInterface;
+import com.tarumt.adt.list.DoublyLinkedList;
 
 public class JobPostingService implements Service {
 
-    private List<JobPosting> jobPostings = new LinkedList<>();
+    private static JobPostingService instance;
+    private ListInterface<JobPosting> jobPostings = new DoublyLinkedList<>();
     private final JobPostingUI jobPostingUI;
-    private Applicant currentApplicant;
-    private final List<JobApplication> jobApplications;
 
-    public JobPostingService() {
+    private JobPostingService() {
         Input input = new Input();
         this.jobPostings = Initializer.getJobPostings();
         this.jobPostingUI = new JobPostingUI(input);
-        this.jobApplications = Initializer.getJobApplication();
+    }
 
+    public static JobPostingService getInstance() {
+        if (instance == null) {
+            instance = new JobPostingService();
+        }
+        return instance;
+    }
+
+    private ListInterface<JobPosting> getEmployerJobPostings() {
+        Company company = Context.getCompany();
+        if (company == null) {
+            return new DoublyLinkedList<>();
+        }
+        return jobPostings.filter(jobPosting ->
+                jobPosting.getCompany() != null &&
+                        jobPosting.getCompany().getId().equals(company.getId())
+        );
     }
 
     @Override
     public void run() {
-        this.jobPostingUI.menu(this);
+        this.jobPostingUI.menu();
     }
 
     @Override
@@ -59,21 +67,28 @@ public class JobPostingService implements Service {
 
     @Override
     public void read() {
-        this.jobPostingUI.displayAllJobs(this.jobPostings);
+        if (Context.isEmployer()) {
+            this.jobPostingUI.printAllJobs(this.getEmployerJobPostings());
+        } else {
+            this.jobPostingUI.printAllJobs(this.jobPostings);
+        }
     }
 
     @Override
     public void search() {
         while (true) {
-            jobPostingUI.printSearchJobPostingMsg(jobPostings);
-            if (this.jobPostings.isEmpty()) {
+            ListInterface<JobPosting> accessiblePostings = Context.isEmployer() ?
+                    this.getEmployerJobPostings() : this.jobPostings;
+
+            jobPostingUI.printSearchJobPostingMsg(accessiblePostings);
+            if (accessiblePostings.isEmpty()) {
                 return;
             }
             String query = jobPostingUI.getSearchJobPostingQuery();
             if (query.equals(Input.STRING_EXIT_VALUE)) {
                 return;
             }
-            FuzzySearch.Result<JobPosting> result = FuzzySearch.searchList(JobPosting.class, this.jobPostings, query);
+            FuzzySearch.Result<JobPosting> result = FuzzySearch.searchList(JobPosting.class, accessiblePostings, query, Context.isEmployer() ? "employer" : null);
             jobPostingUI.printSearchResult(result);
         }
     }
@@ -85,108 +100,109 @@ public class JobPostingService implements Service {
 
     @Override
     public void update() {
-        jobPostingUI.printUpdateJobMsg(this.jobPostings);
-        if (this.jobPostings.isEmpty()) {
+        ListInterface<JobPosting> accessiblePostings = Context.isEmployer() ?
+                this.getEmployerJobPostings() : this.jobPostings;
+
+        jobPostingUI.printUpdateJobMsg(accessiblePostings);
+        if (accessiblePostings.isEmpty()) {
             return;
         }
 
-        List<String> ids = BaseEntity.getIds(jobPostings);
-        String id = jobPostingUI.getJobPostingId("| Select Job Posting ID => ", ids);
+        ListInterface<String> ids = BaseEntity.getIds(accessiblePostings);
+        String id = jobPostingUI.getJobPostingId(ids);
         if (id.equals(Input.STRING_EXIT_VALUE)) {
             return;
         }
 
-        JobPosting jobPosting = BaseEntity.getById(id, jobPostings);
+        JobPosting jobPosting = BaseEntity.getById(id, accessiblePostings);
         jobPostingUI.printOriginalJobValue(jobPosting);
-        jobPostingUI.updateJobMode(this, jobPosting.getId());
+        jobPostingUI.updateJobMode(jobPosting.getId());
     }
 
     @Override
     public void delete() {
-        jobPostingUI.deleteMenu(this, this.jobPostings);
+        ListInterface<JobPosting> accessiblePostings = Context.isEmployer() ?
+                this.getEmployerJobPostings() : this.jobPostings;
+
+        jobPostingUI.deleteMenu(accessiblePostings);
     }
 
     public void deleteByIndex() {
+        ListInterface<JobPosting> accessiblePostings = Context.isEmployer() ?
+                this.getEmployerJobPostings() : this.jobPostings;
+
         jobPostingUI.printDeleteByIndexMsg();
-        int index = jobPostingUI.getJobPostingIndex(this.jobPostings.size());
+        int index = jobPostingUI.getJobPostingIndex(accessiblePostings.size());
         if (index == Input.INT_EXIT_VALUE) {
             return;
         }
         if (jobPostingUI.confirmDelete()) {
-            JobPosting jobPosting = jobPostings.remove(index - 1);
+            JobPosting jobPosting = accessiblePostings.get(index - 1);
+            jobPostings.remove(jobPosting);
             jobPostingUI.printSuccessDeleteMsg(jobPosting.getId());
         }
     }
 
     public void deleteByRange() {
+        ListInterface<JobPosting> accessiblePostings = Context.isEmployer() ?
+                this.getEmployerJobPostings() : this.jobPostings;
+
         jobPostingUI.printDeleteByRangeMsg();
-        int startIndex = jobPostingUI.getDeleteStartIndex(this.jobPostings.size());
+        int startIndex = jobPostingUI.getDeleteStartIndex(accessiblePostings.size());
         if (startIndex == Input.INT_EXIT_VALUE) {
             return;
         }
 
-        int endIndex = jobPostingUI.getDeleteEndIndex(startIndex, this.jobPostings.size());
+        int endIndex = jobPostingUI.getDeleteEndIndex(startIndex, accessiblePostings.size());
         if (endIndex == Input.INT_EXIT_VALUE) {
             return;
         }
 
         if (endIndex >= startIndex) {
             if (jobPostingUI.confirmDelete()) {
-                jobPostings.subList(startIndex - 1, endIndex).clear();
+                ListInterface<JobPosting> toRemove = accessiblePostings.subList(startIndex - 1, endIndex);
+                jobPostings.removeAll(toRemove);
                 jobPostingUI.printSuccessDeleteByRangeMsg(startIndex, endIndex);
             }
         }
-
     }
 
     public void deleteById() {
+        ListInterface<JobPosting> accessiblePostings = Context.isEmployer() ?
+                this.getEmployerJobPostings() : this.jobPostings;
+
         jobPostingUI.printDeleteByIdMsg();
-        List<String> ids = BaseEntity.getIds(jobPostings);
-        String id = jobPostingUI.getJobPostingId("| Select Job Posting ID => ", ids);
+        ListInterface<String> ids = BaseEntity.getIds(accessiblePostings);
+        String id = jobPostingUI.getJobPostingId(ids);
         if (id.equals(Input.STRING_EXIT_VALUE)) {
             return;
         }
 
         if (jobPostingUI.confirmDelete()) {
-            JobPosting jobPosting = BaseEntity.getById(id, jobPostings);
+            JobPosting jobPosting = BaseEntity.getById(id, accessiblePostings);
             jobPostings.remove(jobPosting);
             jobPostingUI.printSuccessDeleteMsg(jobPosting.getId());
         }
     }
 
     public void deleteAll() {
-        if (jobPostingUI.confirmDelete()) {
-            jobPostings.clear();
-            jobPostingUI.printSuccessDeleteAllMsg();
+        if (Context.isEmployer()) {
+            ListInterface<JobPosting> employerPostings = this.getEmployerJobPostings();
+            if (jobPostingUI.confirmDelete()) {
+                jobPostings.removeAll(employerPostings);
+                jobPostingUI.printSuccessDeleteAllMsg();
+            }
+        } else {
+            if (jobPostingUI.confirmDelete()) {
+                jobPostings.clear();
+                jobPostingUI.printSuccessDeleteAllMsg();
+            }
         }
     }
 
     @Override
     public void report() {
-        if (jobPostings.isEmpty()) {
-            Log.info("No job postings available to generate report");
-            return;
-        }
-        
-        // Define salary ranges for the chart
-        int[] ranges = {0, 3000, 5000, 7000, 9000, 11000, Integer.MAX_VALUE};
-        String[] labels = {"< 3,000", "3,000-4,999", "5,000-6,999", "7,000-8,999", "9,000-10,999", "> 11,000"};
-        
-        // Count job postings in each salary range (using minimum salary)
-        int[] counts = new int[ranges.length - 1];
-        
-        for (JobPosting job : jobPostings) {
-            int minSalary = job.getSalaryMin();
-            for (int i = 0; i < ranges.length - 1; i++) {
-                if (minSalary >= ranges[i] && minSalary < ranges[i + 1]) {
-                    counts[i]++;
-                    break;
-                }
-            }
-        }
-        
-        // Display the salary distribution chart
-        jobPostingUI.displaySalaryChart(labels, counts);
+        Log.na();
     }
 
     private JobPosting getJobPosting() {
@@ -224,8 +240,9 @@ public class JobPostingService implements Service {
             return null;
         }
 
-        LocalDate createdAt = LocalDate.now(), updatedAt = LocalDate.now();
-        return new JobPosting(title, company, salaryMin, salaryMax, description, type, null, JobPosting.Status.OPEN, createdAt, updatedAt);
+        LocalDate createdAt = Context.getDate(), updatedAt = Context.getDate();
+        return new JobPosting(title, company, salaryMin, salaryMax, description, type, null, JobPosting.Status.OPEN,
+                createdAt, updatedAt);
     }
 
     public void updateJobTitle(String id) {
@@ -235,13 +252,13 @@ public class JobPostingService implements Service {
             return;
         }
 
-        jobPostingUI.printUpdateMessage(fieldName);
+        jobPostingUI.printUpdateFieldMessage(fieldName);
         String newJobTitle = jobPostingUI.getJobPostingTitle();
         if (newJobTitle.equals(Input.STRING_EXIT_VALUE)) {
             return;
         }
         jobPosting.setTitle(newJobTitle);
-        jobPosting.setUpdatedAt(LocalDate.now());
+        jobPosting.setUpdatedAt(Context.getDate());
         jobPostingUI.printUpdateSuccessMessage(jobPosting, fieldName);
 
     }
@@ -253,13 +270,13 @@ public class JobPostingService implements Service {
             return;
         }
 
-        jobPostingUI.printUpdateMessage(fieldName);
+        jobPostingUI.printUpdateFieldMessage(fieldName);
         Company newCompany = jobPostingUI.getJobPostingCompany();
         if (newCompany == null) {
             return;
         }
         jobPosting.setCompany(newCompany);
-        jobPosting.setUpdatedAt(LocalDate.now());
+        jobPosting.setUpdatedAt(Context.getDate());
         jobPostingUI.printUpdateSuccessMessage(jobPosting, fieldName);
     }
 
@@ -270,7 +287,7 @@ public class JobPostingService implements Service {
             return;
         }
 
-        jobPostingUI.printUpdateMessage(fieldName);
+        jobPostingUI.printUpdateFieldMessage(fieldName);
         String salaryRange = jobPostingUI.getSalaryRange();
         if (salaryRange.equals(Input.STRING_EXIT_VALUE)) {
             return;
@@ -281,7 +298,7 @@ public class JobPostingService implements Service {
 
         jobPosting.setSalaryMin(newMinSalary);
         jobPosting.setSalaryMax(newMaxSalary);
-        jobPosting.setUpdatedAt(LocalDate.now());
+        jobPosting.setUpdatedAt(Context.getDate());
         jobPostingUI.printUpdateSuccessMessage(jobPosting, fieldName);
     }
 
@@ -292,7 +309,7 @@ public class JobPostingService implements Service {
             return;
         }
 
-        jobPostingUI.printUpdateMessage(fieldName);
+        jobPostingUI.printUpdateFieldMessage(fieldName);
 
         String newDescription = jobPostingUI.getJobPostingDescription();
         if (newDescription.equals(Input.STRING_EXIT_VALUE)) {
@@ -300,7 +317,7 @@ public class JobPostingService implements Service {
         }
 
         jobPosting.setDescription(newDescription);
-        jobPosting.setUpdatedAt(LocalDate.now());
+        jobPosting.setUpdatedAt(Context.getDate());
 
         jobPostingUI.printUpdateSuccessMessage(jobPosting, fieldName);
     }
@@ -312,14 +329,14 @@ public class JobPostingService implements Service {
             return;
         }
 
-        jobPostingUI.printUpdateMessage(fieldName);
+        jobPostingUI.printUpdateFieldMessage(fieldName);
 
         JobPosting.Type newType = jobPostingUI.getJobPostingType();
         if (newType == null) {
             return;
         }
         jobPosting.setType(newType);
-        jobPosting.setUpdatedAt(LocalDate.now());
+        jobPosting.setUpdatedAt(Context.getDate());
 
         jobPostingUI.printUpdateSuccessMessage(jobPosting, fieldName);
     }
@@ -331,14 +348,14 @@ public class JobPostingService implements Service {
             return;
         }
 
-        jobPostingUI.printUpdateMessage(fieldName);
+        jobPostingUI.printUpdateFieldMessage(fieldName);
 
         JobPosting.Status newStatus = jobPostingUI.getJobPostingStatus();
         if (newStatus == null) {
             return;
         }
         jobPosting.setStatus(newStatus);
-        jobPosting.setUpdatedAt(LocalDate.now());
+        jobPosting.setUpdatedAt(Context.getDate());
 
         jobPostingUI.printUpdateSuccessMessage(jobPosting, fieldName);
     }
@@ -346,220 +363,44 @@ public class JobPostingService implements Service {
     public void updateAllField(String id) {
         final String fieldName = "All Fields";
         JobPosting jobPosting = BaseEntity.getById(id, jobPostings);
-        jobPostingUI.printUpdateMessage(fieldName);
+        jobPostingUI.printUpdateFieldMessage(fieldName);
 
         String newTitle = jobPostingUI.getJobPostingTitle();
-        if (newTitle.equals(Input.STRING_EXIT_VALUE)) return;
+        if (newTitle.equals(Input.STRING_EXIT_VALUE))
+            return;
 
         Company newCompany = null;
         if (Context.isAdmin())
             newCompany = jobPostingUI.getJobPostingCompany();
 
         String salaryRange = jobPostingUI.getSalaryRange();
-        if (salaryRange.equals(Input.STRING_EXIT_VALUE)) return;
+        if (salaryRange.equals(Input.STRING_EXIT_VALUE))
+            return;
         String[] parts = salaryRange.split("-");
         int newMinSalary = Integer.parseInt(parts[0]);
         int newMaxSalary = Integer.parseInt(parts[1]);
 
         String newDescription = jobPostingUI.getJobPostingDescription();
-        if (newDescription.equals(Input.STRING_EXIT_VALUE)) return;
+        if (newDescription.equals(Input.STRING_EXIT_VALUE))
+            return;
 
         JobPosting.Type newType = jobPostingUI.getJobPostingType();
-        if (newType == null) return;
+        if (newType == null)
+            return;
 
         JobPosting.Status newStatus = jobPostingUI.getJobPostingStatus();
-        if (newStatus == null) return;
+        if (newStatus == null)
+            return;
 
         jobPosting.setTitle(newTitle);
-        if (newCompany != null) jobPosting.setCompany(newCompany);
+        if (newCompany != null)
+            jobPosting.setCompany(newCompany);
         jobPosting.setSalaryMin(newMinSalary);
         jobPosting.setSalaryMax(newMaxSalary);
         jobPosting.setDescription(newDescription);
         jobPosting.setType(newType);
         jobPosting.setStatus(newStatus);
-        jobPosting.setUpdatedAt(LocalDate.now());
+        jobPosting.setUpdatedAt(Context.getDate());
         jobPostingUI.printUpdateSuccessMessage(jobPosting, "All Fields");
     }
-
-    public void applyJob() {
-        System.out.println("\n=== Apply for a Job Posting ===");
-
-        currentApplicant = Context.getApplicant();
-
-        if (currentApplicant == null) {
-            System.out.println("No applicant logged in. Please log in to apply.");
-            return;
-        }
-
-        if (jobPostings.isEmpty()) {
-            System.out.println("No job postings available.");
-            return;
-        }
-
-        Input input = new Input();
-
-        while (true) {
-            System.out.println("Available Job Postings:");
-            jobPostings.forEach(jp -> System.out.printf(" [%s] %s - %s\n",
-                    jp.getId(), jp.getTitle(), jp.getCompany().getName()));
-
-            List<String> validJobIds = jobPostings.stream()
-                    .map(JobPosting::getId)
-                    .collect(Collectors.toList());
-
-            StringCondition jobIdCondition = ConditionFactory.string()
-                    .min(1, "Job ID cannot be empty")
-                    .enumeration(validJobIds, "Please enter a valid Job ID from the list above (or 'x' to cancel)");
-
-            String jobId = input.getString("Enter Job ID to apply (or 'x' to cancel): ", jobIdCondition);
-            if (jobId.equals(Input.STRING_EXIT_VALUE)) {
-                System.out.println("Application process cancelled.");
-                return;
-            }
-
-            JobPosting selectedJob = BaseEntity.getById(jobId, jobPostings);
-            if (selectedJob == null) {
-                System.out.println("Invalid Job ID.");
-                continue;
-            }
-
-            if (selectedJob.getStatus() != JobPosting.Status.OPEN) {
-                System.out.println("Sorry, this job is not open for applications.");
-                continue;
-            }
-
-            boolean alreadyApplied = jobApplications.stream()
-                    .anyMatch(ja -> ja.getApplicant().equals(currentApplicant) && ja.getJobPosting().equals(selectedJob));
-            if (alreadyApplied) {
-                System.out.println("You have already applied for this job.");
-                continue;
-            }
-
-            boolean confirmed = input.confirm("Are you sure you want to apply for '" + selectedJob.getTitle() + "'? (y/x): ");
-            if (!confirmed) {
-                System.out.println("Application cancelled.");
-                continue;
-            }
-
-            JobApplication jobApplication = new JobApplication(
-                    selectedJob,
-                    currentApplicant,
-                    JobApplication.Status.PENDING,
-                    LocalDate.now()
-            );
-            jobApplications.add(jobApplication);
-            System.out.println("Successfully applied for '" + selectedJob.getTitle() + "'!");
-
-            boolean applyAnother = input.confirm("Do you want to apply for another job? (y/x): ");
-            if (!applyAnother) {
-                System.out.println("Returning to menu...");
-                return;
-            }
-            System.out.println("\n=== Apply for Another Job Posting ===");
-        }
-    }
-
-    public void displayJobApplication() {
-        System.out.println("\n=== Display Job Applications ===");
-
-        if (currentApplicant == null) {
-            System.out.println("No applicant logged in. Please log in to view applications.");
-            return;
-        }
-
-        if (jobApplications.isEmpty()) {
-            System.out.println("No job applications found in the system.");
-            return;
-        }
-
-        Input input = new Input();
-
-        List<JobApplication> applicantApplications = jobApplications.stream()
-                .filter(ja -> ja.getApplicant().equals(currentApplicant))
-                .collect(Collectors.toList());
-
-        if (applicantApplications.isEmpty()) {
-            System.out.println("You have not applied for any jobs yet.");
-            return;
-        }
-
-        System.out.println("Your Job Applications:");
-        applicantApplications.forEach(ja -> System.out.printf(" [%s] %s - %s | Status: %s | Applied: %s\n",
-                ja.getId(), ja.getJobPosting().getTitle(), ja.getJobPosting().getCompany().getName(),
-                ja.getStatus(), ja.getApplicationDate()));
-
-        input.clickAnythingToContinue();
-    }
-
-    public void withdrawJobApplication() {
-        System.out.println("\n=== Withdraw Job Application ===");
-
-        if (currentApplicant == null) {
-            System.out.println("No applicant logged in. Please log in to withdraw applications.");
-            return;
-        }
-
-        if (jobApplications.isEmpty()) {
-            System.out.println("No job applications found in the system.");
-            return;
-        }
-
-        Input input = new Input();
-
-        List<JobApplication> withdrawableApplications = jobApplications.stream()
-                .filter(ja -> ja.getApplicant().equals(currentApplicant) &&
-                        ja.getStatus() != JobApplication.Status.WITHDRAWN &&
-                        ja.getStatus() != JobApplication.Status.ACCEPTED &&
-                        ja.getStatus() != JobApplication.Status.REJECTED)
-                .collect(Collectors.toList());
-
-        if (withdrawableApplications.isEmpty()) {
-            System.out.println("No applications available to withdraw.");
-            return;
-        }
-
-        System.out.println("Your Withdrawable Applications:");
-        withdrawableApplications.forEach(ja -> System.out.printf(" [%s] %s - %s | Status: %s | Applied: %s\n",
-                ja.getId(), ja.getJobPosting().getTitle(), ja.getJobPosting().getCompany().getName(),
-                ja.getStatus(), ja.getApplicationDate()));
-
-        List<String> validApplicationIds = withdrawableApplications.stream()
-                .map(JobApplication::getId)
-                .collect(Collectors.toList());
-
-        StringCondition applicationIdCondition = ConditionFactory.string()
-                .min(1, "Application ID cannot be empty")
-                .enumeration(validApplicationIds, "Please enter a valid Application ID from the list above (or 'x' to cancel)");
-
-        String applicationId = input.getString("Enter Application ID to withdraw (or 'x' to cancel): ", applicationIdCondition);
-        if (applicationId.equals(Input.STRING_EXIT_VALUE)) {
-            System.out.println("Withdrawal process cancelled.");
-            return;
-        }
-
-        JobApplication selectedApplication = BaseEntity.getById(applicationId, jobApplications);
-        if (selectedApplication == null || !selectedApplication.getApplicant().equals(currentApplicant)) {
-            System.out.println("Invalid Application ID or you don't have permission to withdraw this application.");
-            return;
-        }
-
-        if (selectedApplication.getStatus() == JobApplication.Status.WITHDRAWN ||
-                selectedApplication.getStatus() == JobApplication.Status.ACCEPTED ||
-                selectedApplication.getStatus() == JobApplication.Status.REJECTED) {
-            System.out.println("This application cannot be withdrawn due to its current status.");
-            return;
-        }
-
-        boolean confirmed = input.confirm("Are you sure you want to withdraw application '" +
-                selectedApplication.getJobPosting().getTitle() + "'? (y/x): ");
-        if (!confirmed) {
-            System.out.println("Withdrawal cancelled.");
-            return;
-        }
-
-        selectedApplication.setStatus(JobApplication.Status.WITHDRAWN);
-        selectedApplication.setApplicationDate(LocalDate.now());
-        System.out.println("Application '" + selectedApplication.getJobPosting().getTitle() + "' successfully withdrawn!");
-    }
-
 }

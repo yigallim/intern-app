@@ -5,45 +5,40 @@ import com.tarumt.dao.Initializer;
 import com.tarumt.entity.BaseEntity;
 import com.tarumt.entity.Company;
 import com.tarumt.entity.JobPosting;
+import com.tarumt.utility.common.Context;
 import com.tarumt.utility.common.Input;
 import com.tarumt.utility.common.Log;
 import com.tarumt.utility.common.Menu;
 import com.tarumt.utility.pretty.TabularPrint;
-import com.tarumt.utility.pretty.Chart;
 import com.tarumt.utility.search.FuzzySearch;
 import com.tarumt.utility.validation.*;
 
 import java.lang.reflect.Field;
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.Set;
+
+import com.tarumt.adt.list.ListInterface;
+import com.tarumt.adt.set.SetInterface;
 
 public class JobPostingUI {
 
     private final Input input;
-    private List<JobPosting> jobPostings; // Add this field
 
     public JobPostingUI(Input input) {
         this.input = input;
-        this.jobPostings = Initializer.getJobPostings(); // Initialize the field
     }
-    
-    public void menu(JobPostingService service) {
-        // Set console encoding to UTF-8 (this helps with emoji display)
-        System.setProperty("file.encoding", "UTF-8");
-        
+
+    public void menu() {
+        JobPostingService jobPostingService = JobPostingService.getInstance();
+
         new Menu()
-                .banner("Job Posting")
                 .header("==> Manage Job Posting <==")
                 .choice(
-                        new Menu.Choice("🆕 Create Job Posting", service::create),
-                        new Menu.Choice("📋 Display Job Posting", service::read),
-                        new Menu.Choice("🔍 Search Job Posting", service::search),
-                        new Menu.Choice("📂 Filter Job Posting", service::filter),
-                        new Menu.Choice("🔃 Update Job Posting", service::update),
-                        new Menu.Choice("❌ Delete Job Posting", service::delete),
-                        new Menu.Choice("📈 Generate Report", service::report)
+                        new Menu.Choice("🆕 Create Job Posting", jobPostingService::create),
+                        new Menu.Choice("📋 Display Job Posting", jobPostingService::read),
+                        new Menu.Choice("🔍 Search Job Posting", jobPostingService::search),
+                        new Menu.Choice("📂 Filter Job Posting", jobPostingService::filter),
+                        new Menu.Choice("🔃 Update Job Posting", jobPostingService::update),
+                        new Menu.Choice("❌ Delete Job Posting", jobPostingService::delete),
+                        new Menu.Choice("📈 Generate Report", jobPostingService::report)
                 )
                 .exit("<Return to Main Menu>")
                 .beforeEach(System.out::println)
@@ -52,7 +47,7 @@ public class JobPostingUI {
     }
 
     public void printNextIDMsg() {
-        System.out.println("| Job Posting ID => " + BaseEntity.getNextId(JobPosting.class));
+        System.out.println("| Job Posting ID => " + JobPosting.getNextId());
     }
 
     public void printCreateJobPostingMsg() {
@@ -76,19 +71,22 @@ public class JobPostingUI {
         return false;
     }
 
-    public void displayAllJobs(List<JobPosting> jobPostings) {
+    public void printAllJobs(ListInterface<JobPosting> jobPostings) {
         if (jobPostings == null || jobPostings.isEmpty()) {
             Log.info("No job postings to display");
+            input.clickAnythingToContinue();
             return;
         }
         Log.info("Displaying " + jobPostings.size() + " job postings");
-        TabularPrint.printTabular(jobPostings, true, "default");
+        String[] excludeKeys = Context.isEmployer() ? new String[]{"default", "employer"} : new String[]{"default"};
+        TabularPrint.printTabular(jobPostings, true, excludeKeys);
         input.clickAnythingToContinue();
     }
 
-    public void printSearchJobPostingMsg(List<JobPosting> jobPostings) {
+    public void printSearchJobPostingMsg(ListInterface<JobPosting> jobPostings) {
         if (jobPostings == null || jobPostings.isEmpty()) {
             Log.info("No job postings to search");
+            input.clickAnythingToContinue();
             return;
         }
         System.out.println("<== Search Job Posting [ X to Exit ] ==>");
@@ -100,15 +98,16 @@ public class JobPostingUI {
     }
 
     public void printSearchResult(FuzzySearch.Result<JobPosting> result) {
-        List<JobPosting> matchedJobs = result.getSubList();
-        Set<String> matches = result.getMatches();
+        ListInterface<JobPosting> matchedJobs = result.getSubList();
+        SetInterface<String> matches = result.getMatches();
         System.out.println();
         if (matchedJobs.isEmpty()) {
             Log.info("No job postings matched the search criteria");
         } else {
             System.out.println(matches.size() + " Relevant Results => " + matches + "\n");
             Log.info("Displaying " + matchedJobs.size() + " job postings");
-            TabularPrint.printTabular(matchedJobs, true, matches, "default");
+            String[] excludeKeys = Context.isEmployer() ? new String[]{"default", "employer"} : new String[]{"default"};
+            TabularPrint.printTabular(matchedJobs, true, matches, excludeKeys);
             input.clickAnythingToContinue();
         }
         System.out.println();
@@ -151,27 +150,29 @@ public class JobPostingUI {
     public JobPosting.Status getJobPostingStatus() {
         return input.getEnum("|\n| Job Status => ", JobPosting.Status.class, 20);
     }
-    
-    public void printUpdateMessage(String fieldName) {
+
+    public void printUpdateFieldMessage(String fieldName) {
         System.out.println("<== Updating Job Posting '" + fieldName + "' [ X to Exit ] ==>");
     }
-    
+
     public void printUpdateSuccessMessage(JobPosting jobPosting, String fieldName) {
         System.out.println();
         Log.info("Job Posting '" + fieldName + "' updated successfully");
         this.printOriginalJobValue(jobPosting);
         input.clickAnythingToContinue();
     }
-    
-    public void printUpdateJobMsg(List<JobPosting> jobPosting) {
+
+    public void printUpdateJobMsg(ListInterface<JobPosting> jobPosting) {
         if (jobPosting == null || jobPosting.isEmpty()) {
             Log.info("No job postings to update");
+            input.clickAnythingToContinue();
             return;
         }
         System.out.println("<== Update Job Posting [ X to Exit ] ==>");
     }
 
-    public void updateJobMode(JobPostingService service, String id) {
+    public void updateJobMode(String id) {
+        JobPostingService service = JobPostingService.getInstance();
         System.out.println();
         new Menu()
                 .header("Select Update Mode ==>")
@@ -194,9 +195,11 @@ public class JobPostingUI {
         System.out.println("\n" + jobPosting);
     }
 
-    public void deleteMenu(JobPostingService service, List<JobPosting> jobPostings) {
+    public void deleteMenu(ListInterface<JobPosting> jobPostings) {
+        JobPostingService service = JobPostingService.getInstance();
         if (jobPostings == null || jobPostings.isEmpty()) {
             Log.info("No job posting to delete");
+            input.clickAnythingToContinue();
             return;
         }
         new Menu()
@@ -251,9 +254,9 @@ public class JobPostingUI {
         Log.info("Deleted job postings from index " + startIndex + " to " + endIndex);
     }
 
-    public String getJobPostingId(String msg, List<String> ids) {
+    public String getJobPostingId(ListInterface<String> ids) {
         StringCondition condition = ConditionFactory.string().enumeration(ids, "ID doesn't exists, try again");
-        return input.getString(msg, condition);
+        return input.getString("| Select Job Posting ID => ", condition);
     }
 
     public boolean confirmDelete() {
@@ -263,25 +266,6 @@ public class JobPostingUI {
     public void printSuccessDeleteAllMsg() {
         System.out.println();
         Log.info("Deleted all job postings");
-    }
-
-    public void displaySalaryChart(String[] labels, int[] counts) {
-        
-        // Convert arrays to Lists for the Chart utility
-        List<String> categories = Arrays.asList(labels);
-        List<Integer> values = Arrays.stream(counts).boxed().collect(Collectors.toList());
-        
-        // Use the Chart utility to display the bar chart
-        Chart.barChart(
-            categories,
-            values,
-            "Salary Range Distribution (Minimum Salary)",
-            50,  // maxBarLength
-            '█', // barChar
-            true // showValues
-        );
-        
-        System.out.println("Total Job Postings: " + jobPostings.size());
         input.clickAnythingToContinue();
     }
 }

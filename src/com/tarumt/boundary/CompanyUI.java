@@ -1,6 +1,8 @@
 package com.tarumt.boundary;
 
 import com.tarumt.control.CompanyService;
+import com.tarumt.control.JobApplicationService;
+import com.tarumt.control.JobPostingService;
 import com.tarumt.entity.BaseEntity;
 import com.tarumt.entity.Company;
 import com.tarumt.utility.common.Context;
@@ -15,8 +17,9 @@ import com.tarumt.utility.validation.IntegerCondition;
 import com.tarumt.utility.validation.ValidationFieldReflection;
 
 import java.lang.reflect.Field;
-import java.util.List;
-import java.util.Set;
+
+import com.tarumt.adt.list.ListInterface;
+import com.tarumt.adt.set.SetInterface;
 
 public class CompanyUI {
 
@@ -26,18 +29,17 @@ public class CompanyUI {
         this.input = input;
     }
 
-    public void menu(CompanyService service) {
+    public void menu() {
+        CompanyService companyService = CompanyService.getInstance();
         new Menu()
-                .banner("Company")
                 .header("==> Manage Company <==")
                 .choice(
-                        new Menu.Choice("🏢 Create Company", service::create),
-                        new Menu.Choice("📊 Display Company", service::read),
-                        new Menu.Choice("🔍 Search Company", service::search),
-                        new Menu.Choice("📂 Filter Company", service::filter),
-                        new Menu.Choice("🔃 Update Company", service::update),
-                        new Menu.Choice("❌ Delete Company", service::delete)
-                )
+                        new Menu.Choice("🏢 Create Company", companyService::create),
+                        new Menu.Choice("📊 Display Company", companyService::read),
+                        new Menu.Choice("🔍 Search Company", companyService::search),
+                        new Menu.Choice("📂 Filter Company", companyService::filter),
+                        new Menu.Choice("🔃 Update Company", companyService::update),
+                        new Menu.Choice("❌ Delete Company", companyService::delete))
                 .exit("<Return to Main Menu>")
                 .beforeEach(System.out::println)
                 .afterEach(System.out::println)
@@ -45,7 +47,7 @@ public class CompanyUI {
     }
 
     public void printNextIDMsg() {
-        System.out.println("| Company ID => " + BaseEntity.getNextId(Company.class));
+        System.out.println("| Company ID => " + Company.getNextId());
     }
 
     public void printCreateCompanyMsg() {
@@ -69,9 +71,10 @@ public class CompanyUI {
         return false;
     }
 
-    public void displayAllCompanies(List<Company> companies) {
+    public void printAllCompanies(ListInterface<Company> companies) {
         if (companies == null || companies.isEmpty()) {
             Log.info("No companies to display");
+            input.clickAnythingToContinue();
             return;
         }
         Log.info("Displaying " + companies.size() + " companies");
@@ -79,9 +82,10 @@ public class CompanyUI {
         input.clickAnythingToContinue();
     }
 
-    public void printSearchCompanyMsg(List<Company> companies) {
+    public void printSearchCompanyMsg(ListInterface<Company> companies) {
         if (companies == null || companies.isEmpty()) {
             Log.info("No companies to search");
+            input.clickAnythingToContinue();
             return;
         }
         System.out.println("<== Search Company [ X to Exit ] ==>");
@@ -93,8 +97,8 @@ public class CompanyUI {
     }
 
     public void printSearchResult(FuzzySearch.Result<Company> result) {
-        List<Company> matchedCompanies = result.getSubList();
-        Set<String> matches = result.getMatches();
+        ListInterface<Company> matchedCompanies = result.getSubList();
+        SetInterface<String> matches = result.getMatches();
         System.out.println();
         if (matchedCompanies.isEmpty()) {
             Log.info("No companies matched the search criteria");
@@ -131,15 +135,28 @@ public class CompanyUI {
         return input.getString("| Company Phone => ", condition);
     }
 
-    public void printUpdateCompanyMsg(List<Company> companies) {
+    public void printUpdateFieldMessage(String fieldName) {
+        System.out.println("<== Updating Company '" + fieldName + "' [ X to Exit ] ==>");
+    }
+
+    public void printUpdateSuccessMessage(Company company, String fieldName) {
+        System.out.println();
+        Log.info("Company '" + fieldName + "' updated successfully");
+        this.printOriginalCompanyValue(company);
+        input.clickAnythingToContinue();
+    }
+
+    public void printUpdateCompanyMsg(ListInterface<Company> companies) {
         if (companies == null || companies.isEmpty()) {
             Log.info("No companies to update");
+            input.clickAnythingToContinue();
             return;
         }
         System.out.println("<== Update Company [ X to Exit ] ==>");
     }
 
-    public void updateCompanyMode(CompanyService service, String id) {
+    public void updateCompanyMode(String id) {
+        CompanyService service = CompanyService.getInstance();
         System.out.println();
         new Menu()
                 .header("Select Update Mode ==>")
@@ -149,8 +166,7 @@ public class CompanyUI {
                         new Menu.Choice("Update Location", () -> service.updateLocation(id)),
                         new Menu.Choice("Update Contact Email", () -> service.updateContactEmail(id)),
                         new Menu.Choice("Update Contact Phone", () -> service.updateContactPhone(id)),
-                        new Menu.Choice("Update All Fields", () -> service.updateAllFields(id))
-                )
+                        new Menu.Choice("Update All Fields", () -> service.updateAllFields(id)))
                 .exit("<Return>")
                 .beforeEach(System.out::println)
                 .afterEach(System.out::println)
@@ -161,9 +177,11 @@ public class CompanyUI {
         System.out.println("\n" + company);
     }
 
-    public void deleteMenu(CompanyService service, List<Company> companies) {
+    public void deleteMenu(ListInterface<Company> companies) {
+        CompanyService service = CompanyService.getInstance();
         if (companies == null || companies.isEmpty()) {
             Log.info("No company to delete");
+            input.clickAnythingToContinue();
             return;
         }
         new Menu()
@@ -172,8 +190,7 @@ public class CompanyUI {
                         new Menu.Choice("Delete By Index", service::deleteByIndex),
                         new Menu.Choice("Delete By Index Range", service::deleteByRange),
                         new Menu.Choice("Delete By ID", service::deleteById),
-                        new Menu.Choice("Delete All", service::deleteAll)
-                )
+                        new Menu.Choice("Delete All", service::deleteAll))
                 .exit("<Return>")
                 .beforeEach(System.out::println)
                 .afterEach(System.out::println)
@@ -218,7 +235,7 @@ public class CompanyUI {
         System.out.println("<== Delete By ID [ X to Exit ] ==>");
     }
 
-    public String getCompanyId(String msg, List<String> ids) {
+    public String getCompanyId(String msg, ListInterface<String> ids) {
         StringCondition condition = ConditionFactory.string().enumeration(ids, "ID doesn't exist, try again");
         return input.getString(msg, condition);
     }
@@ -230,6 +247,7 @@ public class CompanyUI {
     public void printSuccessDeleteAllMsg() {
         System.out.println();
         Log.info("Deleted all companies");
+        input.clickAnythingToContinue();
     }
 
     public void printNoExistingMsg() {
@@ -238,14 +256,13 @@ public class CompanyUI {
 
     }
 
-    public void loginOrRegisterMenu(CompanyService service) {
+    public void loginOrRegisterMenu() {
+        CompanyService service = CompanyService.getInstance();
         new Menu()
-                .banner("Employer")
                 .header("==> Employer Section <==")
                 .choice(
                         new Menu.Choice("Login", service::login),
-                        new Menu.Choice("Register New Company", service::create)
-                )
+                        new Menu.Choice("Register New Company", service::create))
                 .exit("<Return>")
                 .beforeEach(System.out::println)
                 .afterEach(System.out::println)
@@ -263,24 +280,66 @@ public class CompanyUI {
         System.out.println();
     }
 
-    public void accessMenu(CompanyService service) {
-        String companyName = Context.getCompany().getName();
+    public void accessMenu() {
+        CompanyService companyService = CompanyService.getInstance();
+        JobApplicationService jobApplicationService = JobApplicationService.getInstance();
+        JobPostingService jobPostingService = JobPostingService.getInstance();
 
-        new Menu()
-                .banner(companyName)
-                .header("==> Welcome, Employer \"" + companyName + "\" <==")
-                .choice(
-                        new Menu.Choice("📋 Manage Job Posting", Log::na),
-                        new Menu.Choice("👥 View All Applicants", Log::na),
-                        new Menu.Choice("🏢 Display Company Profile", Log::na),
-                        new Menu.Choice("🔃 Update Company Profile", Log::na)
-                )
-                .exit("<Logout>")
-                .beforeEach(System.out::println)
-                .afterEach(System.out::println)
-                .run();
+        Company company = Context.getCompany();
+
+        try {
+            new Menu()
+                    .banner(company::getName)
+                    .header(() -> "==> Welcome, Employer \"" + company.getName() + "\"  |  " + Context.getDate() + " <==")
+                    .choice(
+                            new Menu.Choice("💼 Manage Job Posting", jobPostingService::run),
+                            new Menu.Choice("📄 Manage Job Applications", jobApplicationService::accessEmployer),
+                            new Menu.Choice("🗓️ Schedule Interviews", Log::na),
+                            new Menu.Choice("🏢 Manage Company Profile", companyService::manageProfile))
+                    .exit("<Logout>")
+                    .beforeEach(System.out::println)
+                    .afterEach(System.out::println)
+                    .run();
+        } catch (Menu.ExitMenuException ignored) {
+        }
         System.out.println();
         Log.warn("Logged out");
     }
 
+    public void manageProfileMenu() {
+        CompanyService companyService = CompanyService.getInstance();
+        new Menu()
+                .header("==> Manage Company Profile <==")
+                .choice(
+                        new Menu.Choice("📋 Display Company Profile", companyService::displayProfile),
+                        new Menu.Choice("🔃 Update Company Profile", companyService::updateProfile),
+                        new Menu.Choice("❌ Delete Company Profile", companyService::deleteProfile))
+                .exit("<Return>")
+                .beforeEach(System.out::println)
+                .afterEach(System.out::println)
+                .run();
+    }
+
+    public void printProfile(boolean pause) {
+        System.out.println(Context.getCompany());
+        if (pause)
+            input.clickAnythingToContinue();
+    }
+
+    public void printDeleteProfileMsg() {
+        System.out.println("<== Delete Profile ==>");
+        System.out.println("| Warning: This action cannot be undone");
+        System.out.println("| Your company profile will be permanently deleted from the system");
+    }
+
+    public boolean confirmDeleteProfile() {
+        return input.confirm("Are you sure you want to delete your company profile? [ Y / X ] => ");
+    }
+
+    public void printSuccessDeleteProfileMsg() {
+        System.out.println();
+        Log.info("Your company profile has been successfully deleted");
+        Log.info("You will be logged out automatically");
+        input.clickAnythingToContinue();
+    }
 }

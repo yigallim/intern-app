@@ -1,8 +1,8 @@
 package com.tarumt.entity.location;
 
-import java.util.LinkedList;
-import java.util.Arrays;
-import java.util.List;
+import com.tarumt.adt.list.ListInterface;
+import com.tarumt.adt.list.DoublyLinkedList;
+import com.tarumt.adt.list.Arrays;
 
 public class Location {
     private City city;
@@ -37,11 +37,11 @@ public class Location {
         this.city = city;
     }
 
-    public static List<City> getCitiesByState(State state) {
+    public static ListInterface<City> getCitiesByState(State state) {
         if (state == null) {
             throw new IllegalArgumentException("State cannot be null");
         }
-        List<City> cities = new LinkedList<>();
+        ListInterface<City> cities = new DoublyLinkedList<>();
         for (City c : City.values()) {
             if (c.getState() == state) {
                 cities.add(c);
@@ -50,7 +50,7 @@ public class Location {
         return cities;
     }
 
-    public static List<State> getAllStates() {
+    public static ListInterface<State> getAllStates() {
         return Arrays.asList(State.values());
     }
 

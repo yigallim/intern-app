@@ -29,9 +29,9 @@ public class DamerauLevenshteinSimilarity {
             for (int j = 1; j <= n; j++) {
                 int cost = (s1.charAt(i - 1) == s2.charAt(j - 1)) ? 0 : 1;
                 dp[i][j] = Math.min(
-                        Math.min(dp[i - 1][j] + 1,     // Deletion
+                        Math.min(dp[i - 1][j] + 1,    // Deletion
                                 dp[i][j - 1] + 1),    // Insertion
-                        dp[i - 1][j - 1] + cost         // Substitution
+                        dp[i - 1][j - 1] + cost       // Substitution
                 );
 
                 // Check for transposition.
