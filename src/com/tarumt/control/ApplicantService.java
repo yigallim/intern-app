@@ -1,5 +1,6 @@
 package com.tarumt.control;
 
+import com.tarumt.adt.list.DoublyLinkedList;
 import com.tarumt.boundary.ApplicantUI;
 import com.tarumt.boundary.LocationUI;
 import com.tarumt.dao.Initializer;
@@ -15,11 +16,19 @@ import com.tarumt.utility.common.Log;
 import com.tarumt.utility.common.Menu;
 import com.tarumt.utility.pretty.Chart;
 import com.tarumt.utility.search.FuzzySearch;
-import java.util.ArrayList;
-import java.util.Arrays;
+import com.tarumt.utility.validation.ConditionFactory;
+import com.tarumt.utility.validation.IntegerCondition;
+import com.tarumt.utility.validation.StringCondition;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.YearMonth;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList; //
+import java.util.Arrays; //
+import java.util.Iterator;
 
-import java.util.LinkedList;
-import java.util.List;
+import java.util.LinkedList; //
+import java.util.List; //
 
 public class ApplicantService implements Service {
 
@@ -111,76 +120,6 @@ public class ApplicantService implements Service {
         applicantUI.reportMenu(this);
     }
     
-    public void reportTopJobs() {
-        if (applicants.isEmpty()) {
-            Log.warn("No applicant data available.");
-            return;
-        }
-
-        int[] counts = new int[JobPosting.Type.values().length];
-        for (Applicant applicant : applicants) {
-            counts[applicant.getDesiredJobType().ordinal()]++;
-        }
-
-        List<Integer> indexList = new ArrayList<>();
-        for (int i = 0; i < counts.length; i++) {
-            indexList.add(i);
-        }
-
-        indexList.sort((i1, i2) -> Integer.compare(counts[i2], counts[i1]));
-
-        int topN = Math.min(5, indexList.size());
-        int total = Arrays.stream(counts).sum();
-
-        List<String> labels = new ArrayList<>();
-        List<Integer> values = new ArrayList<>();
-
-        for (int i = 0; i < topN; i++) {
-            int index = indexList.get(i);
-            String label = JobPosting.Type.values()[index].toString();
-            labels.add(label);
-            values.add(counts[index]);
-        }
-
-        Chart.barChart(labels, values, "Top 5 Desired Job Types", 30, '█', true);
-
-        for (int i = 0; i < topN; i++) {
-            double percent = values.get(i) * 100.0 / total;
-            System.out.printf("%-15s %.1f%%%n", labels.get(i), percent);
-        }
-    }
-
-    
-   public void reportAllJobs() {
-        if (applicants.isEmpty()) {
-            Log.warn("No applicant data available.");
-            return;
-        }
-
-        int[] counts = new int[JobPosting.Type.values().length];
-        for (Applicant applicant : applicants) {
-            counts[applicant.getDesiredJobType().ordinal()]++;
-        }
-
-        int total = Arrays.stream(counts).sum();
-
-        List<String> labels = new ArrayList<>();
-        List<Integer> values = new ArrayList<>();
-
-        for (int i = 0; i < counts.length; i++) {
-            String label = JobPosting.Type.values()[i].toString();
-            labels.add(label);
-            values.add(counts[i]);
-        }
-
-        Chart.barChart(labels, values, "All Desired Job Types", 30, '█', true);
-
-        for (int i = 0; i < labels.size(); i++) {
-            double percent = values.get(i) * 100.0 / total;
-            System.out.printf("%-15s %.1f%%%n", labels.get(i), percent);
-        }
-    }
-
     public void reportTopLocations() {
         if (applicants.isEmpty()) {
             Log.warn("No applicant data available.");
@@ -191,11 +130,10 @@ public class ApplicantService implements Service {
         int[] counts = new int[cities.length];
 
         for (Applicant applicant : applicants) {
-            City city = applicant.getLocation().getCity();
-            counts[city.ordinal()]++;
+            counts[applicant.getLocation().getCity().ordinal()]++;
         }
 
-        List<Integer> indexList = new ArrayList<>();
+        LinkedList<Integer> indexList = new LinkedList<Integer>();
         for (int i = 0; i < counts.length; i++) {
             indexList.add(i);
         }
@@ -203,25 +141,40 @@ public class ApplicantService implements Service {
         indexList.sort((i1, i2) -> Integer.compare(counts[i2], counts[i1]));
 
         int topN = Math.min(10, indexList.size());
-        int total = Arrays.stream(counts).sum();
+        int total = 0;
+        for (int count : counts) total += count;
 
-        List<String> labels = new ArrayList<>();
-        List<Integer> values = new ArrayList<>();
+        if (total == 0 || topN == 0) {
+            System.out.println("No applicant location data to report.");
+            return;
+        }
+
+        LinkedList<String> labelList = new LinkedList<>();
+        LinkedList<Integer> valueList = new LinkedList<>();
 
         for (int i = 0; i < topN; i++) {
             int index = indexList.get(i);
-            labels.add(cities[index].toString());
-            values.add(counts[index]);
+            labelList.add(cities[index].toString());
+            valueList.add(counts[index]);
         }
 
-        Chart.barChart(labels, values, "Top 10 Applicant Locations", 30, '█', true);
+        System.out.println("-------------------------------------------------------");
+        System.out.printf("Report Generated At: %s%n",
+                LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd MMM yyyy HH:mm:ss")));
+        System.out.println("-------------------------------------------------------");
 
+        Chart.barChart(labelList, valueList, "Top 10 Applicant Locations", 30, '█', true);
+
+        System.out.println("\n==> Location Breakdown <==");
         for (int i = 0; i < topN; i++) {
-            double percent = values.get(i) * 100.0 / total;
-            System.out.printf("%-30s %.1f%%%n", labels.get(i), percent);
+            String label = labelList.get(i);
+            int value = valueList.get(i);
+            double percent = value * 100.0 / total;
+            System.out.printf("%-30s : %-3d (%.1f%%)%n", label, value, percent);
         }
-    }
 
+        System.out.println("[INFO] Report generation completed.");
+    }
 
     public void reportAllLocations() {
         if (applicants.isEmpty()) {
@@ -233,27 +186,43 @@ public class ApplicantService implements Service {
         int[] counts = new int[cities.length];
 
         for (Applicant applicant : applicants) {
-            City city = applicant.getLocation().getCity();
-            counts[city.ordinal()]++;
+            counts[applicant.getLocation().getCity().ordinal()]++;
         }
 
-        int total = Arrays.stream(counts).sum();
+        int total = 0;
+        for (int count : counts) {
+            total += count;
+        }
 
-        List<String> labels = new ArrayList<>();
-        List<Integer> values = new ArrayList<>();
+        if (total == 0) {
+            Log.warn("No applicant location data to report.");
+            return;
+        }
+
+        List<String> labels = new LinkedList<>();
+        List<Integer> values = new LinkedList<>();
 
         for (int i = 0; i < cities.length; i++) {
             labels.add(cities[i].toString());
             values.add(counts[i]);
         }
 
+        System.out.println("-------------------------------------------------------");
+        System.out.printf("Report Generated At: %s%n",
+                LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd MMM yyyy HH:mm:ss")));
+        System.out.println("-------------------------------------------------------");
+
         Chart.barChart(labels, values, "All Applicant Locations", 30, '█', true);
 
+        System.out.println("\n==> Location Breakdown <==");
         for (int i = 0; i < labels.size(); i++) {
             double percent = values.get(i) * 100.0 / total;
-            System.out.printf("%-30s %.1f%%%n", labels.get(i), percent);
+            System.out.printf("%-30s : %-3d (%.1f%%)%n", labels.get(i), values.get(i), percent);
         }
+
+        System.out.println("[INFO] Report generation completed.");
     }
+
 
     public List<JobApplication> getAllJobApplications() {
         if (jobApplications == null) {
@@ -281,13 +250,18 @@ public class ApplicantService implements Service {
             return;
         }
 
-        List<String> labels = new ArrayList<>();
-        List<Integer> values = new ArrayList<>();
+        List<String> labels = new LinkedList<>();
+        List<Integer> values = new LinkedList<>();
 
         for (int i = 0; i < statuses.length; i++) {
             labels.add(statuses[i].toString());
             values.add(counts[i]);
         }
+        
+        System.out.println("-------------------------------------------------------");
+        System.out.printf("Report Generated At: %s%n",
+                LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd MMM yyyy HH:mm:ss")));
+        System.out.println("-------------------------------------------------------");
 
         Chart.barChart(labels, values, "All Job Application Statuses", 30, '█', true);
 
@@ -296,17 +270,242 @@ public class ApplicantService implements Service {
             double percent = values.get(i) * 100.0 / total;
             System.out.printf("%-12s : %-3d (%.1f%%)%n", labels.get(i), values.get(i), percent);
         }
+        
+        System.out.println("[INFO] Report generation completed.");
+        
     }
+    
+    public void reportApplicationsByDate() {
+        if (jobApplications.isEmpty()) {
+            Log.warn("No job application data available.");
+            return;
+        }
+
+        StringCondition dateCondition = ConditionFactory.string().regex(
+            "^\\d{4}-\\d{2}-\\d{2}$",
+            "Invalid format. Please enter date as yyyy-MM-dd"
+        );
+
+        Input input = new Input();
+
+        String startStr = input.getString("Enter start date (yyyy-MM-dd): ", dateCondition);
+        String endStr = input.getString("Enter end date (yyyy-MM-dd): ", dateCondition);
+
+        LocalDate start;
+        LocalDate end;
+
+        try {
+            start = LocalDate.parse(startStr);
+            end = LocalDate.parse(endStr);
+        } catch (Exception e) {
+            Log.error("Invalid date input. Please ensure the format is correct (yyyy-MM-dd).");
+            return;
+        }
+
+        if (end.isBefore(start)) {
+            LocalDate temp = start;
+            start = end;
+            end = temp;
+        }
+
+        List<String> labels = new LinkedList<>();
+        List<Integer> values = new LinkedList<>();
+        List<LocalDate> uniqueDates = new LinkedList<>();
+
+        for (JobApplication jobApplication : jobApplications) {
+            LocalDate date = jobApplication.getApplicationDate();
+            if (!date.isBefore(start) && !date.isAfter(end)) {
+                if (!uniqueDates.contains(date)) {
+                    uniqueDates.add(date);
+                }
+            }
+        }
+
+        for (LocalDate date : uniqueDates) {
+            int count = 0;
+            for (JobApplication jobApplication : jobApplications) {
+                if (jobApplication.getApplicationDate().equals(date)) {
+                    count++;
+                }
+            }
+            labels.add(date.toString());
+            values.add(count);
+        }
+
+        if (labels.isEmpty()) {
+            Log.warn("No applications found within the selected date range.");
+            return;
+        }
+
+        int total = 0;
+        for (int value : values) {
+            total += value;
+        }
+        
+        System.out.println("-------------------------------------------------------");
+        System.out.printf("Report Generated At: %s%n",
+                LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd MMM yyyy HH:mm:ss")));
+        System.out.println("-------------------------------------------------------");
+
+
+        Chart.barChart(labels, values, "Applications from " + start + " to " + end, 30, '█', true);
+        System.out.printf("\n==> Application Count (%s to %s) <==%n", start, end);
+        for (int i = 0; i < labels.size(); i++) {
+            double percent = values.get(i) * 100.0 / total;
+            System.out.printf("%-12s : %3d (%.1f%%)%n", labels.get(i), values.get(i), percent);
+        }
+        
+        System.out.println("[INFO] Report generation completed.");
+        
+    }
+
+    public void reportApplicationsByMonth() {
+        if (jobApplications.isEmpty()) {
+            Log.warn("No job application data available.");
+            return;
+        }
+
+        Input input = new Input();
+
+        IntegerCondition monthCondition = ConditionFactory.integer()
+            .min(1)
+            .max(12);
+
+        IntegerCondition yearCondition = ConditionFactory.integer()
+            .min(1900)
+            .max(LocalDate.now().getYear());
+
+        int year = input.getInt("Enter year (e.g., 2025): ", yearCondition);
+        int month = input.getInt("Enter month (1-12): ", monthCondition);
+
+        YearMonth selectedMonth = YearMonth.of(year, month);
+
+        List<LocalDate> uniqueDates = new LinkedList<>();
+
+        for (JobApplication jobApplication : jobApplications) {
+            LocalDate date = jobApplication.getApplicationDate();
+            if (YearMonth.from(date).equals(selectedMonth)) {
+                if (!uniqueDates.contains(date)) {
+                    uniqueDates.add(date);
+                }
+            }
+        }
+
+        if (uniqueDates.isEmpty()) {
+            Log.warn("No applications found for " + selectedMonth);
+            return;
+        }
+
+        for (int i = 0; i < uniqueDates.size() - 1; i++) {
+            for (int j = 0; j < uniqueDates.size() - i - 1; j++) {
+                if (uniqueDates.get(j).isAfter(uniqueDates.get(j + 1))) {
+                    LocalDate temp = uniqueDates.get(j);
+                    uniqueDates.set(j, uniqueDates.get(j + 1));
+                    uniqueDates.set(j + 1, temp);
+                }
+            }
+        }
+
+        List<String> labels = new LinkedList<>();
+        List<Integer> values = new LinkedList<>();
+
+        for (LocalDate date : uniqueDates) {
+            int count = 0;
+            for (JobApplication jobApplication : jobApplications) {
+                if (jobApplication.getApplicationDate().equals(date)) {
+                    count++;
+                }
+            }
+            labels.add(date.toString());
+            values.add(count);
+        }
+
+        int total = 0;
+        for (int value : values) {
+            total += value;
+        }
+
+        System.out.println("-------------------------------------------------------");
+        System.out.printf("Report Generated At: %s%n",
+                LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd MMM yyyy HH:mm:ss")));
+        System.out.println("-------------------------------------------------------");
+
+        Chart.barChart(labels, values, "Applications in " + selectedMonth, 30, '█', true);
+        System.out.printf("\n==> Application Count (%s) <==%n", selectedMonth);
+        for (int i = 0; i < labels.size(); i++) {
+            double percent = values.get(i) * 100.0 / total;
+            System.out.printf("%-12s : %3d (%.1f%%)%n", labels.get(i), values.get(i), percent);
+        }
+
+        System.out.println("[INFO] Report generation completed.");
+    }
+
+    public void reportTop5ApplicationDates() {
+        if (applicants.isEmpty()) {
+            Log.warn("No applicant data available.");
+            return;
+        }
+
+        List<LocalDate> uniqueDates = new LinkedList<>();
+        List<Integer> frequencies = new LinkedList<>();
+
+        for (JobApplication jobApplication : jobApplications) { 
+            LocalDate date = jobApplication.getApplicationDate(); 
+            int index = uniqueDates.indexOf(date);
+            if (index == -1) {
+                uniqueDates.add(date);
+                frequencies.add(1);
+            } else {
+                frequencies.set(index, frequencies.get(index) + 1);
+            }
+        }
+
+        for (int i = 0; i < frequencies.size() - 1; i++) {
+            for (int j = i + 1; j < frequencies.size(); j++) {
+                if (frequencies.get(j) > frequencies.get(i)) {
+                    
+                    int tempFreq = frequencies.get(i);
+                    frequencies.set(i, frequencies.get(j));
+                    frequencies.set(j, tempFreq);
+
+                    LocalDate tempDate = uniqueDates.get(i);
+                    uniqueDates.set(i, uniqueDates.get(j));
+                    uniqueDates.set(j, tempDate);
+                }
+            }
+        }
+
+        List<String> labels = new ArrayList<>();
+        List<Integer> values = new ArrayList<>();
+        int total = applicants.size();
+
+        int limit = Math.min(5, uniqueDates.size());
+        for (int i = 0; i < limit; i++) {
+            labels.add(uniqueDates.get(i).toString());
+            values.add(frequencies.get(i));
+        }
+
+        System.out.println("-------------------------------------------------------");
+        System.out.printf("Report Generated At: %s%n",
+                LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd MMM yyyy HH:mm:ss")));
+        System.out.println("-------------------------------------------------------");
+
+        Chart.barChart(labels, values, "Top 5 Application Dates", 30, '█', true);
+
+        System.out.println("\n==> Application Count Per Date <==");
+        for (int i = 0; i < labels.size(); i++) {
+            double percent = values.get(i) * 100.0 / total;
+            System.out.printf("%-12s : %3d (%.1f%%)%n", labels.get(i), values.get(i), percent);
+        }
+        
+        System.out.println("[INFO] Report generation completed.");
+
+    }
+
 
     public void reportFull() {
         System.out.println();
         System.out.println("==> Generating Full Report...");
-
-        reportTopJobs();
-        System.out.println();
-
-        reportAllJobs();
-        System.out.println();
 
         reportTopLocations();
         System.out.println();
@@ -315,6 +514,15 @@ public class ApplicantService implements Service {
         System.out.println();
 
         reportAllStatuses();
+        System.out.println();
+        
+        reportApplicationsByDate();
+        System.out.println();
+        
+        reportApplicationsByMonth();
+        System.out.println();
+        
+        reportTop5ApplicationDates();
         System.out.println();
 
         System.out.println("[INFO] Full report generation completed.");
