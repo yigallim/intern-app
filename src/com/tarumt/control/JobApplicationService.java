@@ -245,8 +245,8 @@ public class JobApplicationService {
                     // Example scoring: Full score within 30km, 0 beyond 150km
                     if (distance <= 30) {
                         score = 1.0;
-                    } else if (distance >= 150) {
-                        score = -10.0;
+                     } else if (distance > 20 && distance <=50) {
+                        score =0.5;
                     } else {
                         score = 1.0 - ((distance - 30) / 120.0);  // Linear drop-off
                     }
