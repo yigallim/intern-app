@@ -16,6 +16,7 @@ import com.tarumt.utility.validation.StringCondition;
 
 import java.time.LocalDate;
 import java.time.YearMonth;
+import java.time.format.DateTimeFormatter;
 
 import java.util.LinkedList;
 import java.util.Map;
@@ -89,7 +90,193 @@ public class JobPostingService implements Service {
 
     @Override
     public void filter() {
-        Log.na();
+        if (jobPostings.isEmpty()) {
+            Log.info("No job postings available to filter");
+            return;
+        }
+        
+        // Create a doubly linked list to store filtered jobs
+        LinkedList<JobPosting> filteredJobs = new LinkedList<>(jobPostings);
+        
+        // Display filter menu and process user selections
+        jobPostingUI.displayFilterMenu(this, filteredJobs);
+    }
+
+    // Filter by company name
+    public void filterByCompany(LinkedList<JobPosting> jobs) {
+        Company selectedCompany = jobPostingUI.getJobPostingCompany();
+        if (selectedCompany == null) return;
+        
+        LinkedList<JobPosting> filtered = new LinkedList<>();
+        for (JobPosting job : jobs) {
+            if (job.getCompany().equals(selectedCompany)) {
+                filtered.add(job);
+            }
+        }
+        
+        jobPostingUI.displayFilteredJobs(filtered, "Company: " + selectedCompany.getName());
+    }
+
+    // Filter by job type
+    public void filterByJobType(LinkedList<JobPosting> jobs) {
+        JobPosting.Type selectedType = jobPostingUI.getJobPostingType();
+        if (selectedType == null) return;
+        
+        LinkedList<JobPosting> filtered = new LinkedList<>();
+        for (JobPosting job : jobs) {
+            if (job.getType() == selectedType) {
+                filtered.add(job);
+            }
+        }
+        
+        jobPostingUI.displayFilteredJobs(filtered, "Job Type: " + selectedType);
+    }
+
+    // Filter by salary range
+    public void filterBySalaryRange(LinkedList<JobPosting> jobs) {
+        String salaryRange = jobPostingUI.getSalaryRange();
+        if (salaryRange.equals(Input.STRING_EXIT_VALUE)) return;
+        
+        String[] parts = salaryRange.split("-");
+        int minSalary = Integer.parseInt(parts[0]);
+        int maxSalary = Integer.parseInt(parts[1]);
+        
+        LinkedList<JobPosting> filtered = new LinkedList<>();
+        for (JobPosting job : jobs) {
+            if (job.getSalaryMin() >= minSalary && job.getSalaryMax() <= maxSalary) {
+                filtered.add(job);
+            }
+        }
+        
+        jobPostingUI.displayFilteredJobs(filtered, "Salary Range: " + minSalary + "-" + maxSalary);
+    }
+
+    // Filter by job status
+    public void filterByStatus(LinkedList<JobPosting> jobs) {
+        JobPosting.Status selectedStatus = jobPostingUI.getJobPostingStatus();
+        if (selectedStatus == null) return;
+        
+        LinkedList<JobPosting> filtered = new LinkedList<>();
+        for (JobPosting job : jobs) {
+            if (job.getStatus() == selectedStatus) {
+                filtered.add(job);
+            }
+        }
+        
+        jobPostingUI.displayFilteredJobs(filtered, "Status: " + selectedStatus);
+    }
+
+    // Filter by date range
+    public void filterByDateRange(LinkedList<JobPosting> jobs) {
+        LocalDate[] dateRange = jobPostingUI.getDateRange();
+        if (dateRange == null) return;
+        
+        LocalDate startDate = dateRange[0];
+        LocalDate endDate = dateRange[1];
+        
+        LinkedList<JobPosting> filtered = new LinkedList<>();
+        for (JobPosting job : jobs) {
+            LocalDate createdAt = job.getCreatedAt();
+            if (!createdAt.isBefore(startDate) && !createdAt.isAfter(endDate)) {
+                filtered.add(job);
+            }
+        }
+        
+        jobPostingUI.displayFilteredJobs(filtered, "Date Range: " + 
+            startDate.format(DateTimeFormatter.ISO_LOCAL_DATE) + " to " + 
+            endDate.format(DateTimeFormatter.ISO_LOCAL_DATE));
+    }
+
+    // Sort jobs using TimSort algorithm
+    public void sortJobs(LinkedList<JobPosting> jobs, Comparator<JobPosting> comparator) {
+        // Convert LinkedList to array for TimSort
+        JobPosting[] jobArray = jobs.toArray(new JobPosting[0]);
+        
+        // Implement TimSort
+        timSort(jobArray, comparator);
+        
+        // Clear the original list and add sorted elements
+        jobs.clear();
+        for (JobPosting job : jobArray) {
+            jobs.add(job);
+        }
+    }
+
+    // TimSort implementation
+    private void timSort(JobPosting[] arr, Comparator<JobPosting> comparator) {
+        int n = arr.length;
+        int minRun = minRunLength(n);
+        
+        // Sort individual subarrays of size minRun
+        for (int i = 0; i < n; i += minRun) {
+            int end = Math.min(i + minRun - 1, n - 1);
+            insertionSort(arr, i, end, comparator);
+        }
+        
+        // Start merging from size minRun
+        for (int size = minRun; size < n; size = 2 * size) {
+            for (int left = 0; left < n; left += 2 * size) {
+                int mid = Math.min(n - 1, left + size - 1);
+                int right = Math.min(n - 1, left + 2 * size - 1);
+                
+                if (mid < right) {
+                    merge(arr, left, mid, right, comparator);
+                }
+            }
+        }
+    }
+
+    // Calculate minimum run length for TimSort
+    private int minRunLength(int n) {
+        int r = 0;
+        while (n >= 32) {
+            r |= (n & 1);
+            n >>= 1;
+        }
+        return n + r;
+    }
+
+    // Insertion sort for small subarrays
+    private void insertionSort(JobPosting[] arr, int left, int right, Comparator<JobPosting> comparator) {
+        for (int i = left + 1; i <= right; i++) {
+            JobPosting temp = arr[i];
+            int j = i - 1;
+            while (j >= left && comparator.compare(arr[j], temp) > 0) {
+                arr[j + 1] = arr[j];
+                j--;
+            }
+            arr[j + 1] = temp;
+        }
+    }
+
+    // Merge two sorted subarrays
+    private void merge(JobPosting[] arr, int left, int mid, int right, Comparator<JobPosting> comparator) {
+        int len1 = mid - left + 1;
+        int len2 = right - mid;
+        
+        JobPosting[] leftArr = new JobPosting[len1];
+        JobPosting[] rightArr = new JobPosting[len2];
+        
+        System.arraycopy(arr, left, leftArr, 0, len1);
+        System.arraycopy(arr, mid + 1, rightArr, 0, len2);
+        
+        int i = 0, j = 0, k = left;
+        
+        while (i < len1 && j < len2) {
+            if (comparator.compare(leftArr[i], rightArr[j]) <= 0) {
+                arr[k++] = leftArr[i++];
+            } else {
+                arr[k++] = rightArr[j++];
+            }
+        }
+        
+        while (i < len1) {
+            arr[k++] = leftArr[i++];
+        }
+        
+        while (j < len2) {
+            arr[k++] = rightArr[j++];
+        }
     }
 
     @Override
