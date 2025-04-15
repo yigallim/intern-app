@@ -86,6 +86,7 @@ public class JobApplication extends BaseEntity {
     public void setAppliedAt(LocalDate appliedAt) {
         this.appliedAt = appliedAt;
     }
+    
 
     @Override
     public String toShortString() {

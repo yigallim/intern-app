@@ -71,7 +71,7 @@ public class Location {
                         Math.sin(dLon / 2) * Math.sin(dLon / 2);
         double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
         double earthRadius = 6371;
-        return earthRadius * c;
+        return earthRadius * c; 
     }
 
     @Override

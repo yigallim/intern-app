@@ -29,7 +29,7 @@ public class JobApplicationUI {
                         new Menu.Choice("📄 Display All Application", jobApplicationService::displayJobApplication),
                         new Menu.Choice("🔄 Display Ongoing Application", jobApplicationService::displayOngoingJobApplication),
                         new Menu.Choice("🏁 Display Terminated Application", jobApplicationService::displayTerminatedJobApplication),
-                        new Menu.Choice("🔍 View Ranked Applications", Log::na),
+                        new Menu.Choice("🔍 View Ranked Applications", jobApplicationService::viewRankedApplications),
                         new Menu.Choice("✅ Shortlist Application", Log::na),
                         new Menu.Choice("❌ Reject Application", Log::na))
                 .exit("<Return>")
