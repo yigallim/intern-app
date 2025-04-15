@@ -52,7 +52,7 @@ public class Initializer {
 
         // 75 Job Postings (5 per company, Hard-Coded, Qualifications set to null)
         // TechCorp (Company 0)
-        jobPostings.add(new JobPosting("Software Engineer", companies.get(0), 5000, 8000, "Develop scalable web applications", JobPosting.Type.IT_COMM_TEC, null, JobPosting.Status.OPEN, LocalDate.now().minusDays(5), LocalDate.now()));
+        jobPostings.add(new JobPosting("Software Engineer", companies.get(0), 5000, 8000, "Develop scalable web applications", JobPosting.Type.IT_COMM_TEC, null, JobPosting.Status.CLOSED, LocalDate.now().minusDays(100), LocalDate.now()));
         jobPostings.add(new JobPosting("Senior Developer", companies.get(0), 7000, 10000, "Lead development projects for clients", JobPosting.Type.IT_COMM_TEC, null, JobPosting.Status.OPEN, LocalDate.now().minusDays(3), LocalDate.now()));
         jobPostings.add(new JobPosting("DevOps Engineer", companies.get(0), 6000, 9000, "Manage CI/CD pipelines and deployments", JobPosting.Type.IT_COMM_TEC, null, JobPosting.Status.OPEN, LocalDate.now().minusDays(7), LocalDate.now()));
         jobPostings.add(new JobPosting("QA Engineer", companies.get(0), 4000, 6000, "Ensure product quality through testing", JobPosting.Type.IT_COMM_TEC, null, JobPosting.Status.OPEN, LocalDate.now().minusDays(2), LocalDate.now()));

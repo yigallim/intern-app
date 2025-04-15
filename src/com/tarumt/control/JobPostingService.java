@@ -15,8 +15,11 @@ import com.tarumt.utility.validation.ConditionFactory;
 import com.tarumt.utility.validation.StringCondition;
 
 import java.time.LocalDate;
+import java.time.YearMonth;
 
 import java.util.LinkedList;
+import java.util.Map;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -26,13 +29,19 @@ public class JobPostingService implements Service {
     private final JobPostingUI jobPostingUI;
     private Applicant currentApplicant;
     private final List<JobApplication> jobApplications;
+    
+    // Add a static reference to the current instance
+    private static JobPostingService instance;
 
     public JobPostingService() {
         Input input = new Input();
         this.jobPostings = Initializer.getJobPostings();
         this.jobPostingUI = new JobPostingUI(input);
         this.jobApplications = Initializer.getJobApplication();
-
+    }
+    
+    public static JobPostingService getInstance() {
+        return instance;
     }
 
     @Override
@@ -136,7 +145,6 @@ public class JobPostingService implements Service {
                 jobPostingUI.printSuccessDeleteByRangeMsg(startIndex, endIndex);
             }
         }
-
     }
 
     public void deleteById() {
@@ -197,6 +205,37 @@ public class JobPostingService implements Service {
         
         // Pass report data to UI layer for display
         jobPostingUI.displayReports(reportData);
+    }
+    
+    // Method for month range summary report
+    public void displayMonthRangeSummaryReport() {
+        // Get month range from UI
+        int[] monthRange = jobPostingUI.getMonthRange();
+        if (monthRange == null) {
+            return;  // User cancelled
+        }
+        
+        int startMonth = monthRange[0];
+        int startYear = monthRange[1];
+        int endMonth = monthRange[2];
+        int endYear = monthRange[3];
+        
+        // Validate date range
+        if (startYear > endYear || (startYear == endYear && startMonth > endMonth)) {
+            jobPostingUI.displayDateRangeError();
+            return;
+        }
+        
+        // Generate report data
+        List<MonthRangeSummaryData> reportData = generateMonthRangeSummaryReport(startMonth, startYear, endMonth, endYear);
+        
+        if (reportData.isEmpty()) {
+            jobPostingUI.displayNoDataMessage();
+            return;
+        }
+        
+        // Display the report data using UI
+        jobPostingUI.displayMonthRangeSummaryReport(reportData, startMonth, startYear, endMonth, endYear);
     }
     
     // Inner class for job type statistics - make it public static
@@ -461,6 +500,77 @@ public class JobPostingService implements Service {
         }
     }
     
+    // Inner class for month range summary report data
+    public static class MonthRangeSummaryData {
+        private String jobTitle;
+        private String companyName;
+        private LocalDate appliedDate;
+        private int applicantCount;
+        
+        public MonthRangeSummaryData(String jobTitle, String companyName, LocalDate appliedDate, int applicantCount) {
+            this.jobTitle = jobTitle;
+            this.companyName = companyName;
+            this.appliedDate = appliedDate;
+            this.applicantCount = applicantCount;
+        }
+        
+        public String getJobTitle() {
+            return jobTitle;
+        }
+        
+        public String getCompanyName() {
+            return companyName;
+        }
+        
+        public LocalDate getAppliedDate() {
+            return appliedDate;
+        }
+        
+        public int getApplicantCount() {
+            return applicantCount;
+        }
+    }
+    
+    // Method to generate month range summary report
+    public List<MonthRangeSummaryData> generateMonthRangeSummaryReport(int startMonth, int startYear, int endMonth, int endYear) {
+        List<MonthRangeSummaryData> summaryReport = new LinkedList<>();
+        
+        // Define date range
+        LocalDate startDate = LocalDate.of(startYear, startMonth, 1);
+        LocalDate endDate = YearMonth.of(endYear, endMonth).atEndOfMonth();
+        
+        // Filter applications in the date range
+        List<JobApplication> filteredApplications = jobApplications.stream()
+                .filter(app -> !app.getApplicationDate().isBefore(startDate) && !app.getApplicationDate().isAfter(endDate))
+                .collect(Collectors.toList());
+        
+        // Group by job and date
+        Map<JobPosting, Map<LocalDate, Long>> jobDateCounts = filteredApplications.stream()
+                .collect(Collectors.groupingBy(
+                    JobApplication::getJobPosting,
+                    Collectors.groupingBy(JobApplication::getApplicationDate, Collectors.counting())
+                ));
+        
+        // Convert to report data format
+        for (Map.Entry<JobPosting, Map<LocalDate, Long>> jobEntry : jobDateCounts.entrySet()) {
+            JobPosting job = jobEntry.getKey();
+            
+            for (Map.Entry<LocalDate, Long> dateEntry : jobEntry.getValue().entrySet()) {
+                summaryReport.add(new MonthRangeSummaryData(
+                    job.getTitle(),
+                    job.getCompany().getName(),
+                    dateEntry.getKey(),
+                    dateEntry.getValue().intValue()
+                ));
+            }
+        }
+        
+        // Sort by date
+        summaryReport.sort(Comparator.comparing(MonthRangeSummaryData::getAppliedDate));
+        
+        return summaryReport;
+    }
+
     // Generate salary range statistics
     private List<SalaryStatistic> generateSalaryStats() {
         List<SalaryStatistic> salaryStats = new LinkedList<>();
@@ -860,5 +970,4 @@ public class JobPostingService implements Service {
         selectedApplication.setApplicationDate(LocalDate.now());
         System.out.println("Application '" + selectedApplication.getJobPosting().getTitle() + "' successfully withdrawn!");
     }
-
 }

@@ -14,11 +14,15 @@ import com.tarumt.utility.search.FuzzySearch;
 import com.tarumt.utility.validation.*;
 
 import java.lang.reflect.Field;
+import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.Map;
 import java.util.Set;
+import java.time.LocalDate;
+import java.util.*;
 
 public class JobPostingUI {
 
@@ -44,7 +48,8 @@ public class JobPostingUI {
                         new Menu.Choice("📂 Filter Job Posting", service::filter),
                         new Menu.Choice("🔃 Update Job Posting", service::update),
                         new Menu.Choice("❌ Delete Job Posting", service::delete),
-                        new Menu.Choice("📈 Generate Report", service::report)
+                        new Menu.Choice("📈 Generate Report", service::report),
+                        new Menu.Choice("📊 Month Range Summary Report", service::displayMonthRangeSummaryReport)
                 )
                 .exit("<Return to Main Menu>")
                 .beforeEach(System.out::println)
@@ -453,5 +458,193 @@ public class JobPostingUI {
         
         System.out.println("Total Job Postings: " + jobPostings.size());
         input.clickAnythingToContinue();
+    }
+    
+    // Helper class for the month range summary report
+    public static class MonthRangeSummaryReportRow {
+        private String jobTitle;
+        private String companyName;
+        private String appliedDate;
+        private int count;
+        
+        public MonthRangeSummaryReportRow(String jobTitle, String companyName, String appliedDate, int count) {
+            this.jobTitle = jobTitle;
+            this.companyName = companyName;
+            this.appliedDate = appliedDate;
+            this.count = count;
+        }
+        
+        public String getJobTitle() {
+            return jobTitle;
+        }
+        
+        public String getCompanyName() {
+            return companyName;
+        }
+        
+        public String getAppliedDate() {
+            return appliedDate;
+        }
+        
+        public int getCount() {
+            return count;
+        }
+        
+        @Override
+        public String toString() {
+            return String.format("%-25s %-20s %-12s %d", 
+                    truncate(jobTitle, 25),
+                    truncate(companyName, 20),
+                    appliedDate,
+                    count);
+        }
+    }
+    
+    // Get month range from user
+    public int[] getMonthRange() {
+        System.out.println("\n=== Month Range Summary Report ===");
+        System.out.println("Please specify the month range for the report:");
+        
+        // Get start month and year
+        int startMonth = getMonth("Enter start month (1-12): ");
+        if (startMonth == Input.INT_EXIT_VALUE) return null;
+        
+        int startYear = getYear("Enter start year: ");
+        if (startYear == Input.INT_EXIT_VALUE) return null;
+        
+        // Get end month and year
+        int endMonth = getMonth("Enter end month (1-12): ");
+        if (endMonth == Input.INT_EXIT_VALUE) return null;
+        
+        int endYear = getYear("Enter end year: ");
+        if (endYear == Input.INT_EXIT_VALUE) return null;
+        
+        return new int[] {startMonth, startYear, endMonth, endYear};
+    }
+    
+    // Helper method to get month input
+    public int getMonth(String prompt) {
+        IntegerCondition condition = ConditionFactory.integer().min(1).max(12);
+        return input.getInt(prompt, condition);
+    }
+    
+    // Helper method to get year input
+    public int getYear(String prompt) {
+        IntegerCondition condition = ConditionFactory.integer().min(2000).max(2100);
+        return input.getInt(prompt, condition);
+    }
+    
+    // Display date range error message
+    public void displayDateRangeError() {
+        System.out.println("\nError: Start date must be before or equal to end date");
+        input.clickAnythingToContinue();
+    }
+    
+    // Display no data message
+    public void displayNoDataMessage() {
+        System.out.println("\nNo job application data found for the specified date range");
+        input.clickAnythingToContinue();
+    }
+    
+    // Display month range summary report
+    public void displayMonthRangeSummaryReport(List<JobPostingService.MonthRangeSummaryData> reportData, 
+                                          int startMonth, int startYear, int endMonth, int endYear) {
+        System.out.println("\n=== Month Range Summary Report ===");
+        System.out.printf("Date Range: %d-%d to %d-%d\n\n", startYear, startMonth, endYear, endMonth);
+        
+        if (reportData.isEmpty()) {
+            System.out.println("No data available for this date range.");
+            input.clickAnythingToContinue();
+            return;
+        }
+        
+        // Convert data to MonthRangeSummaryReportRow objects for TabularPrint
+        List<MonthRangeSummaryReportRow> tableRows = new ArrayList<>();
+        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        
+        for (JobPostingService.MonthRangeSummaryData data : reportData) {
+            tableRows.add(new MonthRangeSummaryReportRow(
+                data.getJobTitle(),
+                data.getCompanyName(),
+                data.getAppliedDate().format(dateFormatter),
+                data.getApplicantCount()
+            ));
+        }
+        
+        // Use TabularPrint to display a nicely formatted table
+        TabularPrint.printTabular(tableRows, true);
+        
+        // 2. Create a chart showing applications by company
+        Map<String, Integer> companyApplicationCounts = reportData.stream()
+            .collect(Collectors.groupingBy(
+                JobPostingService.MonthRangeSummaryData::getCompanyName,
+                Collectors.summingInt(JobPostingService.MonthRangeSummaryData::getApplicantCount)
+            ));
+        
+        System.out.println("\n=== Applications by Company ===");
+        
+        // Convert to lists for chart display
+        List<String> companies = new ArrayList<>(companyApplicationCounts.keySet());
+        List<Integer> counts = companies.stream()
+            .map(companyApplicationCounts::get)
+            .collect(Collectors.toList());
+        
+        // Display bar chart
+        Chart.barChart(
+            companies,
+            counts,
+            "Application Count by Company",
+            50,  // maxBarLength
+            '█', // barChar
+            true // showValues
+        );
+        
+        // 3. Create a chart showing applications by date
+        System.out.println("\n=== Application Trend Over Time ===");
+        
+        // Group by date
+        Map<LocalDate, Integer> dateApplicationCounts = reportData.stream()
+            .collect(Collectors.groupingBy(
+                JobPostingService.MonthRangeSummaryData::getAppliedDate,
+                Collectors.summingInt(JobPostingService.MonthRangeSummaryData::getApplicantCount)
+            ));
+        
+        // Sort dates
+        List<LocalDate> sortedDates = new ArrayList<>(dateApplicationCounts.keySet());
+        Collections.sort(sortedDates);
+        
+        // Convert to lists for chart display
+        List<String> dates = sortedDates.stream()
+            .map(date -> date.format(dateFormatter))
+            .collect(Collectors.toList());
+        
+        List<Integer> dateCounts = sortedDates.stream()
+            .map(dateApplicationCounts::get)
+            .collect(Collectors.toList());
+        
+        // Display bar chart
+        Chart.barChart(
+            dates,
+            dateCounts,
+            "Application Count by Date",
+            50,  // maxBarLength
+            '█', // barChar
+            true // showValues
+        );
+        
+        input.clickAnythingToContinue();
+    }
+    
+    // Helper method to truncate strings if they're too long
+    private static String truncate(String value, int maxLength) {
+        if (value == null) {
+            return "";
+        }
+        
+        if (value.length() <= maxLength) {
+            return value;
+        }
+        
+        return value.substring(0, maxLength - 3) + "...";
     }
 }
