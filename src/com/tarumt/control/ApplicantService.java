@@ -1,6 +1,5 @@
 package com.tarumt.control;
 
-import com.tarumt.adt.list.DoublyLinkedList;
 import com.tarumt.boundary.ApplicantUI;
 import com.tarumt.boundary.LocationUI;
 import com.tarumt.dao.Initializer;
