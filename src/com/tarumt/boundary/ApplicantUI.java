@@ -298,14 +298,14 @@ public class ApplicantUI {
         System.out.println();
         Log.warn("Logged out");
     }
-
-    public void jobApplicationMenu(JobPostingService jobPostingService) {
+    
+    public void jobApplicationMenu(JobPostingService jobPostingService, ApplicantService applicantService) {
         new Menu()
                 .header("==> Job Application <==")
                 .choice(
                         new Menu.Choice("📋 Display All Job Postings", jobPostingService::read),
                         new Menu.Choice("🔍 Search Job Postings", jobPostingService::search),
-                        new Menu.Choice("📂 Filter Job Postings", Log::na),
+                        new Menu.Choice("📂 Filter Job Postings", applicantService::applicantFilter),
                         new Menu.Choice("🔖 Display Recommended Job Postings", Log::na),
                         new Menu.Choice("📝 Apply Job Posting", jobPostingService::applyJob),
                         new Menu.Choice("📄 Display Applied Job Postings", jobPostingService::displayJobApplication),
@@ -390,5 +390,35 @@ public class ApplicantUI {
             .run();
     }
      
-}
+    public void filterMode(ApplicantService service) {
+        System.out.println();
+        new Menu()
+                .header("Select Filter Criteria ==>")
+                .choice(
+                        new Menu.Choice("Filter by Job Type", service::filterByJobType),
+                        new Menu.Choice("Filter by Location", service::filterByLocation),
+                        new Menu.Choice("Filter by Application Status", service::filterByStatus),
+                        new Menu.Choice("Filter by Application Date Range", service::filterByDateRage)
+                )
+                .exit("<Return>")
+                .beforeEach(System.out::println)
+                .afterEach(System.out::println)
+                .run();
+    }
+    
+    public void applicantFilterMode(ApplicantService service) {
+        System.out.println();
+        new Menu()
+                .header("Select Filter Criteria ==>")
+                .choice(
+                        new Menu.Choice("Filter by Job Type", service::filterByCompanyJobType),
+                        new Menu.Choice("Filter by Location", service::filterByCompanyLocation)
+                )
+                .exit("<Return>")
+                .beforeEach(System.out::println)
+                .afterEach(System.out::println)
+                .run();
+    }
 
+    
+}
