@@ -172,7 +172,7 @@ public class ApplicantService implements Service {
             System.out.printf("%-30s : %-3d (%.1f%%)%n", label, value, percent);
         }
 
-        System.out.println("[INFO] Report generation completed.");
+        Log.info("Report generation completed.");
     }
 
     public void reportAllLocations() {
@@ -219,7 +219,7 @@ public class ApplicantService implements Service {
             System.out.printf("%-30s : %-3d (%.1f%%)%n", labels.get(i), values.get(i), percent);
         }
 
-        System.out.println("[INFO] Report generation completed.");
+        Log.info("Report generation completed.");
     }
 
 
@@ -270,7 +270,7 @@ public class ApplicantService implements Service {
             System.out.printf("%-12s : %-3d (%.1f%%)%n", labels.get(i), values.get(i), percent);
         }
         
-        System.out.println("[INFO] Report generation completed.");
+        Log.info("Report generation completed.");
         
     }
     
@@ -354,7 +354,7 @@ public class ApplicantService implements Service {
             System.out.printf("%-12s : %3d (%.1f%%)%n", labels.get(i), values.get(i), percent);
         }
         
-        System.out.println("[INFO] Report generation completed.");
+        Log.info("Report generation completed.");
         
     }
 
@@ -436,7 +436,7 @@ public class ApplicantService implements Service {
             System.out.printf("%-12s : %3d (%.1f%%)%n", labels.get(i), values.get(i), percent);
         }
 
-        System.out.println("[INFO] Report generation completed.");
+        Log.info("Report generation completed.");
     }
 
     public void reportTop5ApplicationDates() {
@@ -497,7 +497,7 @@ public class ApplicantService implements Service {
             System.out.printf("%-12s : %3d (%.1f%%)%n", labels.get(i), values.get(i), percent);
         }
         
-        System.out.println("[INFO] Report generation completed.");
+        Log.info("Report generation completed.");
 
     }
 
@@ -524,7 +524,7 @@ public class ApplicantService implements Service {
         reportTop5ApplicationDates();
         System.out.println();
 
-        System.out.println("[INFO] Full report generation completed.");
+        Log.info("Full report generation completed.");
     }
 
 
@@ -788,3 +788,4 @@ public class ApplicantService implements Service {
     }
 
 }
+
