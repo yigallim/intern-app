@@ -9,6 +9,7 @@ import com.tarumt.utility.common.Log;
 import com.tarumt.utility.search.FuzzySearch;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import com.tarumt.adt.list.ListInterface;
 import com.tarumt.adt.list.DoublyLinkedList;
@@ -240,7 +241,7 @@ public class JobPostingService implements Service {
             return null;
         }
 
-        LocalDate createdAt = Context.getDate(), updatedAt = Context.getDate();
+        LocalDateTime createdAt = Context.getDateTime(), updatedAt = Context.getDateTime();
         return new JobPosting(title, company, salaryMin, salaryMax, description, type, null, JobPosting.Status.OPEN,
                 createdAt, updatedAt);
     }
@@ -258,7 +259,7 @@ public class JobPostingService implements Service {
             return;
         }
         jobPosting.setTitle(newJobTitle);
-        jobPosting.setUpdatedAt(Context.getDate());
+        jobPosting.setUpdatedAt(Context.getDateTime());
         jobPostingUI.printUpdateSuccessMessage(jobPosting, fieldName);
 
     }
@@ -276,7 +277,7 @@ public class JobPostingService implements Service {
             return;
         }
         jobPosting.setCompany(newCompany);
-        jobPosting.setUpdatedAt(Context.getDate());
+        jobPosting.setUpdatedAt(Context.getDateTime());
         jobPostingUI.printUpdateSuccessMessage(jobPosting, fieldName);
     }
 
@@ -298,7 +299,7 @@ public class JobPostingService implements Service {
 
         jobPosting.setSalaryMin(newMinSalary);
         jobPosting.setSalaryMax(newMaxSalary);
-        jobPosting.setUpdatedAt(Context.getDate());
+        jobPosting.setUpdatedAt(Context.getDateTime());
         jobPostingUI.printUpdateSuccessMessage(jobPosting, fieldName);
     }
 
@@ -317,7 +318,7 @@ public class JobPostingService implements Service {
         }
 
         jobPosting.setDescription(newDescription);
-        jobPosting.setUpdatedAt(Context.getDate());
+        jobPosting.setUpdatedAt(Context.getDateTime());
 
         jobPostingUI.printUpdateSuccessMessage(jobPosting, fieldName);
     }
@@ -336,7 +337,7 @@ public class JobPostingService implements Service {
             return;
         }
         jobPosting.setType(newType);
-        jobPosting.setUpdatedAt(Context.getDate());
+        jobPosting.setUpdatedAt(Context.getDateTime());
 
         jobPostingUI.printUpdateSuccessMessage(jobPosting, fieldName);
     }
@@ -355,7 +356,7 @@ public class JobPostingService implements Service {
             return;
         }
         jobPosting.setStatus(newStatus);
-        jobPosting.setUpdatedAt(Context.getDate());
+        jobPosting.setUpdatedAt(Context.getDateTime());
 
         jobPostingUI.printUpdateSuccessMessage(jobPosting, fieldName);
     }
@@ -400,7 +401,7 @@ public class JobPostingService implements Service {
         jobPosting.setDescription(newDescription);
         jobPosting.setType(newType);
         jobPosting.setStatus(newStatus);
-        jobPosting.setUpdatedAt(Context.getDate());
+        jobPosting.setUpdatedAt(Context.getDateTime());
         jobPostingUI.printUpdateSuccessMessage(jobPosting, "All Fields");
     }
 }

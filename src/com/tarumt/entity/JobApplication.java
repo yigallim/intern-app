@@ -6,7 +6,7 @@ import com.tarumt.utility.pretty.annotation.Computed;
 import com.tarumt.utility.pretty.annotation.ExcludeKey;
 import com.tarumt.utility.pretty.annotation.OutputLength;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 public class JobApplication extends BaseEntity {
     private static final String PREFIX = "e";
@@ -20,10 +20,9 @@ public class JobApplication extends BaseEntity {
     private Applicant applicant;
     @OutputLength(14)
     private Status status;
-    @OutputLength(12)
-    private LocalDate appliedAt;
+    private LocalDateTime appliedAt;
 
-    public JobApplication(JobPosting jobPosting, Applicant applicant, Status status, LocalDate appliedAt) {
+    public JobApplication(JobPosting jobPosting, Applicant applicant, Status status, LocalDateTime appliedAt) {
         super(generateId());
         this.jobPosting = jobPosting;
         this.applicant = applicant;
@@ -90,11 +89,11 @@ public class JobApplication extends BaseEntity {
         this.status = status;
     }
 
-    public LocalDate getAppliedAt() {
+    public LocalDateTime getAppliedAt() {
         return appliedAt;
     }
 
-    public void setAppliedAt(LocalDate appliedAt) {
+    public void setAppliedAt(LocalDateTime appliedAt) {
         this.appliedAt = appliedAt;
     }
 
@@ -111,9 +110,13 @@ public class JobApplication extends BaseEntity {
                 status == Status.WITHDRAWN;
     }
 
+    public boolean isReadyForInterview() {
+        return status == Status.SHORTLISTED || status == Status.INTERVIEWED;
+    }
+
     @Override
     public String toShortString() {
-        return this.getId() + ", Job: " + this.getJobPosting().getTitle() + ", Applicant: " + this.applicant.getName();
+        return this.getId() + " | Job: " + this.jobPosting.toShortString() + " | Applicant: " + this.applicant.toShortString();
     }
 
     @Override
@@ -123,7 +126,7 @@ public class JobApplication extends BaseEntity {
                 "|  Applicant   => " + applicant + ",\n" +
                 "|  Job Posting => " + jobPosting + ",\n" +
                 "|  Status      => " + (status != null ? status.toString() : "N/A") + ",\n" +
-                "|  Applied At  => " + (appliedAt != null ? appliedAt.toString() : "N/A");
+                "|  Applied At  => " + Strings.formatDateTime(appliedAt);
     }
 }
 

@@ -17,6 +17,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
 import java.lang.reflect.Modifier;
+import java.time.LocalDateTime;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -66,6 +67,8 @@ public class TabularPrint {
 
                 if (fieldValue instanceof BaseEntity) {
                     rawValue = ((BaseEntity) fieldValue).toShortString();
+                } else if (fieldValue instanceof LocalDateTime) {
+                    rawValue = Strings.formatDateTime((LocalDateTime) fieldValue);
                 } else if (fieldValue != null) {
                     rawValue = fieldValue.toString();
                 } else {

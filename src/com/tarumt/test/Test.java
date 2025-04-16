@@ -1,25 +1,59 @@
 package com.tarumt.test;
 
-import com.tarumt.utility.search.LevenshteinSimilarity;
+import com.tarumt.adt.list.DoublyLinkedList;
+import com.tarumt.adt.list.ListInterface;
+import com.tarumt.control.InterviewService;
+import com.tarumt.entity.interview.TimeSlot;
+import com.tarumt.utility.common.Context;
+
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class Test {
-    public static void main(String[] args) {
 
-        System.out.println(lengthFactor(1));
-        System.out.println(lengthFactor(2));
-        System.out.println(lengthFactor(3));
-        System.out.println(lengthFactor(4));
-        System.out.println(lengthFactor(5));
-        System.out.println(lengthFactor(6));
-        System.out.println(lengthFactor(7));
-        System.out.println(lengthFactor(8));
-
-        System.out.println(LevenshteinSimilarity.score("big", "bgi"));
-        System.out.println(LevenshteinSimilarity.score("sco", "score"));
-        System.out.println(LevenshteinSimilarity.score("good", "doog"));
+    private static boolean isTimeSlotAvailable(TimeSlot timeSlot, ListInterface<TimeSlot> bookedSlots) {
+        if (timeSlot == null || bookedSlots == null) {
+            return false;
+        }
+        return timeSlot.isAvailable() && !isBooked(timeSlot, bookedSlots);
     }
 
-    public static double lengthFactor(int maxLen) {
-        return (maxLen > 1) ? (1 + (1.6 * Math.exp(-0.5 * (maxLen - 1)))) : 1;
+    private static boolean isBooked(TimeSlot timeSlot, ListInterface<TimeSlot> bookedSlots) {
+        if (timeSlot == null || bookedSlots == null) {
+            return false;
+        }
+        return bookedSlots.contains(timeSlot);
+    }
+
+    public static void main(String[] args) {
+//        for (int i = 0; i < 24; i++) {
+        Context.setClockTime(1, 30);
+//            int slot = BookedSlot.getTodayStartSlot();
+//            System.out.println("i = " + i);
+//            System.out.println("slot = " + slot);
+//            System.out.println(new BookedSlot(Context.getDate(), slot).getStartTime());
+//            System.out.println();
+//            System.out.println();
+//        }
+
+//        AtomicInteger availableCount = new AtomicInteger(0);
+//        InterviewService.getInstance().iterateTimeSlots((bookedSlot, available) -> {
+//            if (available) {
+//                availableCount.incrementAndGet();
+//            }
+//            System.out.println(bookedSlot + " " + available);
+//            System.out.println();
+//        });
+//        System.out.println("Total available slots: " + availableCount.get());
+
+//        for (int i = 0; i < 18; i++) {
+//            TimeSlot slot = new TimeSlot(Context.getDate(), i);
+//            System.out.println(slot.getTimeRangeString() + ", " + slot.isAvailable());
+//        }
+
+        TimeSlot.generateWeekTimeSlot().forEach(System.out::println);
+        boolean hasFreeSlot = TimeSlot.generateWeekTimeSlot().anyMatch(
+                (timeSlot) -> isTimeSlotAvailable(timeSlot, new DoublyLinkedList<TimeSlot>())
+        );
+        System.out.println(hasFreeSlot);
     }
 }

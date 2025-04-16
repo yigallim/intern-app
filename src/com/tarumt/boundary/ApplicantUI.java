@@ -1,16 +1,10 @@
 package com.tarumt.boundary;
 
-import com.tarumt.control.ApplicantService;
-import com.tarumt.control.CompanyService;
-import com.tarumt.control.JobApplicationService;
-import com.tarumt.control.JobPostingService;
+import com.tarumt.control.*;
 import com.tarumt.entity.Applicant;
 import com.tarumt.entity.BaseEntity;
 import com.tarumt.entity.JobPosting;
-import com.tarumt.utility.common.Context;
-import com.tarumt.utility.common.Input;
-import com.tarumt.utility.common.Log;
-import com.tarumt.utility.common.Menu;
+import com.tarumt.utility.common.*;
 import com.tarumt.utility.pretty.TabularPrint;
 import com.tarumt.utility.search.FuzzySearch;
 import com.tarumt.utility.validation.*;
@@ -281,17 +275,18 @@ public class ApplicantUI {
     public void accessMenu() {
         ApplicantService applicantService = ApplicantService.getInstance();
         JobApplicationService jobApplicationService = JobApplicationService.getInstance();
+        InterviewService interviewService = InterviewService.getInstance();
 
         Applicant applicant = Context.getApplicant();
 
         try {
             new Menu()
                     .banner(applicant::getName)
-                    .header(() -> "==> Welcome, Applicant \"" + applicant.getName() + "\"  |  " + Context.getDate() + " <==")
+                    .header(() -> "==> Welcome, Applicant \"" + applicant.getName() + "\"  |  " + Strings.formatDateTime(Context.getDateTime()) + " <==")
                     .choice(
                             new Menu.Choice("🔎 Explore Jobs & Companies", applicantService::exploreJobsAndCompanies),
                             new Menu.Choice("📄 Manage Job Application", jobApplicationService::accessApplicant),
-                            new Menu.Choice("🗓️ Manage Interview Schedule", Log::na),
+                            new Menu.Choice("🤝 Manage Interviews", interviewService::accessApplicant),
                             new Menu.Choice("👤 Manage Applicant Profile", applicantService::manageProfile))
                     .exit("<Logout>")
                     .beforeEach(System.out::println)

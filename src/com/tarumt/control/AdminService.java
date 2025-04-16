@@ -3,6 +3,7 @@ package com.tarumt.control;
 import com.tarumt.boundary.AdminUI;
 import com.tarumt.utility.common.Context;
 import com.tarumt.utility.common.Input;
+import com.tarumt.utility.common.Menu;
 
 import java.time.Clock;
 import java.time.Duration;
@@ -42,9 +43,24 @@ public class AdminService {
     }
 
     public void modifyTime() {
+       this.adminUI.modifyTimeMenu();
+    }
+
+    public void modifyHours() {
+        int fastForwardHours = adminUI.getFastForwardHours();
+        if (fastForwardHours == Input.INT_EXIT_VALUE) return;
+        Duration offset = Duration.ofHours(fastForwardHours);
+        Clock clock = Clock.offset(Context.getClock(), offset);
+        Context.setClock(clock);
+        adminUI.displayTimeModificationSuccess(fastForwardHours, "hours");
+    }
+
+    public void modifyDays() {
         int fastForwardDays = adminUI.getFastForwardDays();
         if (fastForwardDays == Input.INT_EXIT_VALUE) return;
-        Clock clock = Clock.fixed(Instant.now(Context.getClock()).plus(Duration.ofDays(fastForwardDays)), ZoneId.systemDefault());
+        Duration offset = Duration.ofDays(fastForwardDays);
+        Clock clock = Clock.offset(Context.getClock(), offset);
         Context.setClock(clock);
+        adminUI.displayTimeModificationSuccess(fastForwardDays, "days");
     }
 }

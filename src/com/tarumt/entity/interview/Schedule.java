@@ -1,4 +1,4 @@
-package com.tarumt.entity.schedule;
+package com.tarumt.entity.interview;
 
 import com.tarumt.utility.common.Strings;
 import com.tarumt.adt.list.ListInterface;
@@ -6,44 +6,21 @@ import com.tarumt.adt.list.DoublyLinkedList;
 
 import java.time.*;
 
-public class InterviewSchedule {
+public class Schedule {
     private static final LocalTime START_TIME = LocalTime.of(9, 0); // 9 AM
     private static final Duration INTERVAL = Duration.ofMinutes(30); // 30-minute intervals
     private static final int NUM_SLOTS_PER_DAY = 18; // 9 AM to 6 PM = 9 hours * 2 slots/hour
     private static final int DAYS_AHEAD = 7;
 
-    private final ListInterface<BookedSlot> bookedSlots = new DoublyLinkedList<>();
+    private final ListInterface<TimeSlot> bookedSlots = new DoublyLinkedList<>();
 
-    // Get available time slots for the next 'daysAhead' days
-    public ListInterface<TimeSlot> getAvailableSlots(LocalDateTime now) {
-        ListInterface<TimeSlot> available = new DoublyLinkedList<>();
-        LocalDate today = now.toLocalDate();
-
-        for (int i = 0; i < DAYS_AHEAD; i++) {
-            LocalDate date = today.plusDays(i);
-            if (isWeekday(date)) {
-                int startIndex = (i == 0) ? findNextSlotIndex(now.toLocalTime()) : 0;
-                for (int slotIndex = startIndex; slotIndex < NUM_SLOTS_PER_DAY; slotIndex++) {
-                    BookedSlot slot = new BookedSlot(date, slotIndex);
-                    if (!bookedSlots.contains(slot)) {
-                        LocalTime startTime = getSlotStartTime(slotIndex);
-                        LocalTime endTime = startTime.plus(INTERVAL);
-                        LocalDateTime start = LocalDateTime.of(date, startTime);
-                        LocalDateTime end = LocalDateTime.of(date, endTime);
-                        available.add(new TimeSlot(start, end));
-                    }
-                }
-            }
-        }
-        return available;
-    }
 
     // Book a time slot if available
     public boolean bookSlot(LocalDate date, int slotIndex) {
         if (slotIndex < 0 || slotIndex >= NUM_SLOTS_PER_DAY || !isWeekday(date)) {
             return false; // Invalid slot or not a weekday
         }
-        BookedSlot slot = new BookedSlot(date, slotIndex);
+        TimeSlot slot = new TimeSlot(date, slotIndex);
         if (bookedSlots.contains(slot)) {
             return false; // Already booked
         }
@@ -79,16 +56,15 @@ public class InterviewSchedule {
         final int columnWidth = 12; // Fixed width for each column
         final int totalColumns = DAYS_AHEAD + 1; // Time slot column + days
 
-        // Create horizontal divider line with + at column intersections
-        StringBuilder dividerLine = new StringBuilder("+");
+        // Create horizontal divider line without + at column intersections
+        StringBuilder dividerLine = new StringBuilder();
         for (int i = 0; i < totalColumns; i++) {
-            dividerLine.append(Strings.repeat("-", columnWidth + 2)).append("+");
+            dividerLine.append(Strings.repeat("-", columnWidth + 3)); // +3 accounts for "| " and " "
         }
-        String horizontalDivider = dividerLine.toString();
-        
+        String horizontalDivider = dividerLine.append("-").toString();
+
         // Add title as a header row that spans all columns
         calendarView.append("Available Time Slots (9 AM to 6 PM)\n");
-        int remainingSpace = horizontalDivider.length() - 34 - 1;
 
         // Divider after title
         calendarView.append(horizontalDivider).append("\n");
@@ -98,7 +74,8 @@ public class InterviewSchedule {
         LocalDate today = LocalDate.now();
         for (int i = 0; i < DAYS_AHEAD; i++) {
             LocalDate date = today.plusDays(i);
-            String dayHeader = date.getDayOfWeek().name().substring(0, 3) + " " + date.getDayOfMonth();
+            String dayHeader = date.getDayOfWeek().name().substring(0, 3) + " " +
+                    date.getDayOfMonth() + "/" + date.getMonthValue();
             calendarView.append(" ").append(String.format("%-" + columnWidth + "s", dayHeader)).append(" |");
         }
         calendarView.append("\n");
@@ -134,7 +111,7 @@ public class InterviewSchedule {
 
                 // Check if the slot is booked
                 boolean isBooked = false;
-                for (BookedSlot bookedSlot : bookedSlots) {
+                for (TimeSlot bookedSlot : bookedSlots) {
                     if (bookedSlot.getDate().isEqual(date) && bookedSlot.getSlotIndex() == slotIndex) {
                         isBooked = true;
                         break;

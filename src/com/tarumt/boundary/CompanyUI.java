@@ -1,15 +1,12 @@
 package com.tarumt.boundary;
 
 import com.tarumt.control.CompanyService;
+import com.tarumt.control.InterviewService;
 import com.tarumt.control.JobApplicationService;
 import com.tarumt.control.JobPostingService;
-import com.tarumt.entity.BaseEntity;
 import com.tarumt.entity.Company;
-import com.tarumt.utility.common.Context;
+import com.tarumt.utility.common.*;
 import com.tarumt.utility.pretty.TabularPrint;
-import com.tarumt.utility.common.Input;
-import com.tarumt.utility.common.Log;
-import com.tarumt.utility.common.Menu;
 import com.tarumt.utility.search.FuzzySearch;
 import com.tarumt.utility.validation.ConditionFactory;
 import com.tarumt.utility.validation.StringCondition;
@@ -253,7 +250,6 @@ public class CompanyUI {
     public void printNoExistingMsg() {
         Log.warn("No existing company record, please register first");
         System.out.println();
-
     }
 
     public void loginOrRegisterMenu() {
@@ -281,20 +277,21 @@ public class CompanyUI {
     }
 
     public void accessMenu() {
-        CompanyService companyService = CompanyService.getInstance();
-        JobApplicationService jobApplicationService = JobApplicationService.getInstance();
         JobPostingService jobPostingService = JobPostingService.getInstance();
+        JobApplicationService jobApplicationService = JobApplicationService.getInstance();
+        InterviewService interviewService = InterviewService.getInstance();
+        CompanyService companyService = CompanyService.getInstance();
 
         Company company = Context.getCompany();
 
         try {
             new Menu()
                     .banner(company::getName)
-                    .header(() -> "==> Welcome, Employer \"" + company.getName() + "\"  |  " + Context.getDate() + " <==")
+                    .header(() -> "==> Welcome, Employer \"" + company.getName() + "\"  |  " + Strings.formatDateTime(Context.getDateTime()) + " <==")
                     .choice(
                             new Menu.Choice("💼 Manage Job Posting", jobPostingService::run),
                             new Menu.Choice("📄 Manage Job Applications", jobApplicationService::accessEmployer),
-                            new Menu.Choice("🗓️ Schedule Interviews", Log::na),
+                            new Menu.Choice("🤝 Manage Interviews", interviewService::accessEmployer),
                             new Menu.Choice("🏢 Manage Company Profile", companyService::manageProfile))
                     .exit("<Logout>")
                     .beforeEach(System.out::println)

@@ -8,6 +8,7 @@ import com.tarumt.entity.Applicant;
 import com.tarumt.entity.Company;
 import com.tarumt.entity.JobApplication;
 import com.tarumt.entity.JobPosting;
+import com.tarumt.entity.interview.ScheduledInterview;
 import com.tarumt.utility.common.Context;
 import com.tarumt.utility.common.Input;
 
@@ -15,12 +16,15 @@ public class JobApplicationService {
 
     private static JobApplicationService instance;
     private ListInterface<JobApplication> jobApplications = new DoublyLinkedList<>();
+    private ListInterface<ScheduledInterview> scheduledInterviews = new DoublyLinkedList<>();
     private final JobApplicationUI jobApplicationUI;
 
     private JobApplicationService() {
         Input input = new Input();
         this.jobApplications = Initializer.getJobApplications();
+        this.scheduledInterviews = Initializer.getScheduledInterviews();
         this.jobApplicationUI = new JobApplicationUI(input);
+        updateInterviewedStatus();
     }
 
     public static JobApplicationService getInstance() {
@@ -30,23 +34,40 @@ public class JobApplicationService {
         return instance;
     }
 
+    public void updateInterviewedStatus() {
+        for (ScheduledInterview interview : scheduledInterviews) {
+            if (interview.getTimeSlot().isPast()) {
+                JobApplication application = interview.getJobApplication();
+                if (application != null && application.isReadyForInterview()) {
+                    application.setStatus(JobApplication.Status.INTERVIEWED);
+                }
+            }
+        }
+    }
+
+    private ListInterface<JobApplication> getAllJobApplications() {
+        updateInterviewedStatus();
+        return jobApplications;
+    }
+
     private ListInterface<JobApplication> getEmployerJobApplications() {
         Company company = Context.getCompany();
         if (company == null) {
             return new DoublyLinkedList<>();
         }
-        return jobApplications.filter(application ->
+        return getAllJobApplications().filter(application ->
                 application.getJobPosting().getCompany() != null &&
                         application.getJobPosting().getCompany().equals(company)
         );
     }
 
     private ListInterface<JobApplication> getApplicantJobApplications() {
+        updateInterviewedStatus();
         Applicant applicant = Context.getApplicant();
         if (applicant == null) {
             return new DoublyLinkedList<>();
         }
-        return jobApplications.filter(application ->
+        return getAllJobApplications().filter(application ->
                 application.getApplicant() != null &&
                         application.getApplicant().equals(applicant)
         );
@@ -142,7 +163,7 @@ public class JobApplicationService {
             if (jobPosting == null) {
                 return;
             }
-            JobApplication jobApplication = new JobApplication(jobPosting, Context.getApplicant(), JobApplication.Status.PENDING, Context.getDate());
+            JobApplication jobApplication = new JobApplication(jobPosting, Context.getApplicant(), JobApplication.Status.PENDING, Context.getDateTime());
             jobApplications.add(jobApplication);
             jobApplicationUI.printSuccessApplyJobPostingMsg();
             if (!jobApplicationUI.continueToApplyJobPosting()) {

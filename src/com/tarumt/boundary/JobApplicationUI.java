@@ -13,7 +13,7 @@ import com.tarumt.utility.validation.ConditionFactory;
 import com.tarumt.utility.validation.StringCondition;
 
 public class JobApplicationUI {
-    private Input input;
+    private final Input input;
 
     public JobApplicationUI(Input input) {
         this.input = input;
@@ -24,12 +24,13 @@ public class JobApplicationUI {
 
         new Menu()
                 .header("==> Manage Job Application <==")
-                .choice( // View Shortlist Applicant shall be in Schedule
+                .choice(
                         new Menu.Choice("📄 Display All Application", jobApplicationService::displayJobApplication),
                         new Menu.Choice("🔄 Display Ongoing Application", jobApplicationService::displayOngoingJobApplication),
                         new Menu.Choice("🏁 Display Terminated Application", jobApplicationService::displayTerminatedJobApplication),
                         new Menu.Choice("🔍 View Ranked Applications", Log::na),
                         new Menu.Choice("✅ Shortlist Application", jobApplicationService::shortlistApplication),
+                        new Menu.Choice("🎉 Offer Application", Log::na),
                         new Menu.Choice("❌ Reject Application", jobApplicationService::rejectApplication))
                 .exit("<Return>")
                 .beforeEach(System.out::println)
@@ -50,9 +51,7 @@ public class JobApplicationUI {
         System.out.println(Strings.warnHighlight("| Recommended ==> "));
 //        recommended.forEach((jobApplication -> )); // TODO : foreach, allow index param
 
-        return input.getObjectFromList("|\n| Select Job Application To Shortlist ==>", jobApplications, 66,
-                (jobApplication -> jobApplication.getId() + ", Applicant: " + jobApplication.getApplicant().getName() + ", Job: " + jobApplication.getJobPosting().getTitle())
-        );
+        return input.getObjectFromList("|\n| Select Job Application To Shortlist =>", jobApplications, 80, 2);
     }
 
     public boolean confirmShortlist() {
@@ -75,9 +74,7 @@ public class JobApplicationUI {
         System.out.println(Strings.warnHighlight("| Recommended ==> "));
 //        recommended.forEach((jobApplication -> )); // TODO : foreach, allow index param
 
-        return input.getObjectFromList("|\n| Select Job Application To Reject ==>", jobApplications, 66,
-                (jobApplication -> jobApplication.getId() + ", Applicant: " + jobApplication.getApplicant().getName() + ", Job: " + jobApplication.getJobPosting().getTitle())
-        );
+        return input.getObjectFromList("|\n| Select Job Application To Reject =>", jobApplications, 80, 2);
     }
 
     public boolean confirmReject() {
@@ -117,8 +114,14 @@ public class JobApplicationUI {
     }
 
     public JobPosting getApplyJobPostingChoice(ListInterface<JobPosting> jobPostings) {
+        if (jobPostings.isEmpty()) {
+            Log.info("No applicable job posting found");
+            input.clickAnythingToContinue();
+            return null;
+        }
+
         System.out.println("<== Apply Job Posting [ X to Exit ] ==>");
-        return input.getObjectFromList("|\n| Select Job Posting To Apply ==>", jobPostings, 40);
+        return input.getObjectFromList("|\n| Select Job Posting To Apply =>", jobPostings, 40);
     }
 
     public void printSuccessApplyJobPostingMsg() {
@@ -147,8 +150,7 @@ public class JobApplicationUI {
         }
 
         System.out.println("<== Withdraw Job Application [ X to Exit ] ==>");
-
-        return input.getObjectFromList("|\n| Select Job Application To Withdraw ==>", jobApplications, 40,
+        return input.getObjectFromList("|\n| Select Job Application To Withdraw =>", jobApplications, 40,
                 (jobApplication -> jobApplication.getId() + ", " + jobApplication.getJobPosting().getTitle())
         );
     }
@@ -165,6 +167,7 @@ public class JobApplicationUI {
     public void printGroupedJobApplications(ListInterface<JobApplication> jobApplications, ListInterface<JobPosting> uniqueJobPostings) {
         if (jobApplications == null || jobApplications.isEmpty()) {
             Log.info("No job applications to display");
+            input.clickAnythingToContinue();
             return;
         }
 

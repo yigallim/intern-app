@@ -1,10 +1,10 @@
 package com.tarumt.test;
 
-import com.tarumt.entity.schedule.InterviewSchedule;
+import com.tarumt.entity.interview.Schedule;
 
 public class TestSchedule {
     public static void main(String[] args) {
-        InterviewSchedule schedule = new InterviewSchedule();
+        Schedule schedule = new Schedule();
         System.out.println(schedule.getCalendarView());
     }
 }

@@ -11,6 +11,8 @@ import com.tarumt.utility.validation.annotation.Max;
 import com.tarumt.utility.validation.annotation.Min;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 import com.tarumt.adt.list.ListInterface;
 
@@ -43,12 +45,10 @@ public class JobPosting extends BaseEntity {
     private ListInterface<Qualification> qualifications;
     @OutputLength(8)
     private Status status;
-    @OutputLength(12)
-    private LocalDate createdAt;
-    @OutputLength(12)
-    private LocalDate updatedAt;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
 
-    public JobPosting(String title, Company company, int salaryMin, int salaryMax, String description, Type type, ListInterface<Qualification> qualifications, Status status, LocalDate createdAt, LocalDate updatedAt) {
+    public JobPosting(String title, Company company, int salaryMin, int salaryMax, String description, Type type, ListInterface<Qualification> qualifications, Status status, LocalDateTime createdAt, LocalDateTime updatedAt) {
         super(generateId());
         this.title = title;
         this.company = company;
@@ -194,19 +194,19 @@ public class JobPosting extends BaseEntity {
         this.status = status;
     }
 
-    public LocalDate getCreatedAt() {
+    public LocalDateTime getCreatedAt() {
         return createdAt;
     }
 
-    public void setCreatedAt(LocalDate createdAt) {
+    public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
     }
 
-    public LocalDate getUpdatedAt() {
+    public LocalDateTime getUpdatedAt() {
         return updatedAt;
     }
 
-    public void setUpdatedAt(LocalDate updatedAt) {
+    public void setUpdatedAt(LocalDateTime updatedAt) {
         this.updatedAt = updatedAt;
     }
 
@@ -225,7 +225,7 @@ public class JobPosting extends BaseEntity {
                 "|  Description  => " + description + ",\n" +
                 "|  Type         => " + (type != null ? type.toString() : "N/A") + ",\n" +
                 "|  Status       => " + (status != null ? status.toString() : "N/A") + ",\n" +
-                "|  Created At   => " + (createdAt != null ? createdAt.toString() : "N/A") + ",\n" +
-                "|  Updated At   => " + (updatedAt != null ? updatedAt.toString() : "N/A");
+                "|  Created At   => " + Strings.formatDateTime(createdAt) + ",\n" +
+                "|  Updated At   => " + Strings.formatDateTime(updatedAt);
     }
 }
