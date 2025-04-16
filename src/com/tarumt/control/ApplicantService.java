@@ -5,6 +5,7 @@ import com.tarumt.boundary.LocationUI;
 import com.tarumt.dao.Initializer;
 import com.tarumt.entity.Applicant;
 import com.tarumt.entity.BaseEntity;
+import com.tarumt.entity.Company;
 import com.tarumt.entity.JobApplication;
 import com.tarumt.entity.JobPosting;
 import com.tarumt.entity.location.City;
@@ -14,14 +15,17 @@ import com.tarumt.utility.common.Input;
 import com.tarumt.utility.common.Log;
 import com.tarumt.utility.common.Menu;
 import com.tarumt.utility.pretty.Chart;
+import com.tarumt.utility.pretty.TabularPrint;
 import com.tarumt.utility.search.FuzzySearch;
 import com.tarumt.utility.validation.ConditionFactory;
 import com.tarumt.utility.validation.IntegerCondition;
 import com.tarumt.utility.validation.StringCondition;
+import com.tarumt.utility.validation.ValidationException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList; //
 import java.util.Arrays; //
 import java.util.Iterator;
@@ -92,7 +96,7 @@ public class ApplicantService implements Service {
 
     @Override
     public void filter() {
-        Log.na();
+        applicantUI.filterMode(this);
     }
 
     @Override
@@ -690,10 +694,12 @@ public class ApplicantService implements Service {
             throw new Menu.ExitMenuException();
         }
     }
-
+    
     public void accessJobApplicationMenu() {
-        this.applicantUI.jobApplicationMenu(new JobPostingService());
+        JobPostingService jobPostingService = new JobPostingService();
+        this.applicantUI.jobApplicationMenu(jobPostingService, this);
     }
+
 
     public void displayProfile() {
         System.out.println(Context.getApplicant());
@@ -786,6 +792,366 @@ public class ApplicantService implements Service {
     public List<Applicant> getAllApplicants() {
         return this.applicants; 
     }
+    
+    public String getSelectedJobType(Input input) {
+        JobPosting.Type[] types = JobPosting.Type.values();
+        final int columns = 3;
+        final int columnWidth = 40;
 
+        System.out.println("Available Job Types:");
+        for (int i = 0; i < types.length; i++) {
+            System.out.printf("%2d. %-"+columnWidth+"s", i + 1, types[i].toString());
+            if ((i + 1) % columns == 0 || i == types.length - 1) {
+                System.out.println();
+            }
+        }
+
+        while (true) {
+            String entry = input.getString("Select Job Type by number (or <Return> to exit): ", new StringCondition());
+            if (entry.equals(Input.STRING_EXIT_VALUE)) return Input.STRING_EXIT_VALUE;
+
+            try {
+                int index = Integer.parseInt(entry);
+                if (index >= 1 && index <= types.length) {
+                    return types[index - 1].toString(); 
+                } else {
+                    System.out.printf("❌ Invalid selection. Please enter a number between 1 and %d.%n", types.length);
+                }
+            } catch (NumberFormatException e) {
+                System.out.println("❌ Invalid input. Please enter a valid number.");
+            }
+        }
+    }
+
+    public void filterByJobType() {
+        Input input = new Input();  
+        String jobType = this.getSelectedJobType(input);  
+        if (jobType.equals(Input.STRING_EXIT_VALUE)) return;  
+
+        List<JobApplication> filteredApplications = new ArrayList<>();
+
+        if (jobApplications == null) {
+            System.out.println("No applications available for filtering.");
+            return;
+        }
+
+        for (JobApplication application : jobApplications) {
+            if (application.getJobPosting().getType().toString().equalsIgnoreCase(jobType)) {
+                filteredApplications.add(application);
+            }
+        }
+
+        if (!filteredApplications.isEmpty()) {
+            System.out.println("Filtered Results for Job Type: " + jobType);
+            TabularPrint.printTabular(filteredApplications, true);  
+        } else {
+            System.out.println("No applications found for Job Type: " + jobType);
+        }
+    }
+    
+    public void filterByLocation() {
+        Input input = new Input();
+        City selectedCity = getSelectedLocation(input);
+        if (selectedCity == null) return;
+
+        if (jobApplications == null || jobApplications.isEmpty()) {
+            System.out.println("No applications available for filtering.");
+            return;
+        }
+
+        List<JobApplication> filteredApplications = new ArrayList<>();
+        for (JobApplication application : jobApplications) {
+            if (application.getApplicant().getLocation() != null &&
+                application.getApplicant().getLocation().getCity() == selectedCity) {
+                filteredApplications.add(application);
+            }
+        }
+
+        if (!filteredApplications.isEmpty()) {
+            System.out.println("Filtered Results for Location: " + selectedCity.toString());
+            TabularPrint.printTabular(filteredApplications, true);
+        } else {
+            System.out.println("No applications found for Location: " + selectedCity.toString());
+        }
+    }
+
+    private City getSelectedLocation(Input input) {
+        City[] cities = City.values();
+        System.out.println("Available Job Locations:");
+        for (int i = 0; i < cities.length; i++) {
+            System.out.printf("%2d. %-30s", i + 1, cities[i].toString());
+            if ((i + 1) % 3 == 0 || i == cities.length - 1) System.out.println();
+        }
+        System.out.println();
+
+        StringCondition condition = new StringCondition() {
+            public boolean validate(String input) throws ValidationException {
+                if (input.isEmpty()) {
+                    throw new ValidationException("Input cannot be empty.");
+                }
+                try {
+                    int number = Integer.parseInt(input);
+                    if (number < 1 || number > cities.length) {
+                        throw new ValidationException("Number out of range (1-" + cities.length + ").");
+                    }
+                } catch (NumberFormatException e) {
+                    throw new ValidationException("Invalid number format.");
+                }
+                return true;
+            }
+        };
+
+        String userInput = input.getString("Select Job Location by number (or <Return> to exit): ", condition);
+        if (userInput.equals(Input.STRING_EXIT_VALUE)) {
+            return null;
+        }
+
+        int option = Integer.parseInt(userInput);
+        City selectedCity = cities[option - 1];
+        System.out.println("Selected City: " + selectedCity.toString());
+        return selectedCity;
+    }
+    
+    public String getSelectedStatus(Input input) {
+        JobApplication.Status[] statuses = JobApplication.Status.values();
+
+        System.out.println("Available Job Application Statuses:");
+        for (int i = 0; i < statuses.length; i++) {
+            System.out.printf(" %2d. %-25s", (i + 1), statuses[i]);
+            if ((i + 1) % 3 == 0 || i == statuses.length - 1) System.out.println();
+        }
+
+        while (true) {
+            String entry = input.getString("Select Job Application Status by number (or <Return> to exit): ", new StringCondition());
+            if (entry.equals(Input.STRING_EXIT_VALUE)) return entry;
+
+            try {
+                int index = Integer.parseInt(entry);
+                if (index >= 1 && index <= statuses.length) {
+                    return statuses[index - 1].toString();
+                } else {
+                    System.out.println("Invalid number. Please enter a number between 1 and " + statuses.length + ".");
+                }
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid input. Please enter a valid number.");
+            }
+        }
+    }
+
+    public void filterByStatus() {
+        Input input = new Input();  
+        String status = this.getSelectedStatus(input); 
+        if (status.equals(Input.STRING_EXIT_VALUE)) return;
+
+        if (jobApplications == null || jobApplications.isEmpty()) {
+            System.out.println("No applications available for filtering.");
+            return;
+        }
+
+        List<JobApplication> filteredApplications = new ArrayList<>();
+        for (JobApplication application : jobApplications) {
+            if (application.getStatus() != null && application.getStatus().toString().equalsIgnoreCase(status)) {
+                filteredApplications.add(application);
+            }
+        }
+
+        if (!filteredApplications.isEmpty()) {
+            System.out.println("Filtered Results for Status: " + status);
+            TabularPrint.printTabular(filteredApplications, true);  
+        } else {
+            System.out.println("No applications found for Status: " + status);
+        }
+    }
+    
+    public LocalDate getStartDate(Input input) {
+        StringCondition dateCondition = new StringCondition();  
+        String startDateString = input.getString("Enter the start date (yyyy-mm-dd): ", dateCondition);
+        return parseDate(startDateString);
+    }
+
+    public LocalDate getEndDate(Input input) {
+        StringCondition dateCondition = new StringCondition();  
+        String endDateString = input.getString("Enter the end date (yyyy-mm-dd): ", dateCondition);
+        return parseDate(endDateString);
+    }
+    
+    private LocalDate parseDate(String dateString) {
+        try {
+            return LocalDate.parse(dateString);  
+        } catch (DateTimeParseException e) {
+            System.out.println("Invalid date format. Please use yyyy-mm-dd.");
+            return null;
+        }
+    }
+    
+    public void filterByDateRage(){
+        Input input = new Input();
+        LocalDate startDate = this.getStartDate(input); 
+        LocalDate endDate = this.getEndDate(input); 
+
+        if (startDate == null || endDate == null) {
+            System.out.println("Invalid date range entered.");
+            return; 
+        }
+
+        if (jobApplications == null || jobApplications.isEmpty()) {
+            System.out.println("No applications available for filtering.");
+            return;
+        }
+
+        List<JobApplication> filteredApplications = new ArrayList<>();
+        for (JobApplication application : jobApplications) {
+            if (application.getApplicationDate() != null && 
+                !application.getApplicationDate().isBefore(startDate) && 
+                !application.getApplicationDate().isAfter(endDate)) {
+                filteredApplications.add(application);
+            }
+        }
+
+        if (!filteredApplications.isEmpty()) {
+            System.out.println("Filtered Results for Date Range: " + startDate + " to " + endDate);
+            TabularPrint.printTabular(filteredApplications, true);  
+        } else {
+            System.out.println("No applications found for Date Range: " + startDate + " to " + endDate);
+        }
+    }
+    
+    
+    public void applicantFilter() {
+        applicantUI.applicantFilterMode(this);
+    }
+    
+    public String getCompanySelectedJobType(Input input) {
+      JobPosting.Type[] types = JobPosting.Type.values();
+      final int columns = 3;
+      final int columnWidth = 40;
+
+      System.out.println("Available Job Types:");
+      for (int i = 0; i < types.length; i++) {
+          System.out.printf("%2d. %-"+columnWidth+"s", i + 1, types[i].toString());
+          if ((i + 1) % columns == 0 || i == types.length - 1) {
+              System.out.println();
+          }
+      }
+
+      while (true) {
+          String entry = input.getString("Select Job Type by number (or <Return> to exit): ", new StringCondition());
+          if (entry.equals(Input.STRING_EXIT_VALUE)) return Input.STRING_EXIT_VALUE;
+
+          try {
+              int index = Integer.parseInt(entry);
+              if (index >= 1 && index <= types.length) {
+                  return types[index - 1].toString(); 
+              } else {
+                  System.out.printf("❌ Invalid selection. Please enter a number between 1 and %d.%n", types.length);
+              }
+          } catch (NumberFormatException e) {
+              System.out.println("❌ Invalid input. Please enter a valid number.");
+          }
+      }
+    }
+
+   
+    public void filterByCompanyJobType() {
+        Input input = new Input();  
+        String jobType = this.getCompanySelectedJobType(input);  
+        if (jobType.equals(Input.STRING_EXIT_VALUE)) return;  
+
+        if (jobApplications == null || jobApplications.isEmpty()) {
+            System.out.println("No applications available for filtering.");
+            return;
+        }
+
+        List<Company> uniqueCompanies = new ArrayList<>();
+
+        for (JobApplication application : jobApplications) {
+            JobPosting posting = application.getJobPosting();
+            if (posting.getType().toString().equalsIgnoreCase(jobType)) {
+                Company company = posting.getCompany();
+                if (!containsCompany(uniqueCompanies, company)) {
+                    uniqueCompanies.add(company);
+                }
+            }
+        }
+
+        if (!uniqueCompanies.isEmpty()) {
+            System.out.println("Companies Offering Job Type: " + jobType);
+            TabularPrint.printTabular(uniqueCompanies, true);  
+        } else {
+            System.out.println("No companies found for Job Type: " + jobType);
+        }
+    }
+    
+    private boolean containsCompany(List<Company> companies, Company company) {
+        for (Company c : companies) {
+            if (c.getName().equals(company.getName())) { 
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    public void filterByCompanyLocation() {
+        Input input = new Input();
+        City selectedCity = getCompanyLocation(input);
+        if (selectedCity == null) return;
+
+        List<Company> companiesInLocation = new ArrayList<>();
+
+        for (JobApplication application : jobApplications) {
+            JobPosting posting = application.getJobPosting();
+            if (posting.getCompany().getLocation() != null &&
+                    posting.getCompany().getLocation().getCity() == selectedCity) {
+                Company company = posting.getCompany();
+                if (!containsCompany(companiesInLocation, company)) {
+                    companiesInLocation.add(company);
+                }
+            }
+        }
+
+        if (!companiesInLocation.isEmpty()) {
+            System.out.println("Companies in Location: " + selectedCity.toString());
+            TabularPrint.printTabular(companiesInLocation, true);
+        } else {
+            System.out.println("No companies found for Location: " + selectedCity.toString());
+        }
+    }
+
+   private City getCompanyLocation(Input input) {
+        City[] cities = City.values();
+        System.out.println("Available Job Locations:");
+        for (int i = 0; i < cities.length; i++) {
+            System.out.printf("%2d. %-35s", i + 1, cities[i].toString());
+            if ((i + 1) % 3 == 0) System.out.println();
+        }
+        System.out.println();
+
+        StringCondition condition = new StringCondition() {
+
+            public boolean validate(String input) throws ValidationException {
+                if (input.isEmpty()) {
+                    throw new ValidationException("Input cannot be empty.");
+                }
+                try {
+                    int number = Integer.parseInt(input);
+                    if (number < 1 || number > cities.length) {
+                        throw new ValidationException("Number out of range (1-" + cities.length + ").");
+                    }
+                } catch (NumberFormatException e) {
+                    throw new ValidationException("Invalid number format.");
+                }
+                return true;
+            }
+        };
+
+        String userInput = input.getString("Select Job Location by number (or <Return> to exit): ", condition);
+        if (userInput.equals(Input.STRING_EXIT_VALUE)) {
+            return null;
+        }
+
+        int option = Integer.parseInt(userInput);
+        City selectedCity = cities[option - 1];
+        System.out.println("Selected City: " + selectedCity.toString()); 
+        return selectedCity;
+    }
 }
-
