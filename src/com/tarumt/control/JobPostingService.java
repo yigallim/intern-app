@@ -1,5 +1,6 @@
 package com.tarumt.control;
 
+import com.tarumt.boundary.ApplicantUI;
 import com.tarumt.boundary.JobPostingUI;
 import com.tarumt.dao.Initializer;
 import com.tarumt.entity.Applicant;
@@ -17,8 +18,8 @@ import com.tarumt.utility.validation.StringCondition;
 
 import java.time.LocalDate;
 
-import java.util.LinkedList;
-import java.util.List;
+import java.util.LinkedList; //
+import java.util.List; //
 
 public class JobPostingService implements Service {
 
@@ -562,5 +563,5 @@ public class JobPostingService implements Service {
         selectedApplication.setApplicationDate(LocalDate.now()); 
         System.out.println("Application '" + selectedApplication.getJobPosting().getTitle() + "' successfully withdrawn!");
     }
-
+              
 }
