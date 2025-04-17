@@ -14,6 +14,7 @@ import java.time.LocalDateTime;
 
 import com.tarumt.adt.list.ListInterface;
 import com.tarumt.adt.list.DoublyLinkedList;
+import com.tarumt.utility.common.Context;
 
 public class Initializer {
     private static final ListInterface<Company> companies = new DoublyLinkedList<>();
@@ -30,7 +31,8 @@ public class Initializer {
     private static void init() {
         if (false) return;
         // region Init
-        // 15 Companies (Hard-Coded, Adhering to Constraints, Using Malaysian Cities)
+        LocalDateTime now = Context.getDateTime();
+        // 30 Companies (Hard-Coded, Adhering to Constraints, Using Malaysian Cities)
         companies.add(new Company("TechCorp", "Leading tech company focused on innovation", new Location(City.JOHOR_BAHRU), "contact@techcorp.com", "0123456789"));
         companies.add(new Company("Innovatech", "Innovative tech solutions for the future", new Location(City.KUALA_LUMPUR), "info@innovatech.com", "0198765432"));
         companies.add(new Company("FinServe", "Reliable financial services for all sectors", new Location(City.PENANG_HILL), "support@finserve.com", "0123487654"));
@@ -46,114 +48,233 @@ public class Initializer {
         companies.add(new Company("NeuroTech", "Neuroscience and AI research solutions", new Location(City.KULIM), "contact@neurotech.com", "0192345678"));
         companies.add(new Company("AgriGrow", "Agricultural tech for sustainable farming", new Location(City.TAIPING), "support@agrigrow.com", "0193456789"));
         companies.add(new Company("SpaceFront", "Aerospace innovation for space exploration", new Location(City.ALOR_SETAR), "hello@spacefront.com", "0194567890"));
+        companies.add(new Company("SmartRetail", "Innovative retail technology solutions for modern businesses", new Location(City.PETALING_JAYA), "info@smartretail.com", "0125678901"));
+        companies.add(new Company("BioTech", "Biotechnology advancements for health and agriculture", new Location(City.SUNGAI_BULOH), "contact@biotech.com", "0136789012"));
+        companies.add(new Company("UrbanPlan", "Smart city planning and urban development solutions", new Location(City.PUTRAJAYA), "support@urbanplan.com", "0147890123"));
+        companies.add(new Company("CleanTech", "Eco-friendly technology for sustainable industries", new Location(City.BANDAR_SERI_ISKANDAR), "hello@cleantech.com", "0158901234"));
+        companies.add(new Company("DataWave", "Big data analytics and AI-driven insights", new Location(City.CYBERJAYA), "info@datawave.com", "0169012345"));
+        companies.add(new Company("TravelTech", "Technology solutions for the travel and tourism industry", new Location(City.LANGKAWI), "contact@traveltech.com", "0170123456"));
+        companies.add(new Company("SecureNet", "Advanced network security and IT infrastructure", new Location(City.KUALA_TERENGGANU), "support@securenet.com", "0181234567"));
+        companies.add(new Company("EduPlatform", "Online learning platforms for global education", new Location(City.BUKIT_MERTAJAM), "info@eduplatform.com", "0192345678"));
+        companies.add(new Company("HealthTech", "Digital health solutions for patient care", new Location(City.SIBU), "contact@healthtech.com", "0123456780"));
+        companies.add(new Company("LogiSys", "Logistics and supply chain management technology", new Location(City.PASIR_GUDANG), "support@logisys.com", "0134567891"));
+        companies.add(new Company("FinTech", "Financial technology for seamless transactions", new Location(City.KLIA), "info@fintech.com", "0145678902"));
+        companies.add(new Company("GameStudio", "Interactive gaming and virtual reality experiences", new Location(City.MIRI), "contact@gamestudio.com", "0156789013"));
+        companies.add(new Company("SmartHome", "IoT solutions for connected home automation", new Location(City.SEREMBAN), "hello@smarthome.com", "0167890124"));
+        companies.add(new Company("EcoFarm", "Sustainable agriculture and precision farming tech", new Location(City.KULAI), "support@ecofarm.com", "0178901235"));
+        companies.add(new Company("RoboTech", "Robotics and automation for industrial efficiency", new Location(City.BATU_PAHAT), "info@robotech.com", "0189012346"));
+        companies.add(new Company("Test", "Empty test company", new Location(City.SETAPAK), "test@test.com", "0119999999"));
 
-        companies.add(new Company("Test", "test test description", new Location(City.SETAPAK), "test@test.com", "0183862118"));
-
-        // 75 Job Postings (5 per company, Hard-Coded, Qualifications set to null)
+        // 150 Job Postings (5 per company, Hard-Coded, Qualifications set to null)
         // TechCorp (Company 0)
-        jobPostings.add(new JobPosting("Software Engineer", companies.get(0), 5000, 8000, "Develop scalable web applications", JobPosting.Type.IT_COMM_TEC, null, JobPosting.Status.OPEN, LocalDateTime.now().minusDays(5), LocalDateTime.now().minusDays(5)));
-        jobPostings.add(new JobPosting("Senior Developer", companies.get(0), 7000, 10000, "Lead development projects for clients", JobPosting.Type.IT_COMM_TEC, null, JobPosting.Status.OPEN, LocalDateTime.now().minusDays(3), LocalDateTime.now().minusDays(3)));
-        jobPostings.add(new JobPosting("DevOps Engineer", companies.get(0), 6000, 9000, "Manage CI/CD pipelines and deployments", JobPosting.Type.IT_COMM_TEC, null, JobPosting.Status.OPEN, LocalDateTime.now().minusDays(7), LocalDateTime.now().minusDays(7)));
-        jobPostings.add(new JobPosting("QA Engineer", companies.get(0), 4000, 6000, "Ensure product quality through testing", JobPosting.Type.IT_COMM_TEC, null, JobPosting.Status.FILLED, LocalDateTime.now().minusDays(2), LocalDateTime.now().minusDays(2)));
-        jobPostings.add(new JobPosting("UI/UX Designer", companies.get(0), 4500, 7000, "Design user interfaces for web apps", JobPosting.Type.DESIGN_ARCH, null, JobPosting.Status.FILLED, LocalDateTime.now().minusDays(4), LocalDateTime.now().minusDays(4)));
+        jobPostings.add(new JobPosting("Software Engineer", companies.get(0), 5000, 8000, "Develop scalable web applications", JobPosting.Type.IT_COMM_TEC, null, JobPosting.Status.OPEN, now.minusDays(5), now.minusDays(5)));
+        jobPostings.add(new JobPosting("Senior Developer", companies.get(0), 7000, 10000, "Lead development projects for clients", JobPosting.Type.IT_COMM_TEC, null, JobPosting.Status.OPEN, now.minusDays(3), now.minusDays(3)));
+        jobPostings.add(new JobPosting("DevOps Engineer", companies.get(0), 6000, 9000, "Manage CI/CD pipelines and deployments", JobPosting.Type.IT_COMM_TEC, null, JobPosting.Status.OPEN, now.minusDays(7), now.minusDays(7)));
+        jobPostings.add(new JobPosting("QA Engineer", companies.get(0), 4000, 6000, "Ensure product quality through testing", JobPosting.Type.IT_COMM_TEC, null, JobPosting.Status.OPEN, now.minusDays(2), now.minusDays(2)));
+        jobPostings.add(new JobPosting("UI/UX Designer", companies.get(0), 4500, 7000, "Design user interfaces for web apps", JobPosting.Type.DESIGN_ARCH, null, JobPosting.Status.OPEN, now.minusDays(4), now.minusDays(4)));
 
         // Innovatech (Company 1)
-        jobPostings.add(new JobPosting("Data Scientist", companies.get(1), 6000, 9000, "Analyze complex datasets for insights", JobPosting.Type.SCIENCE_TECH, null, JobPosting.Status.OPEN, LocalDateTime.now().minusDays(5), LocalDateTime.now().minusDays(5)));
-        jobPostings.add(new JobPosting("AI Engineer", companies.get(1), 7000, 11000, "Develop AI models for automation", JobPosting.Type.SCIENCE_TECH, null, JobPosting.Status.OPEN, LocalDateTime.now().minusDays(3), LocalDateTime.now().minusDays(3)));
-        jobPostings.add(new JobPosting("ML Engineer", companies.get(1), 6500, 10000, "Implement ML algorithms for projects", JobPosting.Type.SCIENCE_TECH, null, JobPosting.Status.OPEN, LocalDateTime.now().minusDays(7), LocalDateTime.now().minusDays(7)));
-        jobPostings.add(new JobPosting("Research Scientist", companies.get(1), 8000, 12000, "Conduct innovative research in tech", JobPosting.Type.SCIENCE_TECH, null, JobPosting.Status.OPEN, LocalDateTime.now().minusDays(2), LocalDateTime.now().minusDays(2)));
-        jobPostings.add(new JobPosting("Product Manager", companies.get(1), 7000, 11000, "Manage product lifecycle and strategy", JobPosting.Type.ADMIN_OFFICE, null, JobPosting.Status.OPEN, LocalDateTime.now().minusDays(4), LocalDateTime.now().minusDays(4)));
+        jobPostings.add(new JobPosting("Data Scientist", companies.get(1), 6000, 9000, "Analyze complex datasets for insights", JobPosting.Type.SCIENCE_TECH, null, JobPosting.Status.OPEN, now.minusDays(5), now.minusDays(5)));
+        jobPostings.add(new JobPosting("AI Engineer", companies.get(1), 7000, 11000, "Develop AI models for automation", JobPosting.Type.SCIENCE_TECH, null, JobPosting.Status.OPEN, now.minusDays(3), now.minusDays(3)));
+        jobPostings.add(new JobPosting("ML Engineer", companies.get(1), 6500, 10000, "Implement ML algorithms for projects", JobPosting.Type.SCIENCE_TECH, null, JobPosting.Status.OPEN, now.minusDays(7), now.minusDays(7)));
+        jobPostings.add(new JobPosting("Research Scientist", companies.get(1), 8000, 12000, "Conduct innovative research in tech", JobPosting.Type.SCIENCE_TECH, null, JobPosting.Status.OPEN, now.minusDays(2), now.minusDays(2)));
+        jobPostings.add(new JobPosting("Product Manager", companies.get(1), 7000, 11000, "Manage product lifecycle and strategy", JobPosting.Type.ADMIN_OFFICE, null, JobPosting.Status.OPEN, now.minusDays(4), now.minusDays(4)));
 
         // FinServe (Company 2)
-        jobPostings.add(new JobPosting("Financial Analyst", companies.get(2), 5000, 8000, "Analyze financial data for insights", JobPosting.Type.BANK_FIN_SERV, null, JobPosting.Status.OPEN, LocalDateTime.now().minusDays(5), LocalDateTime.now().minusDays(5)));
-        jobPostings.add(new JobPosting("Risk Manager", companies.get(2), 6000, 9000, "Assess financial risks for the company", JobPosting.Type.BANK_FIN_SERV, null, JobPosting.Status.OPEN, LocalDateTime.now().minusDays(3), LocalDateTime.now().minusDays(3)));
-        jobPostings.add(new JobPosting("Accountant", companies.get(2), 4500, 7000, "Manage financial records and reports", JobPosting.Type.ACCOUNTING, null, JobPosting.Status.OPEN, LocalDateTime.now().minusDays(7), LocalDateTime.now().minusDays(7)));
-        jobPostings.add(new JobPosting("Investment Advisor", companies.get(2), 5500, 8500, "Provide investment advice to clients", JobPosting.Type.BANK_FIN_SERV, null, JobPosting.Status.OPEN, LocalDateTime.now().minusDays(2), LocalDateTime.now().minusDays(2)));
-        jobPostings.add(new JobPosting("Compliance Officer", companies.get(2), 5000, 8000, "Ensure regulatory compliance", JobPosting.Type.BANK_FIN_SERV, null, JobPosting.Status.OPEN, LocalDateTime.now().minusDays(4), LocalDateTime.now().minusDays(4)));
+        jobPostings.add(new JobPosting("Financial Analyst", companies.get(2), 5000, 8000, "Analyze financial data for insights", JobPosting.Type.BANK_FIN_SERV, null, JobPosting.Status.OPEN, now.minusDays(5), now.minusDays(5)));
+        jobPostings.add(new JobPosting("Risk Manager", companies.get(2), 6000, 9000, "Assess financial risks for the company", JobPosting.Type.BANK_FIN_SERV, null, JobPosting.Status.OPEN, now.minusDays(3), now.minusDays(3)));
+        jobPostings.add(new JobPosting("Accountant", companies.get(2), 4500, 7000, "Manage financial records and reports", JobPosting.Type.ACCOUNTING, null, JobPosting.Status.OPEN, now.minusDays(7), now.minusDays(7)));
+        jobPostings.add(new JobPosting("Investment Advisor", companies.get(2), 5500, 8500, "Provide investment advice to clients", JobPosting.Type.BANK_FIN_SERV, null, JobPosting.Status.OPEN, now.minusDays(2), now.minusDays(2)));
+        jobPostings.add(new JobPosting("Compliance Officer", companies.get(2), 5000, 8000, "Ensure regulatory compliance", JobPosting.Type.BANK_FIN_SERV, null, JobPosting.Status.OPEN, now.minusDays(4), now.minusDays(4)));
 
         // HealthPlus (Company 3)
-        jobPostings.add(new JobPosting("Medical Researcher", companies.get(3), 6000, 9000, "Conduct medical research studies", JobPosting.Type.HEALTH_MED, null, JobPosting.Status.OPEN, LocalDateTime.now().minusDays(5), LocalDateTime.now().minusDays(5)));
-        jobPostings.add(new JobPosting("Clinical Analyst", companies.get(3), 5000, 8000, "Analyze clinical data for insights", JobPosting.Type.SCIENCE_TECH, null, JobPosting.Status.OPEN, LocalDateTime.now().minusDays(3), LocalDateTime.now().minusDays(3)));
-        jobPostings.add(new JobPosting("Healthcare Manager", companies.get(3), 7000, 10000, "Manage healthcare operations", JobPosting.Type.ADMIN_OFFICE, null, JobPosting.Status.OPEN, LocalDateTime.now().minusDays(7), LocalDateTime.now().minusDays(7)));
-        jobPostings.add(new JobPosting("Health Consultant", companies.get(3), 5500, 8500, "Provide health consultancy services", JobPosting.Type.HEALTH_MED, null, JobPosting.Status.OPEN, LocalDateTime.now().minusDays(2), LocalDateTime.now().minusDays(2)));
-        jobPostings.add(new JobPosting("Data Specialist", companies.get(3), 5000, 8000, "Handle healthcare data systems", JobPosting.Type.IT_COMM_TEC, null, JobPosting.Status.OPEN, LocalDateTime.now().minusDays(4), LocalDateTime.now().minusDays(4)));
+        jobPostings.add(new JobPosting("Medical Researcher", companies.get(3), 6000, 9000, "Conduct medical research studies", JobPosting.Type.HEALTH_MED, null, JobPosting.Status.OPEN, now.minusDays(5), now.minusDays(5)));
+        jobPostings.add(new JobPosting("Clinical Analyst", companies.get(3), 5000, 8000, "Analyze clinical data for insights", JobPosting.Type.SCIENCE_TECH, null, JobPosting.Status.OPEN, now.minusDays(3), now.minusDays(3)));
+        jobPostings.add(new JobPosting("Healthcare Manager", companies.get(3), 7000, 10000, "Manage healthcare operations", JobPosting.Type.ADMIN_OFFICE, null, JobPosting.Status.OPEN, now.minusDays(7), now.minusDays(7)));
+        jobPostings.add(new JobPosting("Health Consultant", companies.get(3), 5500, 8500, "Provide health consultancy services", JobPosting.Type.HEALTH_MED, null, JobPosting.Status.OPEN, now.minusDays(2), now.minusDays(2)));
+        jobPostings.add(new JobPosting("Data Specialist", companies.get(3), 5000, 8000, "Handle healthcare data systems", JobPosting.Type.IT_COMM_TEC, null, JobPosting.Status.OPEN, now.minusDays(4), now.minusDays(4)));
 
         // EduTech (Company 4)
-        jobPostings.add(new JobPosting("EdTech Developer", companies.get(4), 5000, 8000, "Develop educational software tools", JobPosting.Type.IT_COMM_TEC, null, JobPosting.Status.OPEN, LocalDateTime.now().minusDays(5), LocalDateTime.now().minusDays(5)));
-        jobPostings.add(new JobPosting("Content Creator", companies.get(4), 4000, 6000, "Create educational content", JobPosting.Type.EDUC_TRAINING, null, JobPosting.Status.OPEN, LocalDateTime.now().minusDays(3), LocalDateTime.now().minusDays(3)));
-        jobPostings.add(new JobPosting("Instructional Designer", companies.get(4), 4500, 7000, "Design learning materials", JobPosting.Type.EDUC_TRAINING, null, JobPosting.Status.OPEN, LocalDateTime.now().minusDays(7), LocalDateTime.now().minusDays(7)));
-        jobPostings.add(new JobPosting("Tech Support", companies.get(4), 3500, 5000, "Provide tech support for platforms", JobPosting.Type.CALL_CUST_SVC, null, JobPosting.Status.OPEN, LocalDateTime.now().minusDays(2), LocalDateTime.now().minusDays(2)));
-        jobPostings.add(new JobPosting("Project Manager", companies.get(4), 6000, 9000, "Manage education tech projects", JobPosting.Type.ADMIN_OFFICE, null, JobPosting.Status.OPEN, LocalDateTime.now().minusDays(4), LocalDateTime.now().minusDays(4)));
+        jobPostings.add(new JobPosting("EdTech Developer", companies.get(4), 5000, 8000, "Develop educational software tools", JobPosting.Type.IT_COMM_TEC, null, JobPosting.Status.OPEN, now.minusDays(5), now.minusDays(5)));
+        jobPostings.add(new JobPosting("Content Creator", companies.get(4), 4000, 6000, "Create educational content", JobPosting.Type.EDUC_TRAINING, null, JobPosting.Status.OPEN, now.minusDays(3), now.minusDays(3)));
+        jobPostings.add(new JobPosting("Instructional Designer", companies.get(4), 4500, 7000, "Design learning materials", JobPosting.Type.EDUC_TRAINING, null, JobPosting.Status.OPEN, now.minusDays(7), now.minusDays(7)));
+        jobPostings.add(new JobPosting("Tech Support", companies.get(4), 3500, 5000, "Provide tech support for platforms", JobPosting.Type.CALL_CUST_SVC, null, JobPosting.Status.OPEN, now.minusDays(2), now.minusDays(2)));
+        jobPostings.add(new JobPosting("Project Manager", companies.get(4), 6000, 9000, "Manage education tech projects", JobPosting.Type.ADMIN_OFFICE, null, JobPosting.Status.OPEN, now.minusDays(4), now.minusDays(4)));
 
         // GreenEnergy (Company 5)
-        jobPostings.add(new JobPosting("Energy Engineer", companies.get(5), 6000, 9000, "Design sustainable energy systems", JobPosting.Type.ENGINEERING, null, JobPosting.Status.OPEN, LocalDateTime.now().minusDays(5), LocalDateTime.now().minusDays(5)));
-        jobPostings.add(new JobPosting("Sustainability Analyst", companies.get(5), 5000, 8000, "Analyze sustainability metrics", JobPosting.Type.SCIENCE_TECH, null, JobPosting.Status.OPEN, LocalDateTime.now().minusDays(3), LocalDateTime.now().minusDays(3)));
-        jobPostings.add(new JobPosting("Project Coordinator", companies.get(5), 4500, 7000, "Coordinate energy projects", JobPosting.Type.ADMIN_OFFICE, null, JobPosting.Status.OPEN, LocalDateTime.now().minusDays(7), LocalDateTime.now().minusDays(7)));
-        jobPostings.add(new JobPosting("Field Technician", companies.get(5), 4000, 6000, "Install energy systems", JobPosting.Type.ENGINEERING, null, JobPosting.Status.OPEN, LocalDateTime.now().minusDays(2), LocalDateTime.now().minusDays(2)));
-        jobPostings.add(new JobPosting("Research Analyst", companies.get(5), 5000, 8000, "Research green energy solutions", JobPosting.Type.SCIENCE_TECH, null, JobPosting.Status.OPEN, LocalDateTime.now().minusDays(4), LocalDateTime.now().minusDays(4)));
+        jobPostings.add(new JobPosting("Energy Engineer", companies.get(5), 6000, 9000, "Design sustainable energy systems", JobPosting.Type.ENGINEERING, null, JobPosting.Status.OPEN, now.minusDays(5), now.minusDays(5)));
+        jobPostings.add(new JobPosting("Sustainability Analyst", companies.get(5), 5000, 8000, "Analyze sustainability metrics", JobPosting.Type.SCIENCE_TECH, null, JobPosting.Status.OPEN, now.minusDays(3), now.minusDays(3)));
+        jobPostings.add(new JobPosting("Project Coordinator", companies.get(5), 4500, 7000, "Coordinate energy projects", JobPosting.Type.ADMIN_OFFICE, null, JobPosting.Status.OPEN, now.minusDays(7), now.minusDays(7)));
+        jobPostings.add(new JobPosting("Field Technician", companies.get(5), 4000, 6000, "Install energy systems", JobPosting.Type.ENGINEERING, null, JobPosting.Status.OPEN, now.minusDays(2), now.minusDays(2)));
+        jobPostings.add(new JobPosting("Research Analyst", companies.get(5), 5000, 8000, "Research green energy solutions", JobPosting.Type.SCIENCE_TECH, null, JobPosting.Status.OPEN, now.minusDays(4), now.minusDays(4)));
 
         // AutoDrive (Company 6)
-        jobPostings.add(new JobPosting("Robotics Engineer", companies.get(6), 7000, 11000, "Develop autonomous vehicle systems", JobPosting.Type.ENGINEERING, null, JobPosting.Status.OPEN, LocalDateTime.now().minusDays(5), LocalDateTime.now().minusDays(5)));
-        jobPostings.add(new JobPosting("Software Developer", companies.get(6), 6000, 9000, "Code vehicle control software", JobPosting.Type.IT_COMM_TEC, null, JobPosting.Status.OPEN, LocalDateTime.now().minusDays(3), LocalDateTime.now().minusDays(3)));
-        jobPostings.add(new JobPosting("Test Engineer", companies.get(6), 5000, 8000, "Test autonomous vehicle systems", JobPosting.Type.ENGINEERING, null, JobPosting.Status.OPEN, LocalDateTime.now().minusDays(7), LocalDateTime.now().minusDays(7)));
-        jobPostings.add(new JobPosting("Data Engineer", companies.get(6), 5500, 8500, "Manage vehicle data pipelines", JobPosting.Type.SCIENCE_TECH, null, JobPosting.Status.OPEN, LocalDateTime.now().minusDays(2), LocalDateTime.now().minusDays(2)));
-        jobPostings.add(new JobPosting("Safety Analyst", companies.get(6), 5000, 8000, "Ensure vehicle safety standards", JobPosting.Type.ENGINEERING, null, JobPosting.Status.OPEN, LocalDateTime.now().minusDays(4), LocalDateTime.now().minusDays(4)));
+        jobPostings.add(new JobPosting("Robotics Engineer", companies.get(6), 7000, 11000, "Develop autonomous vehicle systems", JobPosting.Type.ENGINEERING, null, JobPosting.Status.OPEN, now.minusDays(5), now.minusDays(5)));
+        jobPostings.add(new JobPosting("Software Developer", companies.get(6), 6000, 9000, "Code vehicle control software", JobPosting.Type.IT_COMM_TEC, null, JobPosting.Status.OPEN, now.minusDays(3), now.minusDays(3)));
+        jobPostings.add(new JobPosting("Test Engineer", companies.get(6), 5000, 8000, "Test autonomous vehicle systems", JobPosting.Type.ENGINEERING, null, JobPosting.Status.OPEN, now.minusDays(7), now.minusDays(7)));
+        jobPostings.add(new JobPosting("Data Engineer", companies.get(6), 5500, 8500, "Manage vehicle data pipelines", JobPosting.Type.SCIENCE_TECH, null, JobPosting.Status.OPEN, now.minusDays(2), now.minusDays(2)));
+        jobPostings.add(new JobPosting("Safety Analyst", companies.get(6), 5000, 8000, "Ensure vehicle safety standards", JobPosting.Type.ENGINEERING, null, JobPosting.Status.OPEN, now.minusDays(4), now.minusDays(4)));
 
         // FoodieTech (Company 7)
-        jobPostings.add(new JobPosting("App Developer", companies.get(7), 5000, 8000, "Develop food delivery apps", JobPosting.Type.IT_COMM_TEC, null, JobPosting.Status.OPEN, LocalDateTime.now().minusDays(5), LocalDateTime.now().minusDays(5)));
-        jobPostings.add(new JobPosting("Marketing Specialist", companies.get(7), 4500, 7000, "Market food tech solutions", JobPosting.Type.MARKETING_COMM, null, JobPosting.Status.OPEN, LocalDateTime.now().minusDays(3), LocalDateTime.now().minusDays(3)));
-        jobPostings.add(new JobPosting("Data Analyst", companies.get(7), 5000, 8000, "Analyze food industry trends", JobPosting.Type.SCIENCE_TECH, null, JobPosting.Status.OPEN, LocalDateTime.now().minusDays(7), LocalDateTime.now().minusDays(7)));
-        jobPostings.add(new JobPosting("Logistics Manager", companies.get(7), 5500, 8500, "Manage food delivery logistics", JobPosting.Type.MANF_LOG, null, JobPosting.Status.OPEN, LocalDateTime.now().minusDays(2), LocalDateTime.now().minusDays(2)));
-        jobPostings.add(new JobPosting("Customer Support", companies.get(7), 3500, 5000, "Support food app users", JobPosting.Type.CALL_CUST_SVC, null, JobPosting.Status.OPEN, LocalDateTime.now().minusDays(4), LocalDateTime.now().minusDays(4)));
+        jobPostings.add(new JobPosting("App Developer", companies.get(7), 5000, 8000, "Develop food delivery apps", JobPosting.Type.IT_COMM_TEC, null, JobPosting.Status.OPEN, now.minusDays(5), now.minusDays(5)));
+        jobPostings.add(new JobPosting("Marketing Specialist", companies.get(7), 4500, 7000, "Market food tech solutions", JobPosting.Type.MARKETING_COMM, null, JobPosting.Status.OPEN, now.minusDays(3), now.minusDays(3)));
+        jobPostings.add(new JobPosting("Data Analyst", companies.get(7), 5000, 8000, "Analyze food industry trends", JobPosting.Type.SCIENCE_TECH, null, JobPosting.Status.OPEN, now.minusDays(7), now.minusDays(7)));
+        jobPostings.add(new JobPosting("Logistics Manager", companies.get(7), 5500, 8500, "Manage food delivery logistics", JobPosting.Type.MANF_LOG, null, JobPosting.Status.OPEN, now.minusDays(2), now.minusDays(2)));
+        jobPostings.add(new JobPosting("Customer Support", companies.get(7), 3500, 5000, "Support food app users", JobPosting.Type.CALL_CUST_SVC, null, JobPosting.Status.OPEN, now.minusDays(4), now.minusDays(4)));
 
         // CyberShield (Company 8)
-        jobPostings.add(new JobPosting("Security Analyst", companies.get(8), 6000, 9000, "Analyze cybersecurity threats", JobPosting.Type.IT_COMM_TEC, null, JobPosting.Status.OPEN, LocalDateTime.now().minusDays(5), LocalDateTime.now().minusDays(5)));
-        jobPostings.add(new JobPosting("Penetration Tester", companies.get(8), 6500, 9500, "Test system vulnerabilities", JobPosting.Type.IT_COMM_TEC, null, JobPosting.Status.OPEN, LocalDateTime.now().minusDays(3), LocalDateTime.now().minusDays(3)));
-        jobPostings.add(new JobPosting("Security Engineer", companies.get(8), 7000, 10000, "Design secure systems", JobPosting.Type.IT_COMM_TEC, null, JobPosting.Status.OPEN, LocalDateTime.now().minusDays(7), LocalDateTime.now().minusDays(7)));
-        jobPostings.add(new JobPosting("Compliance Analyst", companies.get(8), 5000, 8000, "Ensure regulatory compliance", JobPosting.Type.LEGAL, null, JobPosting.Status.OPEN, LocalDateTime.now().minusDays(2), LocalDateTime.now().minusDays(2)));
-        jobPostings.add(new JobPosting("Incident Responder", companies.get(8), 5500, 8500, "Respond to security incidents", JobPosting.Type.IT_COMM_TEC, null, JobPosting.Status.OPEN, LocalDateTime.now().minusDays(4), LocalDateTime.now().minusDays(4)));
+        jobPostings.add(new JobPosting("Security Analyst", companies.get(8), 6000, 9000, "Analyze cybersecurity threats", JobPosting.Type.IT_COMM_TEC, null, JobPosting.Status.OPEN, now.minusDays(5), now.minusDays(5)));
+        jobPostings.add(new JobPosting("Penetration Tester", companies.get(8), 6500, 9500, "Test system vulnerabilities", JobPosting.Type.IT_COMM_TEC, null, JobPosting.Status.OPEN, now.minusDays(3), now.minusDays(3)));
+        jobPostings.add(new JobPosting("Security Engineer", companies.get(8), 7000, 10000, "Design secure systems", JobPosting.Type.IT_COMM_TEC, null, JobPosting.Status.OPEN, now.minusDays(7), now.minusDays(7)));
+        jobPostings.add(new JobPosting("Compliance Analyst", companies.get(8), 5000, 8000, "Ensure regulatory compliance", JobPosting.Type.LEGAL, null, JobPosting.Status.OPEN, now.minusDays(2), now.minusDays(2)));
+        jobPostings.add(new JobPosting("Incident Responder", companies.get(8), 5500, 8500, "Respond to security incidents", JobPosting.Type.IT_COMM_TEC, null, JobPosting.Status.OPEN, now.minusDays(4), now.minusDays(4)));
 
         // QuantumSoft (Company 9)
-        jobPostings.add(new JobPosting("Quantum Developer", companies.get(9), 8000, 12000, "Develop quantum computing software", JobPosting.Type.IT_COMM_TEC, null, JobPosting.Status.OPEN, LocalDateTime.now().minusDays(5), LocalDateTime.now().minusDays(5)));
-        jobPostings.add(new JobPosting("Research Scientist", companies.get(9), 7500, 11000, "Research quantum algorithms", JobPosting.Type.SCIENCE_TECH, null, JobPosting.Status.OPEN, LocalDateTime.now().minusDays(3), LocalDateTime.now().minusDays(3)));
-        jobPostings.add(new JobPosting("Software Engineer", companies.get(9), 6000, 9000, "Code quantum applications", JobPosting.Type.IT_COMM_TEC, null, JobPosting.Status.OPEN, LocalDateTime.now().minusDays(7), LocalDateTime.now().minusDays(7)));
-        jobPostings.add(new JobPosting("Data Scientist", companies.get(9), 6500, 9500, "Analyze quantum computing data", JobPosting.Type.SCIENCE_TECH, null, JobPosting.Status.OPEN, LocalDateTime.now().minusDays(2), LocalDateTime.now().minusDays(2)));
-        jobPostings.add(new JobPosting("Project Manager", companies.get(9), 7000, 10000, "Manage quantum projects", JobPosting.Type.ADMIN_OFFICE, null, JobPosting.Status.OPEN, LocalDateTime.now().minusDays(4), LocalDateTime.now().minusDays(4)));
+        jobPostings.add(new JobPosting("Quantum Developer", companies.get(9), 8000, 12000, "Develop quantum computing software", JobPosting.Type.IT_COMM_TEC, null, JobPosting.Status.OPEN, now.minusDays(5), now.minusDays(5)));
+        jobPostings.add(new JobPosting("Research Scientist", companies.get(9), 7500, 11000, "Research quantum algorithms", JobPosting.Type.SCIENCE_TECH, null, JobPosting.Status.OPEN, now.minusDays(3), now.minusDays(3)));
+        jobPostings.add(new JobPosting("Software Engineer", companies.get(9), 6000, 9000, "Code quantum applications", JobPosting.Type.IT_COMM_TEC, null, JobPosting.Status.OPEN, now.minusDays(7), now.minusDays(7)));
+        jobPostings.add(new JobPosting("Data Scientist", companies.get(9), 6500, 9500, "Analyze quantum computing data", JobPosting.Type.SCIENCE_TECH, null, JobPosting.Status.OPEN, now.minusDays(2), now.minusDays(2)));
+        jobPostings.add(new JobPosting("Project Manager", companies.get(9), 7000, 10000, "Manage quantum projects", JobPosting.Type.ADMIN_OFFICE, null, JobPosting.Status.OPEN, now.minusDays(4), now.minusDays(4)));
 
         // MediCare (Company 10)
-        jobPostings.add(new JobPosting("Clinical Researcher", companies.get(10), 6000, 9000, "Conduct clinical research studies", JobPosting.Type.HEALTH_MED, null, JobPosting.Status.OPEN, LocalDateTime.now().minusDays(5), LocalDateTime.now().minusDays(5)));
-        jobPostings.add(new JobPosting("Medical Analyst", companies.get(10), 5000, 8000, "Analyze medical data trends", JobPosting.Type.SCIENCE_TECH, null, JobPosting.Status.OPEN, LocalDateTime.now().minusDays(3), LocalDateTime.now().minusDays(3)));
-        jobPostings.add(new JobPosting("Health Consultant", companies.get(10), 5500, 8500, "Provide medical consultancy", JobPosting.Type.HEALTH_MED, null, JobPosting.Status.OPEN, LocalDateTime.now().minusDays(7), LocalDateTime.now().minusDays(7)));
-        jobPostings.add(new JobPosting("Data Specialist", companies.get(10), 5000, 8000, "Manage medical data systems", JobPosting.Type.IT_COMM_TEC, null, JobPosting.Status.OPEN, LocalDateTime.now().minusDays(2), LocalDateTime.now().minusDays(2)));
-        jobPostings.add(new JobPosting("Operations Manager", companies.get(10), 6000, 9000, "Oversee medical operations", JobPosting.Type.ADMIN_OFFICE, null, JobPosting.Status.OPEN, LocalDateTime.now().minusDays(4), LocalDateTime.now().minusDays(4)));
+        jobPostings.add(new JobPosting("Clinical Researcher", companies.get(10), 6000, 9000, "Conduct clinical research studies", JobPosting.Type.HEALTH_MED, null, JobPosting.Status.OPEN, now.minusDays(5), now.minusDays(5)));
+        jobPostings.add(new JobPosting("Medical Analyst", companies.get(10), 5000, 8000, "Analyze medical data trends", JobPosting.Type.SCIENCE_TECH, null, JobPosting.Status.OPEN, now.minusDays(3), now.minusDays(3)));
+        jobPostings.add(new JobPosting("Health Consultant", companies.get(10), 5500, 8500, "Provide medical consultancy", JobPosting.Type.HEALTH_MED, null, JobPosting.Status.OPEN, now.minusDays(7), now.minusDays(7)));
+        jobPostings.add(new JobPosting("Data Specialist", companies.get(10), 5000, 8000, "Manage medical data systems", JobPosting.Type.IT_COMM_TEC, null, JobPosting.Status.OPEN, now.minusDays(2), now.minusDays(2)));
+        jobPostings.add(new JobPosting("Operations Manager", companies.get(10), 6000, 9000, "Oversee medical operations", JobPosting.Type.ADMIN_OFFICE, null, JobPosting.Status.OPEN, now.minusDays(4), now.minusDays(4)));
 
         // CloudSys (Company 11)
-        jobPostings.add(new JobPosting("Cloud Engineer", companies.get(11), 6000, 9000, "Design cloud infrastructure", JobPosting.Type.IT_COMM_TEC, null, JobPosting.Status.OPEN, LocalDateTime.now().minusDays(5), LocalDateTime.now().minusDays(5)));
-        jobPostings.add(new JobPosting("DevOps Specialist", companies.get(11), 6500, 9500, "Manage cloud deployments", JobPosting.Type.IT_COMM_TEC, null, JobPosting.Status.OPEN, LocalDateTime.now().minusDays(3), LocalDateTime.now().minusDays(3)));
-        jobPostings.add(new JobPosting("Security Analyst", companies.get(11), 5500, 8500, "Secure cloud systems", JobPosting.Type.IT_COMM_TEC, null, JobPosting.Status.OPEN, LocalDateTime.now().minusDays(7), LocalDateTime.now().minusDays(7)));
-        jobPostings.add(new JobPosting("Data Engineer", companies.get(11), 6000, 9000, "Build data pipelines in cloud", JobPosting.Type.SCIENCE_TECH, null, JobPosting.Status.OPEN, LocalDateTime.now().minusDays(2), LocalDateTime.now().minusDays(2)));
-        jobPostings.add(new JobPosting("Cloud Architect", companies.get(11), 7000, 11000, "Architect cloud solutions", JobPosting.Type.IT_COMM_TEC, null, JobPosting.Status.OPEN, LocalDateTime.now().minusDays(4), LocalDateTime.now().minusDays(4)));
+        jobPostings.add(new JobPosting("Cloud Engineer", companies.get(11), 6000, 9000, "Design cloud infrastructure", JobPosting.Type.IT_COMM_TEC, null, JobPosting.Status.OPEN, now.minusDays(5), now.minusDays(5)));
+        jobPostings.add(new JobPosting("DevOps Specialist", companies.get(11), 6500, 9500, "Manage cloud deployments", JobPosting.Type.IT_COMM_TEC, null, JobPosting.Status.OPEN, now.minusDays(3), now.minusDays(3)));
+        jobPostings.add(new JobPosting("Security Analyst", companies.get(11), 5500, 8500, "Secure cloud systems", JobPosting.Type.IT_COMM_TEC, null, JobPosting.Status.OPEN, now.minusDays(7), now.minusDays(7)));
+        jobPostings.add(new JobPosting("Data Engineer", companies.get(11), 6000, 9000, "Build data pipelines in cloud", JobPosting.Type.SCIENCE_TECH, null, JobPosting.Status.OPEN, now.minusDays(2), now.minusDays(2)));
+        jobPostings.add(new JobPosting("Cloud Architect", companies.get(11), 7000, 11000, "Architect cloud solutions", JobPosting.Type.IT_COMM_TEC, null, JobPosting.Status.OPEN, now.minusDays(4), now.minusDays(4)));
 
         // NeuroTech (Company 12)
-        jobPostings.add(new JobPosting("Neuroscientist", companies.get(12), 7000, 11000, "Research neural networks", JobPosting.Type.SCIENCE_TECH, null, JobPosting.Status.OPEN, LocalDateTime.now().minusDays(5), LocalDateTime.now().minusDays(5)));
-        jobPostings.add(new JobPosting("AI Developer", companies.get(12), 6500, 9500, "Develop AI for neuroscience", JobPosting.Type.IT_COMM_TEC, null, JobPosting.Status.OPEN, LocalDateTime.now().minusDays(3), LocalDateTime.now().minusDays(3)));
-        jobPostings.add(new JobPosting("Data Scientist", companies.get(12), 6000, 9000, "Analyze neural data", JobPosting.Type.SCIENCE_TECH, null, JobPosting.Status.OPEN, LocalDateTime.now().minusDays(7), LocalDateTime.now().minusDays(7)));
-        jobPostings.add(new JobPosting("Research Analyst", companies.get(12), 5500, 8500, "Support neuroscience research", JobPosting.Type.SCIENCE_TECH, null, JobPosting.Status.OPEN, LocalDateTime.now().minusDays(2), LocalDateTime.now().minusDays(2)));
-        jobPostings.add(new JobPosting("Software Engineer", companies.get(12), 6000, 9000, "Code neuroscience tools", JobPosting.Type.IT_COMM_TEC, null, JobPosting.Status.OPEN, LocalDateTime.now().minusDays(4), LocalDateTime.now().minusDays(4)));
+        jobPostings.add(new JobPosting("Neuroscientist", companies.get(12), 7000, 11000, "Research neural networks", JobPosting.Type.SCIENCE_TECH, null, JobPosting.Status.OPEN, now.minusDays(5), now.minusDays(5)));
+        jobPostings.add(new JobPosting("AI Developer", companies.get(12), 6500, 9500, "Develop AI for neuroscience", JobPosting.Type.IT_COMM_TEC, null, JobPosting.Status.OPEN, now.minusDays(3), now.minusDays(3)));
+        jobPostings.add(new JobPosting("Data Scientist", companies.get(12), 6000, 9000, "Analyze neural data", JobPosting.Type.SCIENCE_TECH, null, JobPosting.Status.OPEN, now.minusDays(7), now.minusDays(7)));
+        jobPostings.add(new JobPosting("Research Analyst", companies.get(12), 5500, 8500, "Support neuroscience research", JobPosting.Type.SCIENCE_TECH, null, JobPosting.Status.OPEN, now.minusDays(2), now.minusDays(2)));
+        jobPostings.add(new JobPosting("Software Engineer", companies.get(12), 6000, 9000, "Code neuroscience tools", JobPosting.Type.IT_COMM_TEC, null, JobPosting.Status.OPEN, now.minusDays(4), now.minusDays(4)));
 
         // AgriGrow (Company 13)
-        jobPostings.add(new JobPosting("Agri Engineer", companies.get(13), 5000, 8000, "Design farming technology", JobPosting.Type.ENGINEERING, null, JobPosting.Status.OPEN, LocalDateTime.now().minusDays(5), LocalDateTime.now().minusDays(5)));
-        jobPostings.add(new JobPosting("Data Analyst", companies.get(13), 4500, 7000, "Analyze agricultural data", JobPosting.Type.SCIENCE_TECH, null, JobPosting.Status.OPEN, LocalDateTime.now().minusDays(3), LocalDateTime.now().minusDays(3)));
-        jobPostings.add(new JobPosting("Field Manager", companies.get(13), 4000, 6000, "Manage farming operations", JobPosting.Type.AGRICULTURE, null, JobPosting.Status.OPEN, LocalDateTime.now().minusDays(7), LocalDateTime.now().minusDays(7)));
-        jobPostings.add(new JobPosting("Tech Specialist", companies.get(13), 4500, 7000, "Support agri-tech systems", JobPosting.Type.IT_COMM_TEC, null, JobPosting.Status.OPEN, LocalDateTime.now().minusDays(2), LocalDateTime.now().minusDays(2)));
-        jobPostings.add(new JobPosting("Sustainability Lead", companies.get(13), 5000, 8000, "Lead sustainable farming", JobPosting.Type.AGRICULTURE, null, JobPosting.Status.OPEN, LocalDateTime.now().minusDays(4), LocalDateTime.now().minusDays(4)));
+        jobPostings.add(new JobPosting("Agri Engineer", companies.get(13), 5000, 8000, "Design farming technology", JobPosting.Type.ENGINEERING, null, JobPosting.Status.OPEN, now.minusDays(5), now.minusDays(5)));
+        jobPostings.add(new JobPosting("Data Analyst", companies.get(13), 4500, 7000, "Analyze agricultural data", JobPosting.Type.SCIENCE_TECH, null, JobPosting.Status.OPEN, now.minusDays(3), now.minusDays(3)));
+        jobPostings.add(new JobPosting("Field Manager", companies.get(13), 4000, 6000, "Manage farming operations", JobPosting.Type.AGRICULTURE, null, JobPosting.Status.OPEN, now.minusDays(7), now.minusDays(7)));
+        jobPostings.add(new JobPosting("Tech Specialist", companies.get(13), 4500, 7000, "Support agri-tech systems", JobPosting.Type.IT_COMM_TEC, null, JobPosting.Status.OPEN, now.minusDays(2), now.minusDays(2)));
+        jobPostings.add(new JobPosting("Sustainability Lead", companies.get(13), 5000, 8000, "Lead sustainable farming", JobPosting.Type.AGRICULTURE, null, JobPosting.Status.OPEN, now.minusDays(4), now.minusDays(4)));
 
         // SpaceFront (Company 14)
-        jobPostings.add(new JobPosting("Aerospace Engineer", companies.get(14), 7000, 11000, "Design aerospace systems", JobPosting.Type.ENGINEERING, null, JobPosting.Status.OPEN, LocalDateTime.now().minusDays(5), LocalDateTime.now().minusDays(5)));
-        jobPostings.add(new JobPosting("Space Researcher", companies.get(14), 6500, 9500, "Research space technologies", JobPosting.Type.SCIENCE_TECH, null, JobPosting.Status.OPEN, LocalDateTime.now().minusDays(3), LocalDateTime.now().minusDays(3)));
-        jobPostings.add(new JobPosting("Test Engineer", companies.get(14), 6000, 9000, "Test aerospace components", JobPosting.Type.ENGINEERING, null, JobPosting.Status.OPEN, LocalDateTime.now().minusDays(7), LocalDateTime.now().minusDays(7)));
-        jobPostings.add(new JobPosting("Data Analyst", companies.get(14), 5500, 8500, "Analyze space mission data", JobPosting.Type.SCIENCE_TECH, null, JobPosting.Status.OPEN, LocalDateTime.now().minusDays(2), LocalDateTime.now().minusDays(2)));
-        jobPostings.add(new JobPosting("Project Manager", companies.get(14), 7000, 10000, "Manage space projects", JobPosting.Type.ADMIN_OFFICE, null, JobPosting.Status.OPEN, LocalDateTime.now().minusDays(4), LocalDateTime.now().minusDays(4)));
+        jobPostings.add(new JobPosting("Aerospace Engineer", companies.get(14), 7000, 11000, "Design aerospace systems", JobPosting.Type.ENGINEERING, null, JobPosting.Status.OPEN, now.minusDays(5), now.minusDays(5)));
+        jobPostings.add(new JobPosting("Space Researcher", companies.get(14), 6500, 9500, "Research space technologies", JobPosting.Type.SCIENCE_TECH, null, JobPosting.Status.OPEN, now.minusDays(3), now.minusDays(3)));
+        jobPostings.add(new JobPosting("Test Engineer", companies.get(14), 6000, 9000, "Test aerospace components", JobPosting.Type.ENGINEERING, null, JobPosting.Status.OPEN, now.minusDays(7), now.minusDays(7)));
+        jobPostings.add(new JobPosting("Data Analyst", companies.get(14), 5500, 8500, "Analyze space mission data", JobPosting.Type.SCIENCE_TECH, null, JobPosting.Status.OPEN, now.minusDays(2), now.minusDays(2)));
+        jobPostings.add(new JobPosting("Project Manager", companies.get(14), 7000, 10000, "Manage space projects", JobPosting.Type.ADMIN_OFFICE, null, JobPosting.Status.OPEN, now.minusDays(4), now.minusDays(4)));
+
+        // SmartRetail (Company 15)
+        jobPostings.add(new JobPosting("Retail Software Engineer", companies.get(15), 5000, 8000, "Develop retail management software", JobPosting.Type.IT_COMM_TEC, null, JobPosting.Status.OPEN, now.minusDays(5), now.minusDays(5)));
+        jobPostings.add(new JobPosting("Retail Data Analyst", companies.get(15), 4500, 7000, "Analyze retail sales data", JobPosting.Type.SCIENCE_TECH, null, JobPosting.Status.OPEN, now.minusDays(3), now.minusDays(3)));
+        jobPostings.add(new JobPosting("UX Designer", companies.get(15), 4000, 6500, "Design intuitive retail interfaces", JobPosting.Type.DESIGN_ARCH, null, JobPosting.Status.OPEN, now.minusDays(7), now.minusDays(7)));
+        jobPostings.add(new JobPosting("Customer Success Manager", companies.get(15), 5000, 7500, "Support retail clients", JobPosting.Type.CALL_CUST_SVC, null, JobPosting.Status.OPEN, now.minusDays(2), now.minusDays(2)));
+        jobPostings.add(new JobPosting("Marketing Coordinator", companies.get(15), 4000, 6000, "Plan retail marketing campaigns", JobPosting.Type.MARKETING_COMM, null, JobPosting.Status.OPEN, now.minusDays(4), now.minusDays(4)));
+
+        // BioTech (Company 16)
+        jobPostings.add(new JobPosting("Biotech Researcher", companies.get(16), 6000, 9000, "Conduct biotech experiments", JobPosting.Type.SCIENCE_TECH, null, JobPosting.Status.OPEN, now.minusDays(5), now.minusDays(5)));
+        jobPostings.add(new JobPosting("Lab Technician", companies.get(16), 4000, 6000, "Support lab operations", JobPosting.Type.HEALTH_MED, null, JobPosting.Status.OPEN, now.minusDays(3), now.minusDays(3)));
+        jobPostings.add(new JobPosting("Bioinformatics Specialist", companies.get(16), 5500, 8500, "Analyze biological data", JobPosting.Type.SCIENCE_TECH, null, JobPosting.Status.OPEN, now.minusDays(7), now.minusDays(7)));
+        jobPostings.add(new JobPosting("Regulatory Affairs Manager", companies.get(16), 6000, 9000, "Ensure compliance with regulations", JobPosting.Type.LEGAL, null, JobPosting.Status.OPEN, now.minusDays(2), now.minusDays(2)));
+        jobPostings.add(new JobPosting("Project Manager", companies.get(16), 6500, 9500, "Manage biotech projects", JobPosting.Type.ADMIN_OFFICE, null, JobPosting.Status.OPEN, now.minusDays(4), now.minusDays(4)));
+
+        // UrbanPlan (Company 17)
+        jobPostings.add(new JobPosting("Urban Planner", companies.get(17), 5500, 8500, "Design sustainable urban layouts", JobPosting.Type.DESIGN_ARCH, null, JobPosting.Status.OPEN, now.minusDays(5), now.minusDays(5)));
+        jobPostings.add(new JobPosting("GIS Analyst", companies.get(17), 5000, 7500, "Analyze geographic data", JobPosting.Type.SCIENCE_TECH, null, JobPosting.Status.OPEN, now.minusDays(3), now.minusDays(3)));
+        jobPostings.add(new JobPosting("Project Coordinator", companies.get(17), 4500, 7000, "Coordinate urban projects", JobPosting.Type.ADMIN_OFFICE, null, JobPosting.Status.OPEN, now.minusDays(7), now.minusDays(7)));
+        jobPostings.add(new JobPosting("Sustainability Consultant", companies.get(17), 5000, 8000, "Advise on green urban solutions", JobPosting.Type.CONSULTING, null, JobPosting.Status.OPEN, now.minusDays(2), now.minusDays(2)));
+        jobPostings.add(new JobPosting("Civil Engineer", companies.get(17), 6000, 9000, "Design urban infrastructure", JobPosting.Type.ENGINEERING, null, JobPosting.Status.OPEN, now.minusDays(4), now.minusDays(4)));
+
+        // CleanTech (Company 18)
+        jobPostings.add(new JobPosting("Environmental Engineer", companies.get(18), 5500, 8500, "Develop eco-friendly technologies", JobPosting.Type.ENGINEERING, null, JobPosting.Status.OPEN, now.minusDays(5), now.minusDays(5)));
+        jobPostings.add(new JobPosting("Sustainability Analyst", companies.get(18), 4500, 7000, "Analyze environmental impact", JobPosting.Type.SCIENCE_TECH, null, JobPosting.Status.OPEN, now.minusDays(3), now.minusDays(3)));
+        jobPostings.add(new JobPosting("Field Technician", companies.get(18), 4000, 6000, "Install clean tech systems", JobPosting.Type.ENGINEERING, null, JobPosting.Status.OPEN, now.minusDays(7), now.minusDays(7)));
+        jobPostings.add(new JobPosting("Research Scientist", companies.get(18), 6000, 9000, "Research sustainable solutions", JobPosting.Type.SCIENCE_TECH, null, JobPosting.Status.OPEN, now.minusDays(2), now.minusDays(2)));
+        jobPostings.add(new JobPosting("Operations Manager", companies.get(18), 6500, 9500, "Oversee clean tech operations", JobPosting.Type.ADMIN_OFFICE, null, JobPosting.Status.OPEN, now.minusDays(4), now.minusDays(4)));
+
+        // DataWave (Company 19)
+        jobPostings.add(new JobPosting("Big Data Engineer", companies.get(19), 6000, 9000, "Build data processing pipelines", JobPosting.Type.IT_COMM_TEC, null, JobPosting.Status.OPEN, now.minusDays(5), now.minusDays(5)));
+        jobPostings.add(new JobPosting("AI Analyst", companies.get(19), 5500, 8500, "Develop AI-driven insights", JobPosting.Type.SCIENCE_TECH, null, JobPosting.Status.OPEN, now.minusDays(3), now.minusDays(3)));
+        jobPostings.add(new JobPosting("Data Scientist", companies.get(19), 6000, 9000, "Analyze large datasets", JobPosting.Type.SCIENCE_TECH, null, JobPosting.Status.OPEN, now.minusDays(7), now.minusDays(7)));
+        jobPostings.add(new JobPosting("DevOps Engineer", companies.get(19), 5500, 8500, "Manage data infrastructure", JobPosting.Type.IT_COMM_TEC, null, JobPosting.Status.OPEN, now.minusDays(2), now.minusDays(2)));
+        jobPostings.add(new JobPosting("Project Manager", companies.get(19), 6500, 9500, "Lead data projects", JobPosting.Type.ADMIN_OFFICE, null, JobPosting.Status.OPEN, now.minusDays(4), now.minusDays(4)));
+
+        // TravelTech (Company 20)
+        jobPostings.add(new JobPosting("Travel App Developer", companies.get(20), 5000, 8000, "Develop travel booking apps", JobPosting.Type.IT_COMM_TEC, null, JobPosting.Status.OPEN, now.minusDays(5), now.minusDays(5)));
+        jobPostings.add(new JobPosting("Marketing Specialist", companies.get(20), 4500, 7000, "Promote travel tech solutions", JobPosting.Type.MARKETING_COMM, null, JobPosting.Status.OPEN, now.minusDays(3), now.minusDays(3)));
+        jobPostings.add(new JobPosting("Customer Support", companies.get(20), 3500, 5000, "Assist travel app users", JobPosting.Type.CALL_CUST_SVC, null, JobPosting.Status.OPEN, now.minusDays(7), now.minusDays(7)));
+        jobPostings.add(new JobPosting("Data Analyst", companies.get(20), 4500, 7000, "Analyze travel trends", JobPosting.Type.SCIENCE_TECH, null, JobPosting.Status.OPEN, now.minusDays(2), now.minusDays(2)));
+        jobPostings.add(new JobPosting("Product Manager", companies.get(20), 6000, 9000, "Manage travel tech products", JobPosting.Type.ADMIN_OFFICE, null, JobPosting.Status.OPEN, now.minusDays(4), now.minusDays(4)));
+
+        // SecureNet (Company 21)
+        jobPostings.add(new JobPosting("Network Engineer", companies.get(21), 6000, 9000, "Design secure network systems", JobPosting.Type.IT_COMM_TEC, null, JobPosting.Status.OPEN, now.minusDays(5), now.minusDays(5)));
+        jobPostings.add(new JobPosting("Security Analyst", companies.get(21), 5500, 8500, "Monitor network security", JobPosting.Type.IT_COMM_TEC, null, JobPosting.Status.OPEN, now.minusDays(3), now.minusDays(3)));
+        jobPostings.add(new JobPosting("IT Consultant", companies.get(21), 6000, 9000, "Advise on network solutions", JobPosting.Type.CONSULTING, null, JobPosting.Status.OPEN, now.minusDays(7), now.minusDays(7)));
+        jobPostings.add(new JobPosting("System Administrator", companies.get(21), 5000, 7500, "Manage IT infrastructure", JobPosting.Type.IT_COMM_TEC, null, JobPosting.Status.OPEN, now.minusDays(2), now.minusDays(2)));
+        jobPostings.add(new JobPosting("Compliance Officer", companies.get(21), 5500, 8500, "Ensure network compliance", JobPosting.Type.LEGAL, null, JobPosting.Status.OPEN, now.minusDays(4), now.minusDays(4)));
+
+        // EduPlatform (Company 22)
+        jobPostings.add(new JobPosting("E-Learning Developer", companies.get(22), 5000, 8000, "Develop online learning platforms", JobPosting.Type.IT_COMM_TEC, null, JobPosting.Status.OPEN, now.minusDays(5), now.minusDays(5)));
+        jobPostings.add(new JobPosting("Content Specialist", companies.get(22), 4000, 6000, "Create educational content", JobPosting.Type.EDUC_TRAINING, null, JobPosting.Status.OPEN, now.minusDays(3), now.minusDays(3)));
+        jobPostings.add(new JobPosting("Instructional Designer", companies.get(22), 4500, 7000, "Design e-learning courses", JobPosting.Type.EDUC_TRAINING, null, JobPosting.Status.OPEN, now.minusDays(7), now.minusDays(7)));
+        jobPostings.add(new JobPosting("Tech Support", companies.get(22), 3500, 5000, "Support learning platforms", JobPosting.Type.CALL_CUST_SVC, null, JobPosting.Status.OPEN, now.minusDays(2), now.minusDays(2)));
+        jobPostings.add(new JobPosting("Project Manager", companies.get(22), 6000, 9000, "Manage e-learning projects", JobPosting.Type.ADMIN_OFFICE, null, JobPosting.Status.OPEN, now.minusDays(4), now.minusDays(4)));
+
+        // HealthTech (Company 23)
+        jobPostings.add(new JobPosting("Health App Developer", companies.get(23), 5000, 8000, "Develop healthcare apps", JobPosting.Type.IT_COMM_TEC, null, JobPosting.Status.OPEN, now.minusDays(5), now.minusDays(5)));
+        jobPostings.add(new JobPosting("Clinical Data Analyst", companies.get(23), 4500, 7000, "Analyze health data", JobPosting.Type.SCIENCE_TECH, null, JobPosting.Status.OPEN, now.minusDays(3), now.minusDays(3)));
+        jobPostings.add(new JobPosting("Health Consultant", companies.get(23), 5500, 8500, "Provide health tech advice", JobPosting.Type.HEALTH_MED, null, JobPosting.Status.OPEN, now.minusDays(7), now.minusDays(7)));
+        jobPostings.add(new JobPosting("QA Engineer", companies.get(23), 4000, 6000, "Test healthcare systems", JobPosting.Type.IT_COMM_TEC, null, JobPosting.Status.OPEN, now.minusDays(2), now.minusDays(2)));
+        jobPostings.add(new JobPosting("Operations Manager", companies.get(23), 6000, 9000, "Manage health tech operations", JobPosting.Type.ADMIN_OFFICE, null, JobPosting.Status.OPEN, now.minusDays(4), now.minusDays(4)));
+
+        // LogiSys (Company 24)
+        jobPostings.add(new JobPosting("Logistics Software Engineer", companies.get(24), 5000, 8000, "Develop logistics software", JobPosting.Type.IT_COMM_TEC, null, JobPosting.Status.OPEN, now.minusDays(5), now.minusDays(5)));
+        jobPostings.add(new JobPosting("Supply Chain Analyst", companies.get(24), 4500, 7000, "Analyze supply chain data", JobPosting.Type.SCIENCE_TECH, null, JobPosting.Status.OPEN, now.minusDays(3), now.minusDays(3)));
+        jobPostings.add(new JobPosting("Logistics Manager", companies.get(24), 5500, 8500, "Manage logistics operations", JobPosting.Type.MANF_LOG, null, JobPosting.Status.OPEN, now.minusDays(7), now.minusDays(7)));
+        jobPostings.add(new JobPosting("Customer Support", companies.get(24), 3500, 5000, "Support logistics clients", JobPosting.Type.CALL_CUST_SVC, null, JobPosting.Status.OPEN, now.minusDays(2), now.minusDays(2)));
+        jobPostings.add(new JobPosting("Project Coordinator", companies.get(24), 5000, 7500, "Coordinate logistics projects", JobPosting.Type.ADMIN_OFFICE, null, JobPosting.Status.OPEN, now.minusDays(4), now.minusDays(4)));
+
+        // FinTech (Company 25)
+        jobPostings.add(new JobPosting("FinTech Developer", companies.get(25), 6000, 9000, "Develop financial software", JobPosting.Type.IT_COMM_TEC, null, JobPosting.Status.OPEN, now.minusDays(5), now.minusDays(5)));
+        jobPostings.add(new JobPosting("Financial Analyst", companies.get(25), 5000, 8000, "Analyze financial trends", JobPosting.Type.BANK_FIN_SERV, null, JobPosting.Status.OPEN, now.minusDays(3), now.minusDays(3)));
+        jobPostings.add(new JobPosting("Compliance Specialist", companies.get(25), 5500, 8500, "Ensure financial compliance", JobPosting.Type.LEGAL, null, JobPosting.Status.OPEN, now.minusDays(7), now.minusDays(7)));
+        jobPostings.add(new JobPosting("Data Scientist", companies.get(25), 6000, 9000, "Analyze financial data", JobPosting.Type.SCIENCE_TECH, null, JobPosting.Status.OPEN, now.minusDays(2), now.minusDays(2)));
+        jobPostings.add(new JobPosting("Product Manager", companies.get(25), 6500, 9500, "Manage fintech products", JobPosting.Type.ADMIN_OFFICE, null, JobPosting.Status.OPEN, now.minusDays(4), now.minusDays(4)));
+
+        // GameStudio (Company 26)
+        jobPostings.add(new JobPosting("Game Developer", companies.get(26), 5000, 8000, "Develop interactive games", JobPosting.Type.IT_COMM_TEC, null, JobPosting.Status.OPEN, now.minusDays(5), now.minusDays(5)));
+        jobPostings.add(new JobPosting("3D Artist", companies.get(26), 4500, 7000, "Create game visuals", JobPosting.Type.DESIGN_ARCH, null, JobPosting.Status.OPEN, now.minusDays(3), now.minusDays(3)));
+        jobPostings.add(new JobPosting("QA Tester", companies.get(26), 4000, 6000, "Test game functionality", JobPosting.Type.IT_COMM_TEC, null, JobPosting.Status.OPEN, now.minusDays(7), now.minusDays(7)));
+        jobPostings.add(new JobPosting("Game Designer", companies.get(26), 5000, 7500, "Design game mechanics", JobPosting.Type.DESIGN_ARCH, null, JobPosting.Status.OPEN, now.minusDays(2), now.minusDays(2)));
+        jobPostings.add(new JobPosting("Marketing Specialist", companies.get(26), 4500, 7000, "Promote games", JobPosting.Type.MARKETING_COMM, null, JobPosting.Status.OPEN, now.minusDays(4), now.minusDays(4)));
+
+        // SmartHome (Company 27)
+        jobPostings.add(new JobPosting("IoT Engineer", companies.get(27), 6000, 9000, "Develop smart home devices", JobPosting.Type.ENGINEERING, null, JobPosting.Status.OPEN, now.minusDays(5), now.minusDays(5)));
+        jobPostings.add(new JobPosting("Software Developer", companies.get(27), 5000, 8000, "Code smart home software", JobPosting.Type.IT_COMM_TEC, null, JobPosting.Status.OPEN, now.minusDays(3), now.minusDays(3)));
+        jobPostings.add(new JobPosting("UX Designer", companies.get(27), 4500, 7000, "Design smart home interfaces", JobPosting.Type.DESIGN_ARCH, null, JobPosting.Status.OPEN, now.minusDays(7), now.minusDays(7)));
+        jobPostings.add(new JobPosting("Customer Support", companies.get(27), 3500, 5000, "Support smart home users", JobPosting.Type.CALL_CUST_SVC, null, JobPosting.Status.OPEN, now.minusDays(2), now.minusDays(2)));
+        jobPostings.add(new JobPosting("Product Manager", companies.get(27), 6000, 9000, "Manage smart home products", JobPosting.Type.ADMIN_OFFICE, null, JobPosting.Status.OPEN, now.minusDays(4), now.minusDays(4)));
+
+        // EcoFarm (Company 28)
+        jobPostings.add(new JobPosting("AgriTech Engineer", companies.get(28), 5000, 8000, "Develop farming technology", JobPosting.Type.ENGINEERING, null, JobPosting.Status.OPEN, now.minusDays(5), now.minusDays(5)));
+        jobPostings.add(new JobPosting("Data Analyst", companies.get(28), 4500, 7000, "Analyze farm data", JobPosting.Type.SCIENCE_TECH, null, JobPosting.Status.OPEN, now.minusDays(3), now.minusDays(3)));
+        jobPostings.add(new JobPosting("Farm Manager", companies.get(28), 4000, 6000, "Manage farm operations", JobPosting.Type.AGRICULTURE, null, JobPosting.Status.OPEN, now.minusDays(7), now.minusDays(7)));
+        jobPostings.add(new JobPosting("Sustainability Specialist", companies.get(28), 4500, 7000, "Promote sustainable farming", JobPosting.Type.AGRICULTURE, null, JobPosting.Status.OPEN, now.minusDays(2), now.minusDays(2)));
+        jobPostings.add(new JobPosting("Tech Support", companies.get(28), 4000, 6000, "Support farm tech systems", JobPosting.Type.IT_COMM_TEC, null, JobPosting.Status.OPEN, now.minusDays(4), now.minusDays(4)));
+
+        // RoboTech (Company 29)
+        jobPostings.add(new JobPosting("Robotics Engineer", companies.get(29), 6000, 9000, "Design robotic systems", JobPosting.Type.ENGINEERING, null, JobPosting.Status.OPEN, now.minusDays(5), now.minusDays(5)));
+        jobPostings.add(new JobPosting("Automation Specialist", companies.get(29), 5500, 8500, "Develop automation solutions", JobPosting.Type.ENGINEERING, null, JobPosting.Status.OPEN, now.minusDays(3), now.minusDays(3)));
+        jobPostings.add(new JobPosting("Software Engineer", companies.get(29), 5000, 8000, "Code robotics software", JobPosting.Type.IT_COMM_TEC, null, JobPosting.Status.OPEN, now.minusDays(7), now.minusDays(7)));
+        jobPostings.add(new JobPosting("QA Engineer", companies.get(29), 4500, 7000, "Test robotic systems", JobPosting.Type.IT_COMM_TEC, null, JobPosting.Status.OPEN, now.minusDays(2), now.minusDays(2)));
+        jobPostings.add(new JobPosting("Project Manager", companies.get(29), 6000, 9000, "Manage robotics projects", JobPosting.Type.ADMIN_OFFICE, null, JobPosting.Status.OPEN, now.minusDays(4), now.minusDays(4)));
 
         // 50 Applicants (Hard-Coded, Qualifications set to null, Using Malaysian Cities)
         applicants.add(new Applicant("Alice Johnson", "alice.johnson@email.com", "0123456789", JobPosting.Type.IT_COMM_TEC, new Location(City.JOHOR_BAHRU)));
@@ -206,419 +327,447 @@ public class Initializer {
         applicants.add(new Applicant("Vince Ray", "vince.ray@email.com", "0127890123", JobPosting.Type.SALES, new Location(City.PENANG_HILL)));
         applicants.add(new Applicant("Wendy Fox", "wendy.fox@email.com", "0138901234", JobPosting.Type.HEALTH_MED, new Location(City.IPOH)));
         applicants.add(new Applicant("Xander Lee", "xander.lee@email.com", "0149012345", JobPosting.Type.DESIGN_ARCH, new Location(City.KUCHING)));
-        applicants.add(new Applicant("Test", "test@test.com", "0183862118", JobPosting.Type.CALL_CUST_SVC, new Location(City.KUALA_LUMPUR)));
+        applicants.add(new Applicant("Test", "test@test.com", "0119999999", JobPosting.Type.ADMIN_OFFICE, new Location(City.KUALA_LUMPUR)));
         // endregion
 
-        //51 job applications
+        //251 job applications
         // Applicant 0 (Alice Johnson)
-        jobApplications.add(new JobApplication(jobPostings.get(0), applicants.get(0), JobApplication.Status.PENDING, LocalDateTime.of(2025, 3, 1, 10, 0)));
-        jobApplications.add(new JobApplication(jobPostings.get(5), applicants.get(0), JobApplication.Status.SHORTLISTED, LocalDateTime.of(2025, 3, 2, 11, 0)));
-        jobApplications.add(new JobApplication(jobPostings.get(10), applicants.get(0), JobApplication.Status.INTERVIEWED, LocalDateTime.of(2025, 3, 3, 12, 0)));
-        jobApplications.add(new JobApplication(jobPostings.get(15), applicants.get(0), JobApplication.Status.OFFERED, LocalDateTime.of(2025, 3, 4, 13, 0)));
-        jobApplications.add(new JobApplication(jobPostings.get(20), applicants.get(0), JobApplication.Status.ACCEPTED, LocalDateTime.of(2025, 3, 5, 14, 0)));
+        jobApplications.add(new JobApplication(jobPostings.get(0), applicants.get(0), JobApplication.Status.PENDING, now.minusDays(7).minusHours(2)));
+        jobApplications.add(new JobApplication(jobPostings.get(5), applicants.get(0), JobApplication.Status.SHORTLISTED, now.minusDays(6).minusHours(3)));
+        jobApplications.add(new JobApplication(jobPostings.get(10), applicants.get(0), JobApplication.Status.INTERVIEWED, now.minusDays(5).minusHours(4)));
+        jobApplications.add(new JobApplication(jobPostings.get(15), applicants.get(0), JobApplication.Status.OFFERED, now.minusDays(4).minusHours(5)));
+        jobApplications.add(new JobApplication(jobPostings.get(20), applicants.get(0), JobApplication.Status.ACCEPTED, now.minusDays(3).minusHours(6)));
 
         // Applicant 1 (Bob Smith)
-        jobApplications.add(new JobApplication(jobPostings.get(1), applicants.get(1), JobApplication.Status.PENDING, LocalDateTime.of(2025, 3, 6, 9, 0)));
-        jobApplications.add(new JobApplication(jobPostings.get(6), applicants.get(1), JobApplication.Status.SHORTLISTED, LocalDateTime.of(2025, 3, 7, 10, 0)));
-        jobApplications.add(new JobApplication(jobPostings.get(11), applicants.get(1), JobApplication.Status.REJECTED, LocalDateTime.of(2025, 3, 8, 11, 0)));
-        jobApplications.add(new JobApplication(jobPostings.get(16), applicants.get(1), JobApplication.Status.WITHDRAWN, LocalDateTime.of(2025, 3, 9, 12, 0)));
-        jobApplications.add(new JobApplication(jobPostings.get(21), applicants.get(1), JobApplication.Status.PENDING, LocalDateTime.of(2025, 3, 10, 13, 0)));
+        jobApplications.add(new JobApplication(jobPostings.get(1), applicants.get(1), JobApplication.Status.PENDING, now.minusDays(2).minusHours(7)));
+        jobApplications.add(new JobApplication(jobPostings.get(6), applicants.get(1), JobApplication.Status.SHORTLISTED, now.minusDays(1).minusHours(8)));
+        jobApplications.add(new JobApplication(jobPostings.get(11), applicants.get(1), JobApplication.Status.REJECTED, now.minusDays(0).minusHours(9)));
+        jobApplications.add(new JobApplication(jobPostings.get(16), applicants.get(1), JobApplication.Status.WITHDRAWN, now.minusDays(6).minusHours(10)));
+        jobApplications.add(new JobApplication(jobPostings.get(21), applicants.get(1), JobApplication.Status.PENDING, now.minusDays(5).minusHours(11)));
 
         // Applicant 2 (Charlie Brown)
-        jobApplications.add(new JobApplication(jobPostings.get(2), applicants.get(2), JobApplication.Status.OFFERED, LocalDateTime.of(2025, 3, 11, 14, 0)));
-        jobApplications.add(new JobApplication(jobPostings.get(7), applicants.get(2), JobApplication.Status.ACCEPTED, LocalDateTime.of(2025, 3, 12, 15, 0)));
-        jobApplications.add(new JobApplication(jobPostings.get(12), applicants.get(2), JobApplication.Status.INTERVIEWED, LocalDateTime.of(2025, 3, 13, 16, 0)));
-        jobApplications.add(new JobApplication(jobPostings.get(17), applicants.get(2), JobApplication.Status.PENDING, LocalDateTime.of(2025, 3, 14, 9, 0)));
-        jobApplications.add(new JobApplication(jobPostings.get(22), applicants.get(2), JobApplication.Status.SHORTLISTED, LocalDateTime.of(2025, 3, 15, 10, 0)));
+        jobApplications.add(new JobApplication(jobPostings.get(2), applicants.get(2), JobApplication.Status.OFFERED, now.minusDays(4).minusHours(12)));
+        jobApplications.add(new JobApplication(jobPostings.get(7), applicants.get(2), JobApplication.Status.ACCEPTED, now.minusDays(3).minusHours(13)));
+        jobApplications.add(new JobApplication(jobPostings.get(12), applicants.get(2), JobApplication.Status.INTERVIEWED, now.minusDays(2).minusHours(14)));
+        jobApplications.add(new JobApplication(jobPostings.get(17), applicants.get(2), JobApplication.Status.PENDING, now.minusDays(1).minusHours(15)));
+        jobApplications.add(new JobApplication(jobPostings.get(22), applicants.get(2), JobApplication.Status.SHORTLISTED, now.minusDays(0).minusHours(16)));
 
         // Applicant 3 (Daisy Williams)
-        jobApplications.add(new JobApplication(jobPostings.get(3), applicants.get(3), JobApplication.Status.REJECTED, LocalDateTime.of(2025, 3, 16, 11, 0)));
-        jobApplications.add(new JobApplication(jobPostings.get(8), applicants.get(3), JobApplication.Status.WITHDRAWN, LocalDateTime.of(2025, 3, 17, 12, 0)));
-        jobApplications.add(new JobApplication(jobPostings.get(13), applicants.get(3), JobApplication.Status.OFFERED, LocalDateTime.of(2025, 3, 18, 13, 0)));
-        jobApplications.add(new JobApplication(jobPostings.get(18), applicants.get(3), JobApplication.Status.ACCEPTED, LocalDateTime.of(2025, 3, 19, 14, 0)));
-        jobApplications.add(new JobApplication(jobPostings.get(23), applicants.get(3), JobApplication.Status.INTERVIEWED, LocalDateTime.of(2025, 3, 20, 15, 0)));
+        jobApplications.add(new JobApplication(jobPostings.get(3), applicants.get(3), JobApplication.Status.REJECTED, now.minusDays(7).minusHours(17)));
+        jobApplications.add(new JobApplication(jobPostings.get(8), applicants.get(3), JobApplication.Status.WITHDRAWN, now.minusDays(6).minusHours(18)));
+        jobApplications.add(new JobApplication(jobPostings.get(13), applicants.get(3), JobApplication.Status.OFFERED, now.minusDays(5).minusHours(19)));
+        jobApplications.add(new JobApplication(jobPostings.get(18), applicants.get(3), JobApplication.Status.ACCEPTED, now.minusDays(4).minusHours(20)));
+        jobApplications.add(new JobApplication(jobPostings.get(23), applicants.get(3), JobApplication.Status.INTERVIEWED, now.minusDays(3).minusHours(21)));
 
         // Applicant 4 (Ethan Lee)
-        jobApplications.add(new JobApplication(jobPostings.get(4), applicants.get(4), JobApplication.Status.PENDING, LocalDateTime.of(2025, 3, 21, 16, 0)));
-        jobApplications.add(new JobApplication(jobPostings.get(9), applicants.get(4), JobApplication.Status.SHORTLISTED, LocalDateTime.of(2025, 3, 22, 9, 0)));
-        jobApplications.add(new JobApplication(jobPostings.get(14), applicants.get(4), JobApplication.Status.REJECTED, LocalDateTime.of(2025, 3, 23, 10, 0)));
-        jobApplications.add(new JobApplication(jobPostings.get(19), applicants.get(4), JobApplication.Status.WITHDRAWN, LocalDateTime.of(2025, 3, 24, 11, 0)));
-        jobApplications.add(new JobApplication(jobPostings.get(24), applicants.get(4), JobApplication.Status.OFFERED, LocalDateTime.of(2025, 3, 25, 12, 0)));
+        jobApplications.add(new JobApplication(jobPostings.get(4), applicants.get(4), JobApplication.Status.PENDING, now.minusDays(2).minusHours(22)));
+        jobApplications.add(new JobApplication(jobPostings.get(9), applicants.get(4), JobApplication.Status.SHORTLISTED, now.minusDays(1).minusHours(23)));
+        jobApplications.add(new JobApplication(jobPostings.get(14), applicants.get(4), JobApplication.Status.REJECTED, now.minusDays(0).minusHours(24)));
+        jobApplications.add(new JobApplication(jobPostings.get(19), applicants.get(4), JobApplication.Status.WITHDRAWN, now.minusDays(7).minusHours(1)));
+        jobApplications.add(new JobApplication(jobPostings.get(24), applicants.get(4), JobApplication.Status.OFFERED, now.minusDays(6).minusHours(2)));
 
         // Applicant 5 (Fiona Davis)
-        jobApplications.add(new JobApplication(jobPostings.get(5), applicants.get(5), JobApplication.Status.ACCEPTED, LocalDateTime.of(2025, 3, 26, 13, 0)));
-        jobApplications.add(new JobApplication(jobPostings.get(10), applicants.get(5), JobApplication.Status.INTERVIEWED, LocalDateTime.of(2025, 3, 27, 14, 0)));
-        jobApplications.add(new JobApplication(jobPostings.get(15), applicants.get(5), JobApplication.Status.PENDING, LocalDateTime.of(2025, 3, 28, 15, 0)));
-        jobApplications.add(new JobApplication(jobPostings.get(20), applicants.get(5), JobApplication.Status.SHORTLISTED, LocalDateTime.of(2025, 3, 29, 16, 0)));
-        jobApplications.add(new JobApplication(jobPostings.get(25), applicants.get(5), JobApplication.Status.REJECTED, LocalDateTime.of(2025, 3, 30, 9, 0)));
+        jobApplications.add(new JobApplication(jobPostings.get(5), applicants.get(5), JobApplication.Status.ACCEPTED, now.minusDays(5).minusHours(3)));
+        jobApplications.add(new JobApplication(jobPostings.get(10), applicants.get(5), JobApplication.Status.INTERVIEWED, now.minusDays(4).minusHours(4)));
+        jobApplications.add(new JobApplication(jobPostings.get(15), applicants.get(5), JobApplication.Status.PENDING, now.minusDays(3).minusHours(5)));
+        jobApplications.add(new JobApplication(jobPostings.get(20), applicants.get(5), JobApplication.Status.SHORTLISTED, now.minusDays(2).minusHours(6)));
+        jobApplications.add(new JobApplication(jobPostings.get(25), applicants.get(5), JobApplication.Status.REJECTED, now.minusDays(1).minusHours(7)));
 
         // Applicant 6 (George Wilson)
-        jobApplications.add(new JobApplication(jobPostings.get(6), applicants.get(6), JobApplication.Status.WITHDRAWN, LocalDateTime.of(2025, 3, 31, 10, 0)));
-        jobApplications.add(new JobApplication(jobPostings.get(11), applicants.get(6), JobApplication.Status.OFFERED, LocalDateTime.of(2025, 4, 1, 11, 0)));
-        jobApplications.add(new JobApplication(jobPostings.get(16), applicants.get(6), JobApplication.Status.ACCEPTED, LocalDateTime.of(2025, 4, 2, 12, 0)));
-        jobApplications.add(new JobApplication(jobPostings.get(21), applicants.get(6), JobApplication.Status.INTERVIEWED, LocalDateTime.of(2025, 4, 3, 13, 0)));
-        jobApplications.add(new JobApplication(jobPostings.get(26), applicants.get(6), JobApplication.Status.PENDING, LocalDateTime.of(2025, 4, 4, 14, 0)));
+        jobApplications.add(new JobApplication(jobPostings.get(6), applicants.get(6), JobApplication.Status.WITHDRAWN, now.minusDays(0).minusHours(8)));
+        jobApplications.add(new JobApplication(jobPostings.get(11), applicants.get(6), JobApplication.Status.OFFERED, now.minusDays(7).minusHours(9)));
+        jobApplications.add(new JobApplication(jobPostings.get(16), applicants.get(6), JobApplication.Status.ACCEPTED, now.minusDays(6).minusHours(10)));
+        jobApplications.add(new JobApplication(jobPostings.get(21), applicants.get(6), JobApplication.Status.INTERVIEWED, now.minusDays(5).minusHours(11)));
+        jobApplications.add(new JobApplication(jobPostings.get(26), applicants.get(6), JobApplication.Status.PENDING, now.minusDays(4).minusHours(12)));
 
         // Applicant 7 (Hannah Moore)
-        jobApplications.add(new JobApplication(jobPostings.get(7), applicants.get(7), JobApplication.Status.SHORTLISTED, LocalDateTime.of(2025, 4, 5, 15, 0)));
-        jobApplications.add(new JobApplication(jobPostings.get(12), applicants.get(7), JobApplication.Status.REJECTED, LocalDateTime.of(2025, 4, 6, 16, 0)));
-        jobApplications.add(new JobApplication(jobPostings.get(17), applicants.get(7), JobApplication.Status.WITHDRAWN, LocalDateTime.of(2025, 4, 7, 9, 0)));
-        jobApplications.add(new JobApplication(jobPostings.get(22), applicants.get(7), JobApplication.Status.OFFERED, LocalDateTime.of(2025, 4, 8, 10, 0)));
-        jobApplications.add(new JobApplication(jobPostings.get(27), applicants.get(7), JobApplication.Status.ACCEPTED, LocalDateTime.of(2025, 4, 9, 11, 0)));
+        jobApplications.add(new JobApplication(jobPostings.get(7), applicants.get(7), JobApplication.Status.SHORTLISTED, now.minusDays(3).minusHours(13)));
+        jobApplications.add(new JobApplication(jobPostings.get(12), applicants.get(7), JobApplication.Status.REJECTED, now.minusDays(2).minusHours(14)));
+        jobApplications.add(new JobApplication(jobPostings.get(17), applicants.get(7), JobApplication.Status.WITHDRAWN, now.minusDays(1).minusHours(15)));
+        jobApplications.add(new JobApplication(jobPostings.get(22), applicants.get(7), JobApplication.Status.OFFERED, now.minusDays(0).minusHours(16)));
+        jobApplications.add(new JobApplication(jobPostings.get(27), applicants.get(7), JobApplication.Status.ACCEPTED, now.minusDays(7).minusHours(17)));
 
         // Applicant 8 (Ian Taylor)
-        jobApplications.add(new JobApplication(jobPostings.get(8), applicants.get(8), JobApplication.Status.INTERVIEWED, LocalDateTime.of(2025, 4, 10, 12, 0)));
-        jobApplications.add(new JobApplication(jobPostings.get(13), applicants.get(8), JobApplication.Status.PENDING, LocalDateTime.of(2025, 4, 11, 13, 0)));
-        jobApplications.add(new JobApplication(jobPostings.get(18), applicants.get(8), JobApplication.Status.SHORTLISTED, LocalDateTime.of(2025, 4, 12, 14, 0)));
-        jobApplications.add(new JobApplication(jobPostings.get(23), applicants.get(8), JobApplication.Status.REJECTED, LocalDateTime.of(2025, 4, 13, 15, 0)));
-        jobApplications.add(new JobApplication(jobPostings.get(28), applicants.get(8), JobApplication.Status.WITHDRAWN, LocalDateTime.of(2025, 4, 14, 16, 0)));
+        jobApplications.add(new JobApplication(jobPostings.get(8), applicants.get(8), JobApplication.Status.INTERVIEWED, now.minusDays(6).minusHours(18)));
+        jobApplications.add(new JobApplication(jobPostings.get(13), applicants.get(8), JobApplication.Status.PENDING, now.minusDays(5).minusHours(19)));
+        jobApplications.add(new JobApplication(jobPostings.get(18), applicants.get(8), JobApplication.Status.SHORTLISTED, now.minusDays(4).minusHours(20)));
+        jobApplications.add(new JobApplication(jobPostings.get(23), applicants.get(8), JobApplication.Status.REJECTED, now.minusDays(3).minusHours(21)));
+        jobApplications.add(new JobApplication(jobPostings.get(28), applicants.get(8), JobApplication.Status.WITHDRAWN, now.minusDays(2).minusHours(22)));
 
         // Applicant 9 (Julia Anderson)
-        jobApplications.add(new JobApplication(jobPostings.get(9), applicants.get(9), JobApplication.Status.OFFERED, LocalDateTime.of(2025, 4, 15, 9, 0)));
-        jobApplications.add(new JobApplication(jobPostings.get(14), applicants.get(9), JobApplication.Status.ACCEPTED, LocalDateTime.of(2025, 4, 16, 10, 0)));
-        jobApplications.add(new JobApplication(jobPostings.get(19), applicants.get(9), JobApplication.Status.INTERVIEWED, LocalDateTime.of(2025, 4, 17, 11, 0)));
-        jobApplications.add(new JobApplication(jobPostings.get(24), applicants.get(9), JobApplication.Status.PENDING, LocalDateTime.of(2025, 4, 18, 12, 0)));
-        jobApplications.add(new JobApplication(jobPostings.get(29), applicants.get(9), JobApplication.Status.SHORTLISTED, LocalDateTime.of(2025, 4, 19, 13, 0)));
+        jobApplications.add(new JobApplication(jobPostings.get(9), applicants.get(9), JobApplication.Status.OFFERED, now.minusDays(1).minusHours(23)));
+        jobApplications.add(new JobApplication(jobPostings.get(14), applicants.get(9), JobApplication.Status.ACCEPTED, now.minusDays(0).minusHours(24)));
+        jobApplications.add(new JobApplication(jobPostings.get(19), applicants.get(9), JobApplication.Status.INTERVIEWED, now.minusDays(7).minusHours(1)));
+        jobApplications.add(new JobApplication(jobPostings.get(24), applicants.get(9), JobApplication.Status.PENDING, now.minusDays(6).minusHours(2)));
+        jobApplications.add(new JobApplication(jobPostings.get(29), applicants.get(9), JobApplication.Status.SHORTLISTED, now.minusDays(5).minusHours(3)));
 
         // Applicant 10 (Kevin White)
-        jobApplications.add(new JobApplication(jobPostings.get(10), applicants.get(10), JobApplication.Status.REJECTED, LocalDateTime.of(2025, 4, 20, 14, 0)));
-        jobApplications.add(new JobApplication(jobPostings.get(15), applicants.get(10), JobApplication.Status.WITHDRAWN, LocalDateTime.of(2025, 4, 21, 15, 0)));
-        jobApplications.add(new JobApplication(jobPostings.get(20), applicants.get(10), JobApplication.Status.OFFERED, LocalDateTime.of(2025, 4, 22, 16, 0)));
-        jobApplications.add(new JobApplication(jobPostings.get(25), applicants.get(10), JobApplication.Status.ACCEPTED, LocalDateTime.of(2025, 4, 23, 9, 0)));
-        jobApplications.add(new JobApplication(jobPostings.get(30), applicants.get(10), JobApplication.Status.INTERVIEWED, LocalDateTime.of(2025, 4, 24, 10, 0)));
+        jobApplications.add(new JobApplication(jobPostings.get(10), applicants.get(10), JobApplication.Status.REJECTED, now.minusDays(4).minusHours(4)));
+        jobApplications.add(new JobApplication(jobPostings.get(15), applicants.get(10), JobApplication.Status.WITHDRAWN, now.minusDays(3).minusHours(5)));
+        jobApplications.add(new JobApplication(jobPostings.get(20), applicants.get(10), JobApplication.Status.OFFERED, now.minusDays(2).minusHours(6)));
+        jobApplications.add(new JobApplication(jobPostings.get(25), applicants.get(10), JobApplication.Status.ACCEPTED, now.minusDays(1).minusHours(7)));
+        jobApplications.add(new JobApplication(jobPostings.get(30), applicants.get(10), JobApplication.Status.INTERVIEWED, now.minusDays(0).minusHours(8)));
 
         // Applicant 11 (Laura Martinez)
-        jobApplications.add(new JobApplication(jobPostings.get(11), applicants.get(11), JobApplication.Status.PENDING, LocalDateTime.of(2025, 4, 25, 11, 0)));
-        jobApplications.add(new JobApplication(jobPostings.get(16), applicants.get(11), JobApplication.Status.SHORTLISTED, LocalDateTime.of(2025, 4, 26, 12, 0)));
-        jobApplications.add(new JobApplication(jobPostings.get(21), applicants.get(11), JobApplication.Status.REJECTED, LocalDateTime.of(2025, 4, 27, 13, 0)));
-        jobApplications.add(new JobApplication(jobPostings.get(26), applicants.get(11), JobApplication.Status.WITHDRAWN, LocalDateTime.of(2025, 4, 28, 14, 0)));
-        jobApplications.add(new JobApplication(jobPostings.get(31), applicants.get(11), JobApplication.Status.OFFERED, LocalDateTime.of(2025, 4, 29, 15, 0)));
+        jobApplications.add(new JobApplication(jobPostings.get(11), applicants.get(11), JobApplication.Status.PENDING, now.minusDays(7).minusHours(9)));
+        jobApplications.add(new JobApplication(jobPostings.get(16), applicants.get(11), JobApplication.Status.SHORTLISTED, now.minusDays(6).minusHours(10)));
+        jobApplications.add(new JobApplication(jobPostings.get(21), applicants.get(11), JobApplication.Status.REJECTED, now.minusDays(5).minusHours(11)));
+        jobApplications.add(new JobApplication(jobPostings.get(26), applicants.get(11), JobApplication.Status.WITHDRAWN, now.minusDays(4).minusHours(12)));
+        jobApplications.add(new JobApplication(jobPostings.get(31), applicants.get(11), JobApplication.Status.OFFERED, now.minusDays(3).minusHours(13)));
 
         // Applicant 12 (Mike Brown)
-        jobApplications.add(new JobApplication(jobPostings.get(12), applicants.get(12), JobApplication.Status.ACCEPTED, LocalDateTime.of(2025, 4, 30, 16, 0)));
-        jobApplications.add(new JobApplication(jobPostings.get(17), applicants.get(12), JobApplication.Status.INTERVIEWED, LocalDateTime.of(2025, 5, 1, 9, 0)));
-        jobApplications.add(new JobApplication(jobPostings.get(22), applicants.get(12), JobApplication.Status.PENDING, LocalDateTime.of(2025, 5, 2, 10, 0)));
-        jobApplications.add(new JobApplication(jobPostings.get(27), applicants.get(12), JobApplication.Status.SHORTLISTED, LocalDateTime.of(2025, 5, 3, 11, 0)));
-        jobApplications.add(new JobApplication(jobPostings.get(32), applicants.get(12), JobApplication.Status.REJECTED, LocalDateTime.of(2025, 5, 4, 12, 0)));
+        jobApplications.add(new JobApplication(jobPostings.get(12), applicants.get(12), JobApplication.Status.ACCEPTED, now.minusDays(2).minusHours(14)));
+        jobApplications.add(new JobApplication(jobPostings.get(17), applicants.get(12), JobApplication.Status.INTERVIEWED, now.minusDays(1).minusHours(15)));
+        jobApplications.add(new JobApplication(jobPostings.get(22), applicants.get(12), JobApplication.Status.PENDING, now.minusDays(0).minusHours(16)));
+        jobApplications.add(new JobApplication(jobPostings.get(27), applicants.get(12), JobApplication.Status.SHORTLISTED, now.minusDays(7).minusHours(17)));
+        jobApplications.add(new JobApplication(jobPostings.get(32), applicants.get(12), JobApplication.Status.REJECTED, now.minusDays(6).minusHours(18)));
 
         // Applicant 13 (Nina Harris)
-        jobApplications.add(new JobApplication(jobPostings.get(13), applicants.get(13), JobApplication.Status.WITHDRAWN, LocalDateTime.of(2025, 5, 5, 13, 0)));
-        jobApplications.add(new JobApplication(jobPostings.get(18), applicants.get(13), JobApplication.Status.OFFERED, LocalDateTime.of(2025, 5, 6, 14, 0)));
-        jobApplications.add(new JobApplication(jobPostings.get(23), applicants.get(13), JobApplication.Status.ACCEPTED, LocalDateTime.of(2025, 5, 7, 15, 0)));
-        jobApplications.add(new JobApplication(jobPostings.get(28), applicants.get(13), JobApplication.Status.INTERVIEWED, LocalDateTime.of(2025, 5, 8, 16, 0)));
-        jobApplications.add(new JobApplication(jobPostings.get(33), applicants.get(13), JobApplication.Status.PENDING, LocalDateTime.of(2025, 5, 9, 9, 0)));
+        jobApplications.add(new JobApplication(jobPostings.get(13), applicants.get(13), JobApplication.Status.WITHDRAWN, now.minusDays(5).minusHours(19)));
+        jobApplications.add(new JobApplication(jobPostings.get(18), applicants.get(13), JobApplication.Status.OFFERED, now.minusDays(4).minusHours(20)));
+        jobApplications.add(new JobApplication(jobPostings.get(23), applicants.get(13), JobApplication.Status.ACCEPTED, now.minusDays(3).minusHours(21)));
+        jobApplications.add(new JobApplication(jobPostings.get(28), applicants.get(13), JobApplication.Status.INTERVIEWED, now.minusDays(2).minusHours(22)));
+        jobApplications.add(new JobApplication(jobPostings.get(33), applicants.get(13), JobApplication.Status.PENDING, now.minusDays(1).minusHours(23)));
 
         // Applicant 14 (Oliver Clark)
-        jobApplications.add(new JobApplication(jobPostings.get(14), applicants.get(14), JobApplication.Status.SHORTLISTED, LocalDateTime.of(2025, 5, 10, 10, 0)));
-        jobApplications.add(new JobApplication(jobPostings.get(19), applicants.get(14), JobApplication.Status.REJECTED, LocalDateTime.of(2025, 5, 11, 11, 0)));
-        jobApplications.add(new JobApplication(jobPostings.get(24), applicants.get(14), JobApplication.Status.WITHDRAWN, LocalDateTime.of(2025, 5, 12, 12, 0)));
-        jobApplications.add(new JobApplication(jobPostings.get(29), applicants.get(14), JobApplication.Status.OFFERED, LocalDateTime.of(2025, 5, 13, 13, 0)));
-        jobApplications.add(new JobApplication(jobPostings.get(34), applicants.get(14), JobApplication.Status.ACCEPTED, LocalDateTime.of(2025, 5, 14, 14, 0)));
+        jobApplications.add(new JobApplication(jobPostings.get(14), applicants.get(14), JobApplication.Status.SHORTLISTED, now.minusDays(0).minusHours(24)));
+        jobApplications.add(new JobApplication(jobPostings.get(19), applicants.get(14), JobApplication.Status.REJECTED, now.minusDays(7).minusHours(1)));
+        jobApplications.add(new JobApplication(jobPostings.get(24), applicants.get(14), JobApplication.Status.WITHDRAWN, now.minusDays(6).minusHours(2)));
+        jobApplications.add(new JobApplication(jobPostings.get(29), applicants.get(14), JobApplication.Status.OFFERED, now.minusDays(5).minusHours(3)));
+        jobApplications.add(new JobApplication(jobPostings.get(34), applicants.get(14), JobApplication.Status.ACCEPTED, now.minusDays(4).minusHours(4)));
 
         // Applicant 15 (Pamela Lewis)
-        jobApplications.add(new JobApplication(jobPostings.get(15), applicants.get(15), JobApplication.Status.INTERVIEWED, LocalDateTime.of(2025, 5, 15, 15, 0)));
-        jobApplications.add(new JobApplication(jobPostings.get(20), applicants.get(15), JobApplication.Status.PENDING, LocalDateTime.of(2025, 5, 16, 16, 0)));
-        jobApplications.add(new JobApplication(jobPostings.get(25), applicants.get(15), JobApplication.Status.SHORTLISTED, LocalDateTime.of(2025, 5, 17, 9, 0)));
-        jobApplications.add(new JobApplication(jobPostings.get(30), applicants.get(15), JobApplication.Status.REJECTED, LocalDateTime.of(2025, 5, 18, 10, 0)));
-        jobApplications.add(new JobApplication(jobPostings.get(35), applicants.get(15), JobApplication.Status.WITHDRAWN, LocalDateTime.of(2025, 5, 19, 11, 0)));
+        jobApplications.add(new JobApplication(jobPostings.get(15), applicants.get(15), JobApplication.Status.INTERVIEWED, now.minusDays(3).minusHours(5)));
+        jobApplications.add(new JobApplication(jobPostings.get(20), applicants.get(15), JobApplication.Status.PENDING, now.minusDays(2).minusHours(6)));
+        jobApplications.add(new JobApplication(jobPostings.get(25), applicants.get(15), JobApplication.Status.SHORTLISTED, now.minusDays(1).minusHours(7)));
+        jobApplications.add(new JobApplication(jobPostings.get(30), applicants.get(15), JobApplication.Status.REJECTED, now.minusDays(0).minusHours(8)));
+        jobApplications.add(new JobApplication(jobPostings.get(35), applicants.get(15), JobApplication.Status.WITHDRAWN, now.minusDays(7).minusHours(9)));
 
         // Applicant 16 (Quincy Adams)
-        jobApplications.add(new JobApplication(jobPostings.get(16), applicants.get(16), JobApplication.Status.OFFERED, LocalDateTime.of(2025, 5, 20, 12, 0)));
-        jobApplications.add(new JobApplication(jobPostings.get(21), applicants.get(16), JobApplication.Status.ACCEPTED, LocalDateTime.of(2025, 5, 21, 13, 0)));
-        jobApplications.add(new JobApplication(jobPostings.get(26), applicants.get(16), JobApplication.Status.INTERVIEWED, LocalDateTime.of(2025, 5, 22, 14, 0)));
-        jobApplications.add(new JobApplication(jobPostings.get(31), applicants.get(16), JobApplication.Status.PENDING, LocalDateTime.of(2025, 5, 23, 15, 0)));
-        jobApplications.add(new JobApplication(jobPostings.get(36), applicants.get(16), JobApplication.Status.SHORTLISTED, LocalDateTime.of(2025, 5, 24, 16, 0)));
+        jobApplications.add(new JobApplication(jobPostings.get(16), applicants.get(16), JobApplication.Status.OFFERED, now.minusDays(6).minusHours(10)));
+        jobApplications.add(new JobApplication(jobPostings.get(21), applicants.get(16), JobApplication.Status.ACCEPTED, now.minusDays(5).minusHours(11)));
+        jobApplications.add(new JobApplication(jobPostings.get(26), applicants.get(16), JobApplication.Status.INTERVIEWED, now.minusDays(4).minusHours(12)));
+        jobApplications.add(new JobApplication(jobPostings.get(31), applicants.get(16), JobApplication.Status.PENDING, now.minusDays(3).minusHours(13)));
+        jobApplications.add(new JobApplication(jobPostings.get(36), applicants.get(16), JobApplication.Status.SHORTLISTED, now.minusDays(2).minusHours(14)));
 
         // Applicant 17 (Rachel Green)
-        jobApplications.add(new JobApplication(jobPostings.get(17), applicants.get(17), JobApplication.Status.REJECTED, LocalDateTime.of(2025, 5, 25, 9, 0)));
-        jobApplications.add(new JobApplication(jobPostings.get(22), applicants.get(17), JobApplication.Status.WITHDRAWN, LocalDateTime.of(2025, 5, 26, 10, 0)));
-        jobApplications.add(new JobApplication(jobPostings.get(27), applicants.get(17), JobApplication.Status.OFFERED, LocalDateTime.of(2025, 5, 27, 11, 0)));
-        jobApplications.add(new JobApplication(jobPostings.get(32), applicants.get(17), JobApplication.Status.ACCEPTED, LocalDateTime.of(2025, 5, 28, 12, 0)));
-        jobApplications.add(new JobApplication(jobPostings.get(37), applicants.get(17), JobApplication.Status.INTERVIEWED, LocalDateTime.of(2025, 5, 29, 13, 0)));
+        jobApplications.add(new JobApplication(jobPostings.get(17), applicants.get(17), JobApplication.Status.REJECTED, now.minusDays(1).minusHours(15)));
+        jobApplications.add(new JobApplication(jobPostings.get(22), applicants.get(17), JobApplication.Status.WITHDRAWN, now.minusDays(0).minusHours(16)));
+        jobApplications.add(new JobApplication(jobPostings.get(27), applicants.get(17), JobApplication.Status.OFFERED, now.minusDays(7).minusHours(17)));
+        jobApplications.add(new JobApplication(jobPostings.get(32), applicants.get(17), JobApplication.Status.ACCEPTED, now.minusDays(6).minusHours(18)));
+        jobApplications.add(new JobApplication(jobPostings.get(37), applicants.get(17), JobApplication.Status.INTERVIEWED, now.minusDays(5).minusHours(19)));
 
         // Applicant 18 (Sam Evans)
-        jobApplications.add(new JobApplication(jobPostings.get(18), applicants.get(18), JobApplication.Status.PENDING, LocalDateTime.of(2025, 5, 30, 14, 0)));
-        jobApplications.add(new JobApplication(jobPostings.get(23), applicants.get(18), JobApplication.Status.SHORTLISTED, LocalDateTime.of(2025, 5, 31, 15, 0)));
-        jobApplications.add(new JobApplication(jobPostings.get(28), applicants.get(18), JobApplication.Status.REJECTED, LocalDateTime.of(2025, 6, 1, 16, 0)));
-        jobApplications.add(new JobApplication(jobPostings.get(33), applicants.get(18), JobApplication.Status.WITHDRAWN, LocalDateTime.of(2025, 6, 2, 9, 0)));
-        jobApplications.add(new JobApplication(jobPostings.get(38), applicants.get(18), JobApplication.Status.OFFERED, LocalDateTime.of(2025, 6, 3, 10, 0)));
+        jobApplications.add(new JobApplication(jobPostings.get(18), applicants.get(18), JobApplication.Status.PENDING, now.minusDays(4).minusHours(20)));
+        jobApplications.add(new JobApplication(jobPostings.get(23), applicants.get(18), JobApplication.Status.SHORTLISTED, now.minusDays(3).minusHours(21)));
+        jobApplications.add(new JobApplication(jobPostings.get(28), applicants.get(18), JobApplication.Status.REJECTED, now.minusDays(2).minusHours(22)));
+        jobApplications.add(new JobApplication(jobPostings.get(33), applicants.get(18), JobApplication.Status.WITHDRAWN, now.minusDays(1).minusHours(23)));
+        jobApplications.add(new JobApplication(jobPostings.get(38), applicants.get(18), JobApplication.Status.OFFERED, now.minusDays(0).minusHours(24)));
 
         // Applicant 19 (Tina Walker)
-        jobApplications.add(new JobApplication(jobPostings.get(19), applicants.get(19), JobApplication.Status.ACCEPTED, LocalDateTime.of(2025, 6, 4, 11, 0)));
-        jobApplications.add(new JobApplication(jobPostings.get(24), applicants.get(19), JobApplication.Status.INTERVIEWED, LocalDateTime.of(2025, 6, 5, 12, 0)));
-        jobApplications.add(new JobApplication(jobPostings.get(29), applicants.get(19), JobApplication.Status.PENDING, LocalDateTime.of(2025, 6, 6, 13, 0)));
-        jobApplications.add(new JobApplication(jobPostings.get(34), applicants.get(19), JobApplication.Status.SHORTLISTED, LocalDateTime.of(2025, 6, 7, 14, 0)));
-        jobApplications.add(new JobApplication(jobPostings.get(39), applicants.get(19), JobApplication.Status.REJECTED, LocalDateTime.of(2025, 6, 8, 15, 0)));
+        jobApplications.add(new JobApplication(jobPostings.get(19), applicants.get(19), JobApplication.Status.ACCEPTED, now.minusDays(7).minusHours(1)));
+        jobApplications.add(new JobApplication(jobPostings.get(19), applicants.get(19), JobApplication.Status.ACCEPTED, now.minusDays(7).minusHours(1)));
+        jobApplications.add(new JobApplication(jobPostings.get(29), applicants.get(19), JobApplication.Status.PENDING, now.minusDays(5).minusHours(3)));
+        jobApplications.add(new JobApplication(jobPostings.get(34), applicants.get(19), JobApplication.Status.SHORTLISTED, now.minusDays(4).minusHours(4)));
+        jobApplications.add(new JobApplication(jobPostings.get(39), applicants.get(19), JobApplication.Status.REJECTED, now.minusDays(3).minusHours(5)));
 
         // Applicant 20 (Umar Khan)
-        jobApplications.add(new JobApplication(jobPostings.get(20), applicants.get(20), JobApplication.Status.WITHDRAWN, LocalDateTime.of(2025, 6, 9, 16, 0)));
-        jobApplications.add(new JobApplication(jobPostings.get(25), applicants.get(20), JobApplication.Status.OFFERED, LocalDateTime.of(2025, 6, 10, 9, 0)));
-        jobApplications.add(new JobApplication(jobPostings.get(30), applicants.get(20), JobApplication.Status.ACCEPTED, LocalDateTime.of(2025, 6, 11, 10, 0)));
-        jobApplications.add(new JobApplication(jobPostings.get(35), applicants.get(20), JobApplication.Status.INTERVIEWED, LocalDateTime.of(2025, 6, 12, 11, 0)));
-        jobApplications.add(new JobApplication(jobPostings.get(40), applicants.get(20), JobApplication.Status.PENDING, LocalDateTime.of(2025, 6, 13, 12, 0)));
+        jobApplications.add(new JobApplication(jobPostings.get(20), applicants.get(20), JobApplication.Status.WITHDRAWN, now.minusDays(2).minusHours(6)));
+        jobApplications.add(new JobApplication(jobPostings.get(25), applicants.get(20), JobApplication.Status.OFFERED, now.minusDays(1).minusHours(7)));
+        jobApplications.add(new JobApplication(jobPostings.get(30), applicants.get(20), JobApplication.Status.ACCEPTED, now.minusDays(0).minusHours(8)));
+        jobApplications.add(new JobApplication(jobPostings.get(35), applicants.get(20), JobApplication.Status.INTERVIEWED, now.minusDays(7).minusHours(9)));
+        jobApplications.add(new JobApplication(jobPostings.get(40), applicants.get(20), JobApplication.Status.PENDING, now.minusDays(6).minusHours(10)));
 
         // Applicant 21 (Vera Scott)
-        jobApplications.add(new JobApplication(jobPostings.get(21), applicants.get(21), JobApplication.Status.SHORTLISTED, LocalDateTime.of(2025, 6, 14, 13, 0)));
-        jobApplications.add(new JobApplication(jobPostings.get(26), applicants.get(21), JobApplication.Status.REJECTED, LocalDateTime.of(2025, 6, 15, 14, 0)));
-        jobApplications.add(new JobApplication(jobPostings.get(31), applicants.get(21), JobApplication.Status.WITHDRAWN, LocalDateTime.of(2025, 6, 16, 15, 0)));
-        jobApplications.add(new JobApplication(jobPostings.get(36), applicants.get(21), JobApplication.Status.OFFERED, LocalDateTime.of(2025, 6, 17, 16, 0)));
-        jobApplications.add(new JobApplication(jobPostings.get(41), applicants.get(21), JobApplication.Status.ACCEPTED, LocalDateTime.of(2025, 6, 18, 9, 0)));
+        jobApplications.add(new JobApplication(jobPostings.get(21), applicants.get(21), JobApplication.Status.SHORTLISTED, now.minusDays(5).minusHours(11)));
+        jobApplications.add(new JobApplication(jobPostings.get(26), applicants.get(21), JobApplication.Status.REJECTED, now.minusDays(4).minusHours(12)));
+        jobApplications.add(new JobApplication(jobPostings.get(31), applicants.get(21), JobApplication.Status.WITHDRAWN, now.minusDays(3).minusHours(13)));
+        jobApplications.add(new JobApplication(jobPostings.get(36), applicants.get(21), JobApplication.Status.OFFERED, now.minusDays(2).minusHours(14)));
+        jobApplications.add(new JobApplication(jobPostings.get(41), applicants.get(21), JobApplication.Status.ACCEPTED, now.minusDays(1).minusHours(15)));
 
         // Applicant 22 (Will Turner)
-        jobApplications.add(new JobApplication(jobPostings.get(22), applicants.get(22), JobApplication.Status.INTERVIEWED, LocalDateTime.of(2025, 6, 19, 10, 0)));
-        jobApplications.add(new JobApplication(jobPostings.get(27), applicants.get(22), JobApplication.Status.PENDING, LocalDateTime.of(2025, 6, 20, 11, 0)));
-        jobApplications.add(new JobApplication(jobPostings.get(32), applicants.get(22), JobApplication.Status.SHORTLISTED, LocalDateTime.of(2025, 6, 21, 12, 0)));
-        jobApplications.add(new JobApplication(jobPostings.get(37), applicants.get(22), JobApplication.Status.REJECTED, LocalDateTime.of(2025, 6, 22, 13, 0)));
-        jobApplications.add(new JobApplication(jobPostings.get(42), applicants.get(22), JobApplication.Status.WITHDRAWN, LocalDateTime.of(2025, 6, 23, 14, 0)));
+        jobApplications.add(new JobApplication(jobPostings.get(22), applicants.get(22), JobApplication.Status.INTERVIEWED, now.minusDays(0).minusHours(16)));
+        jobApplications.add(new JobApplication(jobPostings.get(27), applicants.get(22), JobApplication.Status.PENDING, now.minusDays(7).minusHours(17)));
+        jobApplications.add(new JobApplication(jobPostings.get(32), applicants.get(22), JobApplication.Status.SHORTLISTED, now.minusDays(6).minusHours(18)));
+        jobApplications.add(new JobApplication(jobPostings.get(37), applicants.get(22), JobApplication.Status.REJECTED, now.minusDays(5).minusHours(19)));
+        jobApplications.add(new JobApplication(jobPostings.get(42), applicants.get(22), JobApplication.Status.WITHDRAWN, now.minusDays(4).minusHours(20)));
 
         // Applicant 23 (Xena Brooks)
-        jobApplications.add(new JobApplication(jobPostings.get(23), applicants.get(23), JobApplication.Status.OFFERED, LocalDateTime.of(2025, 6, 24, 15, 0)));
-        jobApplications.add(new JobApplication(jobPostings.get(28), applicants.get(23), JobApplication.Status.ACCEPTED, LocalDateTime.of(2025, 6, 25, 16, 0)));
-        jobApplications.add(new JobApplication(jobPostings.get(33), applicants.get(23), JobApplication.Status.INTERVIEWED, LocalDateTime.of(2025, 6, 26, 9, 0)));
-        jobApplications.add(new JobApplication(jobPostings.get(38), applicants.get(23), JobApplication.Status.PENDING, LocalDateTime.of(2025, 6, 27, 10, 0)));
-        jobApplications.add(new JobApplication(jobPostings.get(43), applicants.get(23), JobApplication.Status.SHORTLISTED, LocalDateTime.of(2025, 6, 28, 11, 0)));
+        jobApplications.add(new JobApplication(jobPostings.get(23), applicants.get(23), JobApplication.Status.OFFERED, now.minusDays(3).minusHours(21)));
+        jobApplications.add(new JobApplication(jobPostings.get(28), applicants.get(23), JobApplication.Status.ACCEPTED, now.minusDays(2).minusHours(22)));
+        jobApplications.add(new JobApplication(jobPostings.get(33), applicants.get(23), JobApplication.Status.INTERVIEWED, now.minusDays(1).minusHours(23)));
+        jobApplications.add(new JobApplication(jobPostings.get(38), applicants.get(23), JobApplication.Status.PENDING, now.minusDays(0).minusHours(24)));
+        jobApplications.add(new JobApplication(jobPostings.get(43), applicants.get(23), JobApplication.Status.SHORTLISTED, now.minusDays(7).minusHours(1)));
 
         // Applicant 24 (Yara King)
-        jobApplications.add(new JobApplication(jobPostings.get(24), applicants.get(24), JobApplication.Status.REJECTED, LocalDateTime.of(2025, 6, 29, 12, 0)));
-        jobApplications.add(new JobApplication(jobPostings.get(29), applicants.get(24), JobApplication.Status.WITHDRAWN, LocalDateTime.of(2025, 6, 30, 13, 0)));
-        jobApplications.add(new JobApplication(jobPostings.get(34), applicants.get(24), JobApplication.Status.OFFERED, LocalDateTime.of(2025, 7, 1, 14, 0)));
-        jobApplications.add(new JobApplication(jobPostings.get(39), applicants.get(24), JobApplication.Status.ACCEPTED, LocalDateTime.of(2025, 7, 2, 15, 0)));
-        jobApplications.add(new JobApplication(jobPostings.get(44), applicants.get(24), JobApplication.Status.INTERVIEWED, LocalDateTime.of(2025, 7, 3, 16, 0)));
+        jobApplications.add(new JobApplication(jobPostings.get(24), applicants.get(24), JobApplication.Status.REJECTED, now.minusDays(6).minusHours(2)));
+        jobApplications.add(new JobApplication(jobPostings.get(29), applicants.get(24), JobApplication.Status.WITHDRAWN, now.minusDays(5).minusHours(3)));
+        jobApplications.add(new JobApplication(jobPostings.get(34), applicants.get(24), JobApplication.Status.OFFERED, now.minusDays(4).minusHours(4)));
+        jobApplications.add(new JobApplication(jobPostings.get(39), applicants.get(24), JobApplication.Status.ACCEPTED, now.minusDays(3).minusHours(5)));
+        jobApplications.add(new JobApplication(jobPostings.get(44), applicants.get(24), JobApplication.Status.INTERVIEWED, now.minusDays(2).minusHours(6)));
 
         // Applicant 25 (Zack Miller)
-        jobApplications.add(new JobApplication(jobPostings.get(25), applicants.get(25), JobApplication.Status.PENDING, LocalDateTime.of(2025, 7, 4, 9, 0)));
-        jobApplications.add(new JobApplication(jobPostings.get(30), applicants.get(25), JobApplication.Status.SHORTLISTED, LocalDateTime.of(2025, 7, 5, 10, 0)));
-        jobApplications.add(new JobApplication(jobPostings.get(35), applicants.get(25), JobApplication.Status.REJECTED, LocalDateTime.of(2025, 7, 6, 11, 0)));
-        jobApplications.add(new JobApplication(jobPostings.get(40), applicants.get(25), JobApplication.Status.WITHDRAWN, LocalDateTime.of(2025, 7, 7, 12, 0)));
-        jobApplications.add(new JobApplication(jobPostings.get(45), applicants.get(25), JobApplication.Status.OFFERED, LocalDateTime.of(2025, 7, 8, 13, 0)));
+        jobApplications.add(new JobApplication(jobPostings.get(25), applicants.get(25), JobApplication.Status.PENDING, now.minusDays(1).minusHours(7)));
+        jobApplications.add(new JobApplication(jobPostings.get(30), applicants.get(25), JobApplication.Status.SHORTLISTED, now.minusDays(0).minusHours(8)));
+        jobApplications.add(new JobApplication(jobPostings.get(35), applicants.get(25), JobApplication.Status.REJECTED, now.minusDays(7).minusHours(9)));
+        jobApplications.add(new JobApplication(jobPostings.get(40), applicants.get(25), JobApplication.Status.WITHDRAWN, now.minusDays(6).minusHours(10)));
+        jobApplications.add(new JobApplication(jobPostings.get(45), applicants.get(25), JobApplication.Status.OFFERED, now.minusDays(5).minusHours(11)));
 
         // Applicant 26 (Amy Carter)
-        jobApplications.add(new JobApplication(jobPostings.get(26), applicants.get(26), JobApplication.Status.ACCEPTED, LocalDateTime.of(2025, 7, 9, 14, 0)));
-        jobApplications.add(new JobApplication(jobPostings.get(31), applicants.get(26), JobApplication.Status.INTERVIEWED, LocalDateTime.of(2025, 7, 10, 15, 0)));
-        jobApplications.add(new JobApplication(jobPostings.get(36), applicants.get(26), JobApplication.Status.PENDING, LocalDateTime.of(2025, 7, 11, 16, 0)));
-        jobApplications.add(new JobApplication(jobPostings.get(41), applicants.get(26), JobApplication.Status.SHORTLISTED, LocalDateTime.of(2025, 7, 12, 9, 0)));
-        jobApplications.add(new JobApplication(jobPostings.get(46), applicants.get(26), JobApplication.Status.REJECTED, LocalDateTime.of(2025, 7, 13, 10, 0)));
+        jobApplications.add(new JobApplication(jobPostings.get(26), applicants.get(26), JobApplication.Status.ACCEPTED, now.minusDays(7).minusHours(12)));
+        jobApplications.add(new JobApplication(jobPostings.get(31), applicants.get(26), JobApplication.Status.INTERVIEWED, now.minusDays(6).minusHours(13)));
+        jobApplications.add(new JobApplication(jobPostings.get(36), applicants.get(26), JobApplication.Status.PENDING, now.minusDays(5).minusHours(14)));
+        jobApplications.add(new JobApplication(jobPostings.get(41), applicants.get(26), JobApplication.Status.SHORTLISTED, now.minusDays(4).minusHours(15)));
+        jobApplications.add(new JobApplication(jobPostings.get(46), applicants.get(26), JobApplication.Status.REJECTED, now.minusDays(3).minusHours(16)));
 
         // Applicant 27 (Ben Foster)
-        jobApplications.add(new JobApplication(jobPostings.get(27), applicants.get(27), JobApplication.Status.WITHDRAWN, LocalDateTime.of(2025, 7, 14, 11, 0)));
-        jobApplications.add(new JobApplication(jobPostings.get(32), applicants.get(27), JobApplication.Status.OFFERED, LocalDateTime.of(2025, 7, 15, 12, 0)));
-        jobApplications.add(new JobApplication(jobPostings.get(37), applicants.get(27), JobApplication.Status.ACCEPTED, LocalDateTime.of(2025, 7, 16, 13, 0)));
-        jobApplications.add(new JobApplication(jobPostings.get(42), applicants.get(27), JobApplication.Status.INTERVIEWED, LocalDateTime.of(2025, 7, 17, 14, 0)));
-        jobApplications.add(new JobApplication(jobPostings.get(47), applicants.get(27), JobApplication.Status.PENDING, LocalDateTime.of(2025, 7, 18, 15, 0)));
+        jobApplications.add(new JobApplication(jobPostings.get(27), applicants.get(27), JobApplication.Status.WITHDRAWN, now.minusDays(2).minusHours(17)));
+        jobApplications.add(new JobApplication(jobPostings.get(32), applicants.get(27), JobApplication.Status.OFFERED, now.minusDays(1).minusHours(18)));
+        jobApplications.add(new JobApplication(jobPostings.get(37), applicants.get(27), JobApplication.Status.ACCEPTED, now.minusDays(0).minusHours(19)));
+        jobApplications.add(new JobApplication(jobPostings.get(42), applicants.get(27), JobApplication.Status.INTERVIEWED, now.minusDays(7).minusHours(20)));
+        jobApplications.add(new JobApplication(jobPostings.get(47), applicants.get(27), JobApplication.Status.PENDING, now.minusDays(6).minusHours(21)));
 
         // Applicant 28 (Clara Hayes)
-        jobApplications.add(new JobApplication(jobPostings.get(28), applicants.get(28), JobApplication.Status.SHORTLISTED, LocalDateTime.of(2025, 7, 19, 16, 0)));
-        jobApplications.add(new JobApplication(jobPostings.get(33), applicants.get(28), JobApplication.Status.REJECTED, LocalDateTime.of(2025, 7, 20, 9, 0)));
-        jobApplications.add(new JobApplication(jobPostings.get(38), applicants.get(28), JobApplication.Status.WITHDRAWN, LocalDateTime.of(2025, 7, 21, 10, 0)));
-        jobApplications.add(new JobApplication(jobPostings.get(43), applicants.get(28), JobApplication.Status.OFFERED, LocalDateTime.of(2025, 7, 22, 11, 0)));
-        jobApplications.add(new JobApplication(jobPostings.get(48), applicants.get(28), JobApplication.Status.ACCEPTED, LocalDateTime.of(2025, 7, 23, 12, 0)));
+        jobApplications.add(new JobApplication(jobPostings.get(28), applicants.get(28), JobApplication.Status.SHORTLISTED, now.minusDays(5).minusHours(22)));
+        jobApplications.add(new JobApplication(jobPostings.get(33), applicants.get(28), JobApplication.Status.REJECTED, now.minusDays(4).minusHours(23)));
+        jobApplications.add(new JobApplication(jobPostings.get(38), applicants.get(28), JobApplication.Status.WITHDRAWN, now.minusDays(3).minusHours(24)));
+        jobApplications.add(new JobApplication(jobPostings.get(43), applicants.get(28), JobApplication.Status.OFFERED, now.minusDays(2).minusHours(1)));
+        jobApplications.add(new JobApplication(jobPostings.get(48), applicants.get(28), JobApplication.Status.ACCEPTED, now.minusDays(1).minusHours(2)));
 
         // Applicant 29 (Dan Price)
-        jobApplications.add(new JobApplication(jobPostings.get(29), applicants.get(29), JobApplication.Status.INTERVIEWED, LocalDateTime.of(2025, 7, 24, 13, 0)));
-        jobApplications.add(new JobApplication(jobPostings.get(34), applicants.get(29), JobApplication.Status.PENDING, LocalDateTime.of(2025, 7, 25, 14, 0)));
-        jobApplications.add(new JobApplication(jobPostings.get(39), applicants.get(29), JobApplication.Status.SHORTLISTED, LocalDateTime.of(2025, 7, 26, 15, 0)));
-        jobApplications.add(new JobApplication(jobPostings.get(44), applicants.get(29), JobApplication.Status.REJECTED, LocalDateTime.of(2025, 7, 27, 16, 0)));
-        jobApplications.add(new JobApplication(jobPostings.get(49), applicants.get(29), JobApplication.Status.WITHDRAWN, LocalDateTime.of(2025, 7, 28, 9, 0)));
+        jobApplications.add(new JobApplication(jobPostings.get(29), applicants.get(29), JobApplication.Status.INTERVIEWED, now.minusDays(0).minusHours(3)));
+        jobApplications.add(new JobApplication(jobPostings.get(34), applicants.get(29), JobApplication.Status.PENDING, now.minusDays(7).minusHours(4)));
+        jobApplications.add(new JobApplication(jobPostings.get(39), applicants.get(29), JobApplication.Status.SHORTLISTED, now.minusDays(6).minusHours(5)));
+        jobApplications.add(new JobApplication(jobPostings.get(44), applicants.get(29), JobApplication.Status.REJECTED, now.minusDays(5).minusHours(6)));
+        jobApplications.add(new JobApplication(jobPostings.get(49), applicants.get(29), JobApplication.Status.WITHDRAWN, now.minusDays(4).minusHours(7)));
 
         // Applicant 30 (Ella Reed)
-        jobApplications.add(new JobApplication(jobPostings.get(30), applicants.get(30), JobApplication.Status.OFFERED, LocalDateTime.of(2025, 7, 29, 10, 0)));
-        jobApplications.add(new JobApplication(jobPostings.get(35), applicants.get(30), JobApplication.Status.ACCEPTED, LocalDateTime.of(2025, 7, 30, 11, 0)));
-        jobApplications.add(new JobApplication(jobPostings.get(40), applicants.get(30), JobApplication.Status.INTERVIEWED, LocalDateTime.of(2025, 7, 31, 12, 0)));
-        jobApplications.add(new JobApplication(jobPostings.get(45), applicants.get(30), JobApplication.Status.PENDING, LocalDateTime.of(2025, 8, 1, 13, 0)));
-        jobApplications.add(new JobApplication(jobPostings.get(50), applicants.get(30), JobApplication.Status.SHORTLISTED, LocalDateTime.of(2025, 8, 2, 14, 0)));
+        jobApplications.add(new JobApplication(jobPostings.get(30), applicants.get(30), JobApplication.Status.OFFERED, now.minusDays(3).minusHours(8)));
+        jobApplications.add(new JobApplication(jobPostings.get(35), applicants.get(30), JobApplication.Status.ACCEPTED, now.minusDays(2).minusHours(9)));
+        jobApplications.add(new JobApplication(jobPostings.get(40), applicants.get(30), JobApplication.Status.INTERVIEWED, now.minusDays(1).minusHours(10)));
+        jobApplications.add(new JobApplication(jobPostings.get(45), applicants.get(30), JobApplication.Status.PENDING, now.minusDays(0).minusHours(11)));
+        jobApplications.add(new JobApplication(jobPostings.get(50), applicants.get(30), JobApplication.Status.SHORTLISTED, now.minusDays(7).minusHours(12)));
 
         // Applicant 31 (Finn Cole)
-        jobApplications.add(new JobApplication(jobPostings.get(31), applicants.get(31), JobApplication.Status.REJECTED, LocalDateTime.of(2025, 8, 3, 15, 0)));
-        jobApplications.add(new JobApplication(jobPostings.get(36), applicants.get(31), JobApplication.Status.WITHDRAWN, LocalDateTime.of(2025, 8, 4, 16, 0)));
-        jobApplications.add(new JobApplication(jobPostings.get(41), applicants.get(31), JobApplication.Status.OFFERED, LocalDateTime.of(2025, 8, 5, 9, 0)));
-        jobApplications.add(new JobApplication(jobPostings.get(46), applicants.get(31), JobApplication.Status.ACCEPTED, LocalDateTime.of(2025, 8, 6, 10, 0)));
-        jobApplications.add(new JobApplication(jobPostings.get(51), applicants.get(31), JobApplication.Status.INTERVIEWED, LocalDateTime.of(2025, 8, 7, 11, 0)));
+        jobApplications.add(new JobApplication(jobPostings.get(31), applicants.get(31), JobApplication.Status.REJECTED, now.minusDays(6).minusHours(13)));
+        jobApplications.add(new JobApplication(jobPostings.get(36), applicants.get(31), JobApplication.Status.WITHDRAWN, now.minusDays(5).minusHours(14)));
+        jobApplications.add(new JobApplication(jobPostings.get(41), applicants.get(31), JobApplication.Status.OFFERED, now.minusDays(4).minusHours(15)));
+        jobApplications.add(new JobApplication(jobPostings.get(46), applicants.get(31), JobApplication.Status.ACCEPTED, now.minusDays(3).minusHours(16)));
+        jobApplications.add(new JobApplication(jobPostings.get(51), applicants.get(31), JobApplication.Status.INTERVIEWED, now.minusDays(2).minusHours(17)));
 
         // Applicant 32 (Gina Bell)
-        jobApplications.add(new JobApplication(jobPostings.get(32), applicants.get(32), JobApplication.Status.PENDING, LocalDateTime.of(2025, 8, 8, 12, 0)));
-        jobApplications.add(new JobApplication(jobPostings.get(37), applicants.get(32), JobApplication.Status.SHORTLISTED, LocalDateTime.of(2025, 8, 9, 13, 0)));
-        jobApplications.add(new JobApplication(jobPostings.get(42), applicants.get(32), JobApplication.Status.REJECTED, LocalDateTime.of(2025, 8, 10, 14, 0)));
-        jobApplications.add(new JobApplication(jobPostings.get(47), applicants.get(32), JobApplication.Status.WITHDRAWN, LocalDateTime.of(2025, 8, 11, 15, 0)));
-        jobApplications.add(new JobApplication(jobPostings.get(52), applicants.get(32), JobApplication.Status.OFFERED, LocalDateTime.of(2025, 8, 12, 16, 0)));
+        jobApplications.add(new JobApplication(jobPostings.get(32), applicants.get(32), JobApplication.Status.PENDING, now.minusDays(1).minusHours(18)));
+        jobApplications.add(new JobApplication(jobPostings.get(37), applicants.get(32), JobApplication.Status.SHORTLISTED, now.minusDays(0).minusHours(19)));
+        jobApplications.add(new JobApplication(jobPostings.get(42), applicants.get(32), JobApplication.Status.REJECTED, now.minusDays(7).minusHours(20)));
+        jobApplications.add(new JobApplication(jobPostings.get(47), applicants.get(32), JobApplication.Status.WITHDRAWN, now.minusDays(6).minusHours(21)));
+        jobApplications.add(new JobApplication(jobPostings.get(52), applicants.get(32), JobApplication.Status.OFFERED, now.minusDays(5).minusHours(22)));
 
         // Applicant 33 (Hank Ford)
-        jobApplications.add(new JobApplication(jobPostings.get(33), applicants.get(33), JobApplication.Status.ACCEPTED, LocalDateTime.of(2025, 8, 13, 9, 0)));
-        jobApplications.add(new JobApplication(jobPostings.get(38), applicants.get(33), JobApplication.Status.INTERVIEWED, LocalDateTime.of(2025, 8, 14, 10, 0)));
-        jobApplications.add(new JobApplication(jobPostings.get(43), applicants.get(33), JobApplication.Status.PENDING, LocalDateTime.of(2025, 8, 15, 11, 0)));
-        jobApplications.add(new JobApplication(jobPostings.get(48), applicants.get(33), JobApplication.Status.SHORTLISTED, LocalDateTime.of(2025, 8, 16, 12, 0)));
-        jobApplications.add(new JobApplication(jobPostings.get(53), applicants.get(33), JobApplication.Status.REJECTED, LocalDateTime.of(2025, 8, 17, 13, 0)));
+        jobApplications.add(new JobApplication(jobPostings.get(33), applicants.get(33), JobApplication.Status.ACCEPTED, now.minusDays(4).minusHours(23)));
+        jobApplications.add(new JobApplication(jobPostings.get(38), applicants.get(33), JobApplication.Status.INTERVIEWED, now.minusDays(3).minusHours(24)));
+        jobApplications.add(new JobApplication(jobPostings.get(43), applicants.get(33), JobApplication.Status.PENDING, now.minusDays(2).minusHours(1)));
+        jobApplications.add(new JobApplication(jobPostings.get(48), applicants.get(33), JobApplication.Status.SHORTLISTED, now.minusDays(1).minusHours(2)));
+        jobApplications.add(new JobApplication(jobPostings.get(53), applicants.get(33), JobApplication.Status.REJECTED, now.minusDays(0).minusHours(3)));
 
         // Applicant 34 (Iris Lane)
-        jobApplications.add(new JobApplication(jobPostings.get(34), applicants.get(34), JobApplication.Status.WITHDRAWN, LocalDateTime.of(2025, 8, 18, 14, 0)));
-        jobApplications.add(new JobApplication(jobPostings.get(39), applicants.get(34), JobApplication.Status.OFFERED, LocalDateTime.of(2025, 8, 19, 15, 0)));
-        jobApplications.add(new JobApplication(jobPostings.get(44), applicants.get(34), JobApplication.Status.ACCEPTED, LocalDateTime.of(2025, 8, 20, 16, 0)));
-        jobApplications.add(new JobApplication(jobPostings.get(49), applicants.get(34), JobApplication.Status.INTERVIEWED, LocalDateTime.of(2025, 8, 21, 9, 0)));
-        jobApplications.add(new JobApplication(jobPostings.get(54), applicants.get(34), JobApplication.Status.PENDING, LocalDateTime.of(2025, 8, 22, 10, 0)));
+        jobApplications.add(new JobApplication(jobPostings.get(34), applicants.get(34), JobApplication.Status.WITHDRAWN, now.minusDays(7).minusHours(4)));
+        jobApplications.add(new JobApplication(jobPostings.get(39), applicants.get(34), JobApplication.Status.OFFERED, now.minusDays(6).minusHours(5)));
+        jobApplications.add(new JobApplication(jobPostings.get(44), applicants.get(34), JobApplication.Status.ACCEPTED, now.minusDays(5).minusHours(6)));
+        jobApplications.add(new JobApplication(jobPostings.get(49), applicants.get(34), JobApplication.Status.INTERVIEWED, now.minusDays(4).minusHours(7)));
+        jobApplications.add(new JobApplication(jobPostings.get(54), applicants.get(34), JobApplication.Status.PENDING, now.minusDays(3).minusHours(8)));
 
         // Applicant 35 (Jack Gray)
-        jobApplications.add(new JobApplication(jobPostings.get(35), applicants.get(35), JobApplication.Status.SHORTLISTED, LocalDateTime.of(2025, 8, 23, 11, 0)));
-        jobApplications.add(new JobApplication(jobPostings.get(40), applicants.get(35), JobApplication.Status.REJECTED, LocalDateTime.of(2025, 8, 24, 12, 0)));
-        jobApplications.add(new JobApplication(jobPostings.get(45), applicants.get(35), JobApplication.Status.WITHDRAWN, LocalDateTime.of(2025, 8, 25, 13, 0)));
-        jobApplications.add(new JobApplication(jobPostings.get(50), applicants.get(35), JobApplication.Status.OFFERED, LocalDateTime.of(2025, 8, 26, 14, 0)));
-        jobApplications.add(new JobApplication(jobPostings.get(55), applicants.get(35), JobApplication.Status.ACCEPTED, LocalDateTime.of(2025, 8, 27, 15, 0)));
+        jobApplications.add(new JobApplication(jobPostings.get(35), applicants.get(35), JobApplication.Status.SHORTLISTED, now.minusDays(2).minusHours(9)));
+        jobApplications.add(new JobApplication(jobPostings.get(40), applicants.get(35), JobApplication.Status.REJECTED, now.minusDays(1).minusHours(10)));
+        jobApplications.add(new JobApplication(jobPostings.get(45), applicants.get(35), JobApplication.Status.WITHDRAWN, now.minusDays(0).minusHours(11)));
+        jobApplications.add(new JobApplication(jobPostings.get(50), applicants.get(35), JobApplication.Status.OFFERED, now.minusDays(7).minusHours(12)));
+        jobApplications.add(new JobApplication(jobPostings.get(55), applicants.get(35), JobApplication.Status.ACCEPTED, now.minusDays(6).minusHours(13)));
 
         // Applicant 36 (Kara Hill)
-        jobApplications.add(new JobApplication(jobPostings.get(36), applicants.get(36), JobApplication.Status.INTERVIEWED, LocalDateTime.of(2025, 8, 28, 16, 0)));
-        jobApplications.add(new JobApplication(jobPostings.get(41), applicants.get(36), JobApplication.Status.PENDING, LocalDateTime.of(2025, 8, 29, 9, 0)));
-        jobApplications.add(new JobApplication(jobPostings.get(46), applicants.get(36), JobApplication.Status.SHORTLISTED, LocalDateTime.of(2025, 8, 30, 10, 0)));
-        jobApplications.add(new JobApplication(jobPostings.get(51), applicants.get(36), JobApplication.Status.REJECTED, LocalDateTime.of(2025, 8, 31, 11, 0)));
-        jobApplications.add(new JobApplication(jobPostings.get(56), applicants.get(36), JobApplication.Status.WITHDRAWN, LocalDateTime.of(2025, 9, 1, 12, 0)));
+        jobApplications.add(new JobApplication(jobPostings.get(36), applicants.get(36), JobApplication.Status.INTERVIEWED, now.minusDays(5).minusHours(14)));
+        jobApplications.add(new JobApplication(jobPostings.get(41), applicants.get(36), JobApplication.Status.PENDING, now.minusDays(4).minusHours(15)));
+        jobApplications.add(new JobApplication(jobPostings.get(46), applicants.get(36), JobApplication.Status.SHORTLISTED, now.minusDays(3).minusHours(16)));
+        jobApplications.add(new JobApplication(jobPostings.get(51), applicants.get(36), JobApplication.Status.REJECTED, now.minusDays(2).minusHours(17)));
+        jobApplications.add(new JobApplication(jobPostings.get(56), applicants.get(36), JobApplication.Status.WITHDRAWN, now.minusDays(1).minusHours(18)));
 
         // Applicant 37 (Liam Ward)
-        jobApplications.add(new JobApplication(jobPostings.get(37), applicants.get(37), JobApplication.Status.OFFERED, LocalDateTime.of(2025, 9, 2, 13, 0)));
-        jobApplications.add(new JobApplication(jobPostings.get(42), applicants.get(37), JobApplication.Status.ACCEPTED, LocalDateTime.of(2025, 9, 3, 14, 0)));
-        jobApplications.add(new JobApplication(jobPostings.get(47), applicants.get(37), JobApplication.Status.INTERVIEWED, LocalDateTime.of(2025, 9, 4, 15, 0)));
-        jobApplications.add(new JobApplication(jobPostings.get(52), applicants.get(37), JobApplication.Status.PENDING, LocalDateTime.of(2025, 9, 5, 16, 0)));
-        jobApplications.add(new JobApplication(jobPostings.get(57), applicants.get(37), JobApplication.Status.SHORTLISTED, LocalDateTime.of(2025, 9, 6, 9, 0)));
+        jobApplications.add(new JobApplication(jobPostings.get(37), applicants.get(37), JobApplication.Status.OFFERED, now.minusDays(0).minusHours(19)));
+        jobApplications.add(new JobApplication(jobPostings.get(42), applicants.get(37), JobApplication.Status.ACCEPTED, now.minusDays(7).minusHours(20)));
+        jobApplications.add(new JobApplication(jobPostings.get(47), applicants.get(37), JobApplication.Status.INTERVIEWED, now.minusDays(6).minusHours(21)));
+        jobApplications.add(new JobApplication(jobPostings.get(52), applicants.get(37), JobApplication.Status.PENDING, now.minusDays(5).minusHours(22)));
+        jobApplications.add(new JobApplication(jobPostings.get(57), applicants.get(37), JobApplication.Status.SHORTLISTED, now.minusDays(4).minusHours(23)));
 
         // Applicant 38 (Maya Ross)
-        jobApplications.add(new JobApplication(jobPostings.get(38), applicants.get(38), JobApplication.Status.REJECTED, LocalDateTime.of(2025, 9, 7, 10, 0)));
-        jobApplications.add(new JobApplication(jobPostings.get(43), applicants.get(38), JobApplication.Status.WITHDRAWN, LocalDateTime.of(2025, 9, 8, 11, 0)));
-        jobApplications.add(new JobApplication(jobPostings.get(48), applicants.get(38), JobApplication.Status.OFFERED, LocalDateTime.of(2025, 9, 9, 12, 0)));
-        jobApplications.add(new JobApplication(jobPostings.get(53), applicants.get(38), JobApplication.Status.ACCEPTED, LocalDateTime.of(2025, 9, 10, 13, 0)));
-        jobApplications.add(new JobApplication(jobPostings.get(58), applicants.get(38), JobApplication.Status.INTERVIEWED, LocalDateTime.of(2025, 9, 11, 14, 0)));
+        jobApplications.add(new JobApplication(jobPostings.get(38), applicants.get(38), JobApplication.Status.REJECTED, now.minusDays(3).minusHours(24)));
+        jobApplications.add(new JobApplication(jobPostings.get(43), applicants.get(38), JobApplication.Status.WITHDRAWN, now.minusDays(2).minusHours(1)));
+        jobApplications.add(new JobApplication(jobPostings.get(48), applicants.get(38), JobApplication.Status.OFFERED, now.minusDays(1).minusHours(2)));
+        jobApplications.add(new JobApplication(jobPostings.get(53), applicants.get(38), JobApplication.Status.ACCEPTED, now.minusDays(0).minusHours(3)));
+        jobApplications.add(new JobApplication(jobPostings.get(58), applicants.get(38), JobApplication.Status.INTERVIEWED, now.minusDays(7).minusHours(4)));
 
         // Applicant 39 (Nate Fox)
-        jobApplications.add(new JobApplication(jobPostings.get(39), applicants.get(39), JobApplication.Status.PENDING, LocalDateTime.of(2025, 9, 12, 15, 0)));
-        jobApplications.add(new JobApplication(jobPostings.get(44), applicants.get(39), JobApplication.Status.SHORTLISTED, LocalDateTime.of(2025, 9, 13, 16, 0)));
-        jobApplications.add(new JobApplication(jobPostings.get(49), applicants.get(39), JobApplication.Status.REJECTED, LocalDateTime.of(2025, 9, 14, 9, 0)));
-        jobApplications.add(new JobApplication(jobPostings.get(54), applicants.get(39), JobApplication.Status.WITHDRAWN, LocalDateTime.of(2025, 9, 15, 10, 0)));
-        jobApplications.add(new JobApplication(jobPostings.get(59), applicants.get(39), JobApplication.Status.OFFERED, LocalDateTime.of(2025, 9, 16, 11, 0)));
+        jobApplications.add(new JobApplication(jobPostings.get(39), applicants.get(39), JobApplication.Status.PENDING, now.minusDays(6).minusHours(5)));
+        jobApplications.add(new JobApplication(jobPostings.get(44), applicants.get(39), JobApplication.Status.SHORTLISTED, now.minusDays(5).minusHours(6)));
+        jobApplications.add(new JobApplication(jobPostings.get(49), applicants.get(39), JobApplication.Status.REJECTED, now.minusDays(4).minusHours(7)));
+        jobApplications.add(new JobApplication(jobPostings.get(54), applicants.get(39), JobApplication.Status.WITHDRAWN, now.minusDays(3).minusHours(8)));
+        jobApplications.add(new JobApplication(jobPostings.get(59), applicants.get(39), JobApplication.Status.OFFERED, now.minusDays(2).minusHours(9)));
 
         // Applicant 40 (Opal Dean)
-        jobApplications.add(new JobApplication(jobPostings.get(40), applicants.get(40), JobApplication.Status.ACCEPTED, LocalDateTime.of(2025, 9, 17, 12, 0)));
-        jobApplications.add(new JobApplication(jobPostings.get(45), applicants.get(40), JobApplication.Status.INTERVIEWED, LocalDateTime.of(2025, 9, 18, 13, 0)));
-        jobApplications.add(new JobApplication(jobPostings.get(50), applicants.get(40), JobApplication.Status.PENDING, LocalDateTime.of(2025, 9, 19, 14, 0)));
-        jobApplications.add(new JobApplication(jobPostings.get(55), applicants.get(40), JobApplication.Status.SHORTLISTED, LocalDateTime.of(2025, 9, 20, 15, 0)));
-        jobApplications.add(new JobApplication(jobPostings.get(60), applicants.get(40), JobApplication.Status.REJECTED, LocalDateTime.of(2025, 9, 21, 16, 0)));
+        jobApplications.add(new JobApplication(jobPostings.get(40), applicants.get(40), JobApplication.Status.ACCEPTED, now.minusDays(1).minusHours(10)));
+        jobApplications.add(new JobApplication(jobPostings.get(45), applicants.get(40), JobApplication.Status.INTERVIEWED, now.minusDays(0).minusHours(11)));
+        jobApplications.add(new JobApplication(jobPostings.get(50), applicants.get(40), JobApplication.Status.PENDING, now.minusDays(7).minusHours(12)));
+        jobApplications.add(new JobApplication(jobPostings.get(55), applicants.get(40), JobApplication.Status.SHORTLISTED, now.minusDays(6).minusHours(13)));
+        jobApplications.add(new JobApplication(jobPostings.get(60), applicants.get(40), JobApplication.Status.REJECTED, now.minusDays(5).minusHours(14)));
 
         // Applicant 41 (Paul Hart)
-        jobApplications.add(new JobApplication(jobPostings.get(41), applicants.get(41), JobApplication.Status.WITHDRAWN, LocalDateTime.of(2025, 9, 22, 9, 0)));
-        jobApplications.add(new JobApplication(jobPostings.get(46), applicants.get(41), JobApplication.Status.OFFERED, LocalDateTime.of(2025, 9, 23, 10, 0)));
-        jobApplications.add(new JobApplication(jobPostings.get(51), applicants.get(41), JobApplication.Status.ACCEPTED, LocalDateTime.of(2025, 9, 24, 11, 0)));
-        jobApplications.add(new JobApplication(jobPostings.get(56), applicants.get(41), JobApplication.Status.INTERVIEWED, LocalDateTime.of(2025, 9, 25, 12, 0)));
-        jobApplications.add(new JobApplication(jobPostings.get(61), applicants.get(41), JobApplication.Status.PENDING, LocalDateTime.of(2025, 9, 26, 13, 0)));
+        jobApplications.add(new JobApplication(jobPostings.get(41), applicants.get(41), JobApplication.Status.WITHDRAWN, now.minusDays(4).minusHours(15)));
+        jobApplications.add(new JobApplication(jobPostings.get(46), applicants.get(41), JobApplication.Status.OFFERED, now.minusDays(3).minusHours(16)));
+        jobApplications.add(new JobApplication(jobPostings.get(51), applicants.get(41), JobApplication.Status.ACCEPTED, now.minusDays(2).minusHours(17)));
+        jobApplications.add(new JobApplication(jobPostings.get(56), applicants.get(41), JobApplication.Status.INTERVIEWED, now.minusDays(1).minusHours(18)));
+        jobApplications.add(new JobApplication(jobPostings.get(61), applicants.get(41), JobApplication.Status.PENDING, now.minusDays(0).minusHours(19)));
 
         // Applicant 42 (Quinn Cole)
-        jobApplications.add(new JobApplication(jobPostings.get(42), applicants.get(42), JobApplication.Status.SHORTLISTED, LocalDateTime.of(2025, 9, 27, 14, 0)));
-        jobApplications.add(new JobApplication(jobPostings.get(47), applicants.get(42), JobApplication.Status.REJECTED, LocalDateTime.of(2025, 9, 28, 15, 0)));
-        jobApplications.add(new JobApplication(jobPostings.get(52), applicants.get(42), JobApplication.Status.WITHDRAWN, LocalDateTime.of(2025, 9, 29, 16, 0)));
-        jobApplications.add(new JobApplication(jobPostings.get(57), applicants.get(42), JobApplication.Status.OFFERED, LocalDateTime.of(2025, 9, 30, 9, 0)));
-        jobApplications.add(new JobApplication(jobPostings.get(62), applicants.get(42), JobApplication.Status.ACCEPTED, LocalDateTime.of(2025, 10, 1, 10, 0)));
+        jobApplications.add(new JobApplication(jobPostings.get(42), applicants.get(42), JobApplication.Status.SHORTLISTED, now.minusDays(7).minusHours(20)));
+        jobApplications.add(new JobApplication(jobPostings.get(47), applicants.get(42), JobApplication.Status.REJECTED, now.minusDays(6).minusHours(21)));
+        jobApplications.add(new JobApplication(jobPostings.get(52), applicants.get(42), JobApplication.Status.WITHDRAWN, now.minusDays(5).minusHours(22)));
+        jobApplications.add(new JobApplication(jobPostings.get(57), applicants.get(42), JobApplication.Status.OFFERED, now.minusDays(4).minusHours(23)));
+        jobApplications.add(new JobApplication(jobPostings.get(62), applicants.get(42), JobApplication.Status.ACCEPTED, now.minusDays(3).minusHours(24)));
 
         // Applicant 43 (Rita Lane)
-        jobApplications.add(new JobApplication(jobPostings.get(43), applicants.get(43), JobApplication.Status.INTERVIEWED, LocalDateTime.of(2025, 10, 2, 11, 0)));
-        jobApplications.add(new JobApplication(jobPostings.get(48), applicants.get(43), JobApplication.Status.PENDING, LocalDateTime.of(2025, 10, 3, 12, 0)));
-        jobApplications.add(new JobApplication(jobPostings.get(53), applicants.get(43), JobApplication.Status.SHORTLISTED, LocalDateTime.of(2025, 10, 4, 13, 0)));
-        jobApplications.add(new JobApplication(jobPostings.get(58), applicants.get(43), JobApplication.Status.REJECTED, LocalDateTime.of(2025, 10, 5, 14, 0)));
-        jobApplications.add(new JobApplication(jobPostings.get(63), applicants.get(43), JobApplication.Status.WITHDRAWN, LocalDateTime.of(2025, 10, 6, 15, 0)));
+        jobApplications.add(new JobApplication(jobPostings.get(43), applicants.get(43), JobApplication.Status.INTERVIEWED, now.minusDays(2).minusHours(1)));
+        jobApplications.add(new JobApplication(jobPostings.get(48), applicants.get(43), JobApplication.Status.PENDING, now.minusDays(1).minusHours(2)));
+        jobApplications.add(new JobApplication(jobPostings.get(53), applicants.get(43), JobApplication.Status.SHORTLISTED, now.minusDays(0).minusHours(3)));
+        jobApplications.add(new JobApplication(jobPostings.get(58), applicants.get(43), JobApplication.Status.REJECTED, now.minusDays(7).minusHours(4)));
+        jobApplications.add(new JobApplication(jobPostings.get(63), applicants.get(43), JobApplication.Status.WITHDRAWN, now.minusDays(6).minusHours(5)));
 
         // Applicant 44 (Seth Owen)
-        jobApplications.add(new JobApplication(jobPostings.get(44), applicants.get(44), JobApplication.Status.OFFERED, LocalDateTime.of(2025, 10, 7, 16, 0)));
-        jobApplications.add(new JobApplication(jobPostings.get(49), applicants.get(44), JobApplication.Status.ACCEPTED, LocalDateTime.of(2025, 10, 8, 9, 0)));
-        jobApplications.add(new JobApplication(jobPostings.get(54), applicants.get(44), JobApplication.Status.INTERVIEWED, LocalDateTime.of(2025, 10, 9, 10, 0)));
-        jobApplications.add(new JobApplication(jobPostings.get(59), applicants.get(44), JobApplication.Status.PENDING, LocalDateTime.of(2025, 10, 10, 11, 0)));
-        jobApplications.add(new JobApplication(jobPostings.get(64), applicants.get(44), JobApplication.Status.SHORTLISTED, LocalDateTime.of(2025, 10, 11, 12, 0)));
+        jobApplications.add(new JobApplication(jobPostings.get(44), applicants.get(44), JobApplication.Status.OFFERED, now.minusDays(5).minusHours(6)));
+        jobApplications.add(new JobApplication(jobPostings.get(49), applicants.get(44), JobApplication.Status.ACCEPTED, now.minusDays(4).minusHours(7)));
+        jobApplications.add(new JobApplication(jobPostings.get(54), applicants.get(44), JobApplication.Status.INTERVIEWED, now.minusDays(3).minusHours(8)));
+        jobApplications.add(new JobApplication(jobPostings.get(59), applicants.get(44), JobApplication.Status.PENDING, now.minusDays(2).minusHours(9)));
+        jobApplications.add(new JobApplication(jobPostings.get(64), applicants.get(44), JobApplication.Status.SHORTLISTED, now.minusDays(1).minusHours(10)));
 
         // Applicant 45 (Tara Bell)
-        jobApplications.add(new JobApplication(jobPostings.get(45), applicants.get(45), JobApplication.Status.REJECTED, LocalDateTime.of(2025, 10, 12, 13, 0)));
-        jobApplications.add(new JobApplication(jobPostings.get(50), applicants.get(45), JobApplication.Status.WITHDRAWN, LocalDateTime.of(2025, 10, 13, 14, 0)));
-        jobApplications.add(new JobApplication(jobPostings.get(55), applicants.get(45), JobApplication.Status.OFFERED, LocalDateTime.of(2025, 10, 14, 15, 0)));
-        jobApplications.add(new JobApplication(jobPostings.get(60), applicants.get(45), JobApplication.Status.ACCEPTED, LocalDateTime.of(2025, 10, 15, 16, 0)));
-        jobApplications.add(new JobApplication(jobPostings.get(65), applicants.get(45), JobApplication.Status.INTERVIEWED, LocalDateTime.of(2025, 10, 16, 9, 0)));
+        jobApplications.add(new JobApplication(jobPostings.get(45), applicants.get(45), JobApplication.Status.REJECTED, now.minusDays(0).minusHours(11)));
+        jobApplications.add(new JobApplication(jobPostings.get(50), applicants.get(45), JobApplication.Status.WITHDRAWN, now.minusDays(7).minusHours(12)));
+        jobApplications.add(new JobApplication(jobPostings.get(55), applicants.get(45), JobApplication.Status.OFFERED, now.minusDays(6).minusHours(13)));
+        jobApplications.add(new JobApplication(jobPostings.get(60), applicants.get(45), JobApplication.Status.ACCEPTED, now.minusDays(5).minusHours(14)));
+        jobApplications.add(new JobApplication(jobPostings.get(65), applicants.get(45), JobApplication.Status.INTERVIEWED, now.minusDays(4).minusHours(15)));
 
         // Applicant 46 (Uma West)
-        jobApplications.add(new JobApplication(jobPostings.get(46), applicants.get(46), JobApplication.Status.PENDING, LocalDateTime.of(2025, 10, 17, 10, 0)));
-        jobApplications.add(new JobApplication(jobPostings.get(51), applicants.get(46), JobApplication.Status.SHORTLISTED, LocalDateTime.of(2025, 10, 18, 11, 0)));
-        jobApplications.add(new JobApplication(jobPostings.get(56), applicants.get(46), JobApplication.Status.REJECTED, LocalDateTime.of(2025, 10, 19, 12, 0)));
-        jobApplications.add(new JobApplication(jobPostings.get(61), applicants.get(46), JobApplication.Status.WITHDRAWN, LocalDateTime.of(2025, 10, 20, 13, 0)));
-        jobApplications.add(new JobApplication(jobPostings.get(66), applicants.get(46), JobApplication.Status.OFFERED, LocalDateTime.of(2025, 10, 21, 14, 0)));
+        jobApplications.add(new JobApplication(jobPostings.get(46), applicants.get(46), JobApplication.Status.PENDING, now.minusDays(3).minusHours(16)));
+        jobApplications.add(new JobApplication(jobPostings.get(51), applicants.get(46), JobApplication.Status.SHORTLISTED, now.minusDays(2).minusHours(17)));
+        jobApplications.add(new JobApplication(jobPostings.get(56), applicants.get(46), JobApplication.Status.REJECTED, now.minusDays(1).minusHours(18)));
+        jobApplications.add(new JobApplication(jobPostings.get(61), applicants.get(46), JobApplication.Status.WITHDRAWN, now.minusDays(0).minusHours(19)));
+        jobApplications.add(new JobApplication(jobPostings.get(66), applicants.get(46), JobApplication.Status.OFFERED, now.minusDays(7).minusHours(20)));
 
         // Applicant 47 (Vince Ray)
-        jobApplications.add(new JobApplication(jobPostings.get(47), applicants.get(47), JobApplication.Status.ACCEPTED, LocalDateTime.of(2025, 10, 22, 15, 0)));
-        jobApplications.add(new JobApplication(jobPostings.get(52), applicants.get(47), JobApplication.Status.INTERVIEWED, LocalDateTime.of(2025, 10, 23, 16, 0)));
-        jobApplications.add(new JobApplication(jobPostings.get(57), applicants.get(47), JobApplication.Status.PENDING, LocalDateTime.of(2025, 10, 24, 9, 0)));
-        jobApplications.add(new JobApplication(jobPostings.get(62), applicants.get(47), JobApplication.Status.SHORTLISTED, LocalDateTime.of(2025, 10, 25, 10, 0)));
-        jobApplications.add(new JobApplication(jobPostings.get(67), applicants.get(47), JobApplication.Status.REJECTED, LocalDateTime.of(2025, 10, 26, 11, 0)));
+        jobApplications.add(new JobApplication(jobPostings.get(47), applicants.get(47), JobApplication.Status.ACCEPTED, now.minusDays(6).minusHours(21)));
+        jobApplications.add(new JobApplication(jobPostings.get(52), applicants.get(47), JobApplication.Status.INTERVIEWED, now.minusDays(5).minusHours(22)));
+        jobApplications.add(new JobApplication(jobPostings.get(57), applicants.get(47), JobApplication.Status.PENDING, now.minusDays(4).minusHours(23)));
+        jobApplications.add(new JobApplication(jobPostings.get(62), applicants.get(47), JobApplication.Status.SHORTLISTED, now.minusDays(3).minusHours(24)));
+        jobApplications.add(new JobApplication(jobPostings.get(67), applicants.get(47), JobApplication.Status.REJECTED, now.minusDays(2).minusHours(1)));
 
         // Applicant 48 (Wendy Fox)
-        jobApplications.add(new JobApplication(jobPostings.get(48), applicants.get(48), JobApplication.Status.WITHDRAWN, LocalDateTime.of(2025, 10, 27, 12, 0)));
-        jobApplications.add(new JobApplication(jobPostings.get(53), applicants.get(48), JobApplication.Status.OFFERED, LocalDateTime.of(2025, 10, 28, 13, 0)));
-        jobApplications.add(new JobApplication(jobPostings.get(58), applicants.get(48), JobApplication.Status.ACCEPTED, LocalDateTime.of(2025, 10, 29, 14, 0)));
-        jobApplications.add(new JobApplication(jobPostings.get(63), applicants.get(48), JobApplication.Status.INTERVIEWED, LocalDateTime.of(2025, 10, 30, 15, 0)));
-        jobApplications.add(new JobApplication(jobPostings.get(68), applicants.get(48), JobApplication.Status.PENDING, LocalDateTime.of(2025, 10, 31, 16, 0)));
+        jobApplications.add(new JobApplication(jobPostings.get(48), applicants.get(48), JobApplication.Status.WITHDRAWN, now.minusDays(1).minusHours(2)));
+        jobApplications.add(new JobApplication(jobPostings.get(53), applicants.get(48), JobApplication.Status.OFFERED, now.minusDays(0).minusHours(3)));
+        jobApplications.add(new JobApplication(jobPostings.get(58), applicants.get(48), JobApplication.Status.ACCEPTED, now.minusDays(7).minusHours(4)));
+        jobApplications.add(new JobApplication(jobPostings.get(63), applicants.get(48), JobApplication.Status.INTERVIEWED, now.minusDays(6).minusHours(5)));
+        jobApplications.add(new JobApplication(jobPostings.get(68), applicants.get(48), JobApplication.Status.PENDING, now.minusDays(5).minusHours(6)));
 
         // Applicant 49 (Xander Lee)
-        jobApplications.add(new JobApplication(jobPostings.get(49), applicants.get(49), JobApplication.Status.SHORTLISTED, LocalDateTime.of(2025, 11, 1, 9, 0)));
-        jobApplications.add(new JobApplication(jobPostings.get(54), applicants.get(49), JobApplication.Status.REJECTED, LocalDateTime.of(2025, 11, 2, 10, 0)));
-        jobApplications.add(new JobApplication(jobPostings.get(59), applicants.get(49), JobApplication.Status.WITHDRAWN, LocalDateTime.of(2025, 11, 3, 11, 0)));
-        jobApplications.add(new JobApplication(jobPostings.get(64), applicants.get(49), JobApplication.Status.OFFERED, LocalDateTime.of(2025, 11, 4, 12, 0)));
-        jobApplications.add(new JobApplication(jobPostings.get(69), applicants.get(49), JobApplication.Status.ACCEPTED, LocalDateTime.of(2025, 11, 5, 13, 0)));
+        jobApplications.add(new JobApplication(jobPostings.get(49), applicants.get(49), JobApplication.Status.SHORTLISTED, now.minusDays(4).minusHours(7)));
+        jobApplications.add(new JobApplication(jobPostings.get(54), applicants.get(49), JobApplication.Status.REJECTED, now.minusDays(3).minusHours(8)));
+        jobApplications.add(new JobApplication(jobPostings.get(59), applicants.get(49), JobApplication.Status.WITHDRAWN, now.minusDays(2).minusHours(9)));
+        jobApplications.add(new JobApplication(jobPostings.get(64), applicants.get(49), JobApplication.Status.OFFERED, now.minusDays(1).minusHours(10)));
+        jobApplications.add(new JobApplication(jobPostings.get(69), applicants.get(49), JobApplication.Status.ACCEPTED, now.minusDays(0).minusHours(11)));
 
-        jobApplications.add(new JobApplication(jobPostings.get(0), applicants.get(2), JobApplication.Status.PENDING, LocalDateTime.of(2025, 3, 15, 10, 0)));
-        jobApplications.add(new JobApplication(jobPostings.get(0), applicants.get(3), JobApplication.Status.SHORTLISTED, LocalDateTime.of(2025, 3, 16, 11, 0)));
-        jobApplications.add(new JobApplication(jobPostings.get(0), applicants.get(5), JobApplication.Status.INTERVIEWED, LocalDateTime.of(2025, 3, 17, 12, 0)));
-        jobApplications.add(new JobApplication(jobPostings.get(0), applicants.get(7), JobApplication.Status.REJECTED, LocalDateTime.of(2025, 3, 18, 13, 0)));
+        // Applicant 0
+        jobApplications.add(new JobApplication(jobPostings.get(0), applicants.get(0), JobApplication.Status.SHORTLISTED, LocalDateTime.of(2025, 8, 6, 9, 0)));
+        jobApplications.add(new JobApplication(jobPostings.get(5), applicants.get(0), JobApplication.Status.SHORTLISTED, LocalDateTime.of(2025, 8, 7, 10, 0)));
+        jobApplications.add(new JobApplication(jobPostings.get(10), applicants.get(0), JobApplication.Status.SHORTLISTED, LocalDateTime.of(2025, 8, 8, 11, 0)));
+        jobApplications.add(new JobApplication(jobPostings.get(15), applicants.get(0), JobApplication.Status.SHORTLISTED, LocalDateTime.of(2025, 8, 9, 12, 0)));
+        jobApplications.add(new JobApplication(jobPostings.get(20), applicants.get(0), JobApplication.Status.SHORTLISTED, LocalDateTime.of(2025, 8, 10, 13, 0)));
 
-        jobApplications.add(new JobApplication(jobPostings.get(1), applicants.get(8), JobApplication.Status.PENDING, LocalDateTime.of(2025, 3, 19, 14, 0)));
-        jobApplications.add(new JobApplication(jobPostings.get(1), applicants.get(10), JobApplication.Status.OFFERED, LocalDateTime.of(2025, 3, 20, 15, 0)));
-        jobApplications.add(new JobApplication(jobPostings.get(1), applicants.get(12), JobApplication.Status.ACCEPTED, LocalDateTime.of(2025, 3, 21, 16, 0)));
-        jobApplications.add(new JobApplication(jobPostings.get(1), applicants.get(15), JobApplication.Status.WITHDRAWN, LocalDateTime.of(2025, 3, 22, 17, 0)));
+        // Applicant 0
+        jobApplications.add(new JobApplication(jobPostings.get(0), applicants.get(0), JobApplication.Status.SHORTLISTED, now.minusDays(7).minusHours(5)));
+        jobApplications.add(new JobApplication(jobPostings.get(5), applicants.get(0), JobApplication.Status.SHORTLISTED, now.minusDays(6).minusHours(3)));
+        jobApplications.add(new JobApplication(jobPostings.get(10), applicants.get(0), JobApplication.Status.SHORTLISTED, now.minusDays(5).minusHours(2)));
+        jobApplications.add(new JobApplication(jobPostings.get(15), applicants.get(0), JobApplication.Status.SHORTLISTED, now.minusDays(4).minusHours(1)));
+        jobApplications.add(new JobApplication(jobPostings.get(20), applicants.get(0), JobApplication.Status.SHORTLISTED, now.minusDays(3).minusHours(4)));
 
-        jobApplications.add(new JobApplication(jobPostings.get(2), applicants.get(17), JobApplication.Status.PENDING, LocalDateTime.of(2025, 3, 23, 9, 0)));
-        jobApplications.add(new JobApplication(jobPostings.get(2), applicants.get(19), JobApplication.Status.SHORTLISTED, LocalDateTime.of(2025, 3, 24, 10, 0)));
-        jobApplications.add(new JobApplication(jobPostings.get(2), applicants.get(21), JobApplication.Status.INTERVIEWED, LocalDateTime.of(2025, 3, 25, 11, 0)));
-        jobApplications.add(new JobApplication(jobPostings.get(2), applicants.get(23), JobApplication.Status.REJECTED, LocalDateTime.of(2025, 3, 26, 12, 0)));
+        // Applicant 1
+        jobApplications.add(new JobApplication(jobPostings.get(0), applicants.get(1), JobApplication.Status.SHORTLISTED, now.minusDays(7).minusHours(6)));
+        jobApplications.add(new JobApplication(jobPostings.get(5), applicants.get(1), JobApplication.Status.SHORTLISTED, now.minusDays(6).minusHours(4)));
+        jobApplications.add(new JobApplication(jobPostings.get(10), applicants.get(1), JobApplication.Status.SHORTLISTED, now.minusDays(5).minusHours(3)));
+        jobApplications.add(new JobApplication(jobPostings.get(15), applicants.get(1), JobApplication.Status.SHORTLISTED, now.minusDays(4).minusHours(2)));
+        jobApplications.add(new JobApplication(jobPostings.get(20), applicants.get(1), JobApplication.Status.SHORTLISTED, now.minusDays(3).minusHours(5)));
 
-        jobApplications.add(new JobApplication(jobPostings.get(3), applicants.get(25), JobApplication.Status.PENDING, LocalDateTime.of(2025, 3, 27, 13, 0)));
-        jobApplications.add(new JobApplication(jobPostings.get(3), applicants.get(27), JobApplication.Status.OFFERED, LocalDateTime.of(2025, 3, 28, 14, 0)));
-        jobApplications.add(new JobApplication(jobPostings.get(3), applicants.get(29), JobApplication.Status.ACCEPTED, LocalDateTime.of(2025, 3, 29, 15, 0)));
-        jobApplications.add(new JobApplication(jobPostings.get(3), applicants.get(31), JobApplication.Status.WITHDRAWN, LocalDateTime.of(2025, 3, 30, 16, 0)));
+        // Applicant 2
+        jobApplications.add(new JobApplication(jobPostings.get(0), applicants.get(2), JobApplication.Status.SHORTLISTED, now.minusDays(2).minusHours(7)));
+        jobApplications.add(new JobApplication(jobPostings.get(5), applicants.get(2), JobApplication.Status.SHORTLISTED, now.minusDays(1).minusHours(6)));
+        jobApplications.add(new JobApplication(jobPostings.get(10), applicants.get(2), JobApplication.Status.SHORTLISTED, now.minusDays(0).minusHours(5)));
+        jobApplications.add(new JobApplication(jobPostings.get(15), applicants.get(2), JobApplication.Status.SHORTLISTED, now.minusDays(3).minusHours(4)));
+        jobApplications.add(new JobApplication(jobPostings.get(20), applicants.get(2), JobApplication.Status.SHORTLISTED, now.minusDays(2).minusHours(3)));
 
-        jobApplications.add(new JobApplication(jobPostings.get(4), applicants.get(33), JobApplication.Status.PENDING, LocalDateTime.of(2025, 4, 1, 9, 0)));
-        jobApplications.add(new JobApplication(jobPostings.get(4), applicants.get(35), JobApplication.Status.SHORTLISTED, LocalDateTime.of(2025, 4, 2, 10, 0)));
-        jobApplications.add(new JobApplication(jobPostings.get(4), applicants.get(37), JobApplication.Status.INTERVIEWED, LocalDateTime.of(2025, 4, 3, 11, 0)));
-        jobApplications.add(new JobApplication(jobPostings.get(4), applicants.get(39), JobApplication.Status.REJECTED, LocalDateTime.of(2025, 4, 4, 12, 0)));
+        // Applicant 3
+        jobApplications.add(new JobApplication(jobPostings.get(0), applicants.get(3), JobApplication.Status.SHORTLISTED, now.minusDays(6).minusHours(2)));
+        jobApplications.add(new JobApplication(jobPostings.get(5), applicants.get(3), JobApplication.Status.SHORTLISTED, now.minusDays(5).minusHours(1)));
+        jobApplications.add(new JobApplication(jobPostings.get(10), applicants.get(3), JobApplication.Status.SHORTLISTED, now.minusDays(4).minusHours(0)));
+        jobApplications.add(new JobApplication(jobPostings.get(15), applicants.get(3), JobApplication.Status.SHORTLISTED, now.minusDays(3).minusHours(6)));
+        jobApplications.add(new JobApplication(jobPostings.get(20), applicants.get(3), JobApplication.Status.SHORTLISTED, now.minusDays(2).minusHours(5)));
 
-        // c1, a1: TechCorp (DevOps Engineer) with Alice Johnson
-        jobApplications.add(new JobApplication(
-                jobPostings.get(2), // DevOps Engineer (OPEN, TechCorp)
-                applicants.get(0),  // Alice Johnson
-                JobApplication.Status.SHORTLISTED,
-                LocalDateTime.of(2025, 4, 15, 10, 0)
-        ));
+        // Applicant 4
+        jobApplications.add(new JobApplication(jobPostings.get(0), applicants.get(4), JobApplication.Status.SHORTLISTED, now.minusDays(1).minusHours(4)));
+        jobApplications.add(new JobApplication(jobPostings.get(5), applicants.get(4), JobApplication.Status.SHORTLISTED, now.minusDays(0).minusHours(3)));
+        jobApplications.add(new JobApplication(jobPostings.get(10), applicants.get(4), JobApplication.Status.SHORTLISTED, now.minusDays(7).minusHours(2)));
+        jobApplications.add(new JobApplication(jobPostings.get(15), applicants.get(4), JobApplication.Status.SHORTLISTED, now.minusDays(6).minusHours(1)));
+        jobApplications.add(new JobApplication(jobPostings.get(20), applicants.get(4), JobApplication.Status.SHORTLISTED, now.minusDays(5).minusHours(0)));
 
-        // c1, a2: TechCorp (DevOps Engineer) with Bob Smith
-        jobApplications.add(new JobApplication(
-                jobPostings.get(2), // DevOps Engineer (OPEN, TechCorp)
-                applicants.get(1),  // Bob Smith
-                JobApplication.Status.SHORTLISTED,
-                LocalDateTime.of(2025, 4, 15, 10, 15)
-        ));
+        // Applicant 5
+        jobApplications.add(new JobApplication(jobPostings.get(25), applicants.get(5), JobApplication.Status.SHORTLISTED, now.minusDays(4).minusHours(7)));
+        jobApplications.add(new JobApplication(jobPostings.get(30), applicants.get(5), JobApplication.Status.SHORTLISTED, now.minusDays(3).minusHours(6)));
+        jobApplications.add(new JobApplication(jobPostings.get(35), applicants.get(5), JobApplication.Status.SHORTLISTED, now.minusDays(2).minusHours(5)));
+        jobApplications.add(new JobApplication(jobPostings.get(40), applicants.get(5), JobApplication.Status.SHORTLISTED, now.minusDays(1).minusHours(4)));
+        jobApplications.add(new JobApplication(jobPostings.get(45), applicants.get(5), JobApplication.Status.SHORTLISTED, now.minusDays(0).minusHours(3)));
 
-        // c2, a1: Innovatech (AI Engineer) with Alice Johnson
-        jobApplications.add(new JobApplication(
-                jobPostings.get(6), // AI Engineer (OPEN, Innovatech)
-                applicants.get(0),  // Alice Johnson
-                JobApplication.Status.SHORTLISTED,
-                LocalDateTime.of(2025, 4, 15, 10, 30)
-        ));
+        // Applicant 6
+        jobApplications.add(new JobApplication(jobPostings.get(25), applicants.get(6), JobApplication.Status.SHORTLISTED, now.minusDays(7).minusHours(2)));
+        jobApplications.add(new JobApplication(jobPostings.get(30), applicants.get(6), JobApplication.Status.SHORTLISTED, now.minusDays(6).minusHours(1)));
+        jobApplications.add(new JobApplication(jobPostings.get(35), applicants.get(6), JobApplication.Status.SHORTLISTED, now.minusDays(5).minusHours(0)));
+        jobApplications.add(new JobApplication(jobPostings.get(40), applicants.get(6), JobApplication.Status.SHORTLISTED, now.minusDays(4).minusHours(6)));
+        jobApplications.add(new JobApplication(jobPostings.get(45), applicants.get(6), JobApplication.Status.SHORTLISTED, now.minusDays(3).minusHours(5)));
 
-        // c2, a2: Innovatech (AI Engineer) with Bob Smith
-        jobApplications.add(new JobApplication(
-                jobPostings.get(6), // AI Engineer (OPEN, Innovatech)
-                applicants.get(1),  // Bob Smith
-                JobApplication.Status.SHORTLISTED,
-                LocalDateTime.of(2025, 4, 15, 10, 45)
-        ));
+        // Applicant 7
+        jobApplications.add(new JobApplication(jobPostings.get(25), applicants.get(7), JobApplication.Status.SHORTLISTED, now.minusDays(2).minusHours(4)));
+        jobApplications.add(new JobApplication(jobPostings.get(30), applicants.get(7), JobApplication.Status.SHORTLISTED, now.minusDays(1).minusHours(3)));
+        jobApplications.add(new JobApplication(jobPostings.get(35), applicants.get(7), JobApplication.Status.SHORTLISTED, now.minusDays(0).minusHours(2)));
+        jobApplications.add(new JobApplication(jobPostings.get(40), applicants.get(7), JobApplication.Status.SHORTLISTED, now.minusDays(7).minusHours(1)));
+        jobApplications.add(new JobApplication(jobPostings.get(45), applicants.get(7), JobApplication.Status.SHORTLISTED, now.minusDays(6).minusHours(0)));
 
-        invitations.add(new Invitation(jobApplications.get(70), "1st round technical interview", LocalDateTime.now()));
-        invitations.add(new Invitation(jobApplications.get(72), "1st round technical interview", LocalDateTime.now()));
+        // Applicant 8
+        jobApplications.add(new JobApplication(jobPostings.get(25), applicants.get(8), JobApplication.Status.SHORTLISTED, now.minusDays(5).minusHours(7)));
+        jobApplications.add(new JobApplication(jobPostings.get(30), applicants.get(8), JobApplication.Status.SHORTLISTED, now.minusDays(4).minusHours(6)));
+        jobApplications.add(new JobApplication(jobPostings.get(35), applicants.get(8), JobApplication.Status.SHORTLISTED, now.minusDays(3).minusHours(5)));
+        jobApplications.add(new JobApplication(jobPostings.get(40), applicants.get(8), JobApplication.Status.SHORTLISTED, now.minusDays(2).minusHours(4)));
+        jobApplications.add(new JobApplication(jobPostings.get(45), applicants.get(8), JobApplication.Status.SHORTLISTED, now.minusDays(1).minusHours(3)));
+
+        // Applicant 9
+        jobApplications.add(new JobApplication(jobPostings.get(25), applicants.get(9), JobApplication.Status.SHORTLISTED, now.minusDays(0).minusHours(2)));
+        jobApplications.add(new JobApplication(jobPostings.get(30), applicants.get(9), JobApplication.Status.SHORTLISTED, now.minusDays(7).minusHours(1)));
+        jobApplications.add(new JobApplication(jobPostings.get(35), applicants.get(9), JobApplication.Status.SHORTLISTED, now.minusDays(6).minusHours(0)));
+        jobApplications.add(new JobApplication(jobPostings.get(40), applicants.get(9), JobApplication.Status.SHORTLISTED, now.minusDays(5).minusHours(6)));
+        jobApplications.add(new JobApplication(jobPostings.get(45), applicants.get(9), JobApplication.Status.SHORTLISTED, now.minusDays(4).minusHours(5)));
+
+//        PENDING, no interview at all
+//        SHORTLISTED, can have interview in future
+//        INTERVIEWED, can have past interviews
+//        OFFERED, can have past interviews
+//        ACCEPTED, can have no interview, past interviews
+//        REJECTED, can have no interview, past interviews
+//        WITHDRAWN, can have no interview, past interview
+
+        invitations.add(new Invitation(jobApplications.get(250), "1st round technical interview", now));
+        invitations.add(new Invitation(jobApplications.get(252), "1st round technical interview", now));
     }
 
     public static ListInterface<Company> getCompanies() {

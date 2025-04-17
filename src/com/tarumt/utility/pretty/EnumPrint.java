@@ -27,7 +27,9 @@ public class EnumPrint {
             System.out.println("No values to display.");
             return;
         }
-
+        if (constants.length < 4) {
+            columns = 1;
+        }
         if (columnWidth == 0) {
             int rows = (int) Math.ceil((double) constants.length / columns);
             columnWidth = rows > 3 ? 34 : 28;
@@ -68,6 +70,10 @@ public class EnumPrint {
         if (constants == null || constants.isEmpty() || columns <= 0) {
             System.out.println("No values to display.");
             return;
+        }
+
+        if (constants.size() < 4) {
+            columns = 1;
         }
 
         if (columnWidth == 0) {

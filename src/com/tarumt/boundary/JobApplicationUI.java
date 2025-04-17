@@ -77,6 +77,18 @@ public class JobApplicationUI {
         return input.getObjectFromList("|\n| Select Job Application To Reject =>", jobApplications, 80, 2);
     }
 
+    public void printCannotRejectScheduledInterviewWarning() {
+        System.out.println();
+        Log.warn("Cannot reject application: An upcoming interview is already scheduled.");
+        Log.warn("Please cancel the scheduled interview first if you wish to reject this application.");
+        input.clickAnythingToContinue();
+    }
+
+    public void printRejectWithInvitationWarning() {
+        System.out.println();
+        Log.warn("Warning: Rejecting this application will also cancel any pending interview invitations associated with it.");
+    }
+
     public boolean confirmReject() {
         return input.confirm("Confirm to reject this application? [ Y / X ] => ");
     }
@@ -162,6 +174,18 @@ public class JobApplicationUI {
     public void printSuccessWithdrawJobApplicationMsg() {
         System.out.println();
         Log.info("Job application successfully withdrawn");
+    }
+
+    public void printCannotWithdrawScheduledInterviewWarning() {
+        System.out.println();
+        Log.warn("Cannot withdraw application: An upcoming interview is already scheduled.");
+        Log.warn("Please cancel the scheduled interview first if you wish to withdraw.");
+        input.clickAnythingToContinue();
+    }
+
+    public void printWithdrawWithInvitationWarning() {
+        System.out.println();
+        Log.warn("Warning: Withdrawing this application will also cancel any pending interview invitations associated with it.");
     }
 
     public void printGroupedJobApplications(ListInterface<JobApplication> jobApplications, ListInterface<JobPosting> uniqueJobPostings) {

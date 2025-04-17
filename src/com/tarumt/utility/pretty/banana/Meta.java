@@ -1,17 +1,13 @@
 package com.tarumt.utility.pretty.banana;
 
-import java.util.Map;
 
-/**
- * @author Yihleego
- */
 public class Meta {
     private Font font;
     private Option option;
-    private Map<Integer, String[]> figletMap;
+    private SimpleMap<Integer, String[]> figletMap;
     private String comment;
 
-    public Meta(Font font, Option option, Map<Integer, String[]> figletMap, String comment) {
+    public Meta(Font font, Option option, SimpleMap<Integer, String[]> figletMap, String comment) {
         this.font = font;
         this.option = option;
         this.figletMap = figletMap;
@@ -34,11 +30,11 @@ public class Meta {
         this.option = option;
     }
 
-    public Map<Integer, String[]> getFigletMap() {
+    public SimpleMap<Integer, String[]> getFigletMap() {
         return figletMap;
     }
 
-    public void setFigletMap(Map<Integer, String[]> figletMap) {
+    public void setFigletMap(SimpleMap<Integer, String[]> figletMap) {
         this.figletMap = figletMap;
     }
 

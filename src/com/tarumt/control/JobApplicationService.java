@@ -8,6 +8,7 @@ import com.tarumt.entity.Applicant;
 import com.tarumt.entity.Company;
 import com.tarumt.entity.JobApplication;
 import com.tarumt.entity.JobPosting;
+import com.tarumt.entity.interview.Invitation;
 import com.tarumt.entity.interview.ScheduledInterview;
 import com.tarumt.utility.common.Context;
 import com.tarumt.utility.common.Input;
@@ -17,12 +18,14 @@ public class JobApplicationService {
     private static JobApplicationService instance;
     private ListInterface<JobApplication> jobApplications = new DoublyLinkedList<>();
     private ListInterface<ScheduledInterview> scheduledInterviews = new DoublyLinkedList<>();
+    private ListInterface<Invitation> invitations = new DoublyLinkedList<>();
     private final JobApplicationUI jobApplicationUI;
 
     private JobApplicationService() {
         Input input = new Input();
         this.jobApplications = Initializer.getJobApplications();
         this.scheduledInterviews = Initializer.getScheduledInterviews();
+        this.invitations = Initializer.getInvitations();
         this.jobApplicationUI = new JobApplicationUI(input);
         updateInterviewedStatus();
     }
@@ -50,6 +53,11 @@ public class JobApplicationService {
         return jobApplications;
     }
 
+    private ListInterface<ScheduledInterview> getAllScheduledInterviews() {
+        updateInterviewedStatus();
+        return scheduledInterviews;
+    }
+
     private ListInterface<JobApplication> getEmployerJobApplications() {
         Company company = Context.getCompany();
         if (company == null) {
@@ -71,6 +79,39 @@ public class JobApplicationService {
                 application.getApplicant() != null &&
                         application.getApplicant().equals(applicant)
         );
+    }
+
+    private ListInterface<Invitation> getEmployerInvitations() {
+        Company company = Context.getCompany();
+        if (company == null) {
+            return new DoublyLinkedList<>();
+        }
+        return invitations.filter(invitation -> {
+            JobApplication app = invitation.getJobApplication();
+            return app != null && app.getJobPosting() != null && company.equals(app.getJobPosting().getCompany());
+        });
+    }
+
+    private ListInterface<Invitation> getApplicantInvitations() {
+        Applicant applicant = Context.getApplicant();
+        if (applicant == null) {
+            return new DoublyLinkedList<>();
+        }
+        return invitations.filter(invitation -> invitation.getJobApplication().getApplicant() != null
+                && invitation.getJobApplication().getApplicant().equals(applicant));
+    }
+
+    private ListInterface<ScheduledInterview> getEmployerScheduledInterviews() {
+        Company company = Context.getCompany();
+        return getAllScheduledInterviews().filter(
+                scheduledInterview -> scheduledInterview.getJobApplication().getJobPosting().getCompany()
+                        .equals(company));
+    }
+
+    private ListInterface<ScheduledInterview> getApplicantScheduledInterviews() {
+        Applicant applicant = Context.getApplicant();
+        return getAllScheduledInterviews()
+                .filter(scheduledInterview -> scheduledInterview.getJobApplication().getApplicant().equals(applicant));
     }
 
     public void accessEmployer() {
@@ -145,11 +186,32 @@ public class JobApplicationService {
             return;
         }
 
+        boolean hasUpcomingInterview = getEmployerScheduledInterviews().anyMatch(interview ->
+                interview.getJobApplication().equals(jobApplication) && !interview.getTimeSlot().isPast()
+        );
+
+        if (hasUpcomingInterview) {
+            jobApplicationUI.printCannotRejectScheduledInterviewWarning();
+            return;
+        }
+
+        ListInterface<Invitation> associatedInvitations = invitations.filter(invitation ->
+                invitation.getJobApplication().equals(jobApplication)
+        );
+
+        if (!associatedInvitations.isEmpty()) {
+            jobApplicationUI.printRejectWithInvitationWarning();
+        }
+
         if (jobApplicationUI.confirmReject()) {
+            if (!associatedInvitations.isEmpty()) {
+                invitations.removeAll(associatedInvitations);
+            }
             jobApplication.setStatus(JobApplication.Status.REJECTED);
             jobApplicationUI.printSuccessRejectApplicationMsg();
         }
     }
+
 
     public void accessApplicant() {
         this.jobApplicationUI.accessApplicantMenu();
@@ -179,7 +241,27 @@ public class JobApplicationService {
             return;
         }
 
+        boolean hasUpcomingInterview = getApplicantScheduledInterviews().anyMatch(interview ->
+                interview.getJobApplication().equals(jobApplication) && !interview.getTimeSlot().isPast()
+        );
+
+        if (hasUpcomingInterview) {
+            jobApplicationUI.printCannotWithdrawScheduledInterviewWarning();
+            return;
+        }
+
+        ListInterface<Invitation> associatedInvitations = invitations.filter(invitation ->
+                invitation.getJobApplication().equals(jobApplication)
+        );
+
+        if (!associatedInvitations.isEmpty()) {
+            jobApplicationUI.printWithdrawWithInvitationWarning();
+        }
+
         if (jobApplicationUI.confirmWithdraw()) {
+            if (!associatedInvitations.isEmpty()) {
+                invitations.removeAll(associatedInvitations);
+            }
             jobApplication.setStatus(JobApplication.Status.WITHDRAWN);
             jobApplicationUI.printSuccessWithdrawJobApplicationMsg();
         }

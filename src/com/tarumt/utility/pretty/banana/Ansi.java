@@ -1,16 +1,10 @@
 package com.tarumt.utility.pretty.banana;
 
-import java.util.LinkedList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import com.tarumt.adt.list.DoublyLinkedList;
+import com.tarumt.adt.list.ListInterface;
 
-/**
- * @author Yihleego
- */
 public class Ansi {
-    /** Ansi-Colors */
+
     public static final Ansi BLACK;
     public static final Ansi RED;
     public static final Ansi GREEN;
@@ -19,7 +13,7 @@ public class Ansi {
     public static final Ansi PURPLE;
     public static final Ansi CYAN;
     public static final Ansi WHITE;
-    /** Background-Colors */
+
     public static final Ansi BG_BLACK;
     public static final Ansi BG_RED;
     public static final Ansi BG_GREEN;
@@ -28,7 +22,7 @@ public class Ansi {
     public static final Ansi BG_PURPLE;
     public static final Ansi BG_CYAN;
     public static final Ansi BG_WHITE;
-    /** Others */
+
     public static final Ansi NORMAL;
     public static final Ansi BOLD;
     public static final Ansi FAINT;
@@ -41,11 +35,12 @@ public class Ansi {
     public static final Ansi CROSSED_OUT;
     public static final Ansi PRIMARY;
 
-    private static final List<Ansi> VALUES;
-    private static final Map<String, Ansi> MAP;
+    private static final ListInterface<Ansi> VALUES;
+    private static final SimpleMap<String, Ansi> MAP;
 
     static {
-        List<Ansi> values = new LinkedList<>();
+
+        ListInterface<Ansi> values = new DoublyLinkedList<>();
         values.add(BLACK = new Ansi("30"));
         values.add(RED = new Ansi("31"));
         values.add(GREEN = new Ansi("32"));
@@ -73,12 +68,14 @@ public class Ansi {
         values.add(CONCEAL = new Ansi("8"));
         values.add(CROSSED_OUT = new Ansi("9"));
         values.add(PRIMARY = new Ansi("10"));
-        Map<String, Ansi> map = new HashMap<>(values.size());
+
+        SimpleMap<String, Ansi> map = new SimpleMap<>(values.size());
         for (Ansi v : values) {
             map.put(v.code, v);
         }
-        VALUES = Collections.unmodifiableList(values);
-        MAP = Collections.unmodifiableMap(map);
+
+        VALUES = values;
+        MAP = map;
     }
 
     protected final String code;
@@ -122,7 +119,7 @@ public class Ansi {
         return sb.append("m").append(text).append(NORMAL.getAnsi()).toString();
     }
 
-    public static List<Ansi> values() {
+    public static ListInterface<Ansi> values() {
         return VALUES;
     }
 
@@ -131,8 +128,8 @@ public class Ansi {
     }
 
     public static Ansi getOrDefault(String code, Ansi defaultValue) {
-        Ansi ansi;
-        return (ansi = MAP.get(code)) != null ? ansi : defaultValue;
+
+        return MAP.getOrDefault(code, defaultValue);
     }
 
 }

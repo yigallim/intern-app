@@ -18,8 +18,8 @@ public class ScheduledInterview extends BaseEntity {
     @ExcludeKey("default")
     private JobApplication jobApplication;
     @Min(5)
-    @Max(40)
-    @OutputLength(40)
+    @Max(50)
+    @OutputLength(50)
     private String remarks;
     @ExcludeKey("default")
     private TimeSlot timeSlot;
@@ -149,4 +149,14 @@ public class ScheduledInterview extends BaseEntity {
         return getId();
     }
 
+    @Override
+    public String toString() {
+        return "ScheduledInterview{" +
+                "jobApplication=" + jobApplication.toShortString() +
+                ", remarks='" + remarks + '\'' +
+                ", timeSlot=" + timeSlot +
+                ", rating=" + rating +
+                ", bookedAt=" + bookedAt +
+                '}';
+    }
 }

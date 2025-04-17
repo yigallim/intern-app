@@ -16,9 +16,10 @@ public class InternApplicationProgram {
         Log.info("Intern Application Program starting");
         System.out.println();
 
-        Context.setClockTime(10, 0);
+//        Context.setClockTime(10, 0);
 //        Context.setApplicant(Initializer.getApplicants().get(0));
 //        new ApplicantUI(new Input()).accessMenu();
+
         new Menu()
                 .banner("Intern Application")
                 .header("==> Intern Application Program <==")

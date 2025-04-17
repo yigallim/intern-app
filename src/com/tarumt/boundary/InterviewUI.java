@@ -20,7 +20,7 @@ import com.tarumt.utility.validation.ValidationFieldReflection;
 import java.lang.reflect.Field;
 
 public class InterviewUI {
-    private final Input input;
+    private Input input;
 
     public InterviewUI(Input input) {
         this.input = input;
@@ -33,14 +33,13 @@ public class InterviewUI {
                 .header("==> Manage Interviews <==")
                 .choice(
                         new Menu.Choice("📨 Send Interview Invitation", interviewService::sendInvitation),
-                        new Menu.Choice("🔎 Display Sent Invitation", interviewService::displayInvitation),
-                        new Menu.Choice("❌ Cancel Invitation", interviewService::cancelInvitation),
                         new Menu.Choice("📅 Display Incoming Interview", interviewService::displayIncomingInterview),
                         new Menu.Choice("📜 Display Past Interview", interviewService::displayPastInterview),
                         new Menu.Choice("⭐ Rate Completed Interviews", Log::na),
-                        new Menu.Choice("❌ Cancel Scheduled Interview", interviewService::cancelScheduledInterview),
                         new Menu.Choice("🕒 View Availability", interviewService::viewAvailability),
-                        new Menu.Choice("📝 Modify Availability", Log::na)
+                        new Menu.Choice("📝 Modify Availability", Log::na),
+                        new Menu.Choice("❌ Cancel Invitation", interviewService::cancelInvitation),
+                        new Menu.Choice("❌ Cancel Scheduled Interview", interviewService::cancelScheduledInterview)
                 )
                 .exit("<Return>")
                 .beforeEach(System.out::println)
@@ -69,7 +68,7 @@ public class InterviewUI {
                         new Menu.Choice("✅ Accept Interview Invitation", interviewService::acceptInvitation),
                         new Menu.Choice("📅 Display Incoming Interview", interviewService::displayIncomingInterview),
                         new Menu.Choice("📜 Display Past Interview", interviewService::displayPastInterview),
-                        new Menu.Choice("🔃 Reschedule Interview", Log::na),
+                        new Menu.Choice("🔃 Reschedule Interview", interviewService::rescheduleInterview),
                         new Menu.Choice("❌ Cancel Scheduled Interview", interviewService::cancelScheduledInterview)
                 )
                 .exit("<Return>")
@@ -156,6 +155,32 @@ public class InterviewUI {
         input.clickAnythingToContinue();
     }
 
+    public ScheduledInterview getInterviewToReschedule(ListInterface<ScheduledInterview> scheduledInterviews) {
+        if (scheduledInterviews == null || scheduledInterviews.isEmpty()) {
+            printNoInterviewToRescheduleMsg();
+            return null;
+        }
+        System.out.println("<== Reschedule Interview [ X to Exit ] ==>");
+        return input.getObjectFromList("|\n| Select Interview To Reschedule => ", scheduledInterviews, 80, 2);
+    }
+
+    public void printNoInterviewToRescheduleMsg() {
+        Log.info("No upcoming interviews available to reschedule.");
+        input.clickAnythingToContinue();
+    }
+
+    public boolean confirmRescheduleInterview() {
+        return input.confirm("Confirm to reschedule this interview? [ Y / N ] => ");
+    }
+
+    public void printSuccessRescheduleMsg(TimeSlot newTimeSlot) {
+        System.out.println();
+        Log.info("Interview successfully rescheduled.");
+        Log.info("The interview is now scheduled for:");
+        System.out.println(newTimeSlot);
+        input.clickAnythingToContinue();
+    }
+
     public ScheduledInterview getInterviewToCancel(ListInterface<ScheduledInterview> scheduledInterview) {
         if (scheduledInterview == null || scheduledInterview.isEmpty()) {
             Log.info("No scheduled interviews to cancel");
@@ -183,10 +208,8 @@ public class InterviewUI {
             return null;
         }
         System.out.println("<== Cancel Interview Invitation [ X to Exit ] ==>");
-        return input.getObjectFromList("|\n| Select Invitation To Cancel => ", invitations, 80, 2,
-                (invitation) -> invitation.getId() + " | " + "Job: " + invitation.getJobApplication().getJobPosting().toShortString()
-                        + " | Applicant: " + invitation.getJobApplication().getApplicant().toShortString()
-        );
+        TabularPrint.printTabular(invitations, true, "default", "employer");
+        return input.getObjectFromList("|\n| Select Invitation To Cancel => ", invitations, 80, 2);
     }
 
     public boolean confirmCancelInvitation() {
@@ -198,4 +221,5 @@ public class InterviewUI {
         Log.info("Interview invitation successfully cancelled");
         input.clickAnythingToContinue();
     }
+
 }

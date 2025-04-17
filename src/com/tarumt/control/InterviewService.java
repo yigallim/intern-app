@@ -69,7 +69,6 @@ public class InterviewService {
                 && invitation.getJobApplication().getApplicant().equals(applicant));
     }
 
-
     private ListInterface<Invitation> getEmployerInvitations() {
         Company company = Context.getCompany();
         if (company == null) {
@@ -151,6 +150,7 @@ public class InterviewService {
     }
 
     public void acceptInvitation() {
+        // TODO : logic differs with reschedule
         ListInterface<Invitation> applicantInvitations = getApplicantInvitations();
         Invitation invitation = this.interviewUI.getInvitationToAccept(applicantInvitations);
         if (invitation == null)
@@ -160,18 +160,20 @@ public class InterviewService {
         ListInterface<ScheduledInterview> employerScheduledInterviews = this
                 .getEmployerScheduledInterviews(invitingCompany);
         ListInterface<ScheduledInterview> applicantScheduledInterviews = this.getApplicantScheduledInterviews();
-        ListInterface<TimeSlot> employerBookedSlots = employerScheduledInterviews.map(ScheduledInterview::getTimeSlot);
-        ListInterface<TimeSlot> applicantBookedSlots = applicantScheduledInterviews
-                .map(ScheduledInterview::getTimeSlot);
-        employerBookedSlots.merge(applicantBookedSlots);
 
-        if (this.isWeekTimeSlotOccupied(employerBookedSlots)) {
+        ListInterface<TimeSlot> employerBookedSlots = employerScheduledInterviews.map(ScheduledInterview::getTimeSlot);
+        ListInterface<TimeSlot> applicantBookedSlots = applicantScheduledInterviews.map(ScheduledInterview::getTimeSlot);
+        ListInterface<TimeSlot> combinedBookedSlots = new DoublyLinkedList<>();
+        combinedBookedSlots.merge(employerBookedSlots);
+        combinedBookedSlots.merge(applicantBookedSlots);
+
+        if (this.isWeekTimeSlotOccupied(combinedBookedSlots)) {
             this.interviewUI.printFullyOccupiedMsg(invitingCompany);
             return;
         }
 
-        ListInterface<TimeSlot> availableTimeSlots = getAvailableTimeSlot(employerBookedSlots);
-        String calendarView = getCalendarAvailabilityView(employerBookedSlots, true);
+        ListInterface<TimeSlot> availableTimeSlots = getAvailableTimeSlot(combinedBookedSlots);
+        String calendarView = getCalendarAvailabilityView(combinedBookedSlots, true);
 
         this.interviewUI.printAvailableTimeSlot(calendarView);
         int timeSlotInput = this.interviewUI.getTimeSlot(availableTimeSlots.size());
@@ -186,36 +188,6 @@ public class InterviewService {
         scheduledInterviews.add(scheduledInterview);
 
         this.interviewUI.printSuccessAcceptInvitationMsg(timeSlot);
-    }
-
-    private boolean isBooked(TimeSlot timeSlot, ListInterface<TimeSlot> bookedSlots) {
-        if (timeSlot == null || bookedSlots == null) {
-            return false;
-        }
-        return bookedSlots.contains(timeSlot);
-    }
-
-    private boolean isTimeSlotAvailable(TimeSlot timeSlot, ListInterface<TimeSlot> bookedSlots) {
-        if (timeSlot == null || bookedSlots == null) {
-            return false;
-        }
-        return timeSlot.isAvailable() && !isBooked(timeSlot, bookedSlots);
-    }
-
-    private boolean isWeekTimeSlotOccupied(ListInterface<TimeSlot> bookedSlots) {
-        boolean hasFreeSlot;
-        if (bookedSlots == null) {
-            hasFreeSlot = TimeSlot.generateWeekTimeSlot().anyMatch(TimeSlot::isAvailable);
-        } else {
-            hasFreeSlot = TimeSlot.generateWeekTimeSlot().anyMatch(
-                    (timeSlot) -> isTimeSlotAvailable(timeSlot, bookedSlots));
-        }
-        return !hasFreeSlot;
-    }
-
-    private ListInterface<TimeSlot> getAvailableTimeSlot(ListInterface<TimeSlot> bookedSlots) {
-        return TimeSlot.generateWeekTimeSlot().filter(
-                (timeSlot -> isTimeSlotAvailable(timeSlot, bookedSlots)));
     }
 
     public void displayIncomingInterview() {
@@ -260,7 +232,115 @@ public class InterviewService {
         this.interviewUI.printApplicantTimeSlot(calendarView);
     }
 
-    public String getCalendarAvailabilityView(ListInterface<TimeSlot> bookedSlots, boolean showIndex) {
+    public void cancelScheduledInterview() {
+        ListInterface<ScheduledInterview> upcomingInterviews = new DoublyLinkedList<>();
+
+        if (Context.isApplicant()) {
+            upcomingInterviews = getApplicantScheduledInterviews()
+                    .filter(interview -> !interview.getTimeSlot().isPast());
+        }
+        if (Context.isEmployer()) {
+            upcomingInterviews = getEmployerScheduledInterviews()
+                    .filter(interview -> !interview.getTimeSlot().isPast());
+        }
+
+        ScheduledInterview interviewToCancel = interviewUI.getInterviewToCancel(upcomingInterviews);
+        if (interviewToCancel == null) {
+            return;
+        }
+
+        if (interviewUI.confirmCancelInterview()) {
+            scheduledInterviews.remove(interviewToCancel);
+            interviewToCancel.getJobApplication().setStatus(JobApplication.Status.SHORTLISTED);
+            interviewUI.printSuccessCancelInterviewMsg();
+        }
+    }
+
+    public void rescheduleInterview() {
+        ListInterface<ScheduledInterview> applicantUpcomingInterviews = this.getApplicantScheduledInterviews()
+                .filter(interview -> !interview.getTimeSlot().isPast());
+        ScheduledInterview interviewToReschedule = this.interviewUI.getInterviewToReschedule(applicantUpcomingInterviews);
+        if (interviewToReschedule == null) {
+            return;
+        }
+        Company company = interviewToReschedule.getJobApplication().getJobPosting().getCompany();
+        ListInterface<ScheduledInterview> employerScheduledInterviews = this.getEmployerScheduledInterviews(company);
+
+        ListInterface<TimeSlot> employerBookedSlots = employerScheduledInterviews.map(ScheduledInterview::getTimeSlot);
+        ListInterface<TimeSlot> applicantBookedSlots = applicantUpcomingInterviews.map(ScheduledInterview::getTimeSlot);
+        ListInterface<TimeSlot> combinedBookedSlots = new DoublyLinkedList<>();
+        combinedBookedSlots.merge(employerBookedSlots);
+        combinedBookedSlots.merge(applicantBookedSlots);
+
+        if (isWeekTimeSlotOccupied(employerBookedSlots)) {
+            this.interviewUI.printFullyOccupiedMsg(company);
+            return;
+        }
+
+        ListInterface<TimeSlot> availableTimeSlots = getAvailableTimeSlot(combinedBookedSlots);
+        String calendarView = getCalendarAvailabilityView(combinedBookedSlots, true);
+
+        this.interviewUI.printAvailableTimeSlot(calendarView);
+        int timeSlotInput = this.interviewUI.getTimeSlot(availableTimeSlots.size());
+        if (timeSlotInput == Input.INT_EXIT_VALUE) {
+            return;
+        }
+
+        TimeSlot newTimeSlot = availableTimeSlots.get(timeSlotInput - 1);
+
+        if (interviewUI.confirmRescheduleInterview()) {
+            interviewToReschedule.setTimeSlot(newTimeSlot);
+            interviewUI.printSuccessRescheduleMsg(newTimeSlot);
+        }
+    }
+
+    public void cancelInvitation() {
+        ListInterface<Invitation> employerInvitations = getEmployerInvitations();
+        Invitation invitationToCancel = interviewUI.getInvitationToCancel(employerInvitations);
+        if (invitationToCancel == null) {
+            return;
+        }
+
+        if (interviewUI.confirmCancelInvitation()) {
+            invitations.remove(invitationToCancel);
+
+            JobApplication application = invitationToCancel.getJobApplication();
+            application.setStatus(JobApplication.Status.SHORTLISTED);
+            interviewUI.printSuccessCancelInvitationMsg();
+        }
+    }
+
+    private boolean isBooked(TimeSlot timeSlot, ListInterface<TimeSlot> bookedSlots) {
+        if (timeSlot == null || bookedSlots == null) {
+            return false;
+        }
+        return bookedSlots.contains(timeSlot);
+    }
+
+    private boolean isTimeSlotAvailable(TimeSlot timeSlot, ListInterface<TimeSlot> bookedSlots) {
+        if (timeSlot == null || bookedSlots == null) {
+            return false;
+        }
+        return timeSlot.isAvailable() && !isBooked(timeSlot, bookedSlots);
+    }
+
+    private boolean isWeekTimeSlotOccupied(ListInterface<TimeSlot> bookedSlots) {
+        boolean hasFreeSlot;
+        if (bookedSlots == null) {
+            hasFreeSlot = TimeSlot.generateWeekTimeSlot().anyMatch(TimeSlot::isAvailable);
+        } else {
+            hasFreeSlot = TimeSlot.generateWeekTimeSlot().anyMatch(
+                    (timeSlot) -> isTimeSlotAvailable(timeSlot, bookedSlots));
+        }
+        return !hasFreeSlot;
+    }
+
+    private ListInterface<TimeSlot> getAvailableTimeSlot(ListInterface<TimeSlot> bookedSlots) {
+        return TimeSlot.generateWeekTimeSlot().filter(
+                (timeSlot -> isTimeSlotAvailable(timeSlot, bookedSlots)));
+    }
+
+    private String getCalendarAvailabilityView(ListInterface<TimeSlot> bookedSlots, boolean showIndex) {
         final int NUM_SLOTS_PER_DAY = 18;
         final int DAYS_AHEAD = 7;
 
@@ -331,47 +411,5 @@ public class InterviewService {
 
         calendarView.append(horizontalDivider).append("\n");
         return calendarView.toString();
-    }
-
-
-    public void cancelScheduledInterview() {
-        ListInterface<ScheduledInterview> upcomingInterviews = new DoublyLinkedList<>();
-
-        if (Context.isApplicant()) {
-            upcomingInterviews = getApplicantScheduledInterviews()
-                    .filter(interview -> !interview.getTimeSlot().isPast());
-        }
-        if (Context.isEmployer()) {
-            upcomingInterviews = getEmployerScheduledInterviews()
-                    .filter(interview -> !interview.getTimeSlot().isPast());
-        }
-
-        ScheduledInterview interviewToCancel = interviewUI.getInterviewToCancel(upcomingInterviews);
-        if (interviewToCancel == null) {
-            return;
-        }
-
-        if (interviewUI.confirmCancelInterview()) {
-            scheduledInterviews.remove(interviewToCancel);
-            interviewToCancel.getJobApplication().setStatus(JobApplication.Status.SHORTLISTED);
-            interviewUI.printSuccessCancelInterviewMsg();
-        }
-    }
-
-    public void cancelInvitation() {
-        ListInterface<Invitation> employerInvitations = getEmployerInvitations();
-
-        Invitation invitationToCancel = interviewUI.getInvitationToCancel(employerInvitations);
-        if (invitationToCancel == null) {
-            return;
-        }
-
-        if (interviewUI.confirmCancelInvitation()) {
-            invitations.remove(invitationToCancel);
-
-            JobApplication application = invitationToCancel.getJobApplication();
-            application.setStatus(JobApplication.Status.SHORTLISTED);
-            interviewUI.printSuccessCancelInvitationMsg();
-        }
     }
 }

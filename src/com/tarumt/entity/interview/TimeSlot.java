@@ -17,8 +17,6 @@ public class TimeSlot {
     // The index of the time slot on the given date.
     // The slot index ranges from 0 to 17, corresponding to 30-minute intervals from 9 AM to 6 PM.
     // Slot 0 represents 9:00 AM - 9:30 AM, Slot 1 represents 9:30 AM - 10:00 AM, and so on.
-    @Min(0)
-    @Max(17)
     private final int slotIndex;
 
     public TimeSlot(LocalDate date, int slotIndex) {
@@ -80,9 +78,7 @@ public class TimeSlot {
         LocalDate today = Context.getDateTime().toLocalDate();
         if (date.equals(today)) {
             int todayStartSlot = getTodayStartSlot();
-            if (todayStartSlot == -1 || slotIndex < todayStartSlot) {
-                return false;
-            }
+            return todayStartSlot != -1 && slotIndex >= todayStartSlot;
         }
         return true;
     }
@@ -139,7 +135,7 @@ public class TimeSlot {
 
     @Override
     public String toString() {
-        return "TimeSlot\n" +
+        return "Time Slot\n" +
                 "|  Date        => " + date + ",\n" +
                 "|  Time Range  => " + getTimeRangeString();
     }

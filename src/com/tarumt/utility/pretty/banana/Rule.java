@@ -1,8 +1,5 @@
 package com.tarumt.utility.pretty.banana;
 
-/**
- * @author Yihleego
- */
 public class Rule {
     private Layout horizontalLayout;
     private boolean horizontal1;
