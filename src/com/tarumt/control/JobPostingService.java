@@ -114,7 +114,7 @@ public class JobPostingService implements Service {
             }
         }
         
-        jobPostingUI.displayFilteredJobs(filtered, "Company: " + selectedCompany.getName());
+        jobPostingUI.displayFilteredJobs(filtered);
     }
 
     // Filter by job type
@@ -129,7 +129,7 @@ public class JobPostingService implements Service {
             }
         }
         
-        jobPostingUI.displayFilteredJobs(filtered, "Job Type: " + selectedType);
+        jobPostingUI.displayFilteredJobs(filtered);
     }
 
     // Filter by salary range
@@ -148,7 +148,7 @@ public class JobPostingService implements Service {
             }
         }
         
-        jobPostingUI.displayFilteredJobs(filtered, "Salary Range: " + minSalary + "-" + maxSalary);
+        jobPostingUI.displayFilteredJobs(filtered);
     }
 
     // Filter by job status
@@ -163,7 +163,7 @@ public class JobPostingService implements Service {
             }
         }
         
-        jobPostingUI.displayFilteredJobs(filtered, "Status: " + selectedStatus);
+        jobPostingUI.displayFilteredJobs(filtered);
     }
 
     // Filter by date range
@@ -182,9 +182,7 @@ public class JobPostingService implements Service {
             }
         }
         
-        jobPostingUI.displayFilteredJobs(filtered, "Date Range: " + 
-            startDate.format(DateTimeFormatter.ISO_LOCAL_DATE) + " to " + 
-            endDate.format(DateTimeFormatter.ISO_LOCAL_DATE));
+        jobPostingUI.displayFilteredJobs(filtered);
     }
 
     // Sort jobs using TimSort algorithm

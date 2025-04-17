@@ -97,7 +97,6 @@ public class JobPostingUI {
             Log.info("No job postings to search");
             return;
         }
-        System.out.println("<== Search Job Posting [ X to Exit ] ==>");
     }
 
     public String getSearchJobPostingQuery() {
@@ -672,15 +671,15 @@ public class JobPostingUI {
                         new Menu.Choice("Filter by Date Range", () -> service.filterByDateRange(jobs)),
                         new Menu.Choice("Sort by Title", () -> {
                             service.sortJobs(jobs, Comparator.comparing(JobPosting::getTitle));
-                            displayFilteredJobs(jobs, "Sorted by Title");
+                            displayFilteredJobs(jobs);
                         }),
                         new Menu.Choice("Sort by Salary", () -> {
                             service.sortJobs(jobs, Comparator.comparing(JobPosting::getSalaryMin));
-                            displayFilteredJobs(jobs, "Sorted by Minimum Salary");
+                            displayFilteredJobs(jobs);
                         }),
                         new Menu.Choice("Sort by Date", () -> {
                             service.sortJobs(jobs, Comparator.comparing(JobPosting::getCreatedAt).reversed());
-                            displayFilteredJobs(jobs, "Sorted by Date (Newest First)");
+                            displayFilteredJobs(jobs);
                         })
                 )
                 .exit("<Return>")
@@ -690,8 +689,7 @@ public class JobPostingUI {
     }
 
     // Display filtered jobs
-    public void displayFilteredJobs(List<JobPosting> filteredJobs, String filterCriteria) {
-        System.out.println("\n=== Jobs " + filterCriteria + " ===");
+    public void displayFilteredJobs(List<JobPosting> filteredJobs) {
 
         if (filteredJobs.isEmpty()) {
             Log.info("No job postings match the criteria");
