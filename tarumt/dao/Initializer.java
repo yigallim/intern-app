@@ -289,6 +289,12 @@ public class Initializer {
         jobApplications.add(new JobApplication(jobPostings.get(4), applicants.get(35), JobApplication.Status.SHORTLISTED, LocalDate.of(2025, 4, 2)));
         jobApplications.add(new JobApplication(jobPostings.get(4), applicants.get(37), JobApplication.Status.INTERVIEWED, LocalDate.of(2025, 4, 3)));
         jobApplications.add(new JobApplication(jobPostings.get(4), applicants.get(39), JobApplication.Status.REJECTED, LocalDate.of(2025, 4, 4)));
+        
+        //
+        jobApplications.add(new JobApplication(jobPostings.get(7), applicants.get(1), JobApplication.Status.PENDING, LocalDate.of(2025, 4, 1)));
+        jobApplications.add(new JobApplication(jobPostings.get(9), applicants.get(1), JobApplication.Status.SHORTLISTED, LocalDate.of(2025, 4, 2)));
+        jobApplications.add(new JobApplication(jobPostings.get(11), applicants.get(1), JobApplication.Status.INTERVIEWED, LocalDate.of(2025, 4, 3)));
+        jobApplications.add(new JobApplication(jobPostings.get(17), applicants.get(1), JobApplication.Status.REJECTED, LocalDate.of(2025, 4, 4)));
     }
 
     public static ListInterface<Company> getCompanies() {

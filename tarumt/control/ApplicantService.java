@@ -139,8 +139,9 @@ public class ApplicantService implements Service {
         System.out.printf("%40s %s%n", "Generated on:", generatedTime);
         System.out.println("========================================================================================");
 
-        System.out.printf("| %-13s | %-20s | %-13s | %-29s |%n", 
+        System.out.printf("| %-13s | %-20s | %-13s | %-29s |%n",
                 "Applicant ID", "Name", "Applications", "Status Summary");
+        
         System.out.println("----------------------------------------------------------------------------------------");
 
         int totalApplications = 0;
@@ -166,7 +167,7 @@ public class ApplicantService implements Service {
             for (int j = 0; j < applications.size(); j++) {
                 JobApplication app = applications.get(j);
                 if (app.getApplicant().getId().equals(applicantId)) {
-                    applicantApplications.add(app.getId()); 
+                    applicantApplications.add(app.getId());
                     for (int s = 0; s < statuses.length; s++) {
                         if (app.getStatus().name().equalsIgnoreCase(statuses[s])) {
                             statusCounts[s]++;
@@ -176,42 +177,65 @@ public class ApplicantService implements Service {
                 }
             }
 
-            StringBuilder statusSummary = new StringBuilder();
+            ListInterface<String> statusLines = new DoublyLinkedList<>();
             for (int s = 0; s < statuses.length; s++) {
                 if (statusCounts[s] > 0) {
-                    if (statusSummary.length() > 0) statusSummary.append("  ");
-                    statusSummary.append(String.format("%s: %d", statuses[s], statusCounts[s]));
+                    statusLines.add(String.format("%s: %d", statuses[s], statusCounts[s]));
                 }
             }
 
-            int applicationCount = applicantApplications.size();
-            String applicationsFormatted = String.format("%d (%s)", applicationCount, String.join(",", applicantApplications));
+            ListInterface<String> appLines = new DoublyLinkedList<>();
+            StringBuilder appLine = new StringBuilder();
+            for (int a = 0; a < applicantApplications.size(); a++) {
+                appLine.append(applicantApplications.get(a));
+                if ((a + 1) % 2 == 0 || a == applicantApplications.size() - 1) {
+                    appLines.add(appLine.toString().trim());
+                    appLine = new StringBuilder();
+                } else {
+                    appLine.append(", ");
+                }
+            }
 
-            System.out.printf("|%-15s|%-22s|%-15s|%-31s|%n", applicantId, applicantName, applicationsFormatted, statusSummary.toString());
+            System.out.printf("| %-14s| %-21s| %-14s| %-30s|%n", applicantId, applicantName,
+                    appLines.size() > 0 ? appLines.get(0) : "",
+                    statusLines.size() > 0 ? statusLines.get(0) : "");
 
-            totalApplications += applicationCount;
+            for (int l = 1; l < appLines.size(); l++) {
+                String appStr = appLines.get(l);
+                String statusStr = (l < statusLines.size()) ? statusLines.get(l) : "";
+                System.out.printf("| %-14s| %-21s| %-14s| %-30s|%n", "", "", appStr, statusStr);
+            }
 
-            if (applicationCount == 1) {
+            for (int l = appLines.size(); l < statusLines.size(); l++) {
+                String statusStr = statusLines.get(l);
+                System.out.printf("| %-14s| %-21s| %-14s| %-30s|%n", "", "", "", statusStr);
+            }
+
+            System.out.println("----------------------------------------------------------------------------------------");
+
+            totalApplications += applicantApplications.size();
+
+            if (applicantApplications.size() == 1) {
                 totalUniqueApplications++;
-            } else if (applicationCount > 1) {
+            } else if (applicantApplications.size() > 1) {
                 totalDuplicateApplications++;
             }
 
-            if (applicationCount > maxApplications) {
-                maxApplications = applicationCount;
+            if (applicantApplications.size() > maxApplications) {
+                maxApplications = applicantApplications.size();
                 topApplicants.clear();
                 topApplicants.add(applicant);
-            } else if (applicationCount == maxApplications && applicationCount > 0) {
+            } else if (applicantApplications.size() == maxApplications && applicantApplications.size() > 0) {
                 topApplicants.add(applicant);
             }
 
             categories.add(applicantName);
-            values.add(applicationCount);
+            values.add(applicantApplications.size());
 
             boolean applicantFound = false;
             for (int k = 0; k < applicantIds.size(); k++) {
                 if (applicantIds.get(k).equals(applicantId)) {
-                    applicationCounts.set(k, applicationCounts.get(k) + 1); 
+                    applicationCounts.set(k, applicationCounts.get(k) + 1);
                     applicantFound = true;
                     break;
                 }
@@ -219,12 +243,11 @@ public class ApplicantService implements Service {
 
             if (!applicantFound) {
                 applicantIds.add(applicantId);
-                applicationCounts.add(applicationCount);
+                applicationCounts.add(applicantApplications.size());
             }
         }
 
         System.out.println("========================================================================================");
-
         System.out.println();
         System.out.println("Most Active Applicant(s):");
         if (topApplicants.isEmpty()) {
@@ -236,17 +259,14 @@ public class ApplicantService implements Service {
             }
         }
 
-        System.out.println("====================================================================================");
-
+        System.out.println("========================================================================================");
         System.out.printf("Total Applications: %d%n", totalApplications);
         System.out.printf("Total Unique Applications: %d%n", totalUniqueApplications);
         System.out.printf("Total Duplicate Applications: %d%n", totalDuplicateApplications);
 
         Chart.barChart(categories, values, "Application Count per Applicant", 50, '=', true);
-
-        System.out.println("====================================================================================");
+        System.out.println("========================================================================================");
     }
-
 
     private Applicant getApplicant() {
         String name = applicantUI.getApplicantName();
