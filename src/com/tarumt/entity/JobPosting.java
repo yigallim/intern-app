@@ -10,10 +10,7 @@ import com.tarumt.utility.search.annotation.Fuzzy;
 import com.tarumt.utility.validation.annotation.Max;
 import com.tarumt.utility.validation.annotation.Min;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-
 import com.tarumt.adt.list.ListInterface;
 
 // TODO : CLOSED job cant be updated or displayed, FILLED job can be reopen and displayed

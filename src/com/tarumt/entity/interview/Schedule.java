@@ -7,13 +7,13 @@ import com.tarumt.adt.list.DoublyLinkedList;
 import java.time.*;
 
 public class Schedule {
+
     private static final LocalTime START_TIME = LocalTime.of(9, 0); // 9 AM
     private static final Duration INTERVAL = Duration.ofMinutes(30); // 30-minute intervals
-    private static final int NUM_SLOTS_PER_DAY = 18; // 9 AM to 6 PM = 9 hours * 2 slots/hour
+    private static final int NUM_SLOTS_PER_DAY = 18; // 9 INTERVALAM to 6 PM = 9 hours * 2 slots/hour
     private static final int DAYS_AHEAD = 7;
 
     private final ListInterface<TimeSlot> bookedSlots = new DoublyLinkedList<>();
-
 
     // Book a time slot if available
     public boolean bookSlot(LocalDate date, int slotIndex) {
@@ -31,8 +31,8 @@ public class Schedule {
     // Helper: Check if a date is a weekday (Monday to Friday)
     private boolean isWeekday(LocalDate date) {
         DayOfWeek dow = date.getDayOfWeek();
-        return dow.getValue() >= DayOfWeek.MONDAY.getValue() &&
-                dow.getValue() <= DayOfWeek.FRIDAY.getValue();
+        return dow.getValue() >= DayOfWeek.MONDAY.getValue()
+                && dow.getValue() <= DayOfWeek.FRIDAY.getValue();
     }
 
     // Helper: Get start time for a slot index
@@ -74,8 +74,8 @@ public class Schedule {
         LocalDate today = LocalDate.now();
         for (int i = 0; i < DAYS_AHEAD; i++) {
             LocalDate date = today.plusDays(i);
-            String dayHeader = date.getDayOfWeek().name().substring(0, 3) + " " +
-                    date.getDayOfMonth() + "/" + date.getMonthValue();
+            String dayHeader = date.getDayOfWeek().name().substring(0, 3) + " "
+                    + date.getDayOfMonth() + "/" + date.getMonthValue();
             calendarView.append(" ").append(String.format("%-" + columnWidth + "s", dayHeader)).append(" |");
         }
         calendarView.append("\n");
