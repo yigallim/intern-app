@@ -202,6 +202,20 @@ public class DoublyLinkedList<E> implements ListInterface<E> {
     }
 
     @Override
+    public int indexOf(Object o) {
+        int index = 0;
+        Node current = head;
+        while (current != null) {
+            if (Objects.equals(o, current.element)) {
+                return index;
+            }
+            current = current.next;
+            index++;
+        }
+        return -1;
+    }
+
+    @Override
     public ListInterface<E> subList(int fromIndex, int toIndex) {
         if (fromIndex < 0 || toIndex > size || fromIndex > toIndex) {
             throw new IndexOutOfBoundsException("fromIndex: " + fromIndex + ", toIndex: " + toIndex + ", Size: " + size);
@@ -384,6 +398,7 @@ public class DoublyLinkedList<E> implements ListInterface<E> {
             current = current.next;
         }
     }
+
     @Override
     public boolean anyMatch(TestLambda<? super E> testLambda) {
         if (testLambda == null) throw new NullPointerException();
@@ -396,7 +411,7 @@ public class DoublyLinkedList<E> implements ListInterface<E> {
         }
         return false;
     }
-    
+
     @Override
     public Optional<E> min(Comparator<? super E> comparator) {
         if (isEmpty()) {

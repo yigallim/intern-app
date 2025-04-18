@@ -34,6 +34,8 @@ public interface ListInterface<E> extends Iterable<E> {
 
     E set(int index, E element);
 
+    int indexOf(Object o);
+
     ListInterface<E> subList(int fromIndex, int toIndex);
 
     <R> ListInterface<R> map(SingleArgLambda<? super E, ? extends R> mapper);

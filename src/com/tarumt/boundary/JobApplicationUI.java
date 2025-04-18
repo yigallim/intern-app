@@ -28,7 +28,7 @@ public class JobApplicationUI {
                         new Menu.Choice("📄 Display All Application", jobApplicationController::displayJobApplication),
                         new Menu.Choice("🔄 Display Ongoing Application", jobApplicationController::displayOngoingJobApplication),
                         new Menu.Choice("🏁 Display Terminated Application", jobApplicationController::displayTerminatedJobApplication),
-                        new Menu.Choice("🔍 View Ranked Applications", Log::na),
+                        new Menu.Choice("🔍 View Matched Applications", Log::na),
                         new Menu.Choice("✅ Shortlist Application", jobApplicationController::shortlistApplication),
                         new Menu.Choice("🎉 Offer Application", jobApplicationController::offerApplication),
                         new Menu.Choice("❌ Reject Application", jobApplicationController::rejectApplication)
@@ -50,8 +50,6 @@ public class JobApplicationUI {
         }
 
         System.out.println("<== Shortlist Job Application [ X to Exit ] ==>");
-        System.out.println(Strings.warnHighlight("| Recommended ==> "));
-//        recommended.forEach((jobApplication -> )); // TODO : foreach, allow index param
 
         return input.getObjectFromList("|\n| Select Job Application To Shortlist =>", jobApplications, 80, 2);
     }
@@ -74,7 +72,6 @@ public class JobApplicationUI {
 
         System.out.println("<== Offer Job Application [ X to Exit ] ==>");
         System.out.println(Strings.warnHighlight("| Recommended ==> "));
-//        recommended.forEach((jobApplication -> )); // TODO : recommend
         return input.getObjectFromList("|\n| Select Job Application To Offer =>", jobApplications, 80, 2);
     }
 
@@ -108,8 +105,6 @@ public class JobApplicationUI {
 
         System.out.println("<== Reject Job Application [ X to Exit ] ==>");
         System.out.println(Strings.warnHighlight("| Recommended ==> "));
-//        recommended.forEach((jobApplication -> )); // TODO : recommend
-
         return input.getObjectFromList("|\n| Select Job Application To Reject =>", jobApplications, 80, 2);
     }
 

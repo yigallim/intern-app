@@ -1,14 +1,18 @@
 package com.tarumt.boundary;
 
+import com.tarumt.adt.list.DoublyLinkedList;
 import com.tarumt.control.*;
 import com.tarumt.entity.Applicant;
+import com.tarumt.entity.JobApplication;
 import com.tarumt.entity.JobPosting;
+import com.tarumt.entity.location.City;
 import com.tarumt.utility.common.*;
 import com.tarumt.utility.pretty.TabularPrint;
 import com.tarumt.utility.search.FuzzySearch;
 import com.tarumt.utility.validation.*;
 
 import java.lang.reflect.Field;
+import java.util.Scanner;
 
 import com.tarumt.adt.list.ListInterface;
 
@@ -304,7 +308,7 @@ public class ApplicantUI {
                 .choice(
                         new Menu.Choice("📋 Display All Job Postings", jobPostingController::read),
                         new Menu.Choice("🔍 Search Job Postings", jobPostingController::search),
-                        new Menu.Choice("📂 Filter Job Postings", Log::na),
+                        new Menu.Choice("📂 Filter Job Postings",jobPostingController::filter),
                         new Menu.Choice("🔖 Display Recommended Job Postings", Log::na),
                         new Menu.Choice("🏢 Display Companies", companyController::read),
                         new Menu.Choice("🔍 Search Companies", companyController::search))
@@ -351,25 +355,214 @@ public class ApplicantUI {
         input.clickAnythingToContinue();
     }
 
-    public void reportMenu() {
+    public void printEmailAlreadyExistsMsg() {
+        System.out.println("| Error: This email is already registered. Please use a different email.");
+    }
+
+    public void filterMode() {
+        ApplicantController controller = ApplicantController.getInstance();
         System.out.println();
         new Menu()
-                .header("==> Select Report Type <==")
+                .header("Select Filter/Sort Criteria ==>")
                 .choice(
-                        new Menu.Choice(" Top 10 Locations", Log::na),
-                        new Menu.Choice(" All Locations (Descending)", Log::na),
-                        new Menu.Choice(" Top 10 Jobs", Log::na),
-                        new Menu.Choice(" All Jobs (Descending)", Log::na),
-                        new Menu.Choice(" Applicants Applied Status", Log::na),
-                        new Menu.Choice(" Full Report", Log::na))
+                        new Menu.Choice("Filter by Location", () -> {
+                            City selectedLocation = this.selectCity();
+
+                            ListInterface<JobApplication> jobApplications = controller.getJobApplications();
+
+                            ListInterface<JobApplication> filteredApplications = controller.filterApplicationsByLocation(jobApplications, selectedLocation);
+
+                            if (filteredApplications.isEmpty()) {
+                                System.out.println("No applications found for status: " + selectedLocation);
+                            } else {
+                                System.out.println("\nFiltered Job Applications by Status: " + selectedLocation);
+                                TabularPrint.printTabular(filteredApplications, true);
+                            }
+
+                        }),
+                        new Menu.Choice("Filter by Status", () -> {
+                            JobApplication.Status chosenStatus = this.selectStatusMenu();
+
+                            ListInterface<JobApplication> jobApplications = controller.getJobApplications();
+                            ListInterface<JobApplication> filteredApplications = controller.filterByStatus(jobApplications, chosenStatus);
+                            if (filteredApplications.isEmpty()) {
+                                System.out.println("No applications found for status: " + chosenStatus);
+                            } else {
+                                System.out.println("\nFiltered Job Applications by Status: " + chosenStatus);
+                                TabularPrint.printTabular(filteredApplications, true);
+                            }
+                        }),
+                        new Menu.Choice("Sort by Submission Date", () -> {
+                            ListInterface<JobApplication> sorted = controller.sortBySubmissionDate(controller.getJobApplications());
+                            TabularPrint.printTabular(sorted, true);
+                        }),
+                        new Menu.Choice("Sort by Applicant Submission Count", this::sortByApplicantSubmissionCount)
+                )
                 .exit("<Return>")
                 .beforeEach(System.out::println)
                 .afterEach(System.out::println)
                 .run();
-        System.out.println();
     }
 
-    public void printEmailAlreadyExistsMsg() {
-        System.out.println("| Error: This email is already registered. Please use a different email.");
+    public City selectCity() {
+        Scanner scanner = new Scanner(System.in);
+        final int columns = 4;
+        final City[] cities = City.values();
+
+        while (true) {
+            System.out.println("Select a City (x to return):\n");
+
+            int maxLength = 0;
+            for (City city : cities) {
+                maxLength = Math.max(maxLength, city.toString().length());
+            }
+
+            for (int i = 0; i < cities.length; i++) {
+                String formatted = String.format("%2d. %-" + maxLength + "s", i + 1, cities[i]);
+                System.out.print(formatted + "\t");
+
+                if ((i + 1) % columns == 0) System.out.println();
+            }
+            if (cities.length % columns != 0) System.out.println();
+
+            System.out.print("\nEnter your choice: ");
+            String input = scanner.nextLine().trim();
+
+            if (input.equalsIgnoreCase("x")) return null;
+
+            try {
+                int choice = Integer.parseInt(input);
+                if (choice >= 1 && choice <= cities.length) {
+                    City selectedCity = cities[choice - 1];
+
+                    ListInterface<JobApplication> applicationsForCity = getApplicationsForCity(selectedCity);
+
+                    ListInterface<JobApplication> selectedCityApplicationsList = new DoublyLinkedList<>(applicationsForCity);
+
+                    TabularPrint.printTabular(selectedCityApplicationsList, true);
+
+                    return selectedCity;
+                } else {
+                    System.out.println("Invalid number. Please choose a valid city index between 1 and " + cities.length + ".\n");
+                }
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid input. Please enter a valid number or 'x' to return.\n");
+            }
+        }
     }
+
+    private ListInterface<JobApplication> getApplicationsForCity(City city) {
+        ListInterface<JobApplication> applications = new DoublyLinkedList<>();
+        return applications;
+    }
+
+    public JobApplication.Status selectStatusMenu() {
+        Scanner scanner = new Scanner(System.in);
+        final int columns = 3;
+        final JobApplication.Status[] statuses = JobApplication.Status.values();
+
+        while (true) {
+            System.out.println("Select an Application Status (x to return):\n");
+
+            int maxLength = 0;
+            for (JobApplication.Status status : statuses) {
+                maxLength = Math.max(maxLength, status.toString().length());
+            }
+
+            for (int i = 0; i < statuses.length; i++) {
+                String formatted = String.format("%2d. %-" + maxLength + "s", i + 1, statuses[i]);
+                System.out.print(formatted + "\t");
+
+                if ((i + 1) % columns == 0) System.out.println();
+            }
+            if (statuses.length % columns != 0) System.out.println();
+
+            System.out.print("\nEnter your choice: ");
+            String input = scanner.nextLine().trim();
+
+            if (input.equalsIgnoreCase("x")) return null;
+
+            try {
+                int choice = Integer.parseInt(input);
+                if (choice >= 1 && choice <= statuses.length) {
+                    JobApplication.Status selectedStatus = statuses[choice - 1];
+
+                    ListInterface<JobApplication> applications = getApplicationsByStatus(selectedStatus);
+                    ListInterface<JobApplication> filtered = new DoublyLinkedList<>(applications);
+
+                    TabularPrint.printTabular(filtered, true);
+
+                    return selectedStatus;
+                } else {
+                    System.out.println("Invalid number. Please choose a valid status index between 1 and " + statuses.length + ".\n");
+                }
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid input. Please enter a valid number or 'x' to return.\n");
+            }
+        }
+    }
+
+    private ListInterface<JobApplication> getApplicationsByStatus(JobApplication.Status status) {
+        ListInterface<JobApplication> filtered = new DoublyLinkedList<>();
+        ListInterface<JobApplication> allApplications = ApplicantController.getInstance().getJobApplications();
+        for (int i = 0; i < allApplications.size(); i++) {
+            JobApplication app = allApplications.get(i);
+        }
+        return filtered;
+    }
+
+    public void sortByApplicantSubmissionCount() {
+        ApplicantController controller = ApplicantController.getInstance();
+        ListInterface<Object[]> sorted = controller.getApplicantsSortedWithApplications();
+
+        if (sorted.isEmpty()) {
+            System.out.println("\nNo applications available to sort by submission count.");
+            return;
+        }
+
+        System.out.println("\n=== Applicants Sorted by Submission Count ===");
+        System.out.printf("+----+-------------------------+------------------+--------------------------+-------------------------+\n");
+        System.out.printf("| %-2s | %-23s | %-16s | %-24s | %-23s |\n", "No", "Applicant Name", "Submission No.", "Job Application ID", "Job Title");
+        System.out.printf("+----+-------------------------+------------------+--------------------------+-------------------------+\n");
+
+        for (int i = 0; i < sorted.size(); i++) {
+            Object[] entry = sorted.get(i);
+            Applicant applicant = (Applicant) entry[0];
+            ListInterface<JobApplication> apps = (ListInterface<JobApplication>) entry[1];
+            int label = i + 1;
+            boolean firstRow = true;
+
+            for (int j = 0; j < apps.size(); j++) {
+                JobApplication ja = apps.get(j);
+                String ordinal = getOrdinal(j + 1);
+
+                // Standardize the output format
+                if (firstRow) {
+                    System.out.printf("| %-2d | %-23s | %-16s | %-24s | %-23s |\n",
+                            label, applicant.getName(), ordinal, ja.getId(), ja.getJobPosting().getTitle());
+                    firstRow = false;
+                } else {
+                    System.out.printf("| %-2s | %-23s | %-16s | %-24s | %-23s |\n",
+                            "", "", ordinal, ja.getId(), ja.getJobPosting().getTitle());
+                }
+            }
+
+            System.out.printf("+----+-------------------------+------------------+--------------------------+-------------------------+\n");
+        }
+    }
+
+    private String getOrdinal(int num) {
+        if (num % 100 >= 11 && num % 100 <= 13) return num + "th";
+        switch (num % 10) {
+            case 1:
+                return num + "st";
+            case 2:
+                return num + "nd";
+            case 3:
+                return num + "rd";
+            default:
+                return num + "th";
+        }
+    }
+
 }

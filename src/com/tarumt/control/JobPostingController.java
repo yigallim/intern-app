@@ -10,22 +10,30 @@ import com.tarumt.utility.search.FuzzySearch;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Comparator;
-import java.util.LinkedList;
 
 import com.tarumt.adt.list.ListInterface;
 import com.tarumt.adt.list.DoublyLinkedList;
+import com.tarumt.adt.map.MapInterface;
+import com.tarumt.adt.map.SimpleHashMap;
+import java.time.YearMonth;
+import java.util.Comparator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 public class JobPostingController {
 
     private static JobPostingController instance;
     private ListInterface<JobPosting> jobPostings = new DoublyLinkedList<>();
     private final JobPostingUI jobPostingUI;
+    private final ListInterface<JobApplication> jobApplications;
 
     private JobPostingController() {
         Input input = new Input();
         this.jobPostings = Initializer.getJobPostings();
         this.jobPostingUI = new JobPostingUI(input);
+        this.jobApplications = Initializer.getJobApplications();
     }
 
     public static JobPostingController getInstance() {
@@ -286,10 +294,6 @@ public class JobPostingController {
         }
     }
 
-    public void report() {
-        Log.na();
-    }
-
     private JobPosting getJobPosting() {
         String title = jobPostingUI.getJobPostingTitle();
         if (title.equals(Input.STRING_EXIT_VALUE)) {
@@ -487,5 +491,136 @@ public class JobPostingController {
         jobPosting.setStatus(newStatus);
         jobPosting.setUpdatedAt(Context.getDateTime());
         jobPostingUI.printUpdateSuccessMessage(jobPosting, "All Fields");
+    }
+
+    public void displayMonthRangeSummaryReport() {
+
+        int[] monthRange = jobPostingUI.getMonthRange();
+        if (monthRange == null) {
+            return;
+        }
+
+        int startMonth = monthRange[0];
+        int startYear = monthRange[1];
+        int endMonth = monthRange[2];
+        int endYear = monthRange[3];
+
+        if (startYear > endYear || (startYear == endYear && startMonth > endMonth)) {
+            jobPostingUI.displayDateRangeError();
+            return;
+        }
+
+        ListInterface<MonthRangeSummaryData> reportData = generateMonthRangeSummaryReport(startMonth, startYear, endMonth, endYear);
+
+        if (reportData.isEmpty()) {
+            jobPostingUI.displayNoDataMessage();
+            return;
+        }
+
+        jobPostingUI.displayMonthRangeSummaryReport(reportData, startMonth, startYear, endMonth, endYear);
+    }
+
+    public static class MonthRangeSummaryData {
+        private String jobTitle;
+        private String companyName;
+        private LocalDate appliedDate;
+        private int applicantCount;
+
+        public MonthRangeSummaryData(String jobTitle, String companyName, LocalDate appliedDate, int applicantCount) {
+            this.jobTitle = jobTitle;
+            this.companyName = companyName;
+            this.appliedDate = appliedDate;
+            this.applicantCount = applicantCount;
+        }
+
+        public String getJobTitle() {
+            return jobTitle;
+        }
+
+        public String getCompanyName() {
+            return companyName;
+        }
+
+        public LocalDate getAppliedDate() {
+            return appliedDate;
+        }
+
+        public int getApplicantCount() {
+            return applicantCount;
+        }
+    }
+
+    public ListInterface<MonthRangeSummaryData> generateMonthRangeSummaryReport(int startMonth, int startYear, int endMonth, int endYear) {
+        ListInterface<MonthRangeSummaryData> summaryReport = new DoublyLinkedList<>();
+
+        // Define date range
+        LocalDate startDate = LocalDate.of(startYear, startMonth, 1);
+        LocalDate endDate = YearMonth.of(endYear, endMonth).atEndOfMonth();
+
+        // Filter applications in the date range
+        ListInterface<JobApplication> filteredApplications = new DoublyLinkedList<>();
+        for (int i = 0; i < jobApplications.size(); i++) {
+            JobApplication app = jobApplications.get(i);
+            LocalDate applicationDate = app.getAppliedAt().toLocalDate();
+
+            // For employer, only include applications for their job postings
+            if (Context.isEmployer()) {
+                Company loggedInCompany = Context.getCompany();
+                if (app.getJobPosting().getCompany().getId().equals(loggedInCompany.getId()) &&
+                        !applicationDate.isBefore(startDate) && !applicationDate.isAfter(endDate)) {
+                    filteredApplications.add(app);
+                }
+            } else {
+                // For admin, include all applications in the date range
+                if (!applicationDate.isBefore(startDate) && !applicationDate.isAfter(endDate)) {
+                    filteredApplications.add(app);
+                }
+            }
+        }
+
+        // Rest of the method remains the same
+        // Group by job and date
+        MapInterface<JobPosting, MapInterface<LocalDate, Integer>> jobDateCounts = new SimpleHashMap<>();
+
+        // Count applications by job and date
+        for (int i = 0; i < filteredApplications.size(); i++) {
+            JobApplication app = filteredApplications.get(i);
+            JobPosting job = app.getJobPosting();
+            LocalDate date = app.getAppliedAt().toLocalDate();
+
+            // Get or create the date map for this job
+            MapInterface<LocalDate, Integer> dateCounts;
+            if (jobDateCounts.containsKey(job)) {
+                dateCounts = jobDateCounts.get(job);
+            } else {
+                dateCounts = new SimpleHashMap<>();
+                jobDateCounts.put(job, dateCounts);
+            }
+
+            // Increment the count for this date
+            int currentCount = dateCounts.getOrDefault(date, 0);
+            dateCounts.put(date, currentCount + 1);
+        }
+
+        // Convert to report data format
+        for (JobPosting job : jobDateCounts.keySet()) {
+            MapInterface<LocalDate, Integer> dateCounts = jobDateCounts.get(job);
+
+            for (LocalDate date : dateCounts.keySet()) {
+                int count = dateCounts.get(date);
+                summaryReport.add(new MonthRangeSummaryData(
+                        job.getTitle(),
+                        job.getCompany().getName(),
+                        date,
+                        count
+                ));
+            }
+        }
+
+        summaryReport.sort((data1, data2) ->
+                data1.getAppliedDate().compareTo(data2.getAppliedDate())
+        );
+
+        return summaryReport;
     }
 }

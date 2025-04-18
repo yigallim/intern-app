@@ -1,5 +1,8 @@
 package com.tarumt.adt.map;
 
+import com.tarumt.adt.list.DoublyLinkedList;
+import com.tarumt.adt.list.ListInterface;
+
 public class SimpleHashMap<K, V> implements MapInterface<K, V> {
 
     private static class Entry<K, V> {
@@ -143,6 +146,19 @@ public class SimpleHashMap<K, V> implements MapInterface<K, V> {
     public V getOrDefault(K key, V defaultValue) {
         V value = get(key);
         return value != null ? value : defaultValue;
+    }
+
+    @Override
+    public Iterable<K> keySet() {
+        ListInterface<K> keys = new DoublyLinkedList<>();
+
+        for (Entry<K, V> bucket : buckets) {
+            for (Entry<K, V> entry = bucket; entry != null; entry = entry.next) {
+                keys.add(entry.key);
+            }
+        }
+
+        return keys;
     }
 
     private boolean equals(Object o1, Object o2) {

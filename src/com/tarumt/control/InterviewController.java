@@ -26,6 +26,7 @@ public class InterviewController {
     private ListInterface<ScheduledInterview> scheduledInterviews = new DoublyLinkedList<>();
     private ListInterface<BlockedTimeSlot> blockedTimeSlots = new DoublyLinkedList<>();
     private ListInterface<JobApplication> jobApplications = new DoublyLinkedList<>();
+    private ListInterface<JobPosting> jobPostings = new DoublyLinkedList<>();
     private final InterviewUI interviewUI;
 
     private InterviewController() {
@@ -34,6 +35,7 @@ public class InterviewController {
         this.scheduledInterviews = Initializer.getScheduledInterviews();
         this.blockedTimeSlots = Initializer.getBlockedTimeSlots();
         this.jobApplications = Initializer.getJobApplications();
+        this.jobPostings = Initializer.getJobPostings();
         this.interviewUI = new InterviewUI(input);
         updateInterviewedStatus();
     }
@@ -108,6 +110,14 @@ public class InterviewController {
                 && application.getJobPosting().getCompany().equals(company));
     }
 
+    private ListInterface<JobApplication> getEmployerJobApplications(Company company) {
+        if (company == null) {
+            return new DoublyLinkedList<>();
+        }
+        return getAllJobApplications().filter(application -> application.getJobPosting().getCompany() != null
+                && application.getJobPosting().getCompany().equals(company));
+    }
+
     private ListInterface<ScheduledInterview> getApplicantScheduledInterviews() {
         Applicant applicant = Context.getApplicant();
         return getAllScheduledInterviews()
@@ -119,6 +129,21 @@ public class InterviewController {
             return new DoublyLinkedList<>();
         }
         return blockedTimeSlots.filter(uts -> uts.getCompany().equals(company));
+    }
+
+    private ListInterface<JobPosting> getEmployerJobPostings() {
+        Company company = Context.getCompany();
+        if (company == null) {
+            return new DoublyLinkedList<>();
+        }
+        return jobPostings.filter(job -> job.getCompany().equals(company));
+    }
+
+    private ListInterface<JobPosting> getEmployerJobPostings(Company company) {
+        if (company == null) {
+            return new DoublyLinkedList<>();
+        }
+        return jobPostings.filter(job -> job.getCompany().equals(company));
     }
 
     public void run() {
@@ -424,16 +449,22 @@ public class InterviewController {
         }
     }
 
-    public void report() {
-        this.interviewUI.printReportHeader(120);
-        System.out.println(this.buildReportBody());
-        this.interviewUI.printReportFooter(120);
+    public void interviewReport() {
+        int previousDays = interviewUI.getPreviousDay();
+        if (previousDays == Input.INT_EXIT_VALUE) return;
+        this.interviewUI.printReport(buildInterviewReportBody(previousDays));
+    }
+
+    public void recruitmentReport() {
+        int previousDays = interviewUI.getPreviousDay();
+        if (previousDays == Input.INT_EXIT_VALUE) return;
+        this.interviewUI.printReport(buildRecruitmentReportBody(previousDays));
     }
 
     public void rescheduleInterview() {
-        // This is an applicant-only function
+
         Applicant applicant = Context.getApplicant();
-        if (applicant == null) return; // Should not happen
+        if (applicant == null) return;
 
         ListInterface<ScheduledInterview> applicantUpcomingInterviews = getApplicantScheduledInterviews()
                 .filter(interview -> !interview.getTimeSlot().isPast());
@@ -446,34 +477,27 @@ public class InterviewController {
         Company company = interviewToReschedule.getJobApplication().getJobPosting().getCompany();
         TimeSlot oldTimeSlot = interviewToReschedule.getTimeSlot();
 
-        // Get company's blocked slots
         ListInterface<TimeSlot> companyBlockedSlots = getEmployerBlockedSlots(company).map(BlockedTimeSlot::getSlot);
 
-        // Get company's other booked slots (excluding the one being rescheduled)
         ListInterface<TimeSlot> companyOtherBookedSlots = getEmployerScheduledInterviews(company)
                 .filter(interview -> !interview.getTimeSlot().isPast() && !interview.getTimeSlot().equals(oldTimeSlot))
                 .map(ScheduledInterview::getTimeSlot);
 
-        // Get applicant's other booked slots (excluding the one being rescheduled)
         ListInterface<TimeSlot> applicantOtherBookedSlots = applicantUpcomingInterviews
                 .filter(interview -> !interview.getTimeSlot().equals(oldTimeSlot))
                 .map(ScheduledInterview::getTimeSlot);
 
-        // Combine relevant unavailable slots
         ListInterface<TimeSlot> combinedBookedSlots = new DoublyLinkedList<>();
         combinedBookedSlots.merge(companyOtherBookedSlots);
         combinedBookedSlots.merge(applicantOtherBookedSlots);
-        // No need to merge blocked slots if using overloaded methods below
 
-        // Check availability considering other bookings and company blocks
         if (isWeekTimeSlotOccupied(combinedBookedSlots, companyBlockedSlots)) {
-            interviewUI.printFullyOccupiedMsg(company); // Or a more specific message
+            interviewUI.printFullyOccupiedMsg(company);
             return;
         }
 
-        // Get available slots considering other bookings and company blocks
         ListInterface<TimeSlot> availableTimeSlots = getAvailableTimeSlot(combinedBookedSlots, companyBlockedSlots);
-        // Generate calendar view showing other bookings and company blocks
+
         String calendarView = getCalendarAvailabilityView(combinedBookedSlots, companyBlockedSlots, true);
 
         interviewUI.printAvailableTimeSlot(calendarView);
@@ -482,10 +506,7 @@ public class InterviewController {
 
         TimeSlot newTimeSlot = availableTimeSlots.get(timeSlotInput - 1);
 
-        // Update the interview's time slot
         interviewToReschedule.setTimeSlot(newTimeSlot);
-        // Optionally update bookedAt timestamp?
-        // interviewToReschedule.setBookedAt(Context.getDateTime());
 
         interviewUI.printSuccessRescheduleMsg(newTimeSlot);
     }
@@ -628,31 +649,32 @@ public class InterviewController {
         return calendarView.toString();
     }
 
-    public String buildReportBody() {
+    public String buildJobInterviewCountTable(Company company, int width, int previousDays) {
         StringBuilder report = new StringBuilder();
-        int width = 120;
-        Company currentCompany = Context.getCompany();
 
-        report.append(String.format("%-" + width + "s%n", "Company: " + currentCompany.getName() + ", " + currentCompany.toShortString()));
-        report.append(Strings.repeat("-", width)).append("\n");
+        ListInterface<JobPosting> jobPostings = getEmployerJobPostings(company);
+        if (jobPostings.isEmpty()) return null;
 
-        ListInterface<JobPosting> jobPostings = new DoublyLinkedList<>();
+        LocalDate today = Context.getDateTime().toLocalDate();
+        LocalDate startDate = today.minusDays(previousDays);
+        ListInterface<ScheduledInterview> pastScheduledInterviews = getEmployerScheduledInterviews(company)
+                .filter(interview -> {
+                    LocalDate interviewDate = interview.getTimeSlot().getDate();
+                    return interview.getTimeSlot().isPast() &&
+                            !interviewDate.isBefore(startDate) &&
+                            !interviewDate.isAfter(today);
+                });
+        if (pastScheduledInterviews.isEmpty()) return null;
+        ListInterface<String> uniqueInterviewedApplicants = new DoublyLinkedList<>();
         ListInterface<Integer> interviewCounts = new DoublyLinkedList<>();
         ListInterface<String> jobTitles = new DoublyLinkedList<>();
 
-        for (ScheduledInterview interview : scheduledInterviews) {
-            JobPosting jobPosting = interview.getJobApplication().getJobPosting();
-            if (jobPosting.getCompany().equals(currentCompany) && !jobPostings.contains(jobPosting)) {
-                jobPostings.add(jobPosting);
-            }
-        }
+        report.append(String.format("%-" + width + "s%n", "Company: " + company.toShortString()));
+        report.append(Strings.repeat("-", width)).append("\n");
 
         report.append(String.format("%-10s %-47s %-40s %-20s%n",
                 "Job ID", "Job Title", "Interviewed Applicants", "Interviewed Count"));
         report.append(Strings.repeat("-", width)).append("\n");
-
-        ListInterface<String> uniqueApplicants = new DoublyLinkedList<>();
-        ListInterface<String> uniqueInterviewedApplicants = new DoublyLinkedList<>();
 
         for (JobPosting jobPosting : jobPostings) {
             String jobId = jobPosting.getId();
@@ -660,86 +682,249 @@ public class InterviewController {
             ListInterface<String> applicants = new DoublyLinkedList<>();
             int count = 0;
 
-            for (ScheduledInterview interview : scheduledInterviews) {
+            for (ScheduledInterview interview : pastScheduledInterviews) {
                 JobApplication app = interview.getJobApplication();
                 if (app.getJobPosting().equals(jobPosting)) {
-                    String applicantName = app.getApplicant().getName();
-                    if (!applicants.contains(applicantName)) {
-                        applicants.add(applicantName);
+                    String applicantInfo = app.getApplicant().toShortString();
+                    if (!applicants.contains(applicantInfo)) {
+                        applicants.add(applicantInfo);
                         count++;
-                        if (!uniqueInterviewedApplicants.contains(applicantName)) {
-                            uniqueInterviewedApplicants.add(applicantName);
+                        if (!uniqueInterviewedApplicants.contains(applicantInfo)) {
+                            uniqueInterviewedApplicants.add(applicantInfo);
                         }
                     }
                 }
             }
 
-            jobTitles.add(jobTitle + " (" + count + ")");
-            interviewCounts.add(count);
+            if (count > 0) {
+                jobTitles.add(jobTitle + " (" + count + ")");
+                interviewCounts.add(count);
 
-            report.append(String.format("%-10s %-47s %-40s %-20s%n",
-                    jobId, jobTitle, applicants.isEmpty() ? "" : "a1, " + applicants.get(0), count));
-
-            for (int i = 1; i < applicants.size(); i++) {
-                String applicant = applicants.get(i);
-                String applicantId = "a" + (i + 1);
                 report.append(String.format("%-10s %-47s %-40s %-20s%n",
-                        "", "", applicantId + ", " + applicant, ""));
-            }
+                        jobId, jobTitle, applicants.isEmpty() ? "" : applicants.get(0), count));
 
-            report.append("\n");
-        }
-
-        for (JobApplication app : jobApplications) {
-            if (app.getJobPosting().getCompany().equals(currentCompany)) {
-                String applicantName = app.getApplicant().getName();
-                if (!uniqueApplicants.contains(applicantName)) {
-                    uniqueApplicants.add(applicantName);
+                for (int i = 1; i < applicants.size(); i++) {
+                    report.append(String.format("%-10s %-47s %-40s %-20s%n",
+                            "", "", applicants.get(i), ""));
                 }
+                report.append("\n");
             }
         }
+        return report.toString();
+    }
 
-        int totalApplicants = uniqueApplicants.size();
-        int totalInterviews = uniqueInterviewedApplicants.size();
-        report.append(Strings.repeat("-", width)).append("\n");
-        report.append(String.format("%-" + width + "s%n", "Total Job Count: " + totalApplicants));
-        report.append(String.format("%-" + width + "s%n", "Total Applicant Count: " + totalApplicants));
-        report.append(String.format("%-" + width + "s%n", "Total Interview Count: " + totalInterviews));
-        report.append(Chart.barChart(jobTitles, interviewCounts, "Interview Counts by Job Posting", width, '█', true));
-        report.append("\n");
+    public String buildInterviewReportBody(int previousDays) {
+        StringBuilder report = new StringBuilder();
+        int width = 120;
 
-        if (!jobPostings.isEmpty()) {
-            JobPosting mostInterviewed = jobPostings.get(0);
-            JobPosting leastInterviewed = jobPostings.get(0);
-            int maxCount = interviewCounts.get(0);
-            int minCount = interviewCounts.get(0);
+        ListInterface<ScheduledInterview> pastInterviews = new DoublyLinkedList<>();
+        ListInterface<JobPosting> jobPostings = new DoublyLinkedList<>();
 
-            for (int i = 1; i < jobPostings.size(); i++) {
-                int count = interviewCounts.get(i);
-                if (count > maxCount) {
-                    maxCount = count;
-                    mostInterviewed = jobPostings.get(i);
-                }
-                if (count < minCount) {
-                    minCount = count;
-                    leastInterviewed = jobPostings.get(i);
-                }
+        LocalDate today = Context.getDateTime().toLocalDate();
+        LocalDate startDate = today.minusDays(previousDays);
+
+        if (Context.isEmployer()) {
+            Company company = Context.getCompany();
+            pastInterviews = getEmployerScheduledInterviews(company).filter(interview -> {
+                LocalDate interviewDate = interview.getTimeSlot().getDate();
+                return interview.getTimeSlot().isPast() &&
+                        !interviewDate.isBefore(startDate) &&
+                        !interviewDate.isAfter(today);
+            });
+            jobPostings = getEmployerJobPostings(company);
+
+            String jobInterviewTable = buildJobInterviewCountTable(company, width, previousDays);
+            if (jobInterviewTable == null) {
+                return report.toString();
             }
-
-            report.append(String.format("%-" + width + "s%n",
-                    "Most Interviewed Job Posting (" + maxCount + "):"));
-            report.append(String.format("%-" + width + "s%n",
-                    "< " + mostInterviewed.toShortString() + " >"));
-            report.append("\n");
-            report.append(String.format("%-" + width + "s%n",
-                    "Least Interviewed Job Posting (" + minCount + "):"));
-            report.append(String.format("%-" + width + "s%n",
-                    "< " + leastInterviewed.toShortString() + " >"));
-        } else {
-            report.append(String.format("%-" + width + "s%n", "No interviews available."));
+            report.append(jobInterviewTable);
         }
+        if (Context.isAdmin()) {
+            pastInterviews = getAllScheduledInterviews().filter(interview -> {
+                LocalDate interviewDate = interview.getTimeSlot().getDate();
+                return interview.getTimeSlot().isPast() &&
+                        !interviewDate.isBefore(startDate) &&
+                        !interviewDate.isAfter(today);
+            });
+            jobPostings = this.jobPostings;
+
+            ListInterface<Company> companies = Initializer.getCompanies();
+            for (Company company : companies) {
+                String jobInterviewTable = buildJobInterviewCountTable(company, width, previousDays);
+                if (jobInterviewTable == null) {
+                    continue;
+                }
+                report.append(jobInterviewTable);
+            }
+        }
+        if (pastInterviews.size() < 3 || jobPostings.isEmpty()) {
+            return null;
+        }
+        report.append(Strings.repeat("-", width));
+        report.append("\nTotal Interview Count: " + pastInterviews.size() + "\n");
+        String interviewCountBarChart = buildInterviewCountBarChart(pastInterviews, jobPostings);
+        if (interviewCountBarChart == null) {
+            return report.toString();
+        }
+        report.append(interviewCountBarChart);
+
+        String mostAndLeastInterviews = getJobsWithMostAndLeastInterviews(pastInterviews, jobPostings);
+        if (mostAndLeastInterviews == null) {
+            return report.toString();
+        }
+        report.append(mostAndLeastInterviews);
 
         return report.toString();
     }
 
+    public String getJobsWithMostAndLeastInterviews(ListInterface<ScheduledInterview> pastInterviews, ListInterface<JobPosting> jobPostings) {
+        class JobInterviewCount {
+            JobPosting jobPosting;
+            int interviewCount;
+
+            JobInterviewCount(JobPosting jobPosting, int interviewCount) {
+                this.jobPosting = jobPosting;
+                this.interviewCount = interviewCount;
+            }
+        }
+
+        ListInterface<JobInterviewCount> jobCounts = new DoublyLinkedList<>();
+        StringBuilder result = new StringBuilder();
+        result.append("\n");
+
+        for (int i = 0; i < jobPostings.size(); i++) {
+            JobPosting job = jobPostings.get(i);
+            jobCounts.add(new JobInterviewCount(job, 0));
+        }
+
+        for (int i = 0; i < pastInterviews.size(); i++) {
+            ScheduledInterview interview = pastInterviews.get(i);
+            JobPosting job = interview.getJobApplication().getJobPosting();
+
+            for (int j = 0; j < jobCounts.size(); j++) {
+                JobInterviewCount jic = jobCounts.get(j);
+                if (jic.jobPosting == job) {
+                    jic.interviewCount++;
+                    jobCounts.set(j, jic);
+                    break;
+                }
+            }
+        }
+
+        int maxCount = 0;
+        int minCount = Integer.MAX_VALUE;
+
+        for (int i = 0; i < jobCounts.size(); i++) {
+            int count = jobCounts.get(i).interviewCount;
+            if (count > maxCount) {
+                maxCount = count;
+            }
+            if (count < minCount) {
+                minCount = count;
+            }
+        }
+
+        result.append("Job(s) with the most past interviews (").append(maxCount).append(" interviews):\n");
+        int maxDisplayed = 0;
+        boolean hasMaxJobs = false;
+        for (int i = 0; i < jobCounts.size() && maxDisplayed < 3; i++) {
+            JobInterviewCount jic = jobCounts.get(i);
+            if (jic.interviewCount == maxCount) {
+                if (maxDisplayed == 0) {
+                    result.append("< ");
+                } else {
+                    result.append(" | ");
+                }
+                result.append(jic.jobPosting.toShortString());
+                maxDisplayed++;
+                hasMaxJobs = true;
+            }
+        }
+        if (hasMaxJobs) {
+            result.append(" >");
+        }
+        result.append("\n");
+
+        result.append("\nJob(s) with the least past interviews (").append(minCount).append(" interviews):\n");
+        int minDisplayed = 0;
+        boolean hasMinJobs = false;
+        for (int i = 0; i < jobCounts.size() && minDisplayed < 3; i++) {
+            JobInterviewCount jic = jobCounts.get(i);
+            if (jic.interviewCount == minCount) {
+                if (minDisplayed == 0) {
+                    result.append("< ");
+                } else {
+                    result.append(" | ");
+                }
+                result.append(jic.jobPosting.getTitle()).append(" (ID: ").append(jic.jobPosting.getId()).append(")");
+                minDisplayed++;
+                hasMinJobs = true;
+            }
+        }
+        if (hasMinJobs) {
+            result.append(" >");
+        }
+        result.append("\n");
+
+        return result.toString();
+    }
+
+    public String buildInterviewCountBarChart(ListInterface<ScheduledInterview> pastInterviews, ListInterface<JobPosting> jobPostings) {
+        class JobInterviewCount {
+            JobPosting jobPosting;
+            int interviewCount;
+
+            JobInterviewCount(JobPosting jobPosting, int interviewCount) {
+                this.jobPosting = jobPosting;
+                this.interviewCount = interviewCount;
+            }
+        }
+
+        ListInterface<JobInterviewCount> jobCounts = new DoublyLinkedList<>();
+
+        for (int i = 0; i < jobPostings.size(); i++) {
+            JobPosting job = jobPostings.get(i);
+            jobCounts.add(new JobInterviewCount(job, 0));
+        }
+
+        for (int i = 0; i < pastInterviews.size(); i++) {
+            ScheduledInterview interview = pastInterviews.get(i);
+            JobPosting job = interview.getJobApplication().getJobPosting();
+
+            for (int j = 0; j < jobCounts.size(); j++) {
+                JobInterviewCount jic = jobCounts.get(j);
+                if (jic.jobPosting == job) {
+                    jic.interviewCount++;
+                    jobCounts.set(j, jic);
+                    break;
+                }
+            }
+        }
+
+        ListInterface<String> categories = new DoublyLinkedList<>();
+        ListInterface<Integer> values = new DoublyLinkedList<>();
+
+        for (int i = 0; i < jobCounts.size(); i++) {
+            JobInterviewCount jic = jobCounts.get(i);
+
+            String category = jic.jobPosting.getTitle() + " (" + jic.interviewCount + ")";
+            categories.add(category);
+            values.add(jic.interviewCount);
+        }
+
+        String chart = Chart.barChart(
+                categories,
+                values,
+                "Past Interviews per Job Posting",
+                120,
+                '█',
+                true
+        );
+
+        return chart;
+    }
+
+    private String buildRecruitmentReportBody(int previousDays) {
+        return null;
+    }
 }

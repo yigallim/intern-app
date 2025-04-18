@@ -10,4 +10,5 @@ public interface MapInterface<K, V> {
     boolean containsKey(K key);
     void clear();
     V getOrDefault(K key, V defaultValue);
+    Iterable<K> keySet();
 }

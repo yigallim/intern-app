@@ -173,6 +173,10 @@ public class CompanyController {
         Log.na();
     }
 
+    private boolean isEmailUnique(String email) {
+        return !companies.anyMatch(company -> company.getContactEmail().equalsIgnoreCase(email));
+    }
+
     private Company getCompany() {
         String name = companyUI.getCompanyName();
         if (name.equals(Input.STRING_EXIT_VALUE)) {
@@ -191,6 +195,11 @@ public class CompanyController {
 
         String email = companyUI.getCompanyEmail();
         if (email.equals(Input.STRING_EXIT_VALUE)) {
+            return null;
+        }
+
+        if (!isEmailUnique(email)) {
+            companyUI.printEmailAlreadyExistsMsg();
             return null;
         }
 
@@ -262,6 +271,13 @@ public class CompanyController {
         if (newEmail.equals(Input.STRING_EXIT_VALUE)) {
             return;
         }
+
+        // Check if the new email is different from current and is unique
+        if (!company.getContactEmail().equals(newEmail) && !isEmailUnique(newEmail)) {
+            companyUI.printEmailAlreadyExistsMsg();
+            return;
+        }
+
         company.setContactEmail(newEmail);
         companyUI.printUpdateSuccessMessage(company, fieldName);
     }
@@ -308,6 +324,12 @@ public class CompanyController {
 
         String newEmail = companyUI.getCompanyEmail();
         if (newEmail.equals(Input.STRING_EXIT_VALUE)) {
+            return;
+        }
+
+        // Check if the new email is different from current and is unique
+        if (!company.getContactEmail().equals(newEmail) && !isEmailUnique(newEmail)) {
+            companyUI.printEmailAlreadyExistsMsg();
             return;
         }
 
@@ -379,9 +401,5 @@ public class CompanyController {
             Context.setCompany(null);
             throw new Menu.ExitMenuException();
         }
-    }
-
-    private boolean isEmailUnique(String email) {
-        return !companies.anyMatch(company -> company.getContactEmail().equalsIgnoreCase(email));
     }
 }
