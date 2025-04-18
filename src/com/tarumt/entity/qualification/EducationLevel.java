@@ -1,6 +1,12 @@
 package com.tarumt.entity.qualification;
 
+import java.util.Objects;
+
+/**
+ * @author Choo Zhen Hao
+ */
 public class EducationLevel extends Qualification {
+
     private DegreeLevel degreeLevel;
     private FieldOfStudy fieldOfStudy;
     private University university;
@@ -147,12 +153,19 @@ public class EducationLevel extends Qualification {
     }
 
     public EducationLevel(DegreeLevel degreeLevel, FieldOfStudy fieldOfStudy, University university, double cgpa, boolean optional, Importance importance) {
+        super(optional, importance);
         this.degreeLevel = degreeLevel;
         this.fieldOfStudy = fieldOfStudy;
         this.cgpa = cgpa;
         this.university = university;
-        setOptional(optional);
-        setImportance(importance);
+    }
+
+    public EducationLevel(DegreeLevel degreeLevel, FieldOfStudy fieldOfStudy, University university, double cgpa) {
+        super(true, Importance.LOW);
+        this.degreeLevel = degreeLevel;
+        this.fieldOfStudy = fieldOfStudy;
+        this.cgpa = cgpa;
+        this.university = university;
     }
 
     public DegreeLevel getDegreeLevel() {
@@ -187,9 +200,18 @@ public class EducationLevel extends Qualification {
         this.university = university;
     }
 
+    public double scoreMatch(EducationLevel other) {
+        if (other == null) {
+            return 0;
+        }
+        if (this.degreeLevel != other.degreeLevel) {
+            return 0;
+        }
+        return Math.min(1.0, other.getCgpa() / this.getCgpa());
+    }
+
     @Override
     public double score() {
-        // Example: Higher degree and CGPA give a higher score
         double baseScore;
         switch (degreeLevel) {
             case PhD:
@@ -210,7 +232,7 @@ public class EducationLevel extends Qualification {
             default:
                 baseScore = 0.0;
         }
-        return baseScore + (cgpa / 4.0); // Normalizing CGPA (assuming max CGPA = 4.0)
+        return baseScore + (cgpa / 4.0);
     }
 
     @Override
@@ -223,5 +245,27 @@ public class EducationLevel extends Qualification {
                 + ", optional=" + isOptional()
                 + ", importance=" + getImportance()
                 + '}';
+    }
+
+    @Override
+    public String toShortString() {
+        return degreeLevel + " in " + fieldOfStudy + " (CGPA: " + cgpa + ")";
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+
+        EducationLevel that = (EducationLevel) o;
+        return Double.compare(cgpa, that.cgpa) == 0 && degreeLevel == that.degreeLevel && fieldOfStudy == that.fieldOfStudy && university == that.university;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = Objects.hashCode(degreeLevel);
+        result = 31 * result + Objects.hashCode(fieldOfStudy);
+        result = 31 * result + Objects.hashCode(university);
+        result = 31 * result + Double.hashCode(cgpa);
+        return result;
     }
 }

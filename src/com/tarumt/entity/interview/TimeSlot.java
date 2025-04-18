@@ -1,3 +1,6 @@
+/**
+ * @author Lim Yuet Yang
+ */
 package com.tarumt.entity.interview;
 
 import com.tarumt.adt.list.DoublyLinkedList;

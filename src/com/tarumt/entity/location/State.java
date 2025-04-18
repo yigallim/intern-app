@@ -1,3 +1,6 @@
+/**
+ * @author Lim Yuet Yang
+ */
 package com.tarumt.entity.location;
 
 import com.tarumt.utility.common.Strings;

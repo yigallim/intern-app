@@ -1,3 +1,6 @@
+/**
+ * @author Lim Yuet Yang
+ */
 package com.tarumt.entity.interview;
 
 import com.tarumt.entity.BaseEntity;
@@ -11,6 +14,7 @@ import com.tarumt.utility.validation.annotation.Max;
 import com.tarumt.utility.validation.annotation.Min;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 public class Invitation extends BaseEntity {
     private static final String PREFIX = "i";
@@ -107,5 +111,21 @@ public class Invitation extends BaseEntity {
         }
 
         return sb.toString();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Invitation that = (Invitation) o;
+        return Objects.equals(jobApplication, that.jobApplication) && Objects.equals(remarks, that.remarks) && Objects.equals(invitedAt, that.invitedAt);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = Objects.hashCode(jobApplication);
+        result = 31 * result + Objects.hashCode(remarks);
+        result = 31 * result + Objects.hashCode(invitedAt);
+        return result;
     }
 }

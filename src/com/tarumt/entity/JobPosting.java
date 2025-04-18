@@ -1,6 +1,9 @@
+/**
+ * @author Yeoh Ming Zhe
+ */
 package com.tarumt.entity;
 
-import com.tarumt.entity.qualification.Qualification;
+import com.tarumt.entity.qualification.*;
 import com.tarumt.utility.common.Strings;
 import com.tarumt.utility.pretty.annotation.ColumnIndex;
 import com.tarumt.utility.pretty.annotation.Computed;
@@ -39,7 +42,13 @@ public class JobPosting extends BaseEntity {
     @OutputLength(34)
     private Type type;
     @ExcludeKey("default")
-    private ListInterface<Qualification> qualifications;
+    private EducationLevel educationLevel;
+    @ExcludeKey("default")
+    private ListInterface<WorkExperience> workExperiences;
+    @ExcludeKey("default")
+    private ListInterface<LanguageProficiency> languageProficiencies;
+    @ExcludeKey("default")
+    private ListInterface<Skill> skills;
     @Fuzzy
     @OutputLength(8)
     private Status status;
@@ -48,7 +57,7 @@ public class JobPosting extends BaseEntity {
     @Fuzzy
     private LocalDateTime updatedAt;
 
-    public JobPosting(String title, Company company, int salaryMin, int salaryMax, String description, Type type, ListInterface<Qualification> qualifications, Status status, LocalDateTime createdAt, LocalDateTime updatedAt) {
+    public JobPosting(String title, Company company, int salaryMin, int salaryMax, String description, Type type, Status status, LocalDateTime createdAt, LocalDateTime updatedAt) {
         super(generateId());
         this.title = title;
         this.company = company;
@@ -56,7 +65,23 @@ public class JobPosting extends BaseEntity {
         this.salaryMax = salaryMax;
         this.description = description;
         this.type = type;
-        this.qualifications = qualifications;
+        this.status = status;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
+    }
+
+    public JobPosting(String title, Company company, int salaryMin, int salaryMax, String description, Type type, Status status, EducationLevel educationLevel, ListInterface<WorkExperience> workExperiences, ListInterface<LanguageProficiency> languageProficiencies, ListInterface<Skill> skills, LocalDateTime createdAt, LocalDateTime updatedAt) {
+        super(generateId());
+        this.title = title;
+        this.company = company;
+        this.salaryMin = salaryMin;
+        this.salaryMax = salaryMax;
+        this.description = description;
+        this.type = type;
+        this.educationLevel = educationLevel;
+        this.workExperiences = workExperiences;
+        this.languageProficiencies = languageProficiencies;
+        this.skills = skills;
         this.status = status;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
@@ -131,6 +156,14 @@ public class JobPosting extends BaseEntity {
         }
     }
 
+    public static int getCounter() {
+        return counter;
+    }
+
+    public static void setCounter(int counter) {
+        JobPosting.counter = counter;
+    }
+
     public String getTitle() {
         return title;
     }
@@ -179,12 +212,36 @@ public class JobPosting extends BaseEntity {
         this.type = type;
     }
 
-    public ListInterface<Qualification> getQualifications() {
-        return qualifications;
+    public EducationLevel getEducationLevel() {
+        return educationLevel;
     }
 
-    public void setQualifications(ListInterface<Qualification> qualifications) {
-        this.qualifications = qualifications;
+    public void setEducationLevel(EducationLevel educationLevel) {
+        this.educationLevel = educationLevel;
+    }
+
+    public ListInterface<WorkExperience> getWorkExperiences() {
+        return workExperiences;
+    }
+
+    public void setWorkExperiences(ListInterface<WorkExperience> workExperiences) {
+        this.workExperiences = workExperiences;
+    }
+
+    public ListInterface<LanguageProficiency> getLanguageProficiencies() {
+        return languageProficiencies;
+    }
+
+    public void setLanguageProficiencies(ListInterface<LanguageProficiency> languageProficiencies) {
+        this.languageProficiencies = languageProficiencies;
+    }
+
+    public ListInterface<Skill> getSkills() {
+        return skills;
+    }
+
+    public void setSkills(ListInterface<Skill> skills) {
+        this.skills = skills;
     }
 
     public Status getStatus() {

@@ -1,8 +1,12 @@
+/**
+ * @author Leong Hon Yan
+ */
 package com.tarumt.entity;
 
 import com.tarumt.entity.location.Location;
 import com.tarumt.entity.qualification.EducationLevel;
 import com.tarumt.entity.qualification.LanguageProficiency;
+import com.tarumt.entity.qualification.Skill;
 import com.tarumt.entity.qualification.WorkExperience;
 import com.tarumt.utility.pretty.annotation.ExcludeKey;
 import com.tarumt.utility.pretty.annotation.OutputLength;
@@ -12,6 +16,8 @@ import com.tarumt.utility.validation.annotation.Min;
 import com.tarumt.utility.validation.annotation.Regex;
 
 import com.tarumt.adt.list.ListInterface;
+
+import java.util.Objects;
 
 public class Applicant extends BaseEntity {
     private static final String PREFIX = "a";
@@ -42,6 +48,8 @@ public class Applicant extends BaseEntity {
     private ListInterface<WorkExperience> workExperiences;
     @ExcludeKey("default")
     private ListInterface<LanguageProficiency> languageProficiencies;
+    @ExcludeKey("default")
+    private ListInterface<Skill> skills;
 
     public Applicant(String name, String contactEmail, String contactPhone, JobPosting.Type desiredJobType, Location location) {
         super(generateId());
@@ -52,6 +60,21 @@ public class Applicant extends BaseEntity {
         this.location = location;
     }
 
+    public Applicant(String name, String contactEmail, String contactPhone, JobPosting.Type desiredJobType,
+                     Location location, EducationLevel educationLevel, ListInterface<WorkExperience> workExperiences,
+                     ListInterface<LanguageProficiency> languageProficiencies, ListInterface<Skill> skills) {
+        super(generateId());
+        this.name = name;
+        this.contactEmail = contactEmail;
+        this.contactPhone = contactPhone;
+        this.desiredJobType = desiredJobType;
+        this.location = location;
+        this.educationLevel = educationLevel;
+        this.workExperiences = workExperiences;
+        this.languageProficiencies = languageProficiencies;
+        this.skills = skills;
+    }
+
     private static String generateId() {
         String id = PREFIX + counter;
         counter++;
@@ -60,6 +83,14 @@ public class Applicant extends BaseEntity {
 
     public static String getNextId() {
         return PREFIX + counter;
+    }
+
+    public static int getCounter() {
+        return counter;
+    }
+
+    public static void setCounter(int counter) {
+        Applicant.counter = counter;
     }
 
     public String getName() {
@@ -126,6 +157,14 @@ public class Applicant extends BaseEntity {
         this.languageProficiencies = languageProficiencies;
     }
 
+    public ListInterface<Skill> getSkills() {
+        return skills;
+    }
+
+    public void setSkills(ListInterface<Skill> skills) {
+        this.skills = skills;
+    }
+
     @Override
     public String toShortString() {
         return this.getId() + ", " + this.getName();
@@ -142,5 +181,24 @@ public class Applicant extends BaseEntity {
                 "|  Location    => " + (location != null ? location.toString() : "N/A");
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
 
+        Applicant applicant = (Applicant) o;
+        return Objects.equals(name, applicant.name) && Objects.equals(contactEmail, applicant.contactEmail) && Objects.equals(contactPhone, applicant.contactPhone) && desiredJobType == applicant.desiredJobType && Objects.equals(location, applicant.location) && Objects.equals(educationLevel, applicant.educationLevel) && Objects.equals(workExperiences, applicant.workExperiences) && Objects.equals(languageProficiencies, applicant.languageProficiencies);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = Objects.hashCode(name);
+        result = 31 * result + Objects.hashCode(contactEmail);
+        result = 31 * result + Objects.hashCode(contactPhone);
+        result = 31 * result + Objects.hashCode(desiredJobType);
+        result = 31 * result + Objects.hashCode(location);
+        result = 31 * result + Objects.hashCode(educationLevel);
+        result = 31 * result + Objects.hashCode(workExperiences);
+        result = 31 * result + Objects.hashCode(languageProficiencies);
+        return result;
+    }
 }

@@ -1,3 +1,7 @@
+/**
+ * @author Lim Yuet Yang
+ */
+
 package com.tarumt.control;
 
 import com.tarumt.adt.list.DoublyLinkedList;
@@ -191,16 +195,20 @@ public class InterviewController {
 
     public void displayInvitation() {
         ListInterface<Invitation> invitations = new DoublyLinkedList<>();
+
         if (Context.isEmployer()) {
             invitations = getEmployerInvitations();
         }
         if (Context.isApplicant()) {
             invitations = getApplicantInvitations();
         }
-        if (Context.isAdmin())
+        if (Context.isAdmin()) {
             invitations = this.invitations;
+        }
 
-        this.interviewUI.printInvitation(invitations);
+        ListInterface<Invitation> sortedInvitations = new DoublyLinkedList<>(invitations);
+        sortedInvitations.sort((inv1, inv2) -> inv1.getInvitedAt().compareTo(inv2.getInvitedAt()));
+        this.interviewUI.printInvitation(sortedInvitations);
     }
 
     public void acceptInvitation() {
@@ -252,6 +260,7 @@ public class InterviewController {
         ListInterface<ScheduledInterview> interviews = new DoublyLinkedList<>();
         ListInterface<TimeSlot> bookedSlots = new DoublyLinkedList<>();
         ListInterface<TimeSlot> blockedSlots = new DoublyLinkedList<>();
+
         if (Context.isEmployer()) {
             Company company = Context.getCompany();
             interviews = getEmployerScheduledInterviews(company)
@@ -259,15 +268,20 @@ public class InterviewController {
             bookedSlots = interviews.map(ScheduledInterview::getTimeSlot);
             blockedSlots = getEmployerBlockedSlots(company).map(BlockedTimeSlot::getSlot);
         }
+
         if (Context.isApplicant()) {
             interviews = getApplicantScheduledInterviews()
                     .filter(interview -> !interview.getTimeSlot().isPast());
             bookedSlots = interviews.map(ScheduledInterview::getTimeSlot);
         }
+
         if (Context.isAdmin()) {
             interviews = getAllScheduledInterviews()
                     .filter(interview -> !interview.getTimeSlot().isPast());
         }
+
+        ListInterface<ScheduledInterview> sortedInterviews = new DoublyLinkedList<>(interviews);
+        sortedInterviews.sort((a, b) -> a.getTimeSlot().getStartDateTime().compareTo(b.getTimeSlot().getStartDateTime()));
 
         if (!Context.isAdmin()) {
             String calendarView = getCalendarAvailabilityView(bookedSlots, blockedSlots, false);
@@ -275,7 +289,8 @@ public class InterviewController {
                 this.interviewUI.printCalendarTimeSlot(calendarView);
             }
         }
-        this.interviewUI.printScheduledInterviews(interviews);
+
+        this.interviewUI.printScheduledInterviews(sortedInterviews);
     }
 
     public void displayPastInterview() {
@@ -294,7 +309,9 @@ public class InterviewController {
                     .filter(interview -> interview.getTimeSlot().isPast());
         }
 
-        this.interviewUI.printPastInterviews(pastInterviews);
+        ListInterface<ScheduledInterview> sortedPast = new DoublyLinkedList<>(pastInterviews);
+        sortedPast.sort((a, b) -> a.getTimeSlot().getStartDateTime().compareTo(b.getTimeSlot().getStartDateTime()));
+        this.interviewUI.printPastInterviews(sortedPast);
     }
 
     public void searchAllInterview() {
@@ -322,10 +339,11 @@ public class InterviewController {
             if (query.equals(Input.STRING_EXIT_VALUE)) {
                 return;
             }
-
+            ListInterface<ScheduledInterview> sortedInterviews = new DoublyLinkedList<>(accessibleInterviews);
+            sortedInterviews.sort((a, b) -> a.getTimeSlot().getStartDateTime().compareTo(b.getTimeSlot().getStartDateTime()));
             FuzzySearch.Result<ScheduledInterview> result = FuzzySearch.searchList(
                     ScheduledInterview.class,
-                    accessibleInterviews,
+                    sortedInterviews,
                     query,
                     excludeKeys
             );
@@ -716,6 +734,7 @@ public class InterviewController {
     public String buildInterviewReportBody(int previousDays) {
         StringBuilder report = new StringBuilder();
         int width = 120;
+        report.append(String.format("%" + width + "s\n", "Report Generated For Past (" + previousDays + ") Days"));
 
         ListInterface<ScheduledInterview> pastInterviews = new DoublyLinkedList<>();
         ListInterface<JobPosting> jobPostings = new DoublyLinkedList<>();
@@ -856,7 +875,7 @@ public class InterviewController {
                 } else {
                     result.append(" | ");
                 }
-                result.append(jic.jobPosting.getTitle()).append(" (ID: ").append(jic.jobPosting.getId()).append(")");
+                result.append(jic.jobPosting.toShortString());
                 minDisplayed++;
                 hasMinJobs = true;
             }
@@ -901,6 +920,7 @@ public class InterviewController {
             }
         }
 
+        jobCounts.sort((jic1, jic2) -> Integer.compare(jic2.interviewCount, jic1.interviewCount));
         ListInterface<String> categories = new DoublyLinkedList<>();
         ListInterface<Integer> values = new DoublyLinkedList<>();
 
@@ -925,6 +945,67 @@ public class InterviewController {
     }
 
     private String buildRecruitmentReportBody(int previousDays) {
-        return null;
+        return buildRecruitmentCountBarChart();
+    }
+
+    public String buildRecruitmentCountBarChart() {
+        ListInterface<String> categories = new DoublyLinkedList<>();
+        ListInterface<Integer> values = new DoublyLinkedList<>();
+        return Chart.barChart(
+                categories,
+                values,
+                "Past Interviews by Job Posting",
+                120,
+                '█',
+                true
+        );
+    }
+
+    public String buildJobApplicationStatusTable(ListInterface<JobApplication> applications) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("------------------------------------------------------------------------------------------------------------------------\n");
+        sb.append(String.format("%-10s %-46s %-40s %-20s\n", "Job ID", "Job Title", "Applicants", "Status"));
+        sb.append("------------------------------------------------------------------------------------------------------------------------\n");
+
+        DoublyLinkedList<String> processedJobIds = new DoublyLinkedList<>();
+
+        for (JobApplication app1 : applications) {
+            String jobId = app1.getJobPosting().getId();
+            if (processedJobIds.contains(jobId)) {
+                continue;
+            }
+
+            processedJobIds.add(jobId);
+            String jobTitle = app1.getJobPosting().getTitle();
+
+            // Collect all applicants for this job
+            DoublyLinkedList<JobApplication> matchingApplications = new DoublyLinkedList<>();
+            for (JobApplication app2 : applications) {
+                if (app2.getJobPosting().getId().equals(jobId)) {
+                    matchingApplications.add(app2);
+                }
+            }
+
+            boolean isFirstRow = true;
+            for (JobApplication match : matchingApplications) {
+                String jobIdCol = isFirstRow ? String.format("%-10s", jobId) : String.format("%-10s", "");
+                String jobTitleCol = isFirstRow ? String.format("%-46s", jobTitle) : String.format("%-46s", "");
+                String applicantCol = String.format("%-40s", match.getApplicant().toShortString());
+                String statusCol = String.format("%-20s", match.getStatus().toString());
+
+                sb.append(jobIdCol)
+                        .append(jobTitleCol)
+                        .append(applicantCol)
+                        .append(statusCol)
+                        .append("\n");
+
+                isFirstRow = false;
+            }
+
+            sb.append("\n"); // spacing between job blocks
+        }
+
+        sb.append("------------------------------------------------------------------------------------------------------------------------\n");
+        return sb.toString();
     }
 }

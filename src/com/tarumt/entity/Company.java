@@ -1,11 +1,20 @@
+/**
+ * @author Lim Yuet Yang
+ */
 package com.tarumt.entity;
 
 import com.tarumt.entity.location.Location;
+import com.tarumt.utility.common.Context;
+import com.tarumt.utility.pretty.annotation.ColumnIndex;
+import com.tarumt.utility.pretty.annotation.Computed;
+import com.tarumt.utility.pretty.annotation.ExcludeKey;
 import com.tarumt.utility.pretty.annotation.OutputLength;
 import com.tarumt.utility.search.annotation.Fuzzy;
 import com.tarumt.utility.validation.annotation.Max;
 import com.tarumt.utility.validation.annotation.Min;
 import com.tarumt.utility.validation.annotation.Regex;
+
+import java.util.Objects;
 
 public class Company extends BaseEntity {
     private static final String PREFIX = "c";
@@ -106,5 +115,23 @@ public class Company extends BaseEntity {
                 "|  Location      => " + (location != null ? location.toString() : "N/A") + ",\n" +
                 "|  Contact Email => " + contactEmail + ",\n" +
                 "|  Contact Phone => " + contactPhone;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Company company = (Company) o;
+        return Objects.equals(name, company.name) && Objects.equals(description, company.description) && Objects.equals(location, company.location) && Objects.equals(contactEmail, company.contactEmail) && Objects.equals(contactPhone, company.contactPhone);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = Objects.hashCode(name);
+        result = 31 * result + Objects.hashCode(description);
+        result = 31 * result + Objects.hashCode(location);
+        result = 31 * result + Objects.hashCode(contactEmail);
+        result = 31 * result + Objects.hashCode(contactPhone);
+        return result;
     }
 }

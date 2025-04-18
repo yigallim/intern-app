@@ -1,3 +1,6 @@
+/**
+ * @author Yeoh Ming Zhe
+ */
 package com.tarumt.boundary;
 
 import com.tarumt.adt.list.DoublyLinkedList;
@@ -22,7 +25,6 @@ import com.tarumt.utility.common.Report;
 import com.tarumt.utility.pretty.Chart;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 public class JobPostingUI {

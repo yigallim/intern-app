@@ -1,3 +1,8 @@
+/**
+ * @author Lim Yuet Yang
+ * @author Leong Hon Yan
+ */
+
 package com.tarumt.control;
 
 import com.tarumt.adt.list.DoublyLinkedList;

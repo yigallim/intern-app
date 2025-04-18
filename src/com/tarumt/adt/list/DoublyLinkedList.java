@@ -1,3 +1,7 @@
+/**
+ * @author Lim Yuet Yang
+ */
+
 package com.tarumt.adt.list;
 
 import java.util.Objects;
@@ -202,20 +206,6 @@ public class DoublyLinkedList<E> implements ListInterface<E> {
     }
 
     @Override
-    public int indexOf(Object o) {
-        int index = 0;
-        Node current = head;
-        while (current != null) {
-            if (Objects.equals(o, current.element)) {
-                return index;
-            }
-            current = current.next;
-            index++;
-        }
-        return -1;
-    }
-
-    @Override
     public ListInterface<E> subList(int fromIndex, int toIndex) {
         if (fromIndex < 0 || toIndex > size || fromIndex > toIndex) {
             throw new IndexOutOfBoundsException("fromIndex: " + fromIndex + ", toIndex: " + toIndex + ", Size: " + size);
@@ -410,26 +400,6 @@ public class DoublyLinkedList<E> implements ListInterface<E> {
             current = current.next;
         }
         return false;
-    }
-
-    @Override
-    public Optional<E> min(Comparator<? super E> comparator) {
-        if (isEmpty()) {
-            return Optional.empty();
-        }
-        if (comparator == null) {
-            throw new NullPointerException();
-        }
-        Node current = head;
-        E min = current.element;
-        current = current.next;
-        while (current != null) {
-            if (comparator.compare(current.element, min) < 0) {
-                min = current.element;
-            }
-            current = current.next;
-        }
-        return Optional.ofNullable(min);
     }
 
     @Override

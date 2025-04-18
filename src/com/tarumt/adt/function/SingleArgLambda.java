@@ -1,3 +1,7 @@
+/**
+ * @author Lim Yuet Yang
+ */
+
 package com.tarumt.adt.function;
 
 /**

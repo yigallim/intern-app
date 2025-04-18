@@ -1,3 +1,6 @@
+/**
+ * @author Lim Yuet Yang
+ */
 package com.tarumt.utility.pretty.annotation;
 
 import java.lang.annotation.Retention;

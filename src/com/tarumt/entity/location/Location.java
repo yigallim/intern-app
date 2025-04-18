@@ -1,8 +1,14 @@
+/**
+ * @author Lim Yuet Yang
+ */
+
 package com.tarumt.entity.location;
 
 import com.tarumt.adt.list.ListInterface;
 import com.tarumt.adt.list.DoublyLinkedList;
 import com.tarumt.adt.list.ArrayToLinked;
+
+import java.util.Random;
 
 public class Location {
     private City city;

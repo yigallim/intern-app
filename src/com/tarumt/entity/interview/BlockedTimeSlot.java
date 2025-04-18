@@ -1,6 +1,11 @@
+/**
+ * @author Lim Yuet Yang
+ */
 package com.tarumt.entity.interview;
 
 import com.tarumt.entity.Company;
+
+import java.util.Objects;
 
 public class BlockedTimeSlot {
     private Company company;
@@ -32,5 +37,20 @@ public class BlockedTimeSlot {
         return String.format("%-10s | %-11s ",
                 slot != null ? slot.getDate().toString() : "N/A",
                 slot != null ? slot.getTimeRangeString() : "N/A");
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+
+        BlockedTimeSlot that = (BlockedTimeSlot) o;
+        return Objects.equals(company, that.company) && Objects.equals(slot, that.slot);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = Objects.hashCode(company);
+        result = 31 * result + Objects.hashCode(slot);
+        return result;
     }
 }

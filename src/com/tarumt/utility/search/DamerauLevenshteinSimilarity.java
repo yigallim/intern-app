@@ -1,3 +1,6 @@
+/**
+ * @author Lim Yuet Yang
+ */
 package com.tarumt.utility.search;
 
 public class DamerauLevenshteinSimilarity {

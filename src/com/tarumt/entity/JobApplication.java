@@ -1,3 +1,7 @@
+/**
+ * @author Lim Yuet Yang
+ * @author Leong Hon Yan
+ */
 package com.tarumt.entity;
 
 import com.tarumt.utility.common.Context;
@@ -8,6 +12,7 @@ import com.tarumt.utility.pretty.annotation.ExcludeKey;
 import com.tarumt.utility.pretty.annotation.OutputLength;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 public class JobApplication extends BaseEntity {
     private static final String PREFIX = "e";
@@ -135,6 +140,23 @@ public class JobApplication extends BaseEntity {
                 "|  Job Posting => " + jobPosting + ",\n" +
                 "|  Status      => " + (status != null ? status.toString() : "N/A") + ",\n" +
                 "|  Applied At  => " + Strings.formatDateTime(appliedAt);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+
+        JobApplication that = (JobApplication) o;
+        return Objects.equals(jobPosting, that.jobPosting) && Objects.equals(applicant, that.applicant) && status == that.status && Objects.equals(appliedAt, that.appliedAt);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = Objects.hashCode(jobPosting);
+        result = 31 * result + Objects.hashCode(applicant);
+        result = 31 * result + Objects.hashCode(status);
+        result = 31 * result + Objects.hashCode(appliedAt);
+        return result;
     }
 }
 

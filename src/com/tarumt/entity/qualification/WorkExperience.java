@@ -1,5 +1,10 @@
 package com.tarumt.entity.qualification;
 
+import java.util.Objects;
+
+/**
+ * @author Choo Zhen Hao
+ */
 public class WorkExperience extends Qualification {
 
     private Industry industry;
@@ -35,8 +40,7 @@ public class WorkExperience extends Qualification {
 
         private final String displayName;
 
-        Industry(String displayName
-        ) {
+        Industry(String displayName) {
             this.displayName = displayName;
         }
 
@@ -47,10 +51,15 @@ public class WorkExperience extends Qualification {
     }
 
     public WorkExperience(Industry industry, int years, boolean optional, Importance importance) {
+        super(optional, importance);
         this.industry = industry;
         this.years = years;
-        setOptional(optional);
-        setImportance(importance);
+    }
+
+    public WorkExperience(Industry industry, int years) {
+        super(true, Importance.LOW);
+        this.industry = industry;
+        this.years = years;
     }
 
     public Industry getIndustry() {
@@ -69,6 +78,16 @@ public class WorkExperience extends Qualification {
         this.years = years;
     }
 
+    public double scoreMatch(WorkExperience other) {
+        if (other == null) {
+            return 0;
+        }
+        if (this.industry != other.industry) {
+            return 0;
+        }
+        return Math.min(1.0, (double) other.getYears() / this.getYears());
+    }
+
     @Override
     public double score() {
         return years * 1.5; // Example scoring: each year gives 1.5 points
@@ -81,4 +100,26 @@ public class WorkExperience extends Qualification {
                 + ", years=" + years
                 + '}';
     }
-} 
+
+    @Override
+    public String toShortString() {
+        return industry + " - " + years + " yrs";
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+
+        WorkExperience that = (WorkExperience) o;
+        return years == that.years && industry == that.industry;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + Objects.hashCode(industry);
+        result = 31 * result + years;
+        return result;
+    }
+}

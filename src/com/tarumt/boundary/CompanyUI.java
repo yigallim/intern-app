@@ -1,9 +1,10 @@
+/**
+ * @author Lim Yuet Yang
+ */
+
 package com.tarumt.boundary;
 
-import com.tarumt.control.CompanyController;
-import com.tarumt.control.InterviewController;
-import com.tarumt.control.JobApplicationController;
-import com.tarumt.control.JobPostingController;
+import com.tarumt.control.*;
 import com.tarumt.entity.Company;
 import com.tarumt.utility.common.*;
 import com.tarumt.utility.pretty.TabularPrint;
@@ -33,7 +34,6 @@ public class CompanyUI {
                         new Menu.Choice("🏢 Create Company", companyController::create),
                         new Menu.Choice("📊 Display Company", companyController::read),
                         new Menu.Choice("🔍 Search Company", companyController::search),
-                        new Menu.Choice("📂 Filter Company", companyController::filter),
                         new Menu.Choice("🔃 Update Company", companyController::update),
                         new Menu.Choice("❌ Delete Company", companyController::delete))
                 .exit("<Return to Main Menu>")
@@ -281,6 +281,7 @@ public class CompanyUI {
         JobApplicationController jobApplicationController = JobApplicationController.getInstance();
         InterviewController interviewController = InterviewController.getInstance();
         CompanyController companyController = CompanyController.getInstance();
+        MatchingController matchingController = MatchingController.getInstance();
 
         Company company = Context.getCompany();
 
@@ -290,6 +291,7 @@ public class CompanyUI {
                     .header(() -> "==> Welcome, Employer \"" + company.getName() + "\"  |  " + Strings.formatDateTime(Context.getDateTime()) + " <==")
                     .choice(
                             new Menu.Choice("💼 Manage Job Posting", jobPostingController::run),
+                            new Menu.Choice("🔍 Manage Job Qualification", matchingController::manageJobQualification),
                             new Menu.Choice("📄 Manage Job Applications", jobApplicationController::accessEmployer),
                             new Menu.Choice("🤝 Manage Interviews", interviewController::accessEmployer),
                             new Menu.Choice("🏢 Manage Company Profile", companyController::manageProfile))

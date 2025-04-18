@@ -1,3 +1,7 @@
+/**
+ * @author Yeoh Ming Zhe
+ */
+
 package com.tarumt.control;
 
 import com.tarumt.boundary.JobPostingUI;
@@ -16,11 +20,6 @@ import com.tarumt.adt.list.DoublyLinkedList;
 import com.tarumt.adt.map.MapInterface;
 import com.tarumt.adt.map.SimpleHashMap;
 import java.time.YearMonth;
-import java.util.Comparator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 public class JobPostingController {
 
@@ -31,8 +30,8 @@ public class JobPostingController {
 
     private JobPostingController() {
         Input input = new Input();
-        this.jobPostings = Initializer.getJobPostings();
         this.jobPostingUI = new JobPostingUI(input);
+        this.jobPostings = Initializer.getJobPostings();
         this.jobApplications = Initializer.getJobApplications();
     }
 
@@ -124,7 +123,7 @@ public class JobPostingController {
         JobPosting.Type selectedType = jobPostingUI.getJobPostingType();
         if (selectedType == null) return;
 
-        ListInterface<JobPosting> filtered = jobPostings.filter(job ->
+        ListInterface<JobPosting> filtered = getEmployerJobPostings().filter(job ->
                 job.getType() == selectedType
         );
         jobPostingUI.displayFilteredJobs(filtered);
@@ -138,7 +137,7 @@ public class JobPostingController {
         int minSalary = Integer.parseInt(parts[0]);
         int maxSalary = Integer.parseInt(parts[1]);
 
-        ListInterface<JobPosting> filtered = jobPostings.filter(job ->
+        ListInterface<JobPosting> filtered = getEmployerJobPostings().filter(job ->
                 job.getSalaryMin() >= minSalary && job.getSalaryMax() <= maxSalary
         );
         jobPostingUI.displayFilteredJobs(filtered);
@@ -148,7 +147,7 @@ public class JobPostingController {
         JobPosting.Status selectedStatus = jobPostingUI.getJobPostingStatus();
         if (selectedStatus == null) return;
 
-        ListInterface<JobPosting> filtered = jobPostings.filter(job ->
+        ListInterface<JobPosting> filtered = getEmployerJobPostings().filter(job ->
                 job.getStatus() == selectedStatus
         );
         jobPostingUI.displayFilteredJobs(filtered);
@@ -161,7 +160,7 @@ public class JobPostingController {
         LocalDateTime startDateTime = dateRange[0].atStartOfDay();
         LocalDateTime endDateTime = dateRange[1].atTime(23, 59, 59);
 
-        ListInterface<JobPosting> filtered = jobPostings.filter(job ->
+        ListInterface<JobPosting> filtered = getEmployerJobPostings().filter(job ->
                 !job.getCreatedAt().isBefore(startDateTime) &&
                         !job.getCreatedAt().isAfter(endDateTime)
         );
@@ -169,7 +168,7 @@ public class JobPostingController {
     }
 
     public void sortJobsByTitle() {
-        ListInterface<JobPosting> sorted = new DoublyLinkedList<>(jobPostings);
+        ListInterface<JobPosting> sorted = new DoublyLinkedList<>(getEmployerJobPostings());
         sorted.sort((job1, job2) ->
                 job1.getTitle().compareToIgnoreCase(job2.getTitle())
         );
@@ -177,7 +176,7 @@ public class JobPostingController {
     }
 
     public void sortJobsBySalary() {
-        ListInterface<JobPosting> sorted = new DoublyLinkedList<>(jobPostings);
+        ListInterface<JobPosting> sorted = new DoublyLinkedList<>(getEmployerJobPostings());
         sorted.sort((job1, job2) -> {
             int avgSalary1 = (job1.getSalaryMin() + job1.getSalaryMax()) / 2;
             int avgSalary2 = (job2.getSalaryMin() + job2.getSalaryMax()) / 2;
@@ -187,7 +186,7 @@ public class JobPostingController {
     }
 
     public void sortJobsByDate() {
-        ListInterface<JobPosting> sorted = new DoublyLinkedList<>(jobPostings);
+        ListInterface<JobPosting> sorted = new DoublyLinkedList<>(getEmployerJobPostings());
         sorted.sort((job1, job2) ->
                 job1.getCreatedAt().compareTo(job2.getCreatedAt())
         );
@@ -330,7 +329,7 @@ public class JobPostingController {
         }
 
         LocalDateTime createdAt = Context.getDateTime(), updatedAt = Context.getDateTime();
-        return new JobPosting(title, company, salaryMin, salaryMax, description, type, null, JobPosting.Status.OPEN,
+        return new JobPosting(title, company, salaryMin, salaryMax, description, type, JobPosting.Status.OPEN,
                 createdAt, updatedAt);
     }
 

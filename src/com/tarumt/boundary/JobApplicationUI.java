@@ -1,3 +1,7 @@
+/**
+ * @author Lim Yuet Yang
+ * @author Leong Hon Yan
+ */
 package com.tarumt.boundary;
 
 import com.tarumt.adt.list.ListInterface;
@@ -28,7 +32,6 @@ public class JobApplicationUI {
                         new Menu.Choice("📄 Display All Application", jobApplicationController::displayJobApplication),
                         new Menu.Choice("🔄 Display Ongoing Application", jobApplicationController::displayOngoingJobApplication),
                         new Menu.Choice("🏁 Display Terminated Application", jobApplicationController::displayTerminatedJobApplication),
-                        new Menu.Choice("🔍 View Matched Applications", Log::na),
                         new Menu.Choice("✅ Shortlist Application", jobApplicationController::shortlistApplication),
                         new Menu.Choice("🎉 Offer Application", jobApplicationController::offerApplication),
                         new Menu.Choice("❌ Reject Application", jobApplicationController::rejectApplication)

@@ -1,3 +1,7 @@
+/**
+ * @author Lim Yuet Yang
+ */
+
 package com.tarumt.adt.list;
 
 import java.util.Comparator;
@@ -8,8 +12,6 @@ import com.tarumt.adt.function.SingleArgLambda;
 import com.tarumt.adt.function.TestLambda;
 
 public interface ListInterface<E> extends Iterable<E> {
-    // TODO: remove duplicates?
-
     int size();
 
     boolean isEmpty();
@@ -34,8 +36,6 @@ public interface ListInterface<E> extends Iterable<E> {
 
     E set(int index, E element);
 
-    int indexOf(Object o);
-
     ListInterface<E> subList(int fromIndex, int toIndex);
 
     <R> ListInterface<R> map(SingleArgLambda<? super E, ? extends R> mapper);
@@ -45,8 +45,6 @@ public interface ListInterface<E> extends Iterable<E> {
     void sort(Comparator<? super E> comparator);
 
     boolean anyMatch(TestLambda<? super E> testLambda);
-
-    Optional<E> min(Comparator<? super E> comparator);
 
     Optional<E> max(Comparator<? super E> comparator);
 

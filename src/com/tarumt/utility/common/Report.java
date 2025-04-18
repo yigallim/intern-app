@@ -1,3 +1,6 @@
+/**
+ * @author Lim Yuet Yang
+ */
 package com.tarumt.utility.common;
 
 import java.time.LocalDateTime;
@@ -16,7 +19,7 @@ public class Report {
         header.append(Strings.center(reportName.toUpperCase(), width)).append("\n");
         header.append(Strings.repeat("-", width)).append("\n");
         header.append("Generated at: ").append(dayOfWeek).append(" ").append(Strings.formatDateTime(dateTime)).append("\n");
-        header.append(Strings.repeat("-", width)).append("\n");
+        header.append(Strings.repeat("-", width));
         return header.toString();
     }
 

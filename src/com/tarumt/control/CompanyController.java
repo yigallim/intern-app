@@ -1,3 +1,7 @@
+/**
+ * @author Lim Yuet Yang
+ */
+
 package com.tarumt.control;
 
 import com.tarumt.boundary.CompanyUI;
@@ -87,10 +91,6 @@ public class CompanyController {
             FuzzySearch.Result<Company> result = FuzzySearch.searchList(Company.class, this.companies, query);
             companyUI.printSearchResult(result);
         }
-    }
-
-    public void filter() {
-        Log.na();
     }
 
     public void update() {

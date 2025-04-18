@@ -1,5 +1,10 @@
 package com.tarumt.entity.qualification;
 
+import java.util.Objects;
+
+/**
+ * @author Choo Zhen Hao
+ */
 public class LanguageProficiency extends Qualification {
 
     private Language language;
@@ -54,11 +59,17 @@ public class LanguageProficiency extends Qualification {
 
     }
 
-    public LanguageProficiency(Language language, Proficiency proficiency,boolean optional, Importance importance) {
+    public LanguageProficiency(Language language, Proficiency proficiency, boolean optional, Importance importance) {
+        super(optional, importance);
         this.language = language;
         this.proficiency = proficiency;
-        setOptional(optional);
-        setImportance(importance);
+    }
+
+    public LanguageProficiency(Language language, Proficiency proficiency) {
+        super(true, Importance.LOW);
+        this.language = language;
+        this.proficiency = proficiency;
+
     }
 
     public Language getLanguage() {
@@ -75,6 +86,28 @@ public class LanguageProficiency extends Qualification {
 
     public void setProficiency(Proficiency proficiency) {
         this.proficiency = proficiency;
+    }
+
+    public double scoreMatch(LanguageProficiency other) {
+        if (other == null) {
+            return 0;
+        }
+        if (this.language != other.language) {
+            return 0;
+        }
+        switch (other.getProficiency()) {
+            case NATIVE:
+                return 1.0;
+            case FLUENT:
+                return 0.8;
+            case INTERMEDIATE:
+                return 0.5;
+            case ELEMENTARY:
+                return 0.2;
+            default:
+                return 0.0;
+        }
+
     }
 
     @Override
@@ -99,5 +132,25 @@ public class LanguageProficiency extends Qualification {
                 + "language='" + language + '\''
                 + ", proficiency='" + proficiency + '\''
                 + '}';
+    }
+
+    @Override
+    public String toShortString() {
+        return language + " (" + proficiency + ")";
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+
+        LanguageProficiency that = (LanguageProficiency) o;
+        return language == that.language && proficiency == that.proficiency;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = Objects.hashCode(language);
+        result = 31 * result + Objects.hashCode(proficiency);
+        return result;
     }
 }

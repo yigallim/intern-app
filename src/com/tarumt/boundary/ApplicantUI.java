@@ -1,3 +1,6 @@
+/**
+ * @author Leong Hon Yan
+ */
 package com.tarumt.boundary;
 
 import com.tarumt.adt.list.DoublyLinkedList;
@@ -277,6 +280,7 @@ public class ApplicantUI {
         ApplicantController applicantController = ApplicantController.getInstance();
         JobApplicationController jobApplicationController = JobApplicationController.getInstance();
         InterviewController interviewController = InterviewController.getInstance();
+        MatchingController matchingController = MatchingController.getInstance();
 
         Applicant applicant = Context.getApplicant();
 
@@ -285,10 +289,12 @@ public class ApplicantUI {
                     .banner(applicant::getName)
                     .header(() -> "==> Welcome, Applicant \"" + applicant.getName() + "\"  |  " + Strings.formatDateTime(Context.getDateTime()) + " <==")
                     .choice(
-                            new Menu.Choice("🔎 Explore Jobs & Companies", applicantController::exploreJobsAndCompanies),
-                            new Menu.Choice("📄 Manage Job Application", jobApplicationController::accessApplicant),
-                            new Menu.Choice("🤝 Manage Interviews", interviewController::accessApplicant),
-                            new Menu.Choice("👤 Manage Applicant Profile", applicantController::manageProfile))
+                            new Menu.Choice("🔍 Explore Jobs & Companies", applicantController::exploreJobsAndCompanies),
+                            new Menu.Choice("📄 Manage Job Applications", jobApplicationController::accessApplicant),
+                            new Menu.Choice("📅 Manage Interviews", interviewController::accessApplicant),
+                            new Menu.Choice("🎓 Manage Qualifications", matchingController::manageApplicantQualification),
+                            new Menu.Choice("👤 Manage Profile", applicantController::manageProfile)
+                    )
                     .exit("<Logout>")
                     .beforeEach(System.out::println)
                     .afterEach(System.out::println)
@@ -308,8 +314,7 @@ public class ApplicantUI {
                 .choice(
                         new Menu.Choice("📋 Display All Job Postings", jobPostingController::read),
                         new Menu.Choice("🔍 Search Job Postings", jobPostingController::search),
-                        new Menu.Choice("📂 Filter Job Postings",jobPostingController::filter),
-                        new Menu.Choice("🔖 Display Recommended Job Postings", Log::na),
+                        new Menu.Choice("📂 Filter Job Postings", jobPostingController::filter),
                         new Menu.Choice("🏢 Display Companies", companyController::read),
                         new Menu.Choice("🔍 Search Companies", companyController::search))
                 .exit("<Return>")
