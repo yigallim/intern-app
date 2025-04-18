@@ -77,6 +77,7 @@ public class MatchingReport {
 
             // Use pretty Chart to display bar chart
             Chart.barChart(names, scores, "Top Match Score Chart", 25, '#', true);
+            System.out.println("\n");
         }
 
         System.out.print(Report.buildReportFooter(width));
