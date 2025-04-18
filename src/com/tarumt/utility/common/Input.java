@@ -130,7 +130,7 @@ public class Input {
         int choice = this.getInt(customMessage.apply(min, max), condition);
 
         if (exitKeyEnabled && choice == INT_EXIT_VALUE) {
-            return null;
+            return null;    
         }
 
         this.reloadExitKey();

@@ -20,21 +20,7 @@ public class QualificationUI {
     }
 
     private <T extends Enum<T>> T getEnumSelection(Class<T> enumClass, String prompt) {
-        T[] values = enumClass.getEnumConstants();
-        IntegerCondition condition = new IntegerCondition().min(1).max(values.length);
-
-        System.out.println("\n⇐ " + prompt + " ⇒");
-
-        int columns = 3;
-        for (int i = 0; i < values.length; i++) {
-            System.out.printf("%-45s", String.format("%2d. %-40s", (i + 1), values[i]));
-            if ((i + 1) % columns == 0 || i == values.length - 1) {
-                System.out.println();
-            }
-        }
-
-        int choice = input.getInt("\nSelect an option: ", condition);
-        return values[choice - 1];
+        return input.getEnum("\n⇐ " + prompt + " ⇒", enumClass);
     }
 
     public EducationLevel getEducationInput() {

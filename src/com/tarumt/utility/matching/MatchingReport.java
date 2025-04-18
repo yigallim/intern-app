@@ -8,6 +8,7 @@ import com.tarumt.entity.location.Location;
 import com.tarumt.entity.qualification.*;
 import com.tarumt.utility.common.Context;
 import com.tarumt.utility.common.Log;
+import com.tarumt.utility.common.Report;
 
 public class MatchingReport {
 
@@ -17,13 +18,14 @@ public class MatchingReport {
             Log.warn("No logged in company context.");
             return;
         }
+        final int width = 80;
+        final String module = "Intern Application Matching";
+        final String reportName = "Job Applicant Matching Report";
 
+        System.out.print(Report.buildReportHeader(width, module, reportName));
+        System.out.println("\n");
         List<JobPosting> jobPostings = Initializer.getJobPostings().filter(j -> j.getCompany().equals(company));
         List<JobApplication> jobApplications = Initializer.getJobApplications();
-
-        System.out.println("\n================================================================================");
-        System.out.printf("%-40s%40s\n", company.getName(), "MATCHING REPORT SUMMARY");
-        System.out.println("--------------------------------------------------------------------------------\n");
 
         for (JobPosting job : jobPostings) {
             List<ReportEntry> matched = new DoublyLinkedList<>();
@@ -57,7 +59,7 @@ public class MatchingReport {
             }
             double avgScore = qualified == 0 ? 0.0 : totalScore / qualified;
             System.out.printf("\n📈 Average Score of Qualified Applicants: %.2f\n", avgScore);
-            
+
             if (qualified > 0) {
                 System.out.println();
                 String header = String.format("| %-3s | %-20s | %-30s | %-6s |", "#", "Applicant", "Email", "Score");
@@ -86,8 +88,9 @@ public class MatchingReport {
             }
 
             System.out.println("\n================================================================================\n");
-
         }
+        System.out.print(Report.buildReportFooter(width));
+
     }
 
     private static class ReportEntry {
