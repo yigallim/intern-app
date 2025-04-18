@@ -945,20 +945,209 @@ public class InterviewController {
     }
 
     private String buildRecruitmentReportBody(int previousDays) {
-        return buildRecruitmentCountBarChart();
+        StringBuilder report = new StringBuilder();
+        int width = 120;
+        report.append(String.format("%" + width + "s", "Report Generated For Past (" + previousDays + ") Days"));
+
+        if (Context.isEmployer()) {
+            report.append(buildRecruitmentTable(Context.getCompany()));
+        }
+        if (Context.isAdmin()) {
+            ListInterface<Company> companies = Initializer.getCompanies();
+            for (Company company : companies) {
+                report.append(buildRecruitmentTable(company));
+            }
+        }
+        report.append(buildCountByApplicationStatus());
+        report.append("\n");
+        report.append(buildRecruitmentBarChart());
+        report.append("\n");
+        report.append(getJobsWithMostAndLeastAccepted());
+        return report.toString();
     }
 
-    public String buildRecruitmentCountBarChart() {
-        ListInterface<String> categories = new DoublyLinkedList<>();
-        ListInterface<Integer> values = new DoublyLinkedList<>();
+    public String getJobsWithMostAndLeastAccepted() {
+        ListInterface<JobPosting> jobs = new DoublyLinkedList<>();
+        ListInterface<JobApplication> applications = new DoublyLinkedList<>();
+
+        if (Context.isEmployer()) {
+            jobs = getEmployerJobPostings();
+            applications = getEmployerJobApplications();
+        }
+        if (Context.isAdmin()) {
+            jobs = new DoublyLinkedList<>(jobPostings);
+            applications = getAllJobApplications();
+        }
+
+        class JobAccepted {
+            JobPosting job;
+            int acceptedCount;
+
+            JobAccepted(JobPosting job, int count) {
+                this.job = job;
+                this.acceptedCount = count;
+            }
+        }
+
+        ListInterface<JobAccepted> jobAcceptedList = new DoublyLinkedList<>();
+        for (int i = 0; i < jobs.size(); i++) {
+            JobPosting job = jobs.get(i);
+            int accepted = applications.filter(app ->
+                    app.getJobPosting().equals(job) &&
+                            app.getStatus() == JobApplication.Status.ACCEPTED).size();
+            jobAcceptedList.add(new JobAccepted(job, accepted));
+        }
+
+        int max = 0;
+        int min = Integer.MAX_VALUE;
+
+        for (int i = 0; i < jobAcceptedList.size(); i++) {
+            int count = jobAcceptedList.get(i).acceptedCount;
+            if (count > max) max = count;
+            if (count < min) min = count;
+        }
+
+        ListInterface<JobPosting> maxJobs = new DoublyLinkedList<>();
+        ListInterface<JobPosting> minJobs = new DoublyLinkedList<>();
+
+        for (int i = 0; i < jobAcceptedList.size(); i++) {
+            JobAccepted entry = jobAcceptedList.get(i);
+            if (entry.acceptedCount == max) {
+                maxJobs.add(entry.job);
+            }
+            if (entry.acceptedCount == min) {
+                minJobs.add(entry.job);
+            }
+        }
+        StringBuilder sb = new StringBuilder();
+
+        sb.append(String.format("Job(s) with the most ACCEPTED applicants (%d accepted):\n", max));
+        if (!maxJobs.isEmpty()) {
+            sb.append("< ");
+            for (int i = 0; i < maxJobs.size() && i < 5; i++) {
+                JobPosting job = maxJobs.get(i);
+                sb.append(job.getId()).append(", ").append(job.getTitle());
+                if (i < maxJobs.size() - 1 && i < 4) sb.append(" | ");
+            }
+            if (maxJobs.size() > 5) {
+                sb.append(" ...");
+            }
+            sb.append(" >\n\n");
+        }
+
+        sb.append(String.format("Job(s) with the least ACCEPTED applicants (%d accepted):\n", min));
+        if (!minJobs.isEmpty()) {
+            sb.append("< ");
+            for (int i = 0; i < minJobs.size() && i < 5; i++) {
+                JobPosting job = minJobs.get(i);
+                sb.append(job.getId()).append(", ").append(job.getTitle());
+                if (i < minJobs.size() - 1 && i < 4) sb.append(" | ");
+            }
+            if (minJobs.size() > 5) {
+                sb.append(" ...");
+            }
+            sb.append(" >\n");
+        }
+
+        return sb.toString();
+    }
+
+    public String buildRecruitmentBarChart() {
+        class Entry {
+            String category;
+            int count;
+
+            Entry(String category, int count) {
+                this.category = category;
+                this.count = count;
+            }
+        }
+
+        ListInterface<Entry> entries = new DoublyLinkedList<>();
+
+        if (Context.isEmployer()) {
+            Company company = Context.getCompany();
+            ListInterface<JobPosting> jobPostings = getEmployerJobPostings(company);
+            ListInterface<JobApplication> applications = getEmployerJobApplications(company);
+
+            for (int i = 0; i < jobPostings.size(); i++) {
+                JobPosting job = jobPostings.get(i);
+                String title = job.getTitle();
+                int acceptedCount = applications.filter(app ->
+                        app.getJobPosting().equals(job) &&
+                                app.getStatus() == JobApplication.Status.ACCEPTED).size();
+
+                entries.add(new Entry(title, acceptedCount));
+            }
+        }
+
+        if (Context.isAdmin()) {
+            ListInterface<Company> companies = Initializer.getCompanies();
+            for (Company company : companies) {
+                ListInterface<JobPosting> jobPostings = getEmployerJobPostings(company);
+                ListInterface<JobApplication> applications = getEmployerJobApplications(company);
+
+                for (int i = 0; i < jobPostings.size(); i++) {
+                    JobPosting job = jobPostings.get(i);
+                    String title = company.toShortString() + " - " + job.getTitle();
+                    int acceptedCount = applications.filter(app ->
+                            app.getJobPosting().equals(job) &&
+                                    app.getStatus() == JobApplication.Status.ACCEPTED).size();
+
+                    entries.add(new Entry(title, acceptedCount));
+                }
+            }
+        }
+
+        // Sort entries in descending order of count
+        entries.sort((e1, e2) -> Integer.compare(e2.count, e1.count));
+
+        // Split back into separate category and count lists
+        ListInterface<String> acceptedCategories = new DoublyLinkedList<>();
+        ListInterface<Integer> acceptedCounts = new DoublyLinkedList<>();
+
+        for (int i = 0; i < entries.size(); i++) {
+            Entry entry = entries.get(i);
+            acceptedCategories.add(entry.category);
+            acceptedCounts.add(entry.count);
+        }
+
         return Chart.barChart(
-                categories,
-                values,
-                "Past Interviews by Job Posting",
+                acceptedCategories,
+                acceptedCounts,
+                "Accepted Applications by Job",
                 120,
                 '█',
                 true
         );
+    }
+
+    public String buildCountByApplicationStatus() {
+        ListInterface<JobApplication> applications = new DoublyLinkedList<>();
+
+        if (Context.isEmployer()) {
+            applications = getEmployerJobApplications();
+        }
+        if (Context.isAdmin()) {
+            applications = getAllJobApplications();
+        }
+
+        int accepted = applications.filter(app -> app.getStatus() == JobApplication.Status.ACCEPTED).size();
+        int rejected = applications.filter(app -> app.getStatus() == JobApplication.Status.REJECTED).size();
+        int withdrawn = applications.filter(app -> app.getStatus() == JobApplication.Status.WITHDRAWN).size();
+        return String.format(
+                "Total ACCEPTED Count: %d\nTotal REJECTED Count: %d\nTotal WITHDRAWN Count: %d",
+                accepted, rejected, withdrawn
+        );
+    }
+
+    public String buildRecruitmentTable(Company company) {
+        StringBuilder report = new StringBuilder();
+        ListInterface<JobApplication> applications = getEmployerJobApplications(company);
+        if (applications.isEmpty()) return report.toString();
+        report.append("\nCompany: " + company.toShortString() + "\n");
+        report.append(this.buildJobApplicationStatusTable(applications));
+        return report.toString();
     }
 
     public String buildJobApplicationStatusTable(ListInterface<JobApplication> applications) {
@@ -967,9 +1156,10 @@ public class InterviewController {
         sb.append(String.format("%-10s %-46s %-40s %-20s\n", "Job ID", "Job Title", "Applicants", "Status"));
         sb.append("------------------------------------------------------------------------------------------------------------------------\n");
 
+        ListInterface<JobApplication> terminatedApplications = applications.filter(JobApplication::isTerminated);
         DoublyLinkedList<String> processedJobIds = new DoublyLinkedList<>();
 
-        for (JobApplication app1 : applications) {
+        for (JobApplication app1 : terminatedApplications) {
             String jobId = app1.getJobPosting().getId();
             if (processedJobIds.contains(jobId)) {
                 continue;
@@ -978,20 +1168,15 @@ public class InterviewController {
             processedJobIds.add(jobId);
             String jobTitle = app1.getJobPosting().getTitle();
 
-            // Collect all applicants for this job
-            DoublyLinkedList<JobApplication> matchingApplications = new DoublyLinkedList<>();
-            for (JobApplication app2 : applications) {
-                if (app2.getJobPosting().getId().equals(jobId)) {
-                    matchingApplications.add(app2);
-                }
-            }
-
+            ListInterface<JobApplication> matchingApps = terminatedApplications.filter(app2 ->
+                    app2.getJobPosting().getId().equals(jobId)
+            );
             boolean isFirstRow = true;
-            for (JobApplication match : matchingApplications) {
-                String jobIdCol = isFirstRow ? String.format("%-10s", jobId) : String.format("%-10s", "");
-                String jobTitleCol = isFirstRow ? String.format("%-46s", jobTitle) : String.format("%-46s", "");
-                String applicantCol = String.format("%-40s", match.getApplicant().toShortString());
-                String statusCol = String.format("%-20s", match.getStatus().toString());
+            for (JobApplication app : matchingApps) {
+                String jobIdCol = isFirstRow ? String.format("%-10s ", jobId) : String.format("%-10s ", "");
+                String jobTitleCol = isFirstRow ? String.format("%-46s ", jobTitle) : String.format("%-46s ", "");
+                String applicantCol = String.format("%-40s ", app.getApplicant().toShortString());
+                String statusCol = String.format("%-20s", app.getStatus().toString());
 
                 sb.append(jobIdCol)
                         .append(jobTitleCol)
@@ -1002,7 +1187,7 @@ public class InterviewController {
                 isFirstRow = false;
             }
 
-            sb.append("\n"); // spacing between job blocks
+            sb.append("\n");
         }
 
         sb.append("------------------------------------------------------------------------------------------------------------------------\n");
