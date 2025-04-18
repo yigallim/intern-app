@@ -421,22 +421,34 @@ public class JobPostingUI {
 
     public void displayMonthRangeSummaryReport(ListInterface<JobPostingController.MonthRangeSummaryData> reportData,
                                                int startMonth, int startYear, int endMonth, int endYear) {
-
+        // Generate report header
         int width = 100;
         String module = "Internship Management System";
-        String reportName = "Month Range Summary Report (" + startYear + "-" + startMonth + " to " + endYear + "-" + endMonth + ")";
+        String reportName;
+
+        // Customize report name for employer
+        if (Context.isEmployer()) {
+            Company company = Context.getCompany();
+            reportName = company.getName() + " - Month Range Summary Report (" + startYear + "-" + startMonth + " to " + endYear + "-" + endMonth + ")";
+        } else {
+            reportName = "Month Range Summary Report (" + startYear + "-" + startMonth + " to " + endYear + "-" + endMonth + ")";
+        }
+
         String header = Report.buildReportHeader(width, module, reportName);
 
+        // Print the header
         System.out.print(header);
 
         if (reportData.isEmpty()) {
             System.out.println("No data available for this date range.");
 
+            // Print footer even when no data is available
             System.out.print(Report.buildReportFooter(width));
             input.clickAnythingToContinue();
             return;
         }
 
+        // Convert data to MonthRangeSummaryReportRow objects for TabularPrint
         ListInterface<MonthRangeSummaryReportRow> tableRows = new DoublyLinkedList<>();
         DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
@@ -450,10 +462,13 @@ public class JobPostingUI {
             ));
         }
 
+        // Use TabularPrint to display a nicely formatted table
         TabularPrint.printTabular(tableRows, true);
 
+        // Create a chart showing applications by company
         MapInterface<String, Integer> companyApplicationCounts = new SimpleHashMap<>();
 
+        // Count applications by company
         for (int i = 0; i < reportData.size(); i++) {
             JobPostingController.MonthRangeSummaryData data = reportData.get(i);
             String companyName = data.getCompanyName();
@@ -467,33 +482,37 @@ public class JobPostingUI {
             }
         }
 
-        System.out.println("\n=== Applications by Company ===");
-
+        // Convert to lists for chart display
         ListInterface<String> companies = new DoublyLinkedList<>();
         ListInterface<Integer> counts = new DoublyLinkedList<>();
 
+        // Get all keys from the map
         for (String company : companyApplicationCounts.keySet()) {
             companies.add(company);
         }
 
+        // Get corresponding counts
         for (int i = 0; i < companies.size(); i++) {
             String company = companies.get(i);
             counts.add(companyApplicationCounts.get(company));
         }
 
-        System.out.println(Chart.barChart(
-                companies,
-                counts,
-                "Application Count by Company",
-                100,
-                '█',
-                true
-        ));
+        // Display bar chart
+        if (!Context.isEmployer()) {
+            System.out.println(Chart.barChart(
+                    companies,
+                    counts,
+                    "Application Count by Company",
+                    100, // maxBarLength
+                    '█', // barChar
+                    true // showValues
+            ));
+        }
 
-        System.out.println("\n=== Application Trend Over Time ===");
-
+        // Group by date
         MapInterface<LocalDate, Integer> dateApplicationCounts = new SimpleHashMap<>();
 
+        // Count applications by date
         for (int i = 0; i < reportData.size(); i++) {
             JobPostingController.MonthRangeSummaryData data = reportData.get(i);
             LocalDate date = data.getAppliedDate();
@@ -507,13 +526,16 @@ public class JobPostingUI {
             }
         }
 
+        // Sort dates
         ListInterface<LocalDate> sortedDates = new DoublyLinkedList<>();
         for (LocalDate date : dateApplicationCounts.keySet()) {
             sortedDates.add(date);
         }
 
+        // Sort the dates in ascending order
         sortedDates.sort((date1, date2) -> date1.compareTo(date2));
 
+        // Convert to lists for chart display
         ListInterface<String> dates = new DoublyLinkedList<>();
         ListInterface<Integer> dateCounts = new DoublyLinkedList<>();
 
@@ -523,15 +545,81 @@ public class JobPostingUI {
             dateCounts.add(dateApplicationCounts.get(date));
         }
 
+        // Display bar chart
         System.out.println(Chart.barChart(
                 dates,
                 dateCounts,
                 "Application Count by Date",
-                100,
-                '█',
-                true
+                100, // maxBarLength
+                '█', // barChar
+                true // showValues
         ));
 
+        // Find job postings with most and least applications
+        MapInterface<String, Integer> jobApplicationCounts = new SimpleHashMap<>();
+
+        // Count applications by job title
+        for (int i = 0; i < reportData.size(); i++) {
+            JobPostingController.MonthRangeSummaryData data = reportData.get(i);
+            String jobTitle = data.getJobTitle();
+            int count = data.getApplicantCount();
+
+            if (jobApplicationCounts.containsKey(jobTitle)) {
+                int currentCount = jobApplicationCounts.get(jobTitle);
+                jobApplicationCounts.put(jobTitle, currentCount + count);
+            } else {
+                jobApplicationCounts.put(jobTitle, count);
+            }
+        }
+
+        // Find max and min counts
+        int maxCount = Integer.MIN_VALUE;
+        int minCount = Integer.MAX_VALUE;
+        ListInterface<String> mostAppliedJobs = new DoublyLinkedList<>();
+        ListInterface<String> leastAppliedJobs = new DoublyLinkedList<>();
+
+        for (String job : jobApplicationCounts.keySet()) {
+            int count = jobApplicationCounts.get(job);
+
+            if (count > maxCount) {
+                maxCount = count;
+                mostAppliedJobs.clear();
+                mostAppliedJobs.add(job);
+            } else if (count == maxCount) {
+                mostAppliedJobs.add(job);
+            }
+
+            if (count < minCount) {
+                minCount = count;
+                leastAppliedJobs.clear();
+                leastAppliedJobs.add(job);
+            } else if (count == minCount) {
+                leastAppliedJobs.add(job);
+            }
+        }
+
+        // Display most and least applied jobs
+        System.out.println("\nJobs with the most applications (" + maxCount + "):");
+        System.out.print("< ");
+        for (int i = 0; i < mostAppliedJobs.size(); i++) {
+            System.out.print(mostAppliedJobs.get(i));
+            if (i < mostAppliedJobs.size() - 1) {
+                System.out.print(", ");
+            }
+        }
+        System.out.println(" >");
+
+        System.out.println("\nJobs with the least applications (" + minCount + "):");
+        System.out.print("< ");
+        for (int i = 0; i < leastAppliedJobs.size(); i++) {
+            System.out.print(leastAppliedJobs.get(i));
+            if (i < leastAppliedJobs.size() - 1) {
+                System.out.print(", ");
+            }
+        }
+        System.out.println(" >");
+
+        // Generate and print report footer
         System.out.print(Report.buildReportFooter(width));
 
         input.clickAnythingToContinue();

@@ -19,8 +19,6 @@ import com.tarumt.utility.pretty.Chart;
 import com.tarumt.utility.search.FuzzySearch;
 
 import java.time.*;
-import java.util.Comparator;
-import java.util.List;
 
 public class InterviewController {
     private static InterviewController instance;
@@ -451,8 +449,16 @@ public class InterviewController {
         }
     }
 
-    public void report() {
-        this.interviewUI.printReport(buildReportBody());
+    public void interviewReport() {
+        int previousDays = interviewUI.getPreviousDay();
+        if (previousDays == Input.INT_EXIT_VALUE) return;
+        this.interviewUI.printReport(buildInterviewReportBody(previousDays));
+    }
+
+    public void recruitmentReport() {
+        int previousDays = interviewUI.getPreviousDay();
+        if (previousDays == Input.INT_EXIT_VALUE) return;
+        this.interviewUI.printReport(buildRecruitmentReportBody(previousDays));
     }
 
     public void rescheduleInterview() {
@@ -643,12 +649,21 @@ public class InterviewController {
         return calendarView.toString();
     }
 
-    public String buildJobInterviewCountTable(Company company, int width) {
+    public String buildJobInterviewCountTable(Company company, int width, int previousDays) {
         StringBuilder report = new StringBuilder();
 
         ListInterface<JobPosting> jobPostings = getEmployerJobPostings(company);
         if (jobPostings.isEmpty()) return null;
-        ListInterface<ScheduledInterview> pastScheduledInterviews = getEmployerScheduledInterviews(company).filter(interview -> interview.getTimeSlot().isPast());
+
+        LocalDate today = Context.getDateTime().toLocalDate();
+        LocalDate startDate = today.minusDays(previousDays);
+        ListInterface<ScheduledInterview> pastScheduledInterviews = getEmployerScheduledInterviews(company)
+                .filter(interview -> {
+                    LocalDate interviewDate = interview.getTimeSlot().getDate();
+                    return interview.getTimeSlot().isPast() &&
+                            !interviewDate.isBefore(startDate) &&
+                            !interviewDate.isAfter(today);
+                });
         if (pastScheduledInterviews.isEmpty()) return null;
         ListInterface<String> uniqueInterviewedApplicants = new DoublyLinkedList<>();
         ListInterface<Integer> interviewCounts = new DoublyLinkedList<>();
@@ -698,37 +713,55 @@ public class InterviewController {
         return report.toString();
     }
 
-    public String buildReportBody() {
+    public String buildInterviewReportBody(int previousDays) {
         StringBuilder report = new StringBuilder();
         int width = 120;
 
         ListInterface<ScheduledInterview> pastInterviews = new DoublyLinkedList<>();
         ListInterface<JobPosting> jobPostings = new DoublyLinkedList<>();
+
+        LocalDate today = Context.getDateTime().toLocalDate();
+        LocalDate startDate = today.minusDays(previousDays);
+
         if (Context.isEmployer()) {
             Company company = Context.getCompany();
-            pastInterviews = getEmployerScheduledInterviews(company).filter(interview -> interview.getTimeSlot().isPast());
+            pastInterviews = getEmployerScheduledInterviews(company).filter(interview -> {
+                LocalDate interviewDate = interview.getTimeSlot().getDate();
+                return interview.getTimeSlot().isPast() &&
+                        !interviewDate.isBefore(startDate) &&
+                        !interviewDate.isAfter(today);
+            });
             jobPostings = getEmployerJobPostings(company);
 
-            String jobInterviewTable = buildJobInterviewCountTable(company, width);
+            String jobInterviewTable = buildJobInterviewCountTable(company, width, previousDays);
             if (jobInterviewTable == null) {
                 return report.toString();
             }
             report.append(jobInterviewTable);
         }
         if (Context.isAdmin()) {
-            pastInterviews = getAllScheduledInterviews().filter(interview -> interview.getTimeSlot().isPast());
+            pastInterviews = getAllScheduledInterviews().filter(interview -> {
+                LocalDate interviewDate = interview.getTimeSlot().getDate();
+                return interview.getTimeSlot().isPast() &&
+                        !interviewDate.isBefore(startDate) &&
+                        !interviewDate.isAfter(today);
+            });
             jobPostings = this.jobPostings;
 
             ListInterface<Company> companies = Initializer.getCompanies();
             for (Company company : companies) {
-                String jobInterviewTable = buildJobInterviewCountTable(company, width);
+                String jobInterviewTable = buildJobInterviewCountTable(company, width, previousDays);
                 if (jobInterviewTable == null) {
                     continue;
                 }
                 report.append(jobInterviewTable);
             }
         }
-
+        if (pastInterviews.size() < 3 || jobPostings.isEmpty()) {
+            return null;
+        }
+        report.append(Strings.repeat("-", width));
+        report.append("\nTotal Interview Count: " + pastInterviews.size() + "\n");
         String interviewCountBarChart = buildInterviewCountBarChart(pastInterviews, jobPostings);
         if (interviewCountBarChart == null) {
             return report.toString();
@@ -742,23 +775,6 @@ public class InterviewController {
         report.append(mostAndLeastInterviews);
 
         return report.toString();
-    }
-
-    public String buildMostandLeastInterviewedJobPosting() {
-        ListInterface<ScheduledInterview> pastInterviews = new DoublyLinkedList<>();
-        ListInterface<JobPosting> jobPostings = new DoublyLinkedList<>();
-        if (Context.isEmployer()) {
-            Company company = Context.getCompany();
-            pastInterviews = getEmployerScheduledInterviews(company).filter(interview -> interview.getTimeSlot().isPast());
-            jobPostings = getEmployerJobPostings(company);
-        }
-        if (Context.isAdmin()) {
-            pastInterviews = getAllScheduledInterviews().filter(interview -> interview.getTimeSlot().isPast());
-            jobPostings = this.jobPostings;
-        }
-        System.out.println(getJobsWithMostAndLeastInterviews(pastInterviews, jobPostings));
-        System.out.println(buildInterviewCountBarChart(pastInterviews, jobPostings));
-        return null;
     }
 
     public String getJobsWithMostAndLeastInterviews(ListInterface<ScheduledInterview> pastInterviews, ListInterface<JobPosting> jobPostings) {
@@ -906,5 +922,9 @@ public class InterviewController {
         );
 
         return chart;
+    }
+
+    private String buildRecruitmentReportBody(int previousDays) {
+        return null;
     }
 }

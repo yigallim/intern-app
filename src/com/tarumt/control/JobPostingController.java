@@ -553,25 +553,42 @@ public class JobPostingController {
     public ListInterface<MonthRangeSummaryData> generateMonthRangeSummaryReport(int startMonth, int startYear, int endMonth, int endYear) {
         ListInterface<MonthRangeSummaryData> summaryReport = new DoublyLinkedList<>();
 
+        // Define date range
         LocalDate startDate = LocalDate.of(startYear, startMonth, 1);
         LocalDate endDate = YearMonth.of(endYear, endMonth).atEndOfMonth();
 
+        // Filter applications in the date range
         ListInterface<JobApplication> filteredApplications = new DoublyLinkedList<>();
         for (int i = 0; i < jobApplications.size(); i++) {
             JobApplication app = jobApplications.get(i);
             LocalDate applicationDate = app.getAppliedAt().toLocalDate();
-            if (!applicationDate.isBefore(startDate) && !applicationDate.isAfter(endDate)) {
-                filteredApplications.add(app);
+
+            // For employer, only include applications for their job postings
+            if (Context.isEmployer()) {
+                Company loggedInCompany = Context.getCompany();
+                if (app.getJobPosting().getCompany().getId().equals(loggedInCompany.getId()) &&
+                        !applicationDate.isBefore(startDate) && !applicationDate.isAfter(endDate)) {
+                    filteredApplications.add(app);
+                }
+            } else {
+                // For admin, include all applications in the date range
+                if (!applicationDate.isBefore(startDate) && !applicationDate.isAfter(endDate)) {
+                    filteredApplications.add(app);
+                }
             }
         }
 
+        // Rest of the method remains the same
+        // Group by job and date
         MapInterface<JobPosting, MapInterface<LocalDate, Integer>> jobDateCounts = new SimpleHashMap<>();
 
+        // Count applications by job and date
         for (int i = 0; i < filteredApplications.size(); i++) {
             JobApplication app = filteredApplications.get(i);
             JobPosting job = app.getJobPosting();
             LocalDate date = app.getAppliedAt().toLocalDate();
 
+            // Get or create the date map for this job
             MapInterface<LocalDate, Integer> dateCounts;
             if (jobDateCounts.containsKey(job)) {
                 dateCounts = jobDateCounts.get(job);
@@ -580,10 +597,12 @@ public class JobPostingController {
                 jobDateCounts.put(job, dateCounts);
             }
 
+            // Increment the count for this date
             int currentCount = dateCounts.getOrDefault(date, 0);
             dateCounts.put(date, currentCount + 1);
         }
 
+        // Convert to report data format
         for (JobPosting job : jobDateCounts.keySet()) {
             MapInterface<LocalDate, Integer> dateCounts = jobDateCounts.get(job);
 

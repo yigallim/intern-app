@@ -9,6 +9,6 @@ public class ReportTest2 {
 
     public static void main(String[] args) {
         Context.setCompany(Initializer.getCompanies().get(0));
-        InterviewController.getInstance().buildMostandLeastInterviewedJobPosting();
+
     }
 }

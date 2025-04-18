@@ -12,13 +12,9 @@ import com.tarumt.entity.interview.BlockedTimeSlot;
 import com.tarumt.utility.common.*;
 import com.tarumt.utility.pretty.TabularPrint;
 import com.tarumt.utility.search.FuzzySearch;
-import com.tarumt.utility.validation.ConditionFactory;
-import com.tarumt.utility.validation.IntegerCondition;
-import com.tarumt.utility.validation.StringCondition;
-import com.tarumt.utility.validation.ValidationFieldReflection;
+import com.tarumt.utility.validation.*;
 
 import java.lang.reflect.Field;
-import java.time.LocalDateTime;
 
 public class InterviewUI {
     private final Input input;
@@ -37,7 +33,8 @@ public class InterviewUI {
                         new Menu.Choice("📜 Display Past Interview", interviewController::displayPastInterview),
                         new Menu.Choice("⏳ Display Future Interview", interviewController::displayIncomingInterview),
                         new Menu.Choice("🔎 Search All Interview", interviewController::searchAllInterview),
-                        new Menu.Choice("📝 Report", interviewController::report)
+                        new Menu.Choice("📝 Interview Report", interviewController::interviewReport),
+                        new Menu.Choice("📝 Recruitment Report", interviewController::recruitmentReport)
                 )
                 .exit("<Return>")
                 .beforeEach(System.out::println)
@@ -72,7 +69,8 @@ public class InterviewUI {
                         new Menu.Choice("🕒 View Availability", interviewController::viewAvailability),
                         new Menu.Choice("📝 Modify Availability", interviewController::modifyAvailability),
                         new Menu.Choice("❌ Cancel Scheduled Interview", interviewController::cancelScheduledInterview),
-                        new Menu.Choice("📝 Report", interviewController::report)
+                        new Menu.Choice("📝 Interview Report", interviewController::interviewReport),
+                        new Menu.Choice("📝 Recruitment Report", interviewController::recruitmentReport)
                 )
                 .exit("<Return>")
                 .beforeEach(System.out::println)
@@ -442,32 +440,22 @@ public class InterviewUI {
         input.clickAnythingToContinue();
     }
 
-    public void printReportHeader(int width) {
-        LocalDateTime dateTime = Context.getDateTime();
-        String dayOfWeek = Strings.constantCaseToTitleCase(dateTime.getDayOfWeek().toString());
-
-        System.out.println(Strings.repeat("=", width));
-        System.out.println();
-        System.out.println(Strings.center("TUNKU ABDUL RAHMAN UNIVERSITY OF MANAGEMENT AND TECHNOLOGY", width));
-        System.out.println(Strings.center("INTERVIEW SCHEDULING MODULE", width));
-        System.out.println(Strings.center(Strings.repeat("-", 50), width));
-        System.out.println(Strings.center("PAST INTERVIEW ANALYSIS REPORT", width));
-        Strings.line(width);
-        System.out.println("Generated at: " + dayOfWeek + " " + Strings.formatDateTime(dateTime));
-        Strings.line(width);
-        System.out.println();
-    }
-
-    public void printReportFooter(int width) {
-        Strings.line(width);
-        System.out.println(Strings.center("END OF REPORT",width));
-        System.out.println(Strings.repeat("=", width));
-    }
-
     public void printReport(String body) {
+        System.out.println();
+        if (body == null) {
+            Log.info("Not enough record to generate record");
+            return;
+        }
         System.out.println(Report.buildReportHeader(120, "INTERVIEW SCHEDULING MODULE", "PAST INTERVIEW ANALYSIS REPORT"));
         System.out.println(body);
         System.out.println(Report.buildReportFooter(120));
         input.clickAnythingToContinue();
+    }
+
+    public int getPreviousDay() {
+        System.out.println("<== Generate Report [ X to Exit ] ==>");
+        System.out.println("|");
+        IntegerCondition condition = ConditionFactory.integer().min(1).max(365);
+        return input.getInt("| Past Days (n) => ", condition);
     }
 }
