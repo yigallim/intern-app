@@ -1,8 +1,8 @@
 package com.tarumt.entity.location;
 
-import com.tarumt.adt.list.List;
+import com.tarumt.adt.list.ListInterface;
 import com.tarumt.adt.list.DoublyLinkedList;
-import com.tarumt.adt.Arrays;
+import com.tarumt.adt.list.ArrayToLinked;
 
 public class Location {
     private City city;
@@ -37,11 +37,11 @@ public class Location {
         this.city = city;
     }
 
-    public static List<City> getCitiesByState(State state) {
+    public static ListInterface<City> getCitiesByState(State state) {
         if (state == null) {
             throw new IllegalArgumentException("State cannot be null");
         }
-        List<City> cities = new DoublyLinkedList<>();
+        ListInterface<City> cities = new DoublyLinkedList<>();
         for (City c : City.values()) {
             if (c.getState() == state) {
                 cities.add(c);
@@ -50,8 +50,8 @@ public class Location {
         return cities;
     }
 
-    public static List<State> getAllStates() {
-        return Arrays.asList(State.values());
+    public static ListInterface<State> getAllStates() {
+        return ArrayToLinked.asList(State.values());
     }
 
     public double distanceTo(Location other) {
@@ -71,7 +71,7 @@ public class Location {
                         Math.sin(dLon / 2) * Math.sin(dLon / 2);
         double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
         double earthRadius = 6371;
-        return earthRadius * c; 
+        return earthRadius * c;
     }
 
     @Override

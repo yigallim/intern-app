@@ -3,14 +3,16 @@ package com.tarumt.test;
 import com.tarumt.utility.common.Strings;
 import com.tarumt.utility.search.FuzzySearch;
 
-import com.tarumt.adt.list.List;
+import com.tarumt.adt.list.ListInterface;
 import com.tarumt.adt.list.DoublyLinkedList;
-import com.tarumt.adt.set.Set;
+import com.tarumt.adt.set.SetInterface;
+
+import java.util.List;
 
 public class SearchTest {
 
     public static void main(String[] args) {
-        List<TestCase> testCases = new DoublyLinkedList<>();
+        ListInterface<TestCase> testCases = new DoublyLinkedList<>();
 
         // Typo multi-word queries with subtler typos, different sequence, no gap
         testCases.add(new TestCase("Multi-word query test cases (different sequence, no gap)"));
@@ -289,7 +291,7 @@ public class SearchTest {
                 System.out.println("\n=== " + test.getDescription() + " ===\n");
                 continue;
             }
-            Set<String> matches = FuzzySearch.findFuzzyMatches_v4(test.getQuery(), test.getSentence());
+            ListInterface<String> matches = FuzzySearch.findFuzzyMatches(test.getQuery(), test.getSentence());
             System.out.printf("%-5d %-30s %-70s %-50s %-10s %-10s%n",
                     testCounter++,
                     Strings.truncate(test.getQuery(), 30),

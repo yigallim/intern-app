@@ -1,7 +1,5 @@
 package com.tarumt.entity.qualification;
 
-import com.tarumt.entity.BaseEntity;
-
 public class WorkExperience extends Qualification {
 
     private Industry industry;
@@ -55,13 +53,6 @@ public class WorkExperience extends Qualification {
         setImportance(importance);
     }
 
-    public WorkExperience(Industry industry, int years) {
-        this.industry = industry;
-        this.years = years;
-        setOptional(true); // default
-        setImportance(Importance.LOW); // default
-    }
-
     public Industry getIndustry() {
         return industry;
     }
@@ -78,16 +69,6 @@ public class WorkExperience extends Qualification {
         this.years = years;
     }
 
-    public double scoreMatch(WorkExperience other) {
-        if (other == null) {
-            return 0;
-        }
-        if (this.industry != other.industry) {
-            return 0;
-        }
-        return Math.min(1.0, (double) other.getYears() / this.getYears());
-    }
-
     @Override
     public double score() {
         return years * 1.5; // Example scoring: each year gives 1.5 points
@@ -100,14 +81,4 @@ public class WorkExperience extends Qualification {
                 + ", years=" + years
                 + '}';
     }
-
-    @Override
-    public String toShortString() {
-        return industry + " - " + years + " yrs";
-    }
-
-    static {
-        BaseEntity.registerPrefix(WorkExperience.class, "exp");
-    }
-
-}
+} 

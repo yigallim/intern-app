@@ -1,8 +1,5 @@
 package com.tarumt.utility.pretty.banana;
 
-/**
- * @author Yihleego
- */
 public class Option {
     private Integer baseline;
     private Integer codeTagCount;

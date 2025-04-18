@@ -1,7 +1,5 @@
 package com.tarumt.entity.qualification;
 
-import com.tarumt.entity.BaseEntity;
-
 public class LanguageProficiency extends Qualification {
 
     private Language language;
@@ -56,18 +54,11 @@ public class LanguageProficiency extends Qualification {
 
     }
 
-    public LanguageProficiency(Language language, Proficiency proficiency, boolean optional, Importance importance) {
+    public LanguageProficiency(Language language, Proficiency proficiency,boolean optional, Importance importance) {
         this.language = language;
         this.proficiency = proficiency;
         setOptional(optional);
         setImportance(importance);
-    }
-
-    public LanguageProficiency(Language language, Proficiency proficiency) {
-        this.language = language;
-        this.proficiency = proficiency;
-        setOptional(true); // default
-        setImportance(Importance.LOW); // default
     }
 
     public Language getLanguage() {
@@ -84,28 +75,6 @@ public class LanguageProficiency extends Qualification {
 
     public void setProficiency(Proficiency proficiency) {
         this.proficiency = proficiency;
-    }
-
-    public double scoreMatch(LanguageProficiency other) {
-        if (other == null) {
-            return 0;
-        }
-        if (this.language != other.language) {
-            return 0;
-        }
-        switch (other.getProficiency()) {
-            case NATIVE:
-                return 1.0;
-            case FLUENT:
-                return 0.8;
-            case INTERMEDIATE:
-                return 0.5;
-            case ELEMENTARY:
-                return 0.2;
-            default:
-                return 0.0;
-        }
-
     }
 
     @Override
@@ -131,14 +100,4 @@ public class LanguageProficiency extends Qualification {
                 + ", proficiency='" + proficiency + '\''
                 + '}';
     }
-
-    @Override
-    public String toShortString() {
-        return language + " (" + proficiency + ")";
-    }
-
-    static {
-        BaseEntity.registerPrefix(LanguageProficiency.class, "lang");
-    }
-
 }

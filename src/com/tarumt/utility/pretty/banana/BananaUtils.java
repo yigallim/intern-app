@@ -4,90 +4,55 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.LinkedList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
 
-/**
- * Banana is a FIGlet utility for Java.
- * FIGlet is a computer program that generates text banners,
- * in a variety of typefaces, composed of letters made up of
- * conglomerations of smaller ASCII characters.
- * @author Yihleego
- */
+import com.tarumt.adt.list.DoublyLinkedList;
+import com.tarumt.adt.list.ListInterface;
+import com.tarumt.adt.map.SimpleHashMap;
+
 public final class BananaUtils {
     private static final int INVALID = 0;
     private static final int VALID = 1;
     private static final int END = 2;
     private static final String EMPTY = "";
     private static final String WHITESPACE = " ";
-    private static final List<Integer> CODES;
-    private static final ConcurrentMap<Font, Meta> cache = new ConcurrentHashMap<>();
+    private static final ListInterface<Integer> CODES;
+
+    private static final SimpleHashMap<Font, Meta> cache = new SimpleHashMap<>();
 
     static {
-        List<Integer> codes = new LinkedList<>();
-        // Adds ASCII codes.
+
+        ListInterface<Integer> codes = new DoublyLinkedList<>();
+
         for (int i = 32; i < 127; i++) {
             codes.add(i);
         }
-        // Adds extra codes.
-        Collections.addAll(codes, 196, 214, 220, 223, 228, 246, 252);
-        CODES = Collections.unmodifiableList(codes);
+
+        codes.add(196);
+        codes.add(214);
+        codes.add(220);
+        codes.add(223);
+        codes.add(228);
+        codes.add(246);
+        codes.add(252);
+
+        CODES = codes;
     }
 
     private BananaUtils() {
     }
 
-    /**
-     * Returns all fonts.
-     * @return all fonts.
-     */
-    public static List<Font> fonts() {
-        return Font.values();
-    }
-
-    /**
-     * Returns the FIGlet of the text.
-     * @param text the original text.
-     * @return the FIGlet of the text.
-     */
     public static String bananaify(String text) {
         return bananaify(text, null, null, null);
     }
 
-    /**
-     * Returns the FIGlet of the text.
-     * @param text             the original text.
-     * @param horizontalLayout the horizontal layout.
-     * @param verticalLayout   the vertical layout.
-     * @return the FIGlet of the text.
-     */
     public static String bananaify(String text, Layout horizontalLayout, Layout verticalLayout) {
         return bananaify(text, null, horizontalLayout, verticalLayout);
     }
 
-    /**
-     * Returns the FIGlet of the text with the specified font.
-     * @param text the original text.
-     * @param font the specified font.
-     * @return the FIGlet of the text.
-     */
     public static String bananaify(String text, Font font) {
         return bananaify(text, font, null, null);
     }
 
-    /**
-     * Returns the FIGlet of the text with the specified font.
-     * @param text             the original text.
-     * @param font             the specified font.
-     * @param horizontalLayout the horizontal layout.
-     * @param verticalLayout   the vertical layout.
-     * @return the FIGlet of the text.
-     */
     public static String bananaify(String text, Font font, Layout horizontalLayout, Layout verticalLayout) {
         String[] lines = generateFiglet(text, font, horizontalLayout, verticalLayout);
         if (lines == null || lines.length == 0) {
@@ -103,71 +68,6 @@ public final class BananaUtils {
         return sb.toString();
     }
 
-    /**
-     * Returns the FIGlet of the text with the specified styles.
-     * @param text   the original text.
-     * @param styles the specified styles.
-     * @return the FIGlet of the text.
-     */
-    public static String bananansi(String text, Ansi... styles) {
-        return bananansi(text, null, null, null, styles);
-    }
-
-    /**
-     * Returns the FIGlet of the text with the specified styles.
-     * @param text             the original text.
-     * @param horizontalLayout the horizontal layout.
-     * @param verticalLayout   the vertical layout.
-     * @param styles           the specified styles.
-     * @return the FIGlet of the text.
-     */
-    public static String bananansi(String text, Layout horizontalLayout, Layout verticalLayout, Ansi... styles) {
-        return bananansi(text, null, horizontalLayout, verticalLayout, styles);
-    }
-
-    /**
-     * Returns the FIGlet of the text with the specified font and styles.
-     * @param text   the original text.
-     * @param font   the specified font.
-     * @param styles the specified styles.
-     * @return the FIGlet of the text.
-     */
-    public static String bananansi(String text, Font font, Ansi... styles) {
-        return bananansi(text, font, null, null, styles);
-    }
-
-    /**
-     * Returns the FIGlet of the text with the specified font and styles.
-     * @param text             the original text.
-     * @param font             the specified font.
-     * @param horizontalLayout the horizontal layout.
-     * @param verticalLayout   the vertical layout.
-     * @param styles           the specified styles.
-     * @return the FIGlet of the text.
-     */
-    public static String bananansi(String text, Font font, Layout horizontalLayout, Layout verticalLayout, Ansi... styles) {
-        String[] lines = generateFiglet(text, font, horizontalLayout, verticalLayout);
-        if (lines == null || lines.length == 0) {
-            return EMPTY;
-        }
-        StringBuilder sb = new StringBuilder();
-        for (String s : lines) {
-            sb.append(Ansi.ansify(s, styles)).append('\n');
-        }
-        if (sb.length() > 1) {
-            sb.setLength(sb.length() - 1);
-        }
-        return sb.toString();
-    }
-
-    /**
-     * Returns the FIGlet of the text with the specified font.
-     * @param text             the original text.
-     * @param font             the specified font.
-     * @param horizontalLayout the horizontal layout.
-     * @param verticalLayout   the vertical layout.
-     * @return the FIGlet of the text.
-     */
     public static String[] generateFiglet(String text, Font font, Layout horizontalLayout, Layout verticalLayout) {
         if (text == null) {
             return new String[0];
@@ -193,21 +93,26 @@ public final class BananaUtils {
         if (font == null) {
             font = Font.STANDARD;
         }
+
         Meta cachedMeta = cache.get(font);
         if (cachedMeta != null) {
             return cachedMeta;
         }
         Meta newMeta = buildMeta(font);
         if (newMeta != null) {
-            cache.putIfAbsent(font, newMeta);
+
+            if (!cache.containsKey(font)) {
+                cache.put(font, newMeta);
+            }
+
             return newMeta;
         }
         return null;
     }
 
     private static Meta buildMeta(Font font) {
-        // Reads file content.
-        List<String> data = new LinkedList<>();
+
+        ListInterface<String> data = new DoublyLinkedList<>();
         try (InputStream inputStream = font.getInputStream();
              InputStreamReader inputStreamReader = new InputStreamReader(inputStream, font.getCharset());
              BufferedReader bufferedReader = new BufferedReader(inputStreamReader)) {
@@ -218,8 +123,9 @@ public final class BananaUtils {
         } catch (IOException e) {
             throw new RuntimeException("Failed to load font '" + font.getName() + "'.", e);
         }
-        // Builds option.
+
         Option option = new Option();
+
         String[] header = data.get(0).split(WHITESPACE);
         option.setHardBlank(header[0].substring(5, 6));
         option.setHeight(Integer.parseInt(header[1]));
@@ -231,61 +137,81 @@ public final class BananaUtils {
         option.setFullLayout(header.length > 7 ? Integer.parseInt(header[7]) : null);
         option.setCodeTagCount(header.length > 8 ? Integer.parseInt(header[8]) : null);
         option.setRule(getSmushRule(option.getOldLayout(), option.getFullLayout()));
-        // Reads comment.
+
         StringBuilder comment = new StringBuilder();
         int num = 0;
         while (++num <= option.getNumCommentLines()) {
+
             comment.append(data.get(num)).append("\n");
         }
-        // Builds FIGlet map.
-        List<Integer> codes = CODES;
-        int height = option.getHeight();
-        Map<Integer, String[]> figletMap = new HashMap<>(codes.size());
 
-        // Reads font character
+        ListInterface<Integer> codes = CODES;
+        int height = option.getHeight();
+
+        SimpleHashMap<Integer, String[]> figletMap = new SimpleHashMap<>(codes.size());
+
         for (int i = 0; i < codes.size(); i++) {
+
             Integer code = codes.get(i);
-            if (i * height + num >= data.size()) {
+            int baseRowIndex = i * height + num;
+            if (baseRowIndex >= data.size()) {
                 break;
             }
             String[] figlet = new String[height];
             figletMap.put(code, figlet);
+            boolean characterComplete = true;
             for (int j = 0; j < height; j++) {
-                int row = i * height + j + num;
+                int row = baseRowIndex + j;
                 if (row >= data.size()) {
+
                     figletMap.remove(code);
+                    characterComplete = false;
                     break;
                 }
+
                 String charRow = data.get(row);
 
-                // inspired by readfontchar method in figlet.c
-                // https://github.com/cmatsuoka/figlet/blob/202a0a8110650a943f1125f536b3bb455cf72ee1/figlet.c#L1146-L1168
-                // endmarks my differ for each characters in tlf files
-                int charIndex = charRow.length() - 1; // starts at the end
+                int charIndex = charRow.length() - 1;
 
-                while (charIndex >= 0 && Character.isWhitespace(charRow.charAt(charIndex))) { // remove trailing space
+                if (charIndex < 0) {
+                    figlet[j] = "";
+                    continue;
+                }
+
+                while (charIndex >= 0 && Character.isWhitespace(charRow.charAt(charIndex))) {
                     charIndex--;
                 }
 
-                char endChar = charRow.charAt(charIndex); // first endmark
-                while (charIndex >= 0 && charRow.charAt(charIndex) == endChar) { // remove all endmarks
+                if (charIndex < 0) {
+                    figlet[j] = "";
+                    continue;
+                }
+
+                char endChar = charRow.charAt(charIndex);
+                while (charIndex >= 0 && charRow.charAt(charIndex) == endChar) {
                     charIndex--;
                 }
 
                 figlet[j] = charRow.substring(0, charIndex + 1);
+
+            }
+
+            if (!characterComplete) {
+                break;
             }
         }
         data.clear();
         return new Meta(font, option, figletMap, comment.toString());
     }
 
-    private static String[] generateFigletLine(String text, Map<Integer, String[]> figletMap, Option option) {
+    private static String[] generateFigletLine(String text, SimpleHashMap<Integer, String[]> figletMap, Option option) {
         int height = option.getHeight();
         String[] output = new String[height];
         for (int i = 0; i < height; i++) {
             output[i] = EMPTY;
         }
         for (int index = 0; index < text.length(); index++) {
+
             String[] figlet = figletMap.get((int) text.charAt(index));
             if (figlet == null) {
                 continue;
@@ -362,7 +288,7 @@ public final class BananaUtils {
             int overlapStart = len1 - overlap;
             StringBuilder piece = new StringBuilder();
             piece.append(substr(text1, 0, Math.max(0, overlapStart)));
-            // Determines overlap piece.
+
             String seg1 = substr(text1, Math.max(0, len1 - overlap), overlap);
             String seg2 = substr(text2, 0, Math.min(overlap, len2));
             for (int j = 0; j < overlap; j++) {
@@ -471,7 +397,8 @@ public final class BananaUtils {
     }
 
     private static Rule getSmushRule(Integer oldLayout, Integer newLayout) {
-        Map<String, Integer> rules = new HashMap<>();
+
+        SimpleHashMap<String, Integer> rules = new SimpleHashMap<>();
         RuleEnum[] ruleEnums = RuleEnum.values();
         int layout = newLayout != null ? newLayout : oldLayout;
         for (RuleEnum rule : ruleEnums) {
@@ -480,29 +407,33 @@ public final class BananaUtils {
             int value = rule.getValue();
             if (layout >= code) {
                 layout -= code;
+
                 if (!rules.containsKey(key)) {
                     rules.put(key, value);
                 }
             } else if (!equals(RuleEnum.HORIZONTAL_LAYOUT_SMUSH.getKey(), key)
                     && !equals(RuleEnum.VERTICAL_LAYOUT_SMUSH.getKey(), key)) {
+
                 rules.put(key, 0);
             }
         }
+
         Rule rule = new Rule(
-                Layout.get(rules.get(RuleEnum.HORIZONTAL_LAYOUT_SMUSH.getKey())),
-                equals(rules.get(RuleEnum.HORIZONTAL_1.getKey()), 1),
-                equals(rules.get(RuleEnum.HORIZONTAL_2.getKey()), 1),
-                equals(rules.get(RuleEnum.HORIZONTAL_3.getKey()), 1),
-                equals(rules.get(RuleEnum.HORIZONTAL_4.getKey()), 1),
-                equals(rules.get(RuleEnum.HORIZONTAL_5.getKey()), 1),
-                equals(rules.get(RuleEnum.HORIZONTAL_6.getKey()), 1),
-                Layout.get(rules.get(RuleEnum.VERTICAL_LAYOUT_SMUSH.getKey())),
-                equals(rules.get(RuleEnum.VERTICAL_1.getKey()), 1),
-                equals(rules.get(RuleEnum.VERTICAL_2.getKey()), 1),
-                equals(rules.get(RuleEnum.VERTICAL_3.getKey()), 1),
-                equals(rules.get(RuleEnum.VERTICAL_4.getKey()), 1),
-                equals(rules.get(RuleEnum.VERTICAL_5.getKey()), 1)
+                Layout.get(rules.getOrDefault(RuleEnum.HORIZONTAL_LAYOUT_SMUSH.getKey(), null)),
+                equals(rules.getOrDefault(RuleEnum.HORIZONTAL_1.getKey(), 0), 1),
+                equals(rules.getOrDefault(RuleEnum.HORIZONTAL_2.getKey(), 0), 1),
+                equals(rules.getOrDefault(RuleEnum.HORIZONTAL_3.getKey(), 0), 1),
+                equals(rules.getOrDefault(RuleEnum.HORIZONTAL_4.getKey(), 0), 1),
+                equals(rules.getOrDefault(RuleEnum.HORIZONTAL_5.getKey(), 0), 1),
+                equals(rules.getOrDefault(RuleEnum.HORIZONTAL_6.getKey(), 0), 1),
+                Layout.get(rules.getOrDefault(RuleEnum.VERTICAL_LAYOUT_SMUSH.getKey(), null)),
+                equals(rules.getOrDefault(RuleEnum.VERTICAL_1.getKey(), 0), 1),
+                equals(rules.getOrDefault(RuleEnum.VERTICAL_2.getKey(), 0), 1),
+                equals(rules.getOrDefault(RuleEnum.VERTICAL_3.getKey(), 0), 1),
+                equals(rules.getOrDefault(RuleEnum.VERTICAL_4.getKey(), 0), 1),
+                equals(rules.getOrDefault(RuleEnum.VERTICAL_5.getKey(), 0), 1)
         );
+
         if (rule.getHorizontalLayout() == null) {
             if (oldLayout == 0) {
                 rule.setHorizontalLayout(Layout.FITTED);
@@ -603,15 +534,6 @@ public final class BananaUtils {
         return Math.min(maxDist, curDist);
     }
 
-    /**
-     * Takes in two lines of text and returns one of the following:
-     * "valid" - These lines can be smushed together given the current smushing rules.
-     * "end" - The lines can be smushed, but we're at a stopping point.
-     * "invalid" - The two lines cannot be smushed together.
-     * @param line1  A line of text.
-     * @param line2  A line of text.
-     * @param option the option.
-     */
     private static int canSmushVertical(String line1, String line2, Option option) {
         Rule rule = option.getRule();
         if (rule.getVerticalLayout() == Layout.FULL) {
@@ -637,7 +559,7 @@ public final class BananaUtils {
                     if (isNotEmpty(smushVerticalRule5(ch1, ch2))) {
                         continue;
                     }
-                    // rule 5 allow for "super" smushing, but only if we're not already ending this smush
+
                     validSmush = false;
                     if (rule.isVertical1())
                         validSmush = isNotEmpty(smushVerticalRule1(ch1, ch2));
@@ -717,12 +639,6 @@ public final class BananaUtils {
         return result.toString();
     }
 
-    /**
-     * Rule 1: EQUAL CHARACTER SMUSHING (code value 1)
-     * Two sub-characters are smushed into a single sub-character
-     * if they are the same.  This rule does not smush hardblanks.
-     * (See rule 6 on hardblanks below)
-     */
     private static String smushHorizontalRule1(String s1, String s2, String hardBlank) {
         if (equals(s1, s2) && !equals(s1, hardBlank)) {
             return s1;
@@ -730,11 +646,6 @@ public final class BananaUtils {
         return EMPTY;
     }
 
-    /**
-     * Rule 2: UNDERSCORE SMUSHING (code value 2)
-     * An underscore ("_") will be replaced by any of:
-     * "|", "/", "\", "[", "]", "{", "}", "(", ")", "<" or ">".
-     */
     private static String smushHorizontalRule2(String s1, String s2) {
         String rule = "|/\\[]{}()<>";
         if (equals("_", s1)) {
@@ -749,12 +660,6 @@ public final class BananaUtils {
         return EMPTY;
     }
 
-    /**
-     * Rule 3: HIERARCHY SMUSHING (code value 4)
-     * A hierarchy of six classes is used: "|", "/\", "[]", "{}", "()", and "<>".
-     * When two smushing sub-characters are from different classes,
-     * the one from the latter class will be used.
-     */
     private static String smushHorizontalRule3(String s1, String s2) {
         String rule = "| /\\ [] {} () <>";
         int pos1 = rule.indexOf(s1);
@@ -765,12 +670,6 @@ public final class BananaUtils {
         return EMPTY;
     }
 
-    /**
-     * Rule 4: OPPOSITE PAIR SMUSHING (code value 8)
-     * Smushes opposing brackets ("[]" or "]["), braces ("{}" or "}{")
-     * and parentheses ("()" or ")(") together, replacing
-     * any such pair with a vertical bar ("|").
-     */
     private static String smushHorizontalRule4(String s1, String s2) {
         String rule = "[] {} ()";
         int pos1 = rule.indexOf(s1);
@@ -781,13 +680,6 @@ public final class BananaUtils {
         return EMPTY;
     }
 
-    /**
-     * Rule 5: BIG X SMUSHING (code value 16)
-     * Smushes "/\" into "|", "\/" into "Y", and "><" into "X".
-     * Note that "<>" is not smushed in any way by this rule.
-     * The name "BIG X" is historical; originally all three pairs
-     * were smushed into "X".
-     */
     private static String smushHorizontalRule5(String s1, String s2) {
         String rule = "/\\ \\/ ><";
         int pos1 = rule.indexOf(s1);
@@ -804,11 +696,6 @@ public final class BananaUtils {
         return EMPTY;
     }
 
-    /**
-     * Rule 6: HARDBLANK SMUSHING (code value 32)
-     * Smushes two hardblanks together, replacing them with a single hardblank.
-     * (See "Hardblanks" below.)
-     */
     private static String smushHorizontalRule6(String s1, String s2, String hardBlank) {
         if (equals(s1, hardBlank) && equals(s2, hardBlank)) {
             return hardBlank;
@@ -816,10 +703,6 @@ public final class BananaUtils {
         return EMPTY;
     }
 
-    /**
-     * Rule 1: EQUAL CHARACTER SMUSHING (code value 256)
-     * Same as horizontal smushing rule 1.
-     */
     private static String smushVerticalRule1(String s1, String s2) {
         if (equals(s1, s2)) {
             return s1;
@@ -827,10 +710,6 @@ public final class BananaUtils {
         return EMPTY;
     }
 
-    /**
-     * Rule 2: UNDERSCORE SMUSHING (code value 512)
-     * Same as horizontal smushing rule 2.
-     */
     private static String smushVerticalRule2(String s1, String s2) {
         String rule = "|/\\[]{}()<>";
         if (equals("_", s1)) {
@@ -845,10 +724,6 @@ public final class BananaUtils {
         return EMPTY;
     }
 
-    /**
-     * Rule 3: HIERARCHY SMUSHING (code value 1024)
-     * Same as horizontal smushing rule 3.
-     */
     private static String smushVerticalRule3(String s1, String s2) {
         String rule = "| /\\ [] {} () <>";
         int pos1 = rule.indexOf(s1);
@@ -859,15 +734,6 @@ public final class BananaUtils {
         return EMPTY;
     }
 
-    /**
-     * Rule 4: HORIZONTAL LINE SMUSHING (code value 2048)
-     * Smushes stacked pairs of "-" and "_", replacing them with
-     * a single "=" sub-character.  It does not matter which is
-     * found above the other.  Note that vertical smushing rule 1
-     * will smush IDENTICAL pairs of horizontal lines, while this
-     * rule smushes horizontal lines consisting of DIFFERENT
-     * sub-characters.
-     */
     private static String smushVerticalRule4(String s1, String s2) {
         if ((equals("-", s1) && equals("_", s2)) || (equals("_", s1) && equals("-", s2))) {
             return "=";
@@ -875,19 +741,6 @@ public final class BananaUtils {
         return EMPTY;
     }
 
-    /**
-     * Rule 5: VERTICAL LINE SUPERSMUSHING (code value 4096)
-     * This one rule is different from all others, in that it
-     * "supersmushes" vertical lines consisting of several
-     * vertical bars ("|").  This creates the illusion that
-     * FIGcharacters have slid vertically against each other.
-     * Supersmushing continues until any sub-characters other
-     * than "|" would have to be smushed.  Supersmushing can
-     * produce impressive results, but it is seldom possible,
-     * since other sub-characters would usually have to be
-     * considered for smushing as soon as any such stacked
-     * vertical lines are encountered.
-     */
     private static String smushVerticalRule5(String s1, String s2) {
         if (equals("|", s1) && equals("|", s2)) {
             return "|";
@@ -895,12 +748,6 @@ public final class BananaUtils {
         return EMPTY;
     }
 
-    /**
-     * Universal smushing simply overrides the sub-character from the
-     * earlier FIGcharacter with the sub-character from the later
-     * FIGcharacter.  This produces an "overlapping" effect with some
-     * FIGfonts, wherin the latter FIGcharacter may appear to be "in front".
-     */
     private static String smushUniversal(String s1, String s2, String hardBlank) {
         if (equals(WHITESPACE, s2) || equals(EMPTY, s2)) {
             return s1;
@@ -911,11 +758,6 @@ public final class BananaUtils {
         }
     }
 
-    /**
-     * Combines string array.
-     * @param texts the tests.
-     * @return the combined string array.
-     */
     private static String[] concat(String[]... texts) {
         if (texts == null || texts.length == 0) {
             return new String[0];
@@ -934,13 +776,6 @@ public final class BananaUtils {
         return result;
     }
 
-    /**
-     * Returns a string that is a substring of this string.
-     * @param s      the string.
-     * @param start  the beginning index.
-     * @param length the length of specified substring.
-     * @return the specified substring.
-     */
     private static String substr(String s, int start, int length) {
         if (isEmpty(s)) {
             return EMPTY;
@@ -948,12 +783,6 @@ public final class BananaUtils {
         return s.substring(start, Math.min(start + length, s.length()));
     }
 
-    /**
-     * Returns a section of an array.
-     * @param array the array.
-     * @param start the beginning of the specified portion of the array.
-     * @param end   the end of the specified portion of the array.
-     */
     private static String[] slice(String[] array, int start, int end) {
         String[] result = new String[end - start];
         int index = 0;
@@ -963,32 +792,14 @@ public final class BananaUtils {
         return result;
     }
 
-    /**
-     * Checks whether the given {@code String} is empty.
-     * @param s the candidate String.
-     * @return {@code true} if the {@code String} is empty.
-     */
     private static boolean isEmpty(String s) {
         return null == s || EMPTY.equals(s);
     }
 
-    /**
-     * Checks that the given {@code String} is neither {@code null} nor of length 0.
-     * @param s the string.
-     * @return {@code true} if the String is not empty and not null.
-     */
     private static boolean isNotEmpty(String s) {
         return !isEmpty(s);
     }
 
-    /**
-     * Returns {@code true} if the arguments are equal to each other
-     * and {@code false} otherwise.
-     * @param a an object.
-     * @param b an object to be compared with {@code a} for equality
-     * @return {@code true} if the arguments are equal to each other
-     * and {@code false} otherwise.
-     */
     private static boolean equals(Object a, Object b) {
         return (a == b) || (a != null && a.equals(b));
     }

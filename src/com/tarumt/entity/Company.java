@@ -8,9 +8,8 @@ import com.tarumt.utility.validation.annotation.Min;
 import com.tarumt.utility.validation.annotation.Regex;
 
 public class Company extends BaseEntity {
-    static {
-        BaseEntity.registerPrefix(Company.class, "c");
-    }
+    private static final String PREFIX = "c";
+    private static int counter = 1;
 
     @Min(1)
     @Max(30)
@@ -35,6 +34,7 @@ public class Company extends BaseEntity {
     private String contactPhone;
 
     public Company(String name, String description, Location location, String contactEmail, String contactPhone) {
+        super(generateId());
         this.name = name;
         this.description = description;
         this.location = location;
@@ -42,6 +42,16 @@ public class Company extends BaseEntity {
         this.contactPhone = contactPhone;
     }
 
+    private static String generateId() {
+        String id = PREFIX + counter;
+        counter++;
+        return id;
+    }
+
+    public static String getNextId() {
+        return PREFIX + counter;
+    }
+    
     public String getName() {
         return name;
     }
@@ -97,5 +107,4 @@ public class Company extends BaseEntity {
                 "|  Contact Email => " + contactEmail + ",\n" +
                 "|  Contact Phone => " + contactPhone;
     }
-
 }

@@ -3,15 +3,15 @@ package com.tarumt.test;
 import com.tarumt.utility.common.Strings;
 import com.tarumt.utility.search.FuzzySearch;
 
-import com.tarumt.adt.list.List;
+import com.tarumt.adt.list.ListInterface;
 import com.tarumt.adt.list.DoublyLinkedList;
 
-import com.tarumt.adt.set.Set;
+import com.tarumt.adt.set.SetInterface;
 
 public class DeprecatedSearchTest {
 
     public static void main(String[] args) {
-        List<TestCase> testCases = new DoublyLinkedList<>();
+        ListInterface<TestCase> testCases = new DoublyLinkedList<>();
 
         double wLev = 0.5;
         double wCos = 0.5;
@@ -225,7 +225,7 @@ public class DeprecatedSearchTest {
                 System.out.println();
                 continue;
             }
-            Set<String> matches = FuzzySearch.findFuzzyMatches_v4(test.getQuery(), test.getSentence());
+            ListInterface<String> matches = FuzzySearch.findFuzzyMatches(test.getQuery(), test.getSentence());
             System.out.printf("%-5d %-30s %-60s %-50s %-10.2f %-8.2f %-8.2f %-70s%n",
                     testCounter++,
                     Strings.truncate(test.getQuery(), 30),
@@ -291,7 +291,7 @@ public class DeprecatedSearchTest {
                 System.out.println("\n=== " + test.getDescription() + " ===\n");
                 continue;
             }
-            Set<String> matches = FuzzySearch.findFuzzyMatches_v4(test.getQuery(), test.getSentence());
+            ListInterface<String> matches = FuzzySearch.findFuzzyMatches(test.getQuery(), test.getSentence());
         }
     }
 

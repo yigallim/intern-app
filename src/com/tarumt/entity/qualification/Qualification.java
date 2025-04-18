@@ -1,8 +1,6 @@
 package com.tarumt.entity.qualification;
 
-import com.tarumt.entity.BaseEntity;
-
-public abstract class Qualification extends BaseEntity{
+public abstract class Qualification {
     private boolean optional;
     private Importance importance;
 

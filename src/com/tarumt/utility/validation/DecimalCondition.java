@@ -1,6 +1,6 @@
 package com.tarumt.utility.validation;
 
-import com.tarumt.adt.list.List;
+import com.tarumt.adt.list.ListInterface;
 
 public class DecimalCondition extends Condition {
 
@@ -58,11 +58,11 @@ public class DecimalCondition extends Condition {
         return this;
     }
 
-    public DecimalCondition enumeration(List<Double> allowedValues) {
+    public DecimalCondition enumeration(ListInterface<Double> allowedValues) {
         return enumeration(allowedValues, "Value must be one of: " + allowedValues);
     }
 
-    public DecimalCondition enumeration(List<Double> allowedValues, String customMessage) {
+    public DecimalCondition enumeration(ListInterface<Double> allowedValues, String customMessage) {
         addConstraint(new Constraint(value -> {
             Double valDouble = ValueParser.asDouble(value);
             if (valDouble == null) return false;

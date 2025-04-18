@@ -1,8 +1,5 @@
 package com.tarumt.utility.pretty.banana;
 
-/**
- * @author Yihleego
- */
 public enum RuleEnum {
     VERTICAL_LAYOUT_SMUSH("vLayout", 16384, Layout.SMUSH_U.getCode()),
     VERTICAL_LAYOUT_FITTED("vLayout", 8192, Layout.FITTED.getCode()),

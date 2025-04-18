@@ -17,8 +17,6 @@ public class Report {
         header.append(Strings.repeat("-", width)).append("\n");
         header.append("Generated at: ").append(dayOfWeek).append(" ").append(Strings.formatDateTime(dateTime)).append("\n");
         header.append(Strings.repeat("-", width)).append("\n");
-        header.append("\n");
-
         return header.toString();
     }
 

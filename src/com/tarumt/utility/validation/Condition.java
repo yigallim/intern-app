@@ -1,13 +1,12 @@
 package com.tarumt.utility.validation;
 
-import com.tarumt.adt.list.List;
+import com.tarumt.adt.function.TestLambda;
+import com.tarumt.adt.list.ListInterface;
 import com.tarumt.adt.list.DoublyLinkedList;
-
-import java.util.function.Predicate;
 
 public class Condition {
 
-    protected final List<Constraint> constraints = new DoublyLinkedList<>();
+    protected final ListInterface<Constraint> constraints = new DoublyLinkedList<>();
 
     public void validate(Object value) throws ValidationException {
         for (Constraint constraint : constraints) {
@@ -30,22 +29,22 @@ public class Condition {
         constraints.add(constraint);
     }
 
-    public Condition custom(Predicate<Object> predicate, String customMessage) {
-        addConstraint(new Constraint(predicate, customMessage));
+    public Condition custom(TestLambda<Object> testLambda, String customMessage) {
+        addConstraint(new Constraint(testLambda, customMessage));
         return this;
     }
 
     public static class Constraint {
-        private final Predicate<Object> predicate;
+        private final TestLambda<Object> testLambda;
         private final String errorMessage;
 
-        public Constraint(Predicate<Object> predicate, String errorMessage) {
-            this.predicate = predicate;
+        public Constraint(TestLambda<Object> testLambda, String errorMessage) {
+            this.testLambda = testLambda;
             this.errorMessage = errorMessage;
         }
 
         public boolean test(Object value) {
-            return predicate.test(value);
+            return testLambda.test(value);
         }
 
         public String getErrorMessage() {
