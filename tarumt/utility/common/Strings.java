@@ -1,5 +1,8 @@
 package com.tarumt.utility.common;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
 public class Strings {
     private static final String ANSI_RESET = "\u001B[0m";
     private static final String ANSI_YELLOW = "\u001B[33m";
@@ -66,6 +69,18 @@ public class Strings {
             repeatedString.append(str);
         }
         return repeatedString.toString();
+    }
+
+    public static String center(String text, int width) {
+        if (text == null || text.length() >= width) {
+            return text;
+        }
+        int padding = (width - text.length()) / 2;
+        return repeat(" ", padding) + text;
+    }
+
+    public static String formatDateTime(LocalDateTime dateTime) {
+        return dateTime != null ? dateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")) : "N/A";
     }
 
     public static String warnHighlight(String text) {

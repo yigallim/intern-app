@@ -18,6 +18,7 @@ import com.tarumt.adt.list.ListInterface;
 import com.tarumt.adt.list.DoublyLinkedList;
 import com.tarumt.entity.JobApplication;
 import com.tarumt.entity.location.City;
+import com.tarumt.utility.common.Report;
 import com.tarumt.utility.pretty.Chart;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -132,28 +133,24 @@ public class ApplicantService implements Service {
 
     @Override
     public void report() {
-        String generatedTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
+        String reportName = "Applicant Summary Report";
+        String module = "Job Application Management System";
+        int width = 90;
 
-        System.out.println("========================================================================================");
-        System.out.printf("%55s%n", "APPLICANT SUMMARY REPORT");
-        System.out.printf("%40s %s%n", "Generated on:", generatedTime);
-        System.out.println("========================================================================================");
+        System.out.print(Report.buildReportHeader(width, module, reportName));
 
-        System.out.printf("| %-13s | %-20s | %-13s | %-29s |%n",
+        System.out.printf("| %-13s | %-20s | %-13s | %-31s |%n",
                 "Applicant ID", "Name", "Applications", "Status Summary");
-        
-        System.out.println("----------------------------------------------------------------------------------------");
+        System.out.println("-".repeat(width));
 
         int totalApplications = 0;
         int totalUniqueApplications = 0;
         int totalDuplicateApplications = 0;
         int maxApplications = 0;
+
         ListInterface<Applicant> topApplicants = new DoublyLinkedList<>();
         ListInterface<String> categories = new DoublyLinkedList<>();
         ListInterface<Integer> values = new DoublyLinkedList<>();
-
-        ListInterface<String> applicantIds = new DoublyLinkedList<>();
-        ListInterface<Integer> applicationCounts = new DoublyLinkedList<>();
 
         for (int i = 0; i < applicants.size(); i++) {
             Applicant applicant = applicants.get(i);
@@ -196,22 +193,22 @@ public class ApplicantService implements Service {
                 }
             }
 
-            System.out.printf("| %-14s| %-21s| %-14s| %-30s|%n", applicantId, applicantName,
+            System.out.printf("| %-14s| %-21s| %-14s| %-32s|%n", applicantId, applicantName,
                     appLines.size() > 0 ? appLines.get(0) : "",
                     statusLines.size() > 0 ? statusLines.get(0) : "");
 
             for (int l = 1; l < appLines.size(); l++) {
                 String appStr = appLines.get(l);
                 String statusStr = (l < statusLines.size()) ? statusLines.get(l) : "";
-                System.out.printf("| %-14s| %-21s| %-14s| %-30s|%n", "", "", appStr, statusStr);
+                System.out.printf("| %-14s| %-21s| %-14s| %-32s|%n", "", "", appStr, statusStr);
             }
 
             for (int l = appLines.size(); l < statusLines.size(); l++) {
                 String statusStr = statusLines.get(l);
-                System.out.printf("| %-14s| %-21s| %-14s| %-30s|%n", "", "", "", statusStr);
+                System.out.printf("| %-14s| %-21s| %-14s| %-32s|%n", "", "", "", statusStr);
             }
 
-            System.out.println("----------------------------------------------------------------------------------------");
+            System.out.println("-".repeat(width));
 
             totalApplications += applicantApplications.size();
 
@@ -231,24 +228,8 @@ public class ApplicantService implements Service {
 
             categories.add(applicantName);
             values.add(applicantApplications.size());
-
-            boolean applicantFound = false;
-            for (int k = 0; k < applicantIds.size(); k++) {
-                if (applicantIds.get(k).equals(applicantId)) {
-                    applicationCounts.set(k, applicationCounts.get(k) + 1);
-                    applicantFound = true;
-                    break;
-                }
-            }
-
-            if (!applicantFound) {
-                applicantIds.add(applicantId);
-                applicationCounts.add(applicantApplications.size());
-            }
         }
 
-        System.out.println("========================================================================================");
-        System.out.println();
         System.out.println("Most Active Applicant(s):");
         if (topApplicants.isEmpty()) {
             System.out.println(" - None");
@@ -259,13 +240,14 @@ public class ApplicantService implements Service {
             }
         }
 
-        System.out.println("========================================================================================");
-        System.out.printf("Total Applications: %d%n", totalApplications);
-        System.out.printf("Total Unique Applications: %d%n", totalUniqueApplications);
+        System.out.println("\nSummary:");
+        System.out.printf("Total Applications         : %d%n", totalApplications);
+        System.out.printf("Total Unique Applications  : %d%n", totalUniqueApplications);
         System.out.printf("Total Duplicate Applications: %d%n", totalDuplicateApplications);
 
-        Chart.barChart(categories, values, "Application Count per Applicant", 50, '=', true);
-        System.out.println("========================================================================================");
+        System.out.println(Chart.barChart(categories, values, "Application Count per Applicant", width, '=', true));
+
+        System.out.print(Report.buildReportFooter(width));
     }
 
     private Applicant getApplicant() {

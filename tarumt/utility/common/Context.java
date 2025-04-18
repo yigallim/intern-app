@@ -5,6 +5,7 @@ import com.tarumt.entity.Company;
 
 import java.time.Clock;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 public class Context {
     private static Company company;
@@ -39,8 +40,20 @@ public class Context {
         Context.clock = clock;
     }
 
+    public static void setClockTime(int hour, int minute) {
+        LocalDateTime now = LocalDateTime.now(Clock.systemDefaultZone());
+        LocalDate today = LocalDate.now(Clock.systemDefaultZone());
+        LocalDateTime desiredDateTime = LocalDateTime.of(today, java.time.LocalTime.of(hour, minute));
+        java.time.Duration offset = java.time.Duration.between(now, desiredDateTime);
+        Context.clock = Clock.offset(Clock.systemDefaultZone(), offset);
+    }
+
     public static LocalDate getDate() {
         return LocalDate.now(Context.clock);
+    }
+
+    public static LocalDateTime getDateTime() {
+        return LocalDateTime.now(Context.clock);
     }
 
     public static boolean isEmployer() {
