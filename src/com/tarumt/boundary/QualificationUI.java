@@ -36,6 +36,7 @@ public class QualificationUI {
     }
 
     public List<WorkExperience> getWorkExperienceInput() {
+        
         List<WorkExperience> workExperiences = new DoublyLinkedList<>();
         StringCondition condition = new StringCondition().enumeration("Y", "X", "y", "x");
 
