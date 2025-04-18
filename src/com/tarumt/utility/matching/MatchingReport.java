@@ -21,6 +21,7 @@ public class MatchingReport {
         }
 
         final int width = 80;
+        final int barChartWidth = 100;
         System.out.print(Report.buildReportHeader(width, "Job Matching", "Matching Report Summary"));
 
         List<JobPosting> jobPostings = Initializer.getJobPostings().filter(j -> j.getCompany().equals(company));
@@ -63,20 +64,20 @@ public class MatchingReport {
                 continue;
             }
 
-            System.out.printf("%-3s | %-20s | %-30s | %-6s\n", "#", "Applicant", "Email", "Score");
-            System.out.println("----------------------------------------------------------------------");
+            System.out.printf("%-3s | %-25s | %-35s | %-6s\n", "#", "Applicant", "Email", "Score");
+            System.out.println("--------------------------------------------------------------------------------");
             int index = 1;
             List<String> names = new DoublyLinkedList<>();
             List<Integer> scores = new DoublyLinkedList<>();
             for (ReportEntry e : matched) {
-                System.out.printf("%-3d | %-20s | %-30s | %6.2f\n",
+                System.out.printf("%-3d | %-25s | %-35s | %6.2f\n",
                         index++, e.applicant.getName(), e.applicant.getContactEmail(), e.score);
                 names.add(e.applicant.getName());
                 scores.add((int) Math.round(e.score));
             }
 
             // Use pretty Chart to display bar chart
-            Chart.barChart(names, scores, "Top Match Score Chart", 25, '#', true);
+            Chart.barChart(names, scores, "Top Match Score Chart", 56, '#', true);
             System.out.println("\n");
         }
 
