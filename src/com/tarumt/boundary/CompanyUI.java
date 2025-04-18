@@ -1,9 +1,9 @@
 package com.tarumt.boundary;
 
-import com.tarumt.control.CompanyService;
-import com.tarumt.control.InterviewService;
-import com.tarumt.control.JobApplicationService;
-import com.tarumt.control.JobPostingService;
+import com.tarumt.control.CompanyController;
+import com.tarumt.control.InterviewController;
+import com.tarumt.control.JobApplicationController;
+import com.tarumt.control.JobPostingController;
 import com.tarumt.entity.Company;
 import com.tarumt.utility.common.*;
 import com.tarumt.utility.pretty.TabularPrint;
@@ -16,7 +16,6 @@ import com.tarumt.utility.validation.ValidationFieldReflection;
 import java.lang.reflect.Field;
 
 import com.tarumt.adt.list.ListInterface;
-import com.tarumt.adt.set.SetInterface;
 
 public class CompanyUI {
 
@@ -27,16 +26,16 @@ public class CompanyUI {
     }
 
     public void menu() {
-        CompanyService companyService = CompanyService.getInstance();
+        CompanyController companyController = CompanyController.getInstance();
         new Menu()
                 .header("==> Manage Company <==")
                 .choice(
-                        new Menu.Choice("🏢 Create Company", companyService::create),
-                        new Menu.Choice("📊 Display Company", companyService::read),
-                        new Menu.Choice("🔍 Search Company", companyService::search),
-                        new Menu.Choice("📂 Filter Company", companyService::filter),
-                        new Menu.Choice("🔃 Update Company", companyService::update),
-                        new Menu.Choice("❌ Delete Company", companyService::delete))
+                        new Menu.Choice("🏢 Create Company", companyController::create),
+                        new Menu.Choice("📊 Display Company", companyController::read),
+                        new Menu.Choice("🔍 Search Company", companyController::search),
+                        new Menu.Choice("📂 Filter Company", companyController::filter),
+                        new Menu.Choice("🔃 Update Company", companyController::update),
+                        new Menu.Choice("❌ Delete Company", companyController::delete))
                 .exit("<Return to Main Menu>")
                 .beforeEach(System.out::println)
                 .afterEach(System.out::println)
@@ -95,7 +94,7 @@ public class CompanyUI {
 
     public void printSearchResult(FuzzySearch.Result<Company> result) {
         ListInterface<Company> matchedCompanies = result.getSubList();
-        SetInterface<String> matches = result.getMatches();
+        ListInterface<String> matches = result.getMatches();
         System.out.println();
         if (matchedCompanies.isEmpty()) {
             Log.info("No companies matched the search criteria");
@@ -153,17 +152,17 @@ public class CompanyUI {
     }
 
     public void updateCompanyMode(String id) {
-        CompanyService service = CompanyService.getInstance();
+        CompanyController controller = CompanyController.getInstance();
         System.out.println();
         new Menu()
                 .header("Select Update Mode ==>")
                 .choice(
-                        new Menu.Choice("Update Name", () -> service.updateName(id)),
-                        new Menu.Choice("Update Description", () -> service.updateDescription(id)),
-                        new Menu.Choice("Update Location", () -> service.updateLocation(id)),
-                        new Menu.Choice("Update Contact Email", () -> service.updateContactEmail(id)),
-                        new Menu.Choice("Update Contact Phone", () -> service.updateContactPhone(id)),
-                        new Menu.Choice("Update All Fields", () -> service.updateAllFields(id)))
+                        new Menu.Choice("Update Name", () -> controller.updateName(id)),
+                        new Menu.Choice("Update Description", () -> controller.updateDescription(id)),
+                        new Menu.Choice("Update Location", () -> controller.updateLocation(id)),
+                        new Menu.Choice("Update Contact Email", () -> controller.updateContactEmail(id)),
+                        new Menu.Choice("Update Contact Phone", () -> controller.updateContactPhone(id)),
+                        new Menu.Choice("Update All Fields", () -> controller.updateAllFields(id)))
                 .exit("<Return>")
                 .beforeEach(System.out::println)
                 .afterEach(System.out::println)
@@ -175,7 +174,7 @@ public class CompanyUI {
     }
 
     public void deleteMenu(ListInterface<Company> companies) {
-        CompanyService service = CompanyService.getInstance();
+        CompanyController controller = CompanyController.getInstance();
         if (companies == null || companies.isEmpty()) {
             Log.info("No company to delete");
             input.clickAnythingToContinue();
@@ -184,10 +183,10 @@ public class CompanyUI {
         new Menu()
                 .header("<== Delete Company ==>")
                 .choice(
-                        new Menu.Choice("Delete By Index", service::deleteByIndex),
-                        new Menu.Choice("Delete By Index Range", service::deleteByRange),
-                        new Menu.Choice("Delete By ID", service::deleteById),
-                        new Menu.Choice("Delete All", service::deleteAll))
+                        new Menu.Choice("Delete By Index", controller::deleteByIndex),
+                        new Menu.Choice("Delete By Index Range", controller::deleteByRange),
+                        new Menu.Choice("Delete By ID", controller::deleteById),
+                        new Menu.Choice("Delete All", controller::deleteAll))
                 .exit("<Return>")
                 .beforeEach(System.out::println)
                 .afterEach(System.out::println)
@@ -253,12 +252,13 @@ public class CompanyUI {
     }
 
     public void loginOrRegisterMenu() {
-        CompanyService service = CompanyService.getInstance();
+        CompanyController controller = CompanyController.getInstance();
         new Menu()
+                .banner("Employer")
                 .header("==> Employer Section <==")
                 .choice(
-                        new Menu.Choice("Login", service::login),
-                        new Menu.Choice("Register New Company", service::create))
+                        new Menu.Choice("Login", controller::login),
+                        new Menu.Choice("Register New Company", controller::create))
                 .exit("<Return>")
                 .beforeEach(System.out::println)
                 .afterEach(System.out::println)
@@ -277,10 +277,10 @@ public class CompanyUI {
     }
 
     public void accessMenu() {
-        JobPostingService jobPostingService = JobPostingService.getInstance();
-        JobApplicationService jobApplicationService = JobApplicationService.getInstance();
-        InterviewService interviewService = InterviewService.getInstance();
-        CompanyService companyService = CompanyService.getInstance();
+        JobPostingController jobPostingController = JobPostingController.getInstance();
+        JobApplicationController jobApplicationController = JobApplicationController.getInstance();
+        InterviewController interviewController = InterviewController.getInstance();
+        CompanyController companyController = CompanyController.getInstance();
 
         Company company = Context.getCompany();
 
@@ -289,10 +289,10 @@ public class CompanyUI {
                     .banner(company::getName)
                     .header(() -> "==> Welcome, Employer \"" + company.getName() + "\"  |  " + Strings.formatDateTime(Context.getDateTime()) + " <==")
                     .choice(
-                            new Menu.Choice("💼 Manage Job Posting", jobPostingService::run),
-                            new Menu.Choice("📄 Manage Job Applications", jobApplicationService::accessEmployer),
-                            new Menu.Choice("🤝 Manage Interviews", interviewService::accessEmployer),
-                            new Menu.Choice("🏢 Manage Company Profile", companyService::manageProfile))
+                            new Menu.Choice("💼 Manage Job Posting", jobPostingController::run),
+                            new Menu.Choice("📄 Manage Job Applications", jobApplicationController::accessEmployer),
+                            new Menu.Choice("🤝 Manage Interviews", interviewController::accessEmployer),
+                            new Menu.Choice("🏢 Manage Company Profile", companyController::manageProfile))
                     .exit("<Logout>")
                     .beforeEach(System.out::println)
                     .afterEach(System.out::println)
@@ -304,13 +304,13 @@ public class CompanyUI {
     }
 
     public void manageProfileMenu() {
-        CompanyService companyService = CompanyService.getInstance();
+        CompanyController companyController = CompanyController.getInstance();
         new Menu()
                 .header("==> Manage Company Profile <==")
                 .choice(
-                        new Menu.Choice("📋 Display Company Profile", companyService::displayProfile),
-                        new Menu.Choice("🔃 Update Company Profile", companyService::updateProfile),
-                        new Menu.Choice("❌ Delete Company Profile", companyService::deleteProfile))
+                        new Menu.Choice("📋 Display Company Profile", companyController::displayProfile),
+                        new Menu.Choice("🔃 Update Company Profile", companyController::updateProfile),
+                        new Menu.Choice("❌ Delete Company Profile", companyController::deleteProfile))
                 .exit("<Return>")
                 .beforeEach(System.out::println)
                 .afterEach(System.out::println)
@@ -338,5 +338,9 @@ public class CompanyUI {
         Log.info("Your company profile has been successfully deleted");
         Log.info("You will be logged out automatically");
         input.clickAnythingToContinue();
+    }
+
+    public void printEmailAlreadyExistsMsg() {
+        System.out.println("| Error: This email is already registered. Please use a different email.");
     }
 }

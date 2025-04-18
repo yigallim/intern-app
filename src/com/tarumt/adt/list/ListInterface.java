@@ -42,13 +42,7 @@ public interface ListInterface<E> extends Iterable<E> {
 
     void sort(Comparator<? super E> comparator);
 
-    ListInterface<E> sorted();
-
-    ListInterface<E> sorted(Comparator<? super E> comparator);
-
     boolean anyMatch(TestLambda<? super E> testLambda);
-
-    boolean allMatch(TestLambda<? super E> testLambda);
 
     Optional<E> min(Comparator<? super E> comparator);
 

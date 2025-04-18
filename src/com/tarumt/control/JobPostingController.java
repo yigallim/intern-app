@@ -10,25 +10,27 @@ import com.tarumt.utility.search.FuzzySearch;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Comparator;
+import java.util.LinkedList;
 
 import com.tarumt.adt.list.ListInterface;
 import com.tarumt.adt.list.DoublyLinkedList;
 
-public class JobPostingService implements Service {
+public class JobPostingController {
 
-    private static JobPostingService instance;
+    private static JobPostingController instance;
     private ListInterface<JobPosting> jobPostings = new DoublyLinkedList<>();
     private final JobPostingUI jobPostingUI;
 
-    private JobPostingService() {
+    private JobPostingController() {
         Input input = new Input();
         this.jobPostings = Initializer.getJobPostings();
         this.jobPostingUI = new JobPostingUI(input);
     }
 
-    public static JobPostingService getInstance() {
+    public static JobPostingController getInstance() {
         if (instance == null) {
-            instance = new JobPostingService();
+            instance = new JobPostingController();
         }
         return instance;
     }
@@ -44,12 +46,10 @@ public class JobPostingService implements Service {
         );
     }
 
-    @Override
     public void run() {
         this.jobPostingUI.menu();
     }
 
-    @Override
     public void create() {
         while (true) {
             jobPostingUI.printCreateJobPostingMsg();
@@ -66,7 +66,6 @@ public class JobPostingService implements Service {
         }
     }
 
-    @Override
     public void read() {
         if (Context.isEmployer()) {
             this.jobPostingUI.printAllJobs(this.getEmployerJobPostings());
@@ -75,7 +74,6 @@ public class JobPostingService implements Service {
         }
     }
 
-    @Override
     public void search() {
         while (true) {
             ListInterface<JobPosting> accessiblePostings = Context.isEmployer() ?
@@ -94,12 +92,100 @@ public class JobPostingService implements Service {
         }
     }
 
-    @Override
     public void filter() {
-        Log.na();
+        if (jobPostings.isEmpty()) {
+            Log.info("No job postings available to filter");
+            return;
+        }
+        ListInterface<JobPosting> filteredJobs = new DoublyLinkedList<>(jobPostings);
+        jobPostingUI.displayFilterMenu(filteredJobs);
     }
 
-    @Override
+    public void filterByCompany() {
+        Company selectedCompany = jobPostingUI.getJobPostingCompany();
+        if (selectedCompany == null) return;
+
+        ListInterface<JobPosting> filtered = jobPostings.filter(job ->
+                job.getCompany() != null &&
+                        job.getCompany().getId().equals(selectedCompany.getId())
+        );
+        jobPostingUI.displayFilteredJobs(filtered);
+    }
+
+    public void filterByJobType() {
+        JobPosting.Type selectedType = jobPostingUI.getJobPostingType();
+        if (selectedType == null) return;
+
+        ListInterface<JobPosting> filtered = jobPostings.filter(job ->
+                job.getType() == selectedType
+        );
+        jobPostingUI.displayFilteredJobs(filtered);
+    }
+
+    public void filterBySalaryRange() {
+        String salaryRange = jobPostingUI.getSalaryRange();
+        if (salaryRange.equals(Input.STRING_EXIT_VALUE)) return;
+
+        String[] parts = salaryRange.split("-");
+        int minSalary = Integer.parseInt(parts[0]);
+        int maxSalary = Integer.parseInt(parts[1]);
+
+        ListInterface<JobPosting> filtered = jobPostings.filter(job ->
+                job.getSalaryMin() >= minSalary && job.getSalaryMax() <= maxSalary
+        );
+        jobPostingUI.displayFilteredJobs(filtered);
+    }
+
+    public void filterByStatus() {
+        JobPosting.Status selectedStatus = jobPostingUI.getJobPostingStatus();
+        if (selectedStatus == null) return;
+
+        ListInterface<JobPosting> filtered = jobPostings.filter(job ->
+                job.getStatus() == selectedStatus
+        );
+        jobPostingUI.displayFilteredJobs(filtered);
+    }
+
+    public void filterByDateRange() {
+        LocalDate[] dateRange = jobPostingUI.getDateRange();
+        if (dateRange == null) return;
+
+        LocalDateTime startDateTime = dateRange[0].atStartOfDay();
+        LocalDateTime endDateTime = dateRange[1].atTime(23, 59, 59);
+
+        ListInterface<JobPosting> filtered = jobPostings.filter(job ->
+                !job.getCreatedAt().isBefore(startDateTime) &&
+                        !job.getCreatedAt().isAfter(endDateTime)
+        );
+        jobPostingUI.displayFilteredJobs(filtered);
+    }
+
+    public void sortJobsByTitle() {
+        ListInterface<JobPosting> sorted = new DoublyLinkedList<>(jobPostings);
+        sorted.sort((job1, job2) ->
+                job1.getTitle().compareToIgnoreCase(job2.getTitle())
+        );
+        jobPostingUI.displayFilteredJobs(sorted);
+    }
+
+    public void sortJobsBySalary() {
+        ListInterface<JobPosting> sorted = new DoublyLinkedList<>(jobPostings);
+        sorted.sort((job1, job2) -> {
+            int avgSalary1 = (job1.getSalaryMin() + job1.getSalaryMax()) / 2;
+            int avgSalary2 = (job2.getSalaryMin() + job2.getSalaryMax()) / 2;
+            return Integer.compare(avgSalary1, avgSalary2);
+        });
+        jobPostingUI.displayFilteredJobs(sorted);
+    }
+
+    public void sortJobsByDate() {
+        ListInterface<JobPosting> sorted = new DoublyLinkedList<>(jobPostings);
+        sorted.sort((job1, job2) ->
+                job1.getCreatedAt().compareTo(job2.getCreatedAt())
+        );
+        jobPostingUI.displayFilteredJobs(sorted);
+    }
+
     public void update() {
         ListInterface<JobPosting> accessiblePostings = Context.isEmployer() ?
                 this.getEmployerJobPostings() : this.jobPostings;
@@ -120,7 +206,6 @@ public class JobPostingService implements Service {
         jobPostingUI.updateJobMode(jobPosting.getId());
     }
 
-    @Override
     public void delete() {
         ListInterface<JobPosting> accessiblePostings = Context.isEmployer() ?
                 this.getEmployerJobPostings() : this.jobPostings;
@@ -201,7 +286,6 @@ public class JobPostingService implements Service {
         }
     }
 
-    @Override
     public void report() {
         Log.na();
     }

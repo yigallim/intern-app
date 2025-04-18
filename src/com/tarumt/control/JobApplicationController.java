@@ -13,15 +13,15 @@ import com.tarumt.entity.interview.ScheduledInterview;
 import com.tarumt.utility.common.Context;
 import com.tarumt.utility.common.Input;
 
-public class JobApplicationService {
+public class JobApplicationController {
 
-    private static JobApplicationService instance;
+    private static JobApplicationController instance;
     private ListInterface<JobApplication> jobApplications = new DoublyLinkedList<>();
     private ListInterface<ScheduledInterview> scheduledInterviews = new DoublyLinkedList<>();
     private ListInterface<Invitation> invitations = new DoublyLinkedList<>();
     private final JobApplicationUI jobApplicationUI;
 
-    private JobApplicationService() {
+    private JobApplicationController() {
         Input input = new Input();
         this.jobApplications = Initializer.getJobApplications();
         this.scheduledInterviews = Initializer.getScheduledInterviews();
@@ -30,9 +30,9 @@ public class JobApplicationService {
         updateInterviewedStatus();
     }
 
-    public static JobApplicationService getInstance() {
+    public static JobApplicationController getInstance() {
         if (instance == null) {
-            instance = new JobApplicationService();
+            instance = new JobApplicationController();
         }
         return instance;
     }
@@ -178,6 +178,42 @@ public class JobApplicationService {
         }
     }
 
+    public void offerApplication() {
+        ListInterface<JobApplication> offerableApplications = getEmployerJobApplications().filter(
+                (jobApplication -> jobApplication.getStatus() == JobApplication.Status.SHORTLISTED ||
+                        jobApplication.getStatus() == JobApplication.Status.INTERVIEWED));
+
+        JobApplication jobApplication = jobApplicationUI.getOfferApplicationChoice(offerableApplications);
+        if (jobApplication == null) {
+            return;
+        }
+
+        boolean hasUpcomingInterview = getEmployerScheduledInterviews().anyMatch(interview ->
+                interview.getJobApplication().equals(jobApplication) && !interview.getTimeSlot().isPast()
+        );
+
+        if (hasUpcomingInterview) {
+            jobApplicationUI.printCannotOfferApplicationWarning();
+            return;
+        }
+
+        ListInterface<Invitation> associatedInvitations = invitations.filter(invitation ->
+                invitation.getJobApplication().equals(jobApplication)
+        );
+
+        if (!associatedInvitations.isEmpty()) {
+            jobApplicationUI.printOfferWithInvitationWarning();
+        }
+
+        if (jobApplicationUI.confirmOffer()) {
+            if (!associatedInvitations.isEmpty()) {
+                invitations.removeAll(associatedInvitations);
+            }
+            jobApplication.setStatus(JobApplication.Status.OFFERED);
+            jobApplicationUI.printSuccessOfferApplicationMsg();
+        }
+    }
+
     public void rejectApplication() {
         ListInterface<JobApplication> ongoingApplications = getEmployerJobApplications().filter(JobApplication::isOngoing);
 
@@ -191,7 +227,7 @@ public class JobApplicationService {
         );
 
         if (hasUpcomingInterview) {
-            jobApplicationUI.printCannotRejectScheduledInterviewWarning();
+            jobApplicationUI.printCannotRejectApplicationWarning();
             return;
         }
 
@@ -212,25 +248,46 @@ public class JobApplicationService {
         }
     }
 
-
     public void accessApplicant() {
         this.jobApplicationUI.accessApplicantMenu();
     }
 
     public void applyJobPosting() {
-        // TODO : Filter duplicates (applied before), filter doesn't reach qualification
         while (true) {
-            ListInterface<JobPosting> availableJobPostings = Initializer.getJobPostings().filter(jobPosting -> jobPosting.getStatus() == JobPosting.Status.OPEN);
+            ListInterface<JobPosting> allOpenJobPostings = Initializer.getJobPostings().filter(
+                    jobPosting -> jobPosting.getStatus() == JobPosting.Status.OPEN);
+            ListInterface<JobApplication> applicantApplications = getApplicantJobApplications();
+            ListInterface<JobPosting> availableJobPostings = allOpenJobPostings.filter(posting ->
+                    !applicantApplications.anyMatch(application -> application.getJobPosting().getId().equals(posting.getId()))
+            );
+
             JobPosting jobPosting = jobApplicationUI.getApplyJobPostingChoice(availableJobPostings);
             if (jobPosting == null) {
                 return;
             }
+
             JobApplication jobApplication = new JobApplication(jobPosting, Context.getApplicant(), JobApplication.Status.PENDING, Context.getDateTime());
             jobApplications.add(jobApplication);
             jobApplicationUI.printSuccessApplyJobPostingMsg();
             if (!jobApplicationUI.continueToApplyJobPosting()) {
                 return;
             }
+        }
+    }
+
+    public void acceptJobApplication() {
+        ListInterface<JobApplication> offeredApplications = getApplicantJobApplications().filter(
+                app -> app.getStatus() == JobApplication.Status.OFFERED
+        );
+
+        JobApplication applicationToAccept = jobApplicationUI.getAcceptJobApplicationChoice(offeredApplications);
+        if (applicationToAccept == null) {
+            return;
+        }
+
+        if (jobApplicationUI.confirmAccept()) {
+            applicationToAccept.setStatus(JobApplication.Status.ACCEPTED);
+            jobApplicationUI.printSuccessAcceptJobApplicationMsg(applicationToAccept);
         }
     }
 
@@ -266,4 +323,5 @@ public class JobApplicationService {
             jobApplicationUI.printSuccessWithdrawJobApplicationMsg();
         }
     }
+
 }

@@ -1,6 +1,5 @@
 package com.tarumt.utility.search;
 
-import com.tarumt.adt.set.HashSet;
 import com.tarumt.entity.BaseEntity;
 
 import com.tarumt.utility.common.Strings;
@@ -9,19 +8,19 @@ import com.tarumt.utility.search.annotation.Fuzzy;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.time.LocalDateTime;
 
 import com.tarumt.adt.list.ListInterface;
 import com.tarumt.adt.list.DoublyLinkedList;
-import com.tarumt.adt.set.SetInterface;
 
 public class FuzzySearch {
 
-    public static SetInterface<String> findFuzzyMatches_v4(String query, String sentence) {
-        return findFuzzyMatches_v4(query, sentence, 0.85, 0.65);
+    public static ListInterface<String> findFuzzyMatches(String query, String sentence) {
+        return findFuzzyMatches(query, sentence, 0.85, 0.65);
     }
 
-    public static SetInterface<String> findFuzzyMatches_v4(String query, String sentence, double dlThreshold,
-                                                           double jwThreshold) {
+    public static ListInterface<String> findFuzzyMatches(String query, String sentence, double dlThreshold,
+                                                         double jwThreshold) {
 
         String[] queryTokens = query.split("\\s+");
         String[] sentenceTokens = sentence.split("\\s+");
@@ -49,11 +48,15 @@ public class FuzzySearch {
             }
         }
 
-        SetInterface<String> results = new HashSet<>();
+        ListInterface<String> results = new DoublyLinkedList<>();
 
         if (queryTokens.length == 1) {
             for (int index : matchedIndices) {
-                results.add(Strings.trimSymbols(sentenceTokens[index]));
+
+                String trimmedToken = Strings.trimSymbols(sentenceTokens[index]);
+                if (!results.contains(trimmedToken)) {
+                    results.add(trimmedToken);
+                }
             }
             return results;
         }
@@ -91,14 +94,19 @@ public class FuzzySearch {
                     sb.append(" ");
                 }
             }
-            results.add(Strings.trimSymbols(sb.toString()));
+
+            String trimmedGroup = Strings.trimSymbols(sb.toString());
+            if (!results.contains(trimmedGroup)) {
+                results.add(trimmedGroup);
+            }
         }
         return results;
     }
 
     public static <T extends BaseEntity> Result<T> searchList(Class<T> clazz, ListInterface<T> entities, String query,
                                                               String... excludeKeys) {
-        SetInterface<String> results = new HashSet<>();
+
+        ListInterface<String> results = new DoublyLinkedList<>();
         ListInterface<T> matchedEntities = new DoublyLinkedList<>();
 
         for (T instance : entities) {
@@ -115,15 +123,26 @@ public class FuzzySearch {
                     try {
                         Object valueObj = field.get(instance);
                         if (valueObj != null) {
-                            String valueStr = valueObj.toString();
+                            String valueStr;
+                            if (valueObj instanceof LocalDateTime) {
+                                valueStr = Strings.formatDateTime((LocalDateTime) valueObj);
+                            } else {
+                                valueStr = valueObj.toString();
+                            }
                             Fuzzy fuzzyAnnotation = field.getAnnotation(Fuzzy.class);
-                            SetInterface<String> matchesForField = findFuzzyMatches_v4(
+
+                            ListInterface<String> matchesForField = findFuzzyMatches(
                                     query,
                                     valueStr,
                                     fuzzyAnnotation.dlThreshold(),
                                     fuzzyAnnotation.jwThreshold());
                             if (!matchesForField.isEmpty()) {
-                                results.addAll(matchesForField);
+
+                                for (String match : matchesForField) {
+                                    if (!results.contains(match)) {
+                                        results.add(match);
+                                    }
+                                }
                                 entityMatched = true;
                             }
                         }
@@ -146,13 +165,19 @@ public class FuzzySearch {
                         if (resultObj != null) {
                             String resultStr = resultObj.toString();
                             Fuzzy fuzzyAnnotation = method.getAnnotation(Fuzzy.class);
-                            SetInterface<String> matchesForMethod = findFuzzyMatches_v4(
+
+                            ListInterface<String> matchesForMethod = findFuzzyMatches(
                                     query,
                                     resultStr,
                                     fuzzyAnnotation.dlThreshold(),
                                     fuzzyAnnotation.jwThreshold());
                             if (!matchesForMethod.isEmpty()) {
-                                results.addAll(matchesForMethod);
+
+                                for (String match : matchesForMethod) {
+                                    if (!results.contains(match)) {
+                                        results.add(match);
+                                    }
+                                }
                                 entityMatched = true;
                             }
                         }
@@ -166,6 +191,7 @@ public class FuzzySearch {
                 matchedEntities.add(instance);
             }
         }
+
         return new Result<>(results, matchedEntities);
     }
 
@@ -232,19 +258,28 @@ public class FuzzySearch {
     }
 
     public static class Result<T extends BaseEntity> {
-        SetInterface<String> matches;
+
+        ListInterface<String> matches;
         ListInterface<T> subList;
 
-        public Result(SetInterface<String> matches, ListInterface<T> subList) {
+        public Result(ListInterface<String> matches, ListInterface<T> subList) {
             this.matches = matches;
             this.subList = subList;
         }
 
-        public SetInterface<String> getMatches() {
-            return matches;
+        public ListInterface<String> getMatches() {
+            ListInterface<String> uniqueMatches = new DoublyLinkedList<>();
+            if (this.matches != null) {
+                for (String match : this.matches) {
+                    if (!uniqueMatches.contains(match)) {
+                        uniqueMatches.add(match);
+                    }
+                }
+            }
+            return uniqueMatches;
         }
 
-        public void setMatches(SetInterface<String> matches) {
+        public void setMatches(ListInterface<String> matches) {
             this.matches = matches;
         }
 

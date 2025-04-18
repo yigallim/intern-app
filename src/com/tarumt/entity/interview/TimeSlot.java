@@ -3,8 +3,6 @@ package com.tarumt.entity.interview;
 import com.tarumt.adt.list.DoublyLinkedList;
 import com.tarumt.adt.list.ListInterface;
 import com.tarumt.utility.common.Context;
-import com.tarumt.utility.validation.annotation.Max;
-import com.tarumt.utility.validation.annotation.Min;
 
 import java.time.*;
 import java.time.format.DateTimeFormatter;
@@ -65,9 +63,13 @@ public class TimeSlot {
         return TimeSlot.getSlotStartTime(slot).plus(INTERVAL);
     }
 
-    public boolean isAvailable() {
+    public boolean isWeekend() {
         DayOfWeek dayOfWeek = date.getDayOfWeek();
-        if (dayOfWeek == DayOfWeek.SATURDAY || dayOfWeek == DayOfWeek.SUNDAY) {
+        return dayOfWeek == DayOfWeek.SATURDAY || dayOfWeek == DayOfWeek.SUNDAY;
+    }
+
+    public boolean isAvailable() {
+        if (isWeekend()) {
             return false;
         }
 

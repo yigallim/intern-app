@@ -1,6 +1,6 @@
 package com.tarumt.utility.common;
 
-import com.tarumt.adt.list.Arrays;
+import com.tarumt.adt.list.ArrayToLinked;
 import com.tarumt.adt.function.ProviderLambda;
 import com.tarumt.utility.pretty.banana.BananaUtils;
 import com.tarumt.utility.validation.IntegerCondition;
@@ -44,7 +44,7 @@ public class Menu {
     }
 
     public Menu choice(Choice... choices) {
-        this.choices.merge(Arrays.asList(choices).filter(Objects::nonNull));
+        this.choices.merge(ArrayToLinked.asList(choices).filter(Objects::nonNull));
         return this;
     }
 

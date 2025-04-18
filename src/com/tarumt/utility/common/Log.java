@@ -57,7 +57,7 @@ public class Log {
 
         System.out.printf("%s %s%n", coloredLevel, coloredMessage);
 
-        String timestamp = LocalDateTime.now().format(FORMATTER);
+        String timestamp = Context.getDateTime().format(FORMATTER);
         String fileLog = String.format("%s [%s] %s", timestamp, level, message);
 
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(LOG_FILE, true))) {

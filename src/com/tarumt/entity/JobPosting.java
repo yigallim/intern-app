@@ -10,13 +10,10 @@ import com.tarumt.utility.search.annotation.Fuzzy;
 import com.tarumt.utility.validation.annotation.Max;
 import com.tarumt.utility.validation.annotation.Min;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 
 import com.tarumt.adt.list.ListInterface;
 
-// TODO : CLOSED job cant be updated or displayed, FILLED job can be reopen and displayed
 public class JobPosting extends BaseEntity {
     private static final String PREFIX = "j";
     private static int counter = 1;
@@ -43,9 +40,12 @@ public class JobPosting extends BaseEntity {
     private Type type;
     @ExcludeKey("default")
     private ListInterface<Qualification> qualifications;
+    @Fuzzy
     @OutputLength(8)
     private Status status;
+    @Fuzzy
     private LocalDateTime createdAt;
+    @Fuzzy
     private LocalDateTime updatedAt;
 
     public JobPosting(String title, Company company, int salaryMin, int salaryMax, String description, Type type, ListInterface<Qualification> qualifications, Status status, LocalDateTime createdAt, LocalDateTime updatedAt) {
@@ -70,6 +70,15 @@ public class JobPosting extends BaseEntity {
 
     public static String getNextId() {
         return PREFIX + counter;
+    }
+
+    @Fuzzy
+    @OutputLength(14)
+    @ColumnIndex(4)
+    @Computed("Salary")
+    private String computedSalaryRange() {
+        if (salaryMin == salaryMax) return Integer.toString(this.salaryMin);
+        else return this.salaryMin + "-" + this.salaryMax;
     }
 
     public enum Type {
@@ -120,14 +129,6 @@ public class JobPosting extends BaseEntity {
         public String toString() {
             return Strings.constantCaseToTitleCase(this.name());
         }
-    }
-
-    @OutputLength(14)
-    @ColumnIndex(4)
-    @Computed("Salary")
-    private String computedSalaryRange() {
-        if (salaryMin == salaryMax) return Integer.toString(this.salaryMin);
-        else return this.salaryMin + "-" + this.salaryMax;
     }
 
     public String getTitle() {

@@ -2,6 +2,7 @@ package com.tarumt.utility.pretty.banana;
 
 import com.tarumt.adt.list.DoublyLinkedList;
 import com.tarumt.adt.list.ListInterface;
+import com.tarumt.adt.map.SimpleHashMap;
 
 public class Ansi {
 
@@ -36,7 +37,7 @@ public class Ansi {
     public static final Ansi PRIMARY;
 
     private static final ListInterface<Ansi> VALUES;
-    private static final SimpleMap<String, Ansi> MAP;
+    private static final SimpleHashMap<String, Ansi> MAP;
 
     static {
 
@@ -69,7 +70,7 @@ public class Ansi {
         values.add(CROSSED_OUT = new Ansi("9"));
         values.add(PRIMARY = new Ansi("10"));
 
-        SimpleMap<String, Ansi> map = new SimpleMap<>(values.size());
+        SimpleHashMap<String, Ansi> map = new SimpleHashMap<>(values.size());
         for (Ansi v : values) {
             map.put(v.code, v);
         }

@@ -15,23 +15,23 @@ import com.tarumt.utility.search.FuzzySearch;
 import com.tarumt.adt.list.ListInterface;
 import com.tarumt.adt.list.DoublyLinkedList;
 
-public class CompanyService implements Service {
+public class CompanyController {
 
-    private static CompanyService instance;
+    private static CompanyController instance;
     private ListInterface<Company> companies = new DoublyLinkedList<>();
     private final CompanyUI companyUI;
     private final LocationUI locationUI;
 
-    private CompanyService() {
+    private CompanyController() {
         Input input = new Input();
         this.companies = Initializer.getCompanies();
         this.companyUI = new CompanyUI(input);
         this.locationUI = new LocationUI(input);
     }
 
-    public static CompanyService getInstance() {
+    public static CompanyController getInstance() {
         if (instance == null) {
-            instance = new CompanyService();
+            instance = new CompanyController();
         }
         return instance;
     }
@@ -50,12 +50,10 @@ public class CompanyService implements Service {
         }
     }
 
-    @Override
     public void run() {
         companyUI.menu();
     }
 
-    @Override
     public void create() {
         while (true) {
             companyUI.printCreateCompanyMsg();
@@ -72,12 +70,10 @@ public class CompanyService implements Service {
         }
     }
 
-    @Override
     public void read() {
         companyUI.printAllCompanies(companies);
     }
 
-    @Override
     public void search() {
         while (true) {
             companyUI.printSearchCompanyMsg(companies);
@@ -93,12 +89,10 @@ public class CompanyService implements Service {
         }
     }
 
-    @Override
     public void filter() {
         Log.na();
     }
 
-    @Override
     public void update() {
         companyUI.printUpdateCompanyMsg(this.companies);
         if (this.companies.isEmpty()) {
@@ -115,7 +109,6 @@ public class CompanyService implements Service {
         companyUI.updateCompanyMode(company.getId());
     }
 
-    @Override
     public void delete() {
         companyUI.deleteMenu(this.companies);
     }
@@ -176,7 +169,6 @@ public class CompanyService implements Service {
         }
     }
 
-    @Override
     public void report() {
         Log.na();
     }
@@ -387,5 +379,9 @@ public class CompanyService implements Service {
             Context.setCompany(null);
             throw new Menu.ExitMenuException();
         }
+    }
+
+    private boolean isEmailUnique(String email) {
+        return !companies.anyMatch(company -> company.getContactEmail().equalsIgnoreCase(email));
     }
 }

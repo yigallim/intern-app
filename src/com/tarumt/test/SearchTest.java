@@ -7,6 +7,8 @@ import com.tarumt.adt.list.ListInterface;
 import com.tarumt.adt.list.DoublyLinkedList;
 import com.tarumt.adt.set.SetInterface;
 
+import java.util.List;
+
 public class SearchTest {
 
     public static void main(String[] args) {
@@ -289,7 +291,7 @@ public class SearchTest {
                 System.out.println("\n=== " + test.getDescription() + " ===\n");
                 continue;
             }
-            SetInterface<String> matches = FuzzySearch.findFuzzyMatches_v4(test.getQuery(), test.getSentence());
+            ListInterface<String> matches = FuzzySearch.findFuzzyMatches(test.getQuery(), test.getSentence());
             System.out.printf("%-5d %-30s %-70s %-50s %-10s %-10s%n",
                     testCounter++,
                     Strings.truncate(test.getQuery(), 30),

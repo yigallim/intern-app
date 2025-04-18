@@ -92,21 +92,6 @@ public class Company extends BaseEntity {
         this.contactPhone = contactPhone;
     }
 
-//    public InterviewSchedule getSchedule() {
-//        return schedule;
-//    }
-//
-//    // Method to invite an applicant (example usage)
-//    public boolean inviteApplicant(Applicant applicant, LocalDate date, int slotIndex) {
-//        boolean booked = schedule.bookSlot(date, slotIndex);
-//        if (booked) {
-//            // Logic to notify applicant (e.g., email), not implemented here
-//            System.out.println("Invited " + applicant.getName() + " for interview on " +
-//                    date + " at " + schedule.getSlotStartTime(slotIndex));
-//        }
-//        return booked;
-//    }
-
     @Override
     public String toShortString() {
         return this.getId() + ", " + this.getName();

@@ -1,6 +1,6 @@
-package com.tarumt.utility.pretty.banana;
+package com.tarumt.adt.map;
 
-public class SimpleMap<K, V> {
+public class SimpleHashMap<K, V> implements MapInterface<K, V> {
 
     private static class Entry<K, V> {
         K key;
@@ -21,16 +21,16 @@ public class SimpleMap<K, V> {
     private int size;
     private final float loadFactor;
 
-    public SimpleMap() {
+    public SimpleHashMap() {
         this(DEFAULT_CAPACITY, DEFAULT_LOAD_FACTOR);
     }
 
-    public SimpleMap(int initialCapacity) {
+    public SimpleHashMap(int initialCapacity) {
         this(initialCapacity, DEFAULT_LOAD_FACTOR);
     }
 
     @SuppressWarnings("unchecked")
-    public SimpleMap(int initialCapacity, float loadFactor) {
+    public SimpleHashMap(int initialCapacity, float loadFactor) {
         if (initialCapacity <= 0) {
             throw new IllegalArgumentException("Initial capacity must be positive");
         }
@@ -43,10 +43,12 @@ public class SimpleMap<K, V> {
         this.loadFactor = loadFactor;
     }
 
+    @Override
     public int size() {
         return size;
     }
 
+    @Override
     public boolean isEmpty() {
         return size == 0;
     }
@@ -59,6 +61,7 @@ public class SimpleMap<K, V> {
         return hash(key) % buckets.length;
     }
 
+    @Override
     public V put(K key, V value) {
         int index = indexFor(key);
 
@@ -80,6 +83,7 @@ public class SimpleMap<K, V> {
         return null;
     }
 
+    @Override
     public V get(K key) {
         int index = indexFor(key);
 
@@ -92,6 +96,7 @@ public class SimpleMap<K, V> {
         return null;
     }
 
+    @Override
     public V remove(K key) {
         int index = indexFor(key);
         Entry<K, V> prev = null;
@@ -114,6 +119,7 @@ public class SimpleMap<K, V> {
         return null;
     }
 
+    @Override
     public boolean containsKey(K key) {
         int index = indexFor(key);
 
@@ -126,12 +132,14 @@ public class SimpleMap<K, V> {
         return false;
     }
 
+    @Override
     @SuppressWarnings("unchecked")
     public void clear() {
         this.buckets = (Entry<K, V>[]) new Entry[buckets.length];
         this.size = 0;
     }
 
+    @Override
     public V getOrDefault(K key, V defaultValue) {
         V value = get(key);
         return value != null ? value : defaultValue;

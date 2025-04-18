@@ -2,7 +2,7 @@ package com.tarumt.entity.location;
 
 import com.tarumt.adt.list.ListInterface;
 import com.tarumt.adt.list.DoublyLinkedList;
-import com.tarumt.adt.list.Arrays;
+import com.tarumt.adt.list.ArrayToLinked;
 
 public class Location {
     private City city;
@@ -51,7 +51,7 @@ public class Location {
     }
 
     public static ListInterface<State> getAllStates() {
-        return Arrays.asList(State.values());
+        return ArrayToLinked.asList(State.values());
     }
 
     public double distanceTo(Location other) {

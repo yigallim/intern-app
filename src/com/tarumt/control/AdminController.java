@@ -3,25 +3,22 @@ package com.tarumt.control;
 import com.tarumt.boundary.AdminUI;
 import com.tarumt.utility.common.Context;
 import com.tarumt.utility.common.Input;
-import com.tarumt.utility.common.Menu;
 
 import java.time.Clock;
 import java.time.Duration;
-import java.time.Instant;
-import java.time.ZoneId;
 
-public class AdminService {
-    private static AdminService instance;
+public class AdminController {
+    private static AdminController instance;
     private final AdminUI adminUI;
 
-    private AdminService() {
+    private AdminController() {
         Input input = new Input();
         this.adminUI = new AdminUI(input);
     }
 
-    public static AdminService getInstance() {
+    public static AdminController getInstance() {
         if (instance == null) {
-            instance = new AdminService();
+            instance = new AdminController();
         }
         return instance;
     }
@@ -31,19 +28,23 @@ public class AdminService {
     }
 
     public void manageCompany() {
-        CompanyService.getInstance().run();
+        CompanyController.getInstance().run();
     }
 
     public void manageJob() {
-        JobPostingService.getInstance().run();
+        JobPostingController.getInstance().run();
     }
 
     public void manageApplicant() {
-        ApplicantService.getInstance().run();
+        ApplicantController.getInstance().run();
+    }
+
+    public void manageInterview() {
+        InterviewController.getInstance().run();
     }
 
     public void modifyTime() {
-       this.adminUI.modifyTimeMenu();
+        this.adminUI.modifyTimeMenu();
     }
 
     public void modifyHours() {

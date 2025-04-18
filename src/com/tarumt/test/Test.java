@@ -2,11 +2,8 @@ package com.tarumt.test;
 
 import com.tarumt.adt.list.DoublyLinkedList;
 import com.tarumt.adt.list.ListInterface;
-import com.tarumt.control.InterviewService;
 import com.tarumt.entity.interview.TimeSlot;
 import com.tarumt.utility.common.Context;
-
-import java.util.concurrent.atomic.AtomicInteger;
 
 public class Test {
 

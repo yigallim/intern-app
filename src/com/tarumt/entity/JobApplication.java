@@ -1,5 +1,6 @@
 package com.tarumt.entity;
 
+import com.tarumt.utility.common.Context;
 import com.tarumt.utility.common.Strings;
 import com.tarumt.utility.pretty.annotation.ColumnIndex;
 import com.tarumt.utility.pretty.annotation.Computed;
@@ -116,7 +117,14 @@ public class JobApplication extends BaseEntity {
 
     @Override
     public String toShortString() {
-        return this.getId() + " | Job: " + this.jobPosting.toShortString() + " | Applicant: " + this.applicant.toShortString();
+        StringBuilder sb = new StringBuilder(getId())
+                .append(" | Job: ").append(jobPosting.toShortString());
+        if (Context.isEmployer()) {
+            sb.append(" | Applicant: ").append(applicant.toShortString());
+        } else if (Context.isApplicant()) {
+            sb.append(" | Company: ").append(computedCompany());
+        }
+        return sb.toString();
     }
 
     @Override

@@ -1,20 +1,25 @@
 package com.tarumt.dao;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
+
 import com.tarumt.entity.Applicant;
 import com.tarumt.entity.Company;
 import com.tarumt.entity.JobApplication;
 import com.tarumt.entity.JobPosting;
 import com.tarumt.entity.interview.Invitation;
 import com.tarumt.entity.interview.ScheduledInterview;
+import com.tarumt.entity.interview.TimeSlot;
+import com.tarumt.entity.interview.BlockedTimeSlot;
 import com.tarumt.entity.location.City;
 import com.tarumt.entity.location.Location;
-
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 import com.tarumt.adt.list.ListInterface;
 import com.tarumt.adt.list.DoublyLinkedList;
 import com.tarumt.utility.common.Context;
+import com.tarumt.utility.common.Log;
 
 public class Initializer {
     private static final ListInterface<Company> companies = new DoublyLinkedList<>();
@@ -23,6 +28,7 @@ public class Initializer {
     private static final ListInterface<JobApplication> jobApplications = new DoublyLinkedList<>();
     private static final ListInterface<Invitation> invitations = new DoublyLinkedList<>();
     private static final ListInterface<ScheduledInterview> scheduledInterviews = new DoublyLinkedList<>();
+    private static final ListInterface<BlockedTimeSlot> blockedTimeSlots = new DoublyLinkedList<>();
 
     static {
         Initializer.init();
@@ -330,13 +336,14 @@ public class Initializer {
         applicants.add(new Applicant("Test", "test@test.com", "0119999999", JobPosting.Type.ADMIN_OFFICE, new Location(City.KUALA_LUMPUR)));
         // endregion
 
+        // region Init
         //251 job applications
         // Applicant 0 (Alice Johnson)
-        jobApplications.add(new JobApplication(jobPostings.get(0), applicants.get(0), JobApplication.Status.PENDING, now.minusDays(7).minusHours(2)));
-        jobApplications.add(new JobApplication(jobPostings.get(5), applicants.get(0), JobApplication.Status.SHORTLISTED, now.minusDays(6).minusHours(3)));
-        jobApplications.add(new JobApplication(jobPostings.get(10), applicants.get(0), JobApplication.Status.INTERVIEWED, now.minusDays(5).minusHours(4)));
-        jobApplications.add(new JobApplication(jobPostings.get(15), applicants.get(0), JobApplication.Status.OFFERED, now.minusDays(4).minusHours(5)));
-        jobApplications.add(new JobApplication(jobPostings.get(20), applicants.get(0), JobApplication.Status.ACCEPTED, now.minusDays(3).minusHours(6)));
+        jobApplications.add(new JobApplication(jobPostings.get(12), applicants.get(0), JobApplication.Status.PENDING, now.minusDays(7).minusHours(2)));
+        jobApplications.add(new JobApplication(jobPostings.get(21), applicants.get(0), JobApplication.Status.SHORTLISTED, now.minusDays(6).minusHours(3)));
+        jobApplications.add(new JobApplication(jobPostings.get(2), applicants.get(0), JobApplication.Status.INTERVIEWED, now.minusDays(5).minusHours(4)));
+        jobApplications.add(new JobApplication(jobPostings.get(3), applicants.get(0), JobApplication.Status.OFFERED, now.minusDays(4).minusHours(5)));
+        jobApplications.add(new JobApplication(jobPostings.get(4), applicants.get(0), JobApplication.Status.ACCEPTED, now.minusDays(3).minusHours(6)));
 
         // Applicant 1 (Bob Smith)
         jobApplications.add(new JobApplication(jobPostings.get(1), applicants.get(1), JobApplication.Status.PENDING, now.minusDays(2).minusHours(7)));
@@ -688,13 +695,6 @@ public class Initializer {
         jobApplications.add(new JobApplication(jobPostings.get(15), applicants.get(0), JobApplication.Status.SHORTLISTED, LocalDateTime.of(2025, 8, 9, 12, 0)));
         jobApplications.add(new JobApplication(jobPostings.get(20), applicants.get(0), JobApplication.Status.SHORTLISTED, LocalDateTime.of(2025, 8, 10, 13, 0)));
 
-        // Applicant 0
-        jobApplications.add(new JobApplication(jobPostings.get(0), applicants.get(0), JobApplication.Status.SHORTLISTED, now.minusDays(7).minusHours(5)));
-        jobApplications.add(new JobApplication(jobPostings.get(5), applicants.get(0), JobApplication.Status.SHORTLISTED, now.minusDays(6).minusHours(3)));
-        jobApplications.add(new JobApplication(jobPostings.get(10), applicants.get(0), JobApplication.Status.SHORTLISTED, now.minusDays(5).minusHours(2)));
-        jobApplications.add(new JobApplication(jobPostings.get(15), applicants.get(0), JobApplication.Status.SHORTLISTED, now.minusDays(4).minusHours(1)));
-        jobApplications.add(new JobApplication(jobPostings.get(20), applicants.get(0), JobApplication.Status.SHORTLISTED, now.minusDays(3).minusHours(4)));
-
         // Applicant 1
         jobApplications.add(new JobApplication(jobPostings.get(0), applicants.get(1), JobApplication.Status.SHORTLISTED, now.minusDays(7).minusHours(6)));
         jobApplications.add(new JobApplication(jobPostings.get(5), applicants.get(1), JobApplication.Status.SHORTLISTED, now.minusDays(6).minusHours(4)));
@@ -757,17 +757,549 @@ public class Initializer {
         jobApplications.add(new JobApplication(jobPostings.get(35), applicants.get(9), JobApplication.Status.SHORTLISTED, now.minusDays(6).minusHours(0)));
         jobApplications.add(new JobApplication(jobPostings.get(40), applicants.get(9), JobApplication.Status.SHORTLISTED, now.minusDays(5).minusHours(6)));
         jobApplications.add(new JobApplication(jobPostings.get(45), applicants.get(9), JobApplication.Status.SHORTLISTED, now.minusDays(4).minusHours(5)));
+        // endregion
 
-//        PENDING, no interview at all
-//        SHORTLISTED, can have interview in future
-//        INTERVIEWED, can have past interviews
-//        OFFERED, can have past interviews
-//        ACCEPTED, can have no interview, past interviews
-//        REJECTED, can have no interview, past interviews
-//        WITHDRAWN, can have no interview, past interview
+        // 84 record
+        ListInterface<JobApplication> shortlistedApplications = jobApplications.filter(app -> app.getStatus() == JobApplication.Status.SHORTLISTED);
+        // 34 record
+        ListInterface<JobApplication> interviewedApplications = jobApplications.filter(app -> app.getStatus() == JobApplication.Status.INTERVIEWED);
+        // 36 record
+        ListInterface<JobApplication> offeredApplications = jobApplications.filter(app -> app.getStatus() == JobApplication.Status.OFFERED);
+        // 107 record
+        ListInterface<JobApplication> terminatedApplications = jobApplications.filter(JobApplication::isTerminated);
 
-        invitations.add(new Invitation(jobApplications.get(250), "1st round technical interview", now));
-        invitations.add(new Invitation(jobApplications.get(252), "1st round technical interview", now));
+        //        System.out.println(shortlistedApplications.size());
+        //        System.out.println(interviewedApplications.size());
+        //        System.out.println(offeredApplications.size());
+        //        System.out.println(terminatedApplications.size());
+
+        //        past or future interviews only refer to the current application's interview, doesn't affect other application
+        //        PENDING, no interview at all
+        //        SHORTLISTED, must have no past interview, future interview optional
+        //        INTERVIEWED, must have past interview, future interview optional
+        //        OFFERED, past interview optional, must have no future interview
+        //        ACCEPTED, past interview optional, must have no future interview
+        //        REJECTED, past interview optional, must have no future interview
+        //        WITHDRAWN, past interview optional, must have no future interview
+
+        // INTERVIEWED (34 records, must have past interviews, future optional)
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(2), "Technical interview", generateRandomPastTimeSlot(scheduledInterviews, jobApplications.get(2), now.minusDays(3).minusHours(5)), 8, now.minusDays(3).minusHours(5)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(12), "Behavioral interview", generateRandomPastTimeSlot(scheduledInterviews, jobApplications.get(12), now.minusDays(2).minusHours(4)), 7, now.minusDays(2).minusHours(4)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(19), "Coding test", generateRandomPastTimeSlot(scheduledInterviews, jobApplications.get(19), now.minusDays(4).minusHours(6)), 9, now.minusDays(4).minusHours(6)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(26), "Panel interview", generateRandomPastTimeSlot(scheduledInterviews, jobApplications.get(26), now.minusDays(1).minusHours(3)), 6, now.minusDays(1).minusHours(3)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(33), "Technical discussion", generateRandomPastTimeSlot(scheduledInterviews, jobApplications.get(33), now.minusDays(5).minusHours(7)), 8, now.minusDays(5).minusHours(7)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(40), "System design", generateRandomPastTimeSlot(scheduledInterviews, jobApplications.get(40), now.minusDays(2).minusHours(2)), 7, now.minusDays(2).minusHours(2)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(47), "HR interview", generateRandomPastTimeSlot(scheduledInterviews, jobApplications.get(47), now.minusDays(3).minusHours(8)), 9, now.minusDays(3).minusHours(8)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(54), "Technical screening", generateRandomPastTimeSlot(scheduledInterviews, jobApplications.get(54), now.minusDays(4).minusHours(1)), 6, now.minusDays(4).minusHours(1)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(61), "Case study", generateRandomPastTimeSlot(scheduledInterviews, jobApplications.get(61), now.minusDays(1).minusHours(9)), 8, now.minusDays(1).minusHours(9)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(68), "Coding challenge", generateRandomPastTimeSlot(scheduledInterviews, jobApplications.get(68), now.minusDays(5).minusHours(4)), 7, now.minusDays(5).minusHours(4)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(75), "Technical interview", generateRandomPastTimeSlot(scheduledInterviews, jobApplications.get(75), now.minusDays(2).minusHours(5)), 9, now.minusDays(2).minusHours(5)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(82), "Behavioral interview", generateRandomPastTimeSlot(scheduledInterviews, jobApplications.get(82), now.minusDays(3).minusHours(6)), 6, now.minusDays(3).minusHours(6)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(89), "System design", generateRandomPastTimeSlot(scheduledInterviews, jobApplications.get(89), now.minusDays(4).minusHours(7)), 8, now.minusDays(4).minusHours(7)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(103), "Panel interview", generateRandomPastTimeSlot(scheduledInterviews, jobApplications.get(103), now.minusDays(1).minusHours(8)), 7, now.minusDays(1).minusHours(8)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(110), "HR interview", generateRandomPastTimeSlot(scheduledInterviews, jobApplications.get(110), now.minusDays(5).minusHours(9)), 9, now.minusDays(5).minusHours(9)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(117), "Technical screening", generateRandomPastTimeSlot(scheduledInterviews, jobApplications.get(117), now.minusDays(2).minusHours(1)), 6, now.minusDays(2).minusHours(1)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(124), "Case study", generateRandomPastTimeSlot(scheduledInterviews, jobApplications.get(124), now.minusDays(3).minusHours(2)), 8, now.minusDays(3).minusHours(2)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(131), "Coding test", generateRandomPastTimeSlot(scheduledInterviews, jobApplications.get(131), now.minusDays(4).minusHours(3)), 7, now.minusDays(4).minusHours(3)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(138), "Technical discussion", generateRandomPastTimeSlot(scheduledInterviews, jobApplications.get(138), now.minusDays(1).minusHours(4)), 9, now.minusDays(1).minusHours(4)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(145), "Behavioral interview", generateRandomPastTimeSlot(scheduledInterviews, jobApplications.get(145), now.minusDays(5).minusHours(5)), 6, now.minusDays(5).minusHours(5)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(152), "System design", generateRandomPastTimeSlot(scheduledInterviews, jobApplications.get(152), now.minusDays(2).minusHours(6)), 8, now.minusDays(2).minusHours(6)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(159), "Panel interview", generateRandomPastTimeSlot(scheduledInterviews, jobApplications.get(159), now.minusDays(3).minusHours(7)), 7, now.minusDays(3).minusHours(7)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(166), "HR interview", generateRandomPastTimeSlot(scheduledInterviews, jobApplications.get(166), now.minusDays(4).minusHours(8)), 9, now.minusDays(4).minusHours(8)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(173), "Technical screening", generateRandomPastTimeSlot(scheduledInterviews, jobApplications.get(173), now.minusDays(1).minusHours(9)), 6, now.minusDays(1).minusHours(9)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(180), "Case study", generateRandomPastTimeSlot(scheduledInterviews, jobApplications.get(180), now.minusDays(5).minusHours(1)), 8, now.minusDays(5).minusHours(1)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(187), "Coding challenge", generateRandomPastTimeSlot(scheduledInterviews, jobApplications.get(187), now.minusDays(2).minusHours(2)), 7, now.minusDays(2).minusHours(2)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(194), "Technical interview", generateRandomPastTimeSlot(scheduledInterviews, jobApplications.get(194), now.minusDays(3).minusHours(3)), 9, now.minusDays(3).minusHours(3)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(201), "Behavioral interview", generateRandomPastTimeSlot(scheduledInterviews, jobApplications.get(201), now.minusDays(4).minusHours(4)), 6, now.minusDays(4).minusHours(4)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(208), "System design", generateRandomPastTimeSlot(scheduledInterviews, jobApplications.get(208), now.minusDays(1).minusHours(5)), 8, now.minusDays(1).minusHours(5)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(215), "Panel interview", generateRandomPastTimeSlot(scheduledInterviews, jobApplications.get(215), now.minusDays(5).minusHours(6)), 7, now.minusDays(5).minusHours(6)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(222), "HR interview", generateRandomPastTimeSlot(scheduledInterviews, jobApplications.get(222), now.minusDays(2).minusHours(7)), 9, now.minusDays(2).minusHours(7)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(229), "Technical screening", generateRandomPastTimeSlot(scheduledInterviews, jobApplications.get(229), now.minusDays(3).minusHours(8)), 6, now.minusDays(3).minusHours(8)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(236), "Case study", generateRandomPastTimeSlot(scheduledInterviews, jobApplications.get(236), now.minusDays(4).minusHours(9)), 8, now.minusDays(4).minusHours(9)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(243), "Coding test", generateRandomPastTimeSlot(scheduledInterviews, jobApplications.get(243), now.minusDays(1).minusHours(1)), 7, now.minusDays(1).minusHours(1)));
+
+        // SHORTLISTED (84 records, no past interviews, future optional)
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(1), "Scheduled for technical", generateRandomFutureTimeSlot(scheduledInterviews, jobApplications.get(1), now.minusDays(1).minusHours(2)), now.minusDays(1).minusHours(2)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(6), "Behavioral screening", generateRandomFutureTimeSlot(scheduledInterviews, jobApplications.get(6), now.minusDays(2).minusHours(3)), now.minusDays(2).minusHours(3)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(14), "Coding interview", generateRandomFutureTimeSlot(scheduledInterviews, jobApplications.get(14), now.minusDays(3).minusHours(4)), now.minusDays(3).minusHours(4)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(21), "Panel discussion", generateRandomFutureTimeSlot(scheduledInterviews, jobApplications.get(21), now.minusDays(4).minusHours(5)), now.minusDays(4).minusHours(5)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(28), "Technical review", generateRandomFutureTimeSlot(scheduledInterviews, jobApplications.get(28), now.minusDays(5).minusHours(6)), now.minusDays(5).minusHours(6)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(35), "HR screening", generateRandomFutureTimeSlot(scheduledInterviews, jobApplications.get(35), now.minusDays(1).minusHours(7)), now.minusDays(1).minusHours(7)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(42), "System design", generateRandomFutureTimeSlot(scheduledInterviews, jobApplications.get(42), now.minusDays(2).minusHours(8)), now.minusDays(2).minusHours(8)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(49), "Case study", generateRandomFutureTimeSlot(scheduledInterviews, jobApplications.get(49), now.minusDays(3).minusHours(9)), now.minusDays(3).minusHours(9)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(56), "Technical interview", generateRandomFutureTimeSlot(scheduledInterviews, jobApplications.get(56), now.minusDays(4).minusHours(1)), now.minusDays(4).minusHours(1)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(63), "Behavioral interview", generateRandomFutureTimeSlot(scheduledInterviews, jobApplications.get(63), now.minusDays(5).minusHours(2)), now.minusDays(5).minusHours(2)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(70), "Coding challenge", generateRandomFutureTimeSlot(scheduledInterviews, jobApplications.get(70), now.minusDays(1).minusHours(3)), now.minusDays(1).minusHours(3)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(77), "Panel interview", generateRandomFutureTimeSlot(scheduledInterviews, jobApplications.get(77), now.minusDays(2).minusHours(4)), now.minusDays(2).minusHours(4)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(84), "HR review", generateRandomFutureTimeSlot(scheduledInterviews, jobApplications.get(84), now.minusDays(3).minusHours(5)), now.minusDays(3).minusHours(5)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(91), "Technical screening", generateRandomFutureTimeSlot(scheduledInterviews, jobApplications.get(91), now.minusDays(4).minusHours(6)), now.minusDays(4).minusHours(6)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(98), "System design", generateRandomFutureTimeSlot(scheduledInterviews, jobApplications.get(98), now.minusDays(5).minusHours(7)), now.minusDays(5).minusHours(7)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(105), "Case study", generateRandomFutureTimeSlot(scheduledInterviews, jobApplications.get(105), now.minusDays(1).minusHours(8)), now.minusDays(1).minusHours(8)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(112), "Behavioral screening", generateRandomFutureTimeSlot(scheduledInterviews, jobApplications.get(112), now.minusDays(2).minusHours(9)), now.minusDays(2).minusHours(9)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(119), "Coding interview", generateRandomFutureTimeSlot(scheduledInterviews, jobApplications.get(119), now.minusDays(3).minusHours(1)), now.minusDays(3).minusHours(1)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(126), "Panel discussion", generateRandomFutureTimeSlot(scheduledInterviews, jobApplications.get(126), now.minusDays(4).minusHours(2)), now.minusDays(4).minusHours(2)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(133), "Technical review", generateRandomFutureTimeSlot(scheduledInterviews, jobApplications.get(133), now.minusDays(5).minusHours(3)), now.minusDays(5).minusHours(3)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(140), "HR screening", generateRandomFutureTimeSlot(scheduledInterviews, jobApplications.get(140), now.minusDays(1).minusHours(4)), now.minusDays(1).minusHours(4)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(147), "System design", generateRandomFutureTimeSlot(scheduledInterviews, jobApplications.get(147), now.minusDays(2).minusHours(5)), now.minusDays(2).minusHours(5)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(154), "Case study", generateRandomFutureTimeSlot(scheduledInterviews, jobApplications.get(154), now.minusDays(3).minusHours(6)), now.minusDays(3).minusHours(6)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(161), "Technical interview", generateRandomFutureTimeSlot(scheduledInterviews, jobApplications.get(161), now.minusDays(4).minusHours(7)), now.minusDays(4).minusHours(7)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(168), "Behavioral interview", generateRandomFutureTimeSlot(scheduledInterviews, jobApplications.get(168), now.minusDays(5).minusHours(8)), now.minusDays(5).minusHours(8)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(175), "Coding challenge", generateRandomFutureTimeSlot(scheduledInterviews, jobApplications.get(175), now.minusDays(1).minusHours(9)), now.minusDays(1).minusHours(9)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(182), "Panel interview", generateRandomFutureTimeSlot(scheduledInterviews, jobApplications.get(182), now.minusDays(2).minusHours(1)), now.minusDays(2).minusHours(1)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(189), "HR review", generateRandomFutureTimeSlot(scheduledInterviews, jobApplications.get(189), now.minusDays(3).minusHours(2)), now.minusDays(3).minusHours(2)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(196), "Technical screening", generateRandomFutureTimeSlot(scheduledInterviews, jobApplications.get(196), now.minusDays(4).minusHours(3)), now.minusDays(4).minusHours(3)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(203), "System design", generateRandomFutureTimeSlot(scheduledInterviews, jobApplications.get(203), now.minusDays(5).minusHours(4)), now.minusDays(5).minusHours(4)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(210), "Case study", generateRandomFutureTimeSlot(scheduledInterviews, jobApplications.get(210), now.minusDays(1).minusHours(5)), now.minusDays(1).minusHours(5)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(217), "Behavioral screening", generateRandomFutureTimeSlot(scheduledInterviews, jobApplications.get(217), now.minusDays(2).minusHours(6)), now.minusDays(2).minusHours(6)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(224), "Coding interview", generateRandomFutureTimeSlot(scheduledInterviews, jobApplications.get(224), now.minusDays(3).minusHours(7)), now.minusDays(3).minusHours(7)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(231), "Panel discussion", generateRandomFutureTimeSlot(scheduledInterviews, jobApplications.get(231), now.minusDays(4).minusHours(8)), now.minusDays(4).minusHours(8)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(238), "Technical review", generateRandomFutureTimeSlot(scheduledInterviews, jobApplications.get(238), now.minusDays(5).minusHours(9)), now.minusDays(5).minusHours(9)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(245), "HR screening", generateRandomFutureTimeSlot(scheduledInterviews, jobApplications.get(245), now.minusDays(1).minusHours(1)), now.minusDays(1).minusHours(1)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(250), "System design", generateRandomFutureTimeSlot(scheduledInterviews, jobApplications.get(250), now.minusDays(2).minusHours(2)), now.minusDays(2).minusHours(2)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(251), "Technical interview", generateRandomFutureTimeSlot(scheduledInterviews, jobApplications.get(251), now.minusDays(3).minusHours(3)), now.minusDays(3).minusHours(3)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(252), "Behavioral interview", generateRandomFutureTimeSlot(scheduledInterviews, jobApplications.get(252), now.minusDays(4).minusHours(4)), now.minusDays(4).minusHours(4)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(253), "Coding challenge", generateRandomFutureTimeSlot(scheduledInterviews, jobApplications.get(253), now.minusDays(5).minusHours(5)), now.minusDays(5).minusHours(5)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(254), "Panel interview", generateRandomFutureTimeSlot(scheduledInterviews, jobApplications.get(254), now.minusDays(1).minusHours(6)), now.minusDays(1).minusHours(6)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(255), "HR review", generateRandomFutureTimeSlot(scheduledInterviews, jobApplications.get(255), now.minusDays(2).minusHours(7)), now.minusDays(2).minusHours(7)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(256), "Technical screening", generateRandomFutureTimeSlot(scheduledInterviews, jobApplications.get(256), now.minusDays(3).minusHours(8)), now.minusDays(3).minusHours(8)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(257), "System design", generateRandomFutureTimeSlot(scheduledInterviews, jobApplications.get(257), now.minusDays(4).minusHours(9)), now.minusDays(4).minusHours(9)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(258), "Case study", generateRandomFutureTimeSlot(scheduledInterviews, jobApplications.get(258), now.minusDays(5).minusHours(1)), now.minusDays(5).minusHours(1)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(259), "Behavioral screening", generateRandomFutureTimeSlot(scheduledInterviews, jobApplications.get(259), now.minusDays(1).minusHours(2)), now.minusDays(1).minusHours(2)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(260), "Coding interview", generateRandomFutureTimeSlot(scheduledInterviews, jobApplications.get(260), now.minusDays(2).minusHours(3)), now.minusDays(2).minusHours(3)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(261), "Panel discussion", generateRandomFutureTimeSlot(scheduledInterviews, jobApplications.get(261), now.minusDays(3).minusHours(4)), now.minusDays(3).minusHours(4)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(262), "Technical review", generateRandomFutureTimeSlot(scheduledInterviews, jobApplications.get(262), now.minusDays(4).minusHours(5)), now.minusDays(4).minusHours(5)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(263), "HR screening", generateRandomFutureTimeSlot(scheduledInterviews, jobApplications.get(263), now.minusDays(5).minusHours(6)), now.minusDays(5).minusHours(6)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(264), "System design", generateRandomFutureTimeSlot(scheduledInterviews, jobApplications.get(264), now.minusDays(1).minusHours(7)), now.minusDays(1).minusHours(7)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(265), "Case study", generateRandomFutureTimeSlot(scheduledInterviews, jobApplications.get(265), now.minusDays(2).minusHours(8)), now.minusDays(2).minusHours(8)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(266), "Technical interview", generateRandomFutureTimeSlot(scheduledInterviews, jobApplications.get(266), now.minusDays(3).minusHours(9)), now.minusDays(3).minusHours(9)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(267), "Behavioral interview", generateRandomFutureTimeSlot(scheduledInterviews, jobApplications.get(267), now.minusDays(4).minusHours(1)), now.minusDays(4).minusHours(1)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(268), "Coding challenge", generateRandomFutureTimeSlot(scheduledInterviews, jobApplications.get(268), now.minusDays(5).minusHours(2)), now.minusDays(5).minusHours(2)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(269), "Panel interview", generateRandomFutureTimeSlot(scheduledInterviews, jobApplications.get(269), now.minusDays(1).minusHours(3)), now.minusDays(1).minusHours(3)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(270), "HR review", generateRandomFutureTimeSlot(scheduledInterviews, jobApplications.get(270), now.minusDays(2).minusHours(4)), now.minusDays(2).minusHours(4)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(271), "Technical screening", generateRandomFutureTimeSlot(scheduledInterviews, jobApplications.get(271), now.minusDays(3).minusHours(5)), now.minusDays(3).minusHours(5)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(272), "System design", generateRandomFutureTimeSlot(scheduledInterviews, jobApplications.get(272), now.minusDays(4).minusHours(6)), now.minusDays(4).minusHours(6)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(273), "Case study", generateRandomFutureTimeSlot(scheduledInterviews, jobApplications.get(273), now.minusDays(5).minusHours(7)), now.minusDays(5).minusHours(7)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(274), "Behavioral screening", generateRandomFutureTimeSlot(scheduledInterviews, jobApplications.get(274), now.minusDays(1).minusHours(8)), now.minusDays(1).minusHours(8)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(275), "Coding interview", generateRandomFutureTimeSlot(scheduledInterviews, jobApplications.get(275), now.minusDays(2).minusHours(9)), now.minusDays(2).minusHours(9)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(276), "Panel discussion", generateRandomFutureTimeSlot(scheduledInterviews, jobApplications.get(276), now.minusDays(3).minusHours(1)), now.minusDays(3).minusHours(1)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(277), "Technical review", generateRandomFutureTimeSlot(scheduledInterviews, jobApplications.get(277), now.minusDays(4).minusHours(2)), now.minusDays(4).minusHours(2)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(278), "HR screening", generateRandomFutureTimeSlot(scheduledInterviews, jobApplications.get(278), now.minusDays(5).minusHours(3)), now.minusDays(5).minusHours(3)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(279), "System design", generateRandomFutureTimeSlot(scheduledInterviews, jobApplications.get(279), now.minusDays(1).minusHours(4)), now.minusDays(1).minusHours(4)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(280), "Case study", generateRandomFutureTimeSlot(scheduledInterviews, jobApplications.get(280), now.minusDays(2).minusHours(5)), now.minusDays(2).minusHours(5)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(281), "Technical interview", generateRandomFutureTimeSlot(scheduledInterviews, jobApplications.get(281), now.minusDays(3).minusHours(6)), now.minusDays(3).minusHours(6)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(282), "Behavioral interview", generateRandomFutureTimeSlot(scheduledInterviews, jobApplications.get(282), now.minusDays(4).minusHours(7)), now.minusDays(4).minusHours(7)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(283), "Coding challenge", generateRandomFutureTimeSlot(scheduledInterviews, jobApplications.get(283), now.minusDays(5).minusHours(8)), now.minusDays(5).minusHours(8)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(284), "Panel interview", generateRandomFutureTimeSlot(scheduledInterviews, jobApplications.get(284), now.minusDays(1).minusHours(9)), now.minusDays(1).minusHours(9)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(285), "HR review", generateRandomFutureTimeSlot(scheduledInterviews, jobApplications.get(285), now.minusDays(2).minusHours(1)), now.minusDays(2).minusHours(1)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(286), "Technical screening", generateRandomFutureTimeSlot(scheduledInterviews, jobApplications.get(286), now.minusDays(3).minusHours(2)), now.minusDays(3).minusHours(2)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(287), "System design", generateRandomFutureTimeSlot(scheduledInterviews, jobApplications.get(287), now.minusDays(4).minusHours(3)), now.minusDays(4).minusHours(3)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(288), "Case study", generateRandomFutureTimeSlot(scheduledInterviews, jobApplications.get(288), now.minusDays(5).minusHours(4)), now.minusDays(5).minusHours(4)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(289), "Behavioral screening", generateRandomFutureTimeSlot(scheduledInterviews, jobApplications.get(289), now.minusDays(1).minusHours(5)), now.minusDays(1).minusHours(5)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(290), "Coding interview", generateRandomFutureTimeSlot(scheduledInterviews, jobApplications.get(290), now.minusDays(2).minusHours(6)), now.minusDays(2).minusHours(6)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(291), "Panel discussion", generateRandomFutureTimeSlot(scheduledInterviews, jobApplications.get(291), now.minusDays(3).minusHours(7)), now.minusDays(3).minusHours(7)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(292), "Technical review", generateRandomFutureTimeSlot(scheduledInterviews, jobApplications.get(292), now.minusDays(4).minusHours(8)), now.minusDays(4).minusHours(8)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(293), "HR screening", generateRandomFutureTimeSlot(scheduledInterviews, jobApplications.get(293), now.minusDays(5).minusHours(9)), now.minusDays(5).minusHours(9)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(294), "System design", generateRandomFutureTimeSlot(scheduledInterviews, jobApplications.get(294), now.minusDays(1).minusHours(1)), now.minusDays(1).minusHours(1)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(295), "Case study", generateRandomFutureTimeSlot(scheduledInterviews, jobApplications.get(295), now.minusDays(2).minusHours(2)), now.minusDays(2).minusHours(2)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(296), "Technical interview", generateRandomFutureTimeSlot(scheduledInterviews, jobApplications.get(296), now.minusDays(3).minusHours(3)), now.minusDays(3).minusHours(3)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(297), "Behavioral interview", generateRandomFutureTimeSlot(scheduledInterviews, jobApplications.get(297), now.minusDays(4).minusHours(4)), now.minusDays(4).minusHours(4)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(298), "Coding challenge", generateRandomFutureTimeSlot(scheduledInterviews, jobApplications.get(298), now.minusDays(5).minusHours(5)), now.minusDays(5).minusHours(5)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(299), "Panel interview", generateRandomFutureTimeSlot(scheduledInterviews, jobApplications.get(299), now.minusDays(1).minusHours(6)), now.minusDays(1).minusHours(6)));
+
+        // OFFERED (36 records, past interviews optional, no future interviews)
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(3), "Final interview", generateRandomPastTimeSlot(scheduledInterviews, jobApplications.get(3), now.minusDays(2).minusHours(1)), 8, now.minusDays(2).minusHours(1)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(10), "Technical review", generateRandomPastTimeSlot(scheduledInterviews, jobApplications.get(10), now.minusDays(3).minusHours(2)), 7, now.minusDays(3).minusHours(2)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(17), "HR discussion", generateRandomPastTimeSlot(scheduledInterviews, jobApplications.get(17), now.minusDays(4).minusHours(3)), 9, now.minusDays(4).minusHours(3)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(24), "Behavioral interview", generateRandomPastTimeSlot(scheduledInterviews, jobApplications.get(24), now.minusDays(1).minusHours(4)), 6, now.minusDays(1).minusHours(4)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(31), "Coding test", generateRandomPastTimeSlot(scheduledInterviews, jobApplications.get(31), now.minusDays(5).minusHours(5)), 8, now.minusDays(5).minusHours(5)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(38), "Panel interview", generateRandomPastTimeSlot(scheduledInterviews, jobApplications.get(38), now.minusDays(2).minusHours(6)), 7, now.minusDays(2).minusHours(6)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(45), "System design", generateRandomPastTimeSlot(scheduledInterviews, jobApplications.get(45), now.minusDays(3).minusHours(7)), 9, now.minusDays(3).minusHours(7)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(52), "Case study", generateRandomPastTimeSlot(scheduledInterviews, jobApplications.get(52), now.minusDays(4).minusHours(8)), 6, now.minusDays(4).minusHours(8)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(59), "Technical screening", generateRandomPastTimeSlot(scheduledInterviews, jobApplications.get(59), now.minusDays(1).minusHours(9)), 8, now.minusDays(1).minusHours(9)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(66), "Behavioral review", generateRandomPastTimeSlot(scheduledInterviews, jobApplications.get(66), now.minusDays(5).minusHours(1)), 7, now.minusDays(5).minusHours(1)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(73), "Coding challenge", generateRandomPastTimeSlot(scheduledInterviews, jobApplications.get(73), now.minusDays(2).minusHours(2)), 9, now.minusDays(2).minusHours(2)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(80), "Panel discussion", generateRandomPastTimeSlot(scheduledInterviews, jobApplications.get(80), now.minusDays(3).minusHours(3)), 6, now.minusDays(3).minusHours(3)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(87), "HR screening", generateRandomPastTimeSlot(scheduledInterviews, jobApplications.get(87), now.minusDays(4).minusHours(4)), 8, now.minusDays(4).minusHours(4)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(94), "System design", generateRandomPastTimeSlot(scheduledInterviews, jobApplications.get(94), now.minusDays(1).minusHours(5)), 7, now.minusDays(1).minusHours(5)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(101), "Case study", generateRandomPastTimeSlot(scheduledInterviews, jobApplications.get(101), now.minusDays(5).minusHours(6)), 9, now.minusDays(5).minusHours(6)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(108), "Technical interview", generateRandomPastTimeSlot(scheduledInterviews, jobApplications.get(108), now.minusDays(2).minusHours(7)), 6, now.minusDays(2).minusHours(7)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(115), "Behavioral interview", generateRandomPastTimeSlot(scheduledInterviews, jobApplications.get(115), now.minusDays(3).minusHours(8)), 8, now.minusDays(3).minusHours(8)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(122), "Coding test", generateRandomPastTimeSlot(scheduledInterviews, jobApplications.get(122), now.minusDays(4).minusHours(9)), 7, now.minusDays(4).minusHours(9)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(129), "Panel interview", generateRandomPastTimeSlot(scheduledInterviews, jobApplications.get(129), now.minusDays(1).minusHours(1)), 9, now.minusDays(1).minusHours(1)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(136), "HR review", generateRandomPastTimeSlot(scheduledInterviews, jobApplications.get(136), now.minusDays(5).minusHours(2)), 6, now.minusDays(5).minusHours(2)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(143), "System design", generateRandomPastTimeSlot(scheduledInterviews, jobApplications.get(143), now.minusDays(2).minusHours(3)), 8, now.minusDays(2).minusHours(3)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(150), "Case study", generateRandomPastTimeSlot(scheduledInterviews, jobApplications.get(150), now.minusDays(3).minusHours(4)), 7, now.minusDays(3).minusHours(4)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(157), "Technical screening", generateRandomPastTimeSlot(scheduledInterviews, jobApplications.get(157), now.minusDays(4).minusHours(5)), 9, now.minusDays(4).minusHours(5)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(164), "Behavioral review", generateRandomPastTimeSlot(scheduledInterviews, jobApplications.get(164), now.minusDays(1).minusHours(6)), 6, now.minusDays(1).minusHours(6)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(171), "Coding challenge", generateRandomPastTimeSlot(scheduledInterviews, jobApplications.get(171), now.minusDays(5).minusHours(7)), 8, now.minusDays(5).minusHours(7)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(178), "Panel discussion", generateRandomPastTimeSlot(scheduledInterviews, jobApplications.get(178), now.minusDays(2).minusHours(8)), 7, now.minusDays(2).minusHours(8)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(185), "HR screening", generateRandomPastTimeSlot(scheduledInterviews, jobApplications.get(185), now.minusDays(3).minusHours(9)), 9, now.minusDays(3).minusHours(9)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(192), "System design", generateRandomPastTimeSlot(scheduledInterviews, jobApplications.get(192), now.minusDays(4).minusHours(1)), 6, now.minusDays(4).minusHours(1)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(199), "Case study", generateRandomPastTimeSlot(scheduledInterviews, jobApplications.get(199), now.minusDays(1).minusHours(2)), 8, now.minusDays(1).minusHours(2)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(206), "Technical interview", generateRandomPastTimeSlot(scheduledInterviews, jobApplications.get(206), now.minusDays(5).minusHours(3)), 7, now.minusDays(5).minusHours(3)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(213), "Behavioral interview", generateRandomPastTimeSlot(scheduledInterviews, jobApplications.get(213), now.minusDays(2).minusHours(4)), 9, now.minusDays(2).minusHours(4)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(220), "Coding test", generateRandomPastTimeSlot(scheduledInterviews, jobApplications.get(220), now.minusDays(3).minusHours(5)), 6, now.minusDays(3).minusHours(5)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(227), "Panel interview", generateRandomPastTimeSlot(scheduledInterviews, jobApplications.get(227), now.minusDays(4).minusHours(6)), 8, now.minusDays(4).minusHours(6)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(234), "HR review", generateRandomPastTimeSlot(scheduledInterviews, jobApplications.get(234), now.minusDays(1).minusHours(7)), 7, now.minusDays(1).minusHours(7)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(241), "System design", generateRandomPastTimeSlot(scheduledInterviews, jobApplications.get(241), now.minusDays(5).minusHours(8)), 9, now.minusDays(5).minusHours(8)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(248), "Case study", generateRandomPastTimeSlot(scheduledInterviews, jobApplications.get(248), now.minusDays(2).minusHours(9)), 6, now.minusDays(2).minusHours(9)));
+
+        // ACCEPTED (37 records, past interviews optional, no future interviews)
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(4), "Final discussion", generateRandomPastTimeSlot(scheduledInterviews, jobApplications.get(4), now.minusDays(3).minusHours(1)), 8, now.minusDays(3).minusHours(1)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(11), "Technical interview", generateRandomPastTimeSlot(scheduledInterviews, jobApplications.get(11), now.minusDays(4).minusHours(2)), 7, now.minusDays(4).minusHours(2)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(18), "HR review", generateRandomPastTimeSlot(scheduledInterviews, jobApplications.get(18), now.minusDays(1).minusHours(3)), 9, now.minusDays(1).minusHours(3)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(25), "Behavioral screening", generateRandomPastTimeSlot(scheduledInterviews, jobApplications.get(25), now.minusDays(5).minusHours(4)), 6, now.minusDays(5).minusHours(4)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(32), "Coding test", generateRandomPastTimeSlot(scheduledInterviews, jobApplications.get(32), now.minusDays(2).minusHours(5)), 8, now.minusDays(2).minusHours(5)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(39), "Panel interview", generateRandomPastTimeSlot(scheduledInterviews, jobApplications.get(39), now.minusDays(3).minusHours(6)), 7, now.minusDays(3).minusHours(6)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(46), "System design", generateRandomPastTimeSlot(scheduledInterviews, jobApplications.get(46), now.minusDays(4).minusHours(7)), 9, now.minusDays(4).minusHours(7)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(53), "Case study", generateRandomPastTimeSlot(scheduledInterviews, jobApplications.get(53), now.minusDays(1).minusHours(8)), 6, now.minusDays(1).minusHours(8)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(60), "Technical screening", generateRandomPastTimeSlot(scheduledInterviews, jobApplications.get(60), now.minusDays(5).minusHours(9)), 8, now.minusDays(5).minusHours(9)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(67), "Behavioral review", generateRandomPastTimeSlot(scheduledInterviews, jobApplications.get(67), now.minusDays(2).minusHours(1)), 7, now.minusDays(2).minusHours(1)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(74), "Coding challenge", generateRandomPastTimeSlot(scheduledInterviews, jobApplications.get(74), now.minusDays(3).minusHours(2)), 9, now.minusDays(3).minusHours(2)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(81), "Panel discussion", generateRandomPastTimeSlot(scheduledInterviews, jobApplications.get(81), now.minusDays(4).minusHours(3)), 6, now.minusDays(4).minusHours(3)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(88), "HR screening", generateRandomPastTimeSlot(scheduledInterviews, jobApplications.get(88), now.minusDays(1).minusHours(4)), 8, now.minusDays(1).minusHours(4)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(95), "System design", generateRandomPastTimeSlot(scheduledInterviews, jobApplications.get(95), now.minusDays(5).minusHours(5)), 7, now.minusDays(5).minusHours(5)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(96), "Case study", generateRandomPastTimeSlot(scheduledInterviews, jobApplications.get(96), now.minusDays(2).minusHours(6)), 9, now.minusDays(2).minusHours(6)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(102), "Technical interview", generateRandomPastTimeSlot(scheduledInterviews, jobApplications.get(102), now.minusDays(3).minusHours(7)), 6, now.minusDays(3).minusHours(7)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(109), "Behavioral interview", generateRandomPastTimeSlot(scheduledInterviews, jobApplications.get(109), now.minusDays(4).minusHours(8)), 8, now.minusDays(4).minusHours(8)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(116), "Coding test", generateRandomPastTimeSlot(scheduledInterviews, jobApplications.get(116), now.minusDays(1).minusHours(9)), 7, now.minusDays(1).minusHours(9)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(123), "Panel interview", generateRandomPastTimeSlot(scheduledInterviews, jobApplications.get(123), now.minusDays(5).minusHours(1)), 9, now.minusDays(5).minusHours(1)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(130), "HR review", generateRandomPastTimeSlot(scheduledInterviews, jobApplications.get(130), now.minusDays(2).minusHours(2)), 6, now.minusDays(2).minusHours(2)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(137), "System design", generateRandomPastTimeSlot(scheduledInterviews, jobApplications.get(137), now.minusDays(3).minusHours(3)), 8, now.minusDays(3).minusHours(3)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(144), "Case study", generateRandomPastTimeSlot(scheduledInterviews, jobApplications.get(144), now.minusDays(4).minusHours(4)), 7, now.minusDays(4).minusHours(4)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(151), "Technical screening", generateRandomPastTimeSlot(scheduledInterviews, jobApplications.get(151), now.minusDays(1).minusHours(5)), 9, now.minusDays(1).minusHours(5)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(158), "Behavioral review", generateRandomPastTimeSlot(scheduledInterviews, jobApplications.get(158), now.minusDays(5).minusHours(6)), 6, now.minusDays(5).minusHours(6)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(165), "Coding challenge", generateRandomPastTimeSlot(scheduledInterviews, jobApplications.get(165), now.minusDays(2).minusHours(7)), 8, now.minusDays(2).minusHours(7)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(172), "Panel discussion", generateRandomPastTimeSlot(scheduledInterviews, jobApplications.get(172), now.minusDays(3).minusHours(8)), 7, now.minusDays(3).minusHours(8)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(179), "HR screening", generateRandomPastTimeSlot(scheduledInterviews, jobApplications.get(179), now.minusDays(4).minusHours(9)), 9, now.minusDays(4).minusHours(9)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(186), "System design", generateRandomPastTimeSlot(scheduledInterviews, jobApplications.get(186), now.minusDays(1).minusHours(1)), 6, now.minusDays(1).minusHours(1)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(193), "Case study", generateRandomPastTimeSlot(scheduledInterviews, jobApplications.get(193), now.minusDays(5).minusHours(2)), 8, now.minusDays(5).minusHours(2)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(200), "Technical interview", generateRandomPastTimeSlot(scheduledInterviews, jobApplications.get(200), now.minusDays(2).minusHours(3)), 7, now.minusDays(2).minusHours(3)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(207), "Behavioral interview", generateRandomPastTimeSlot(scheduledInterviews, jobApplications.get(207), now.minusDays(3).minusHours(4)), 9, now.minusDays(3).minusHours(4)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(214), "Coding test", generateRandomPastTimeSlot(scheduledInterviews, jobApplications.get(214), now.minusDays(4).minusHours(5)), 6, now.minusDays(4).minusHours(5)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(221), "Panel interview", generateRandomPastTimeSlot(scheduledInterviews, jobApplications.get(221), now.minusDays(1).minusHours(6)), 8, now.minusDays(1).minusHours(6)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(228), "HR review", generateRandomPastTimeSlot(scheduledInterviews, jobApplications.get(228), now.minusDays(5).minusHours(7)), 7, now.minusDays(5).minusHours(7)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(235), "System design", generateRandomPastTimeSlot(scheduledInterviews, jobApplications.get(235), now.minusDays(2).minusHours(8)), 9, now.minusDays(2).minusHours(8)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(242), "Case study", generateRandomPastTimeSlot(scheduledInterviews, jobApplications.get(242), now.minusDays(3).minusHours(9)), 6, now.minusDays(3).minusHours(9)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(249), "Technical screening", generateRandomPastTimeSlot(scheduledInterviews, jobApplications.get(249), now.minusDays(4).minusHours(1)), 8, now.minusDays(4).minusHours(1)));
+
+        // REJECTED (35 records, past interviews optional, no future interviews)
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(7), "Initial screening", generateRandomPastTimeSlot(scheduledInterviews, jobApplications.get(7), now.minusDays(1).minusHours(1)), 5, now.minusDays(1).minusHours(1)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(15), "Technical interview", generateRandomPastTimeSlot(scheduledInterviews, jobApplications.get(15), now.minusDays(5).minusHours(3)), 4, now.minusDays(5).minusHours(3)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(22), "Behavioral review", generateRandomPastTimeSlot(scheduledInterviews, jobApplications.get(22), now.minusDays(2).minusHours(4)), 6, now.minusDays(2).minusHours(4)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(29), "Coding test", generateRandomPastTimeSlot(scheduledInterviews, jobApplications.get(29), now.minusDays(3).minusHours(5)), 5, now.minusDays(3).minusHours(5)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(36), "Panel interview", generateRandomPastTimeSlot(scheduledInterviews, jobApplications.get(36), now.minusDays(4).minusHours(6)), 4, now.minusDays(4).minusHours(6)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(43), "HR screening", generateRandomPastTimeSlot(scheduledInterviews, jobApplications.get(43), now.minusDays(1).minusHours(7)), 6, now.minusDays(1).minusHours(7)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(50), "System design", generateRandomPastTimeSlot(scheduledInterviews, jobApplications.get(50), now.minusDays(5).minusHours(8)), 5, now.minusDays(5).minusHours(8)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(57), "Case study", generateRandomPastTimeSlot(scheduledInterviews, jobApplications.get(57), now.minusDays(2).minusHours(9)), 4, now.minusDays(2).minusHours(9)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(64), "Technical screening", generateRandomPastTimeSlot(scheduledInterviews, jobApplications.get(64), now.minusDays(3).minusHours(1)), 6, now.minusDays(3).minusHours(1)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(71), "Behavioral interview", generateRandomPastTimeSlot(scheduledInterviews, jobApplications.get(71), now.minusDays(4).minusHours(2)), 5, now.minusDays(4).minusHours(2)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(78), "Coding challenge", generateRandomPastTimeSlot(scheduledInterviews, jobApplications.get(78), now.minusDays(1).minusHours(3)), 4, now.minusDays(1).minusHours(3)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(85), "Panel discussion", generateRandomPastTimeSlot(scheduledInterviews, jobApplications.get(85), now.minusDays(5).minusHours(4)), 6, now.minusDays(5).minusHours(4)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(92), "HR review", generateRandomPastTimeSlot(scheduledInterviews, jobApplications.get(92), now.minusDays(2).minusHours(5)), 5, now.minusDays(2).minusHours(5)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(99), "System design", generateRandomPastTimeSlot(scheduledInterviews, jobApplications.get(99), now.minusDays(3).minusHours(6)), 4, now.minusDays(3).minusHours(6)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(106), "Case study", generateRandomPastTimeSlot(scheduledInterviews, jobApplications.get(106), now.minusDays(4).minusHours(7)), 6, now.minusDays(4).minusHours(7)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(113), "Technical interview", generateRandomPastTimeSlot(scheduledInterviews, jobApplications.get(113), now.minusDays(1).minusHours(8)), 5, now.minusDays(1).minusHours(8)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(120), "Behavioral screening", generateRandomPastTimeSlot(scheduledInterviews, jobApplications.get(120), now.minusDays(5).minusHours(9)), 4, now.minusDays(5).minusHours(9)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(127), "Coding test", generateRandomPastTimeSlot(scheduledInterviews, jobApplications.get(127), now.minusDays(2).minusHours(1)), 6, now.minusDays(2).minusHours(1)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(134), "Panel interview", generateRandomPastTimeSlot(scheduledInterviews, jobApplications.get(134), now.minusDays(3).minusHours(2)), 5, now.minusDays(3).minusHours(2)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(141), "HR screening", generateRandomPastTimeSlot(scheduledInterviews, jobApplications.get(141), now.minusDays(4).minusHours(3)), 4, now.minusDays(4).minusHours(3)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(148), "System design", generateRandomPastTimeSlot(scheduledInterviews, jobApplications.get(148), now.minusDays(1).minusHours(4)), 6, now.minusDays(1).minusHours(4)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(155), "Case study", generateRandomPastTimeSlot(scheduledInterviews, jobApplications.get(155), now.minusDays(5).minusHours(5)), 5, now.minusDays(5).minusHours(5)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(162), "Technical screening", generateRandomPastTimeSlot(scheduledInterviews, jobApplications.get(162), now.minusDays(2).minusHours(6)), 4, now.minusDays(2).minusHours(6)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(169), "Behavioral review", generateRandomPastTimeSlot(scheduledInterviews, jobApplications.get(169), now.minusDays(3).minusHours(7)), 6, now.minusDays(3).minusHours(7)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(176), "Coding challenge", generateRandomPastTimeSlot(scheduledInterviews, jobApplications.get(176), now.minusDays(4).minusHours(8)), 5, now.minusDays(4).minusHours(8)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(183), "Panel discussion", generateRandomPastTimeSlot(scheduledInterviews, jobApplications.get(183), now.minusDays(1).minusHours(9)), 4, now.minusDays(1).minusHours(9)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(190), "HR review", generateRandomPastTimeSlot(scheduledInterviews, jobApplications.get(190), now.minusDays(5).minusHours(1)), 6, now.minusDays(5).minusHours(1)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(197), "System design", generateRandomPastTimeSlot(scheduledInterviews, jobApplications.get(197), now.minusDays(2).minusHours(2)), 5, now.minusDays(2).minusHours(2)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(204), "Case study", generateRandomPastTimeSlot(scheduledInterviews, jobApplications.get(204), now.minusDays(3).minusHours(3)), 4, now.minusDays(3).minusHours(3)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(211), "Technical interview", generateRandomPastTimeSlot(scheduledInterviews, jobApplications.get(211), now.minusDays(4).minusHours(4)), 6, now.minusDays(4).minusHours(4)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(218), "Behavioral screening", generateRandomPastTimeSlot(scheduledInterviews, jobApplications.get(218), now.minusDays(1).minusHours(5)), 5, now.minusDays(1).minusHours(5)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(225), "Coding test", generateRandomPastTimeSlot(scheduledInterviews, jobApplications.get(225), now.minusDays(5).minusHours(6)), 4, now.minusDays(5).minusHours(6)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(232), "Panel interview", generateRandomPastTimeSlot(scheduledInterviews, jobApplications.get(232), now.minusDays(2).minusHours(7)), 6, now.minusDays(2).minusHours(7)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(239), "HR screening", generateRandomPastTimeSlot(scheduledInterviews, jobApplications.get(239), now.minusDays(3).minusHours(8)), 5, now.minusDays(3).minusHours(8)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(246), "System design", generateRandomPastTimeSlot(scheduledInterviews, jobApplications.get(246), now.minusDays(4).minusHours(9)), 4, now.minusDays(4).minusHours(9)));
+
+        // WITHDRAWN (35 records, past interviews optional, no future interviews)
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(8), "Initial interview", generateRandomPastTimeSlot(scheduledInterviews, jobApplications.get(8), now.minusDays(1).minusHours(1)), 5, now.minusDays(1).minusHours(1)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(16), "Technical screening", generateRandomPastTimeSlot(scheduledInterviews, jobApplications.get(16), now.minusDays(5).minusHours(2)), 4, now.minusDays(5).minusHours(2)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(23), "Behavioral review", generateRandomPastTimeSlot(scheduledInterviews, jobApplications.get(23), now.minusDays(2).minusHours(3)), 6, now.minusDays(2).minusHours(3)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(30), "Coding test", generateRandomPastTimeSlot(scheduledInterviews, jobApplications.get(30), now.minusDays(3).minusHours(4)), 5, now.minusDays(3).minusHours(4)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(37), "Panel interview", generateRandomPastTimeSlot(scheduledInterviews, jobApplications.get(37), now.minusDays(4).minusHours(5)), 4, now.minusDays(4).minusHours(5)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(44), "HR screening", generateRandomPastTimeSlot(scheduledInterviews, jobApplications.get(44), now.minusDays(1).minusHours(6)), 6, now.minusDays(1).minusHours(6)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(51), "System design", generateRandomPastTimeSlot(scheduledInterviews, jobApplications.get(51), now.minusDays(5).minusHours(7)), 5, now.minusDays(5).minusHours(7)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(58), "Case study", generateRandomPastTimeSlot(scheduledInterviews, jobApplications.get(58), now.minusDays(2).minusHours(8)), 4, now.minusDays(2).minusHours(8)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(65), "Technical interview", generateRandomPastTimeSlot(scheduledInterviews, jobApplications.get(65), now.minusDays(3).minusHours(9)), 6, now.minusDays(3).minusHours(9)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(72), "Behavioral screening", generateRandomPastTimeSlot(scheduledInterviews, jobApplications.get(72), now.minusDays(4).minusHours(1)), 5, now.minusDays(4).minusHours(1)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(79), "Coding challenge", generateRandomPastTimeSlot(scheduledInterviews, jobApplications.get(79), now.minusDays(1).minusHours(2)), 4, now.minusDays(1).minusHours(2)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(86), "Panel discussion", generateRandomPastTimeSlot(scheduledInterviews, jobApplications.get(86), now.minusDays(5).minusHours(3)), 6, now.minusDays(5).minusHours(3)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(93), "HR review", generateRandomPastTimeSlot(scheduledInterviews, jobApplications.get(93), now.minusDays(2).minusHours(4)), 5, now.minusDays(2).minusHours(4)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(100), "System design", generateRandomPastTimeSlot(scheduledInterviews, jobApplications.get(100), now.minusDays(3).minusHours(5)), 4, now.minusDays(3).minusHours(5)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(107), "Case study", generateRandomPastTimeSlot(scheduledInterviews, jobApplications.get(107), now.minusDays(4).minusHours(6)), 6, now.minusDays(4).minusHours(6)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(114), "Technical screening", generateRandomPastTimeSlot(scheduledInterviews, jobApplications.get(114), now.minusDays(1).minusHours(7)), 5, now.minusDays(1).minusHours(7)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(121), "Behavioral review", generateRandomPastTimeSlot(scheduledInterviews, jobApplications.get(121), now.minusDays(5).minusHours(8)), 4, now.minusDays(5).minusHours(8)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(128), "Coding test", generateRandomPastTimeSlot(scheduledInterviews, jobApplications.get(128), now.minusDays(2).minusHours(9)), 6, now.minusDays(2).minusHours(9)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(135), "Panel interview", generateRandomPastTimeSlot(scheduledInterviews, jobApplications.get(135), now.minusDays(3).minusHours(1)), 5, now.minusDays(3).minusHours(1)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(142), "HR screening", generateRandomPastTimeSlot(scheduledInterviews, jobApplications.get(142), now.minusDays(4).minusHours(2)), 4, now.minusDays(4).minusHours(2)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(149), "System design", generateRandomPastTimeSlot(scheduledInterviews, jobApplications.get(149), now.minusDays(1).minusHours(3)), 6, now.minusDays(1).minusHours(3)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(156), "Case study", generateRandomPastTimeSlot(scheduledInterviews, jobApplications.get(156), now.minusDays(5).minusHours(4)), 5, now.minusDays(5).minusHours(4)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(163), "Technical interview", generateRandomPastTimeSlot(scheduledInterviews, jobApplications.get(163), now.minusDays(2).minusHours(5)), 4, now.minusDays(2).minusHours(5)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(170), "Behavioral screening", generateRandomPastTimeSlot(scheduledInterviews, jobApplications.get(170), now.minusDays(3).minusHours(6)), 6, now.minusDays(3).minusHours(6)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(177), "Coding challenge", generateRandomPastTimeSlot(scheduledInterviews, jobApplications.get(177), now.minusDays(4).minusHours(7)), 5, now.minusDays(4).minusHours(7)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(184), "Panel discussion", generateRandomPastTimeSlot(scheduledInterviews, jobApplications.get(184), now.minusDays(1).minusHours(8)), 4, now.minusDays(1).minusHours(8)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(191), "HR review", generateRandomPastTimeSlot(scheduledInterviews, jobApplications.get(191), now.minusDays(5).minusHours(9)), 6, now.minusDays(5).minusHours(9)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(198), "System design", generateRandomPastTimeSlot(scheduledInterviews, jobApplications.get(198), now.minusDays(2).minusHours(1)), 5, now.minusDays(2).minusHours(1)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(205), "Case study", generateRandomPastTimeSlot(scheduledInterviews, jobApplications.get(205), now.minusDays(3).minusHours(2)), 4, now.minusDays(3).minusHours(2)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(212), "Technical screening", generateRandomPastTimeSlot(scheduledInterviews, jobApplications.get(212), now.minusDays(4).minusHours(3)), 6, now.minusDays(4).minusHours(3)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(219), "Behavioral review", generateRandomPastTimeSlot(scheduledInterviews, jobApplications.get(219), now.minusDays(1).minusHours(4)), 5, now.minusDays(1).minusHours(4)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(226), "Coding test", generateRandomPastTimeSlot(scheduledInterviews, jobApplications.get(226), now.minusDays(5).minusHours(5)), 4, now.minusDays(5).minusHours(5)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(233), "Panel interview", generateRandomPastTimeSlot(scheduledInterviews, jobApplications.get(233), now.minusDays(2).minusHours(6)), 6, now.minusDays(2).minusHours(6)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(240), "HR screening", generateRandomPastTimeSlot(scheduledInterviews, jobApplications.get(240), now.minusDays(3).minusHours(7)), 5, now.minusDays(3).minusHours(7)));
+        scheduledInterviews.add(new ScheduledInterview(jobApplications.get(247), "System design", generateRandomPastTimeSlot(scheduledInterviews, jobApplications.get(247), now.minusDays(4).minusHours(8)), 4, now.minusDays(4).minusHours(8)));
+    }
+
+    public static void main(String[] args) {
+        validateScheduledInterviews(scheduledInterviews, JobApplication.Status.OFFERED);
+    }
+
+    private static final int MAX_SLOT_GENERATION_ATTEMPTS = 1000;
+    private static final int SLOTS_PER_DAY = 18;
+    private static final int MAX_DAYS_OFFSET = 7;
+
+    public static TimeSlot generateRandomPastTimeSlot(ListInterface<ScheduledInterview> interviews, JobApplication jobApplication, LocalDateTime bookedAt) {
+        final Random random = new Random();
+        LocalDateTime now = Context.getDateTime();
+        Company company = jobApplication.getJobPosting().getCompany();
+        Applicant applicant = jobApplication.getApplicant();
+        Set<TimeSlot> companyOccupiedSlots = new HashSet<>();
+        Set<TimeSlot> applicantOccupiedSlots = new HashSet<>();
+
+        for (int i = 0; i < interviews.size(); i++) {
+            ScheduledInterview interview = interviews.get(i);
+            if (interview.getJobApplication().getJobPosting().getCompany().equals(company)) {
+                companyOccupiedSlots.add(interview.getTimeSlot());
+            }
+            if (interview.getJobApplication().getApplicant().equals(applicant)) {
+                applicantOccupiedSlots.add(interview.getTimeSlot());
+            }
+        }
+
+        for (int attempt = 0; attempt < MAX_SLOT_GENERATION_ATTEMPTS; attempt++) {
+            int daysAgo = random.nextInt(MAX_DAYS_OFFSET + 1);
+            LocalDate candidateDate = now.toLocalDate().minusDays(daysAgo);
+            int slotIndex = random.nextInt(SLOTS_PER_DAY);
+
+            TimeSlot candidateSlot = new TimeSlot(candidateDate, slotIndex);
+            LocalDateTime candidateStartDateTime = candidateSlot.getStartDateTime();
+
+            if (!candidateStartDateTime.isBefore(now)) {
+                continue;
+            }
+
+            if (candidateSlot.isWeekend()) {
+                continue;
+            }
+
+            if (!bookedAt.plusHours(2).isBefore(candidateStartDateTime)) {
+                continue;
+            }
+
+            if (companyOccupiedSlots.contains(candidateSlot)) {
+                continue;
+            }
+
+            if (applicantOccupiedSlots.contains(candidateSlot)) {
+                continue;
+            }
+
+            return candidateSlot;
+        }
+
+        Log.warn("Could not generate a valid PAST TimeSlot for AppID " + jobApplication.getId() + " after " + MAX_SLOT_GENERATION_ATTEMPTS + " attempts.");
+        return null;
+    }
+
+    public static TimeSlot generateRandomFutureTimeSlot(ListInterface<ScheduledInterview> interviews, JobApplication jobApplication, LocalDateTime bookedAt) {
+        final Random random = new Random();
+        LocalDateTime now = Context.getDateTime();
+        LocalDateTime minStartTime = now.plusHours(2);
+        Company company = jobApplication.getJobPosting().getCompany();
+        Applicant applicant = jobApplication.getApplicant();
+        Set<TimeSlot> companyOccupiedSlots = new HashSet<>();
+        Set<TimeSlot> applicantOccupiedSlots = new HashSet<>();
+
+        for (int i = 0; i < interviews.size(); i++) {
+            ScheduledInterview interview = interviews.get(i);
+            if (interview.getJobApplication().getJobPosting().getCompany().equals(company)) {
+                companyOccupiedSlots.add(interview.getTimeSlot());
+            }
+            if (interview.getJobApplication().getApplicant().equals(applicant)) {
+                applicantOccupiedSlots.add(interview.getTimeSlot());
+            }
+        }
+
+        for (int attempt = 0; attempt < MAX_SLOT_GENERATION_ATTEMPTS; attempt++) {
+            int daysAhead = random.nextInt(MAX_DAYS_OFFSET);
+            LocalDate candidateDate = now.toLocalDate().plusDays(daysAhead);
+            int slotIndex = random.nextInt(SLOTS_PER_DAY);
+
+            TimeSlot candidateSlot = new TimeSlot(candidateDate, slotIndex);
+            LocalDateTime candidateStartDateTime = candidateSlot.getStartDateTime();
+
+            if (candidateStartDateTime.isBefore(minStartTime)) {
+                continue;
+            }
+
+            if (candidateSlot.isWeekend()) {
+                continue;
+            }
+
+            if (!bookedAt.plusHours(2).isBefore(candidateStartDateTime)) {
+                continue;
+            }
+
+            if (companyOccupiedSlots.contains(candidateSlot)) {
+                continue;
+            }
+
+            if (applicantOccupiedSlots.contains(candidateSlot)) {
+                continue;
+            }
+
+            return candidateSlot;
+        }
+
+        Log.warn("Could not generate a valid FUTURE TimeSlot for AppID " + jobApplication.getId() + " after " + MAX_SLOT_GENERATION_ATTEMPTS + " attempts.");
+        return null;
+    }
+
+    public static boolean validateScheduledInterviews(ListInterface<ScheduledInterview> interviewsToCheck, JobApplication.Status status) {
+        boolean allValid = true;
+        // Using Maps for efficient lookup of booked slots
+        Map<TimeSlot, ScheduledInterview> companyBookings = new HashMap<>();
+        Map<TimeSlot, ScheduledInterview> applicantBookings = new HashMap<>();
+
+        Log.info("Starting validation for " + interviewsToCheck.size() + " scheduled interviews...");
+
+        for (int i = 0; i < interviewsToCheck.size(); i++) {
+            boolean currentInterviewInvalid = false;
+            ScheduledInterview currentInterview = interviewsToCheck.get(i);
+            JobApplication currentJobApp = currentInterview.getJobApplication();
+            TimeSlot timeSlot = currentInterview.getTimeSlot();
+            Company company = currentInterview.getJobApplication().getJobPosting().getCompany();
+            Applicant applicant = currentInterview.getJobApplication().getApplicant();
+            LocalDateTime bookedAt = currentInterview.getBookedAt();
+            LocalDateTime interviewStart = timeSlot.getStartDateTime(); // Get the start time of the interview slot
+
+            // 5. Check if interview is within 0-7 days from now
+            LocalDateTime now = Context.getDateTime();
+            if (interviewStart != null) {
+                LocalDateTime pastBoundary = now.minusDays(MAX_DAYS_OFFSET);
+                LocalDateTime futureBoundary = now.plusDays(MAX_DAYS_OFFSET);
+
+                if (interviewStart.isBefore(pastBoundary) || interviewStart.isAfter(futureBoundary)) {
+                    Log.error("Validation Error: Interview ID " + currentInterview.getId() +
+                            " (App ID: " + currentJobApp.getId() + ")" +
+                            " is not scheduled within the allowed timeframe (±7 days from now).");
+                    Log.error("  - Current DateTime: " + now);
+                    Log.error("  - Past Boundary: " + pastBoundary);
+                    Log.error("  - Future Boundary: " + futureBoundary);
+                    Log.error("  - Interview DateTime: " + interviewStart);
+                    allValid = false;
+                    currentInterviewInvalid = true;
+                }
+            }
+
+            // 4. Check whether its weekend
+            if (timeSlot.isWeekend()) {
+                Log.error("Validation Error: Interview ID " + currentInterview.getId() +
+                        " (App ID: " + currentJobApp.getId() + ")" + // Added App ID
+                        " is scheduled on a weekend: " + timeSlot.getDate().getDayOfWeek() + " (" + timeSlot.getDate() + ")");
+                allValid = false;
+                currentInterviewInvalid = true;
+                // Continue checking other rules for this interview
+            }
+
+            // 3. Check if the interview slot is at least 2 hours after the booking time
+            if (bookedAt != null && interviewStart != null && !bookedAt.plusHours(2).isBefore(interviewStart)) {
+                Log.error("Validation Error: Interview ID " + currentInterview.getId() +
+                        " (App ID: " + currentJobApp.getId() + ")" + // Added App ID
+                        " is scheduled less than 2 hours after booking.");
+                Log.error("  - Booked At: " + bookedAt);
+                Log.error("  - Interview Slot: " + timeSlot);
+                allValid = false;
+                currentInterviewInvalid = true;
+            }
+
+            // 6. check bookAt must be before now
+            if (bookedAt != null && !bookedAt.isBefore(now)) {
+                Log.error("Validation Error: Interview ID " + currentInterview.getId() +
+                        " (App ID: " + currentJobApp.getId() + ")" +
+                        " was booked after 'Context.now'");
+                Log.error("  - Booked At: " + bookedAt);
+                Log.error("  - Current Time: " + now);
+                allValid = false;
+                currentInterviewInvalid = true;
+            }
+
+            // 1. Check Company Overlap
+            if (companyBookings.containsKey(timeSlot)) {
+                ScheduledInterview conflictingInterview = companyBookings.get(timeSlot);
+                if (conflictingInterview.getJobApplication().getJobPosting().getCompany().equals(company)) {
+                    Log.error("Validation Error: Company Conflict! Company '" + company.toShortString() +
+                            "' has multiple interviews booked for the same TimeSlot: " + timeSlot);
+                    Log.error("  - Conflicting Interview 1 ID: " + conflictingInterview.getId() +
+                            " (App ID: " + conflictingInterview.getJobApplication().getId() + // Added App ID
+                            ", Applicant: " + conflictingInterview.getJobApplication().getApplicant().toShortString() + ")");
+                    Log.error("  - Conflicting Interview 2 ID: " + currentInterview.getId() +
+                            " (App ID: " + currentJobApp.getId() + // Added App ID
+                            ", Applicant: " + applicant.toShortString() + ")");
+                    allValid = false;
+                    currentInterviewInvalid = true;
+                }
+            } else {
+                companyBookings.put(timeSlot, currentInterview);
+            }
+
+            // 2. Check Applicant Overlap
+            if (applicantBookings.containsKey(timeSlot)) {
+                ScheduledInterview conflictingInterview = applicantBookings.get(timeSlot);
+                if (conflictingInterview.getJobApplication().getApplicant().equals(applicant)) {
+                    Log.error("Validation Error: Applicant Conflict! Applicant '" + applicant.toShortString() +
+                            "' has multiple interviews booked for the same TimeSlot: " + timeSlot);
+                    Log.error("  - Conflicting Interview 1 ID: " + conflictingInterview.getId() +
+                            " (App ID: " + conflictingInterview.getJobApplication().getId() + // Added App ID
+                            ", Company: " + conflictingInterview.getJobApplication().getJobPosting().getCompany().toShortString() + ")");
+                    Log.error("  - Conflicting Interview 2 ID: " + currentInterview.getId() +
+                            " (App ID: " + currentJobApp.getId() + // Added App ID
+                            ", Company: " + company.toShortString() + ")");
+                    allValid = false;
+                    currentInterviewInvalid = true;
+                }
+            } else {
+                applicantBookings.put(timeSlot, currentInterview);
+            }
+
+            // Check if the invalid interview's job application has the specified status
+            if (currentInterviewInvalid && currentJobApp.getStatus() == status) {
+                Log.info("Invalid interview ID " + currentInterview.getId() +
+                        " has job application with status " + status +
+                        " (App ID: " + currentJobApp.getId() + ")");
+            }
+
+            // Add a line gap after each invalid interview's messages
+            if (currentInterviewInvalid) {
+                Log.error("----------------------------------------");
+            }
+        }
+
+        if (allValid) {
+            Log.info("Validation successful: All scheduled interviews meet the specified criteria.");
+        } else {
+            Log.warn("Validation finished with errors. Please review the logs above.");
+        }
+
+        return allValid;
     }
 
     public static ListInterface<Company> getCompanies() {
@@ -792,5 +1324,91 @@ public class Initializer {
 
     public static ListInterface<ScheduledInterview> getScheduledInterviews() {
         return scheduledInterviews;
+    }
+
+    public static ListInterface<BlockedTimeSlot> getBlockedTimeSlots() {
+        return blockedTimeSlots;
+    }
+
+    public static void printJobApplicationsIndexesByStatus(ListInterface<JobApplication> jobApplications) {
+        ListInterface<Integer> pendingIndexes = new DoublyLinkedList<>();
+        ListInterface<Integer> shortlistedIndexes = new DoublyLinkedList<>();
+        ListInterface<Integer> interviewedIndexes = new DoublyLinkedList<>();
+        ListInterface<Integer> offeredIndexes = new DoublyLinkedList<>();
+        ListInterface<Integer> acceptedIndexes = new DoublyLinkedList<>();
+        ListInterface<Integer> rejectedIndexes = new DoublyLinkedList<>();
+        ListInterface<Integer> withdrawnIndexes = new DoublyLinkedList<>();
+
+        // Iterate through jobApplications and collect indexes by status
+        for (int i = 0; i < jobApplications.size(); i++) {
+            JobApplication app = jobApplications.get(i);
+            switch (app.getStatus()) {
+                case PENDING:
+                    pendingIndexes.add(i);
+                    break;
+                case SHORTLISTED:
+                    shortlistedIndexes.add(i);
+                    break;
+                case INTERVIEWED:
+                    interviewedIndexes.add(i);
+                    break;
+                case OFFERED:
+                    offeredIndexes.add(i);
+                    break;
+                case ACCEPTED:
+                    acceptedIndexes.add(i);
+                    break;
+                case REJECTED:
+                    rejectedIndexes.add(i);
+                    break;
+                case WITHDRAWN:
+                    withdrawnIndexes.add(i);
+                    break;
+            }
+        }
+        System.out.println("PENDING are: " + formatIndexes(pendingIndexes));
+        System.out.println("SHORTLISTED are: " + formatIndexes(shortlistedIndexes));
+        System.out.println("INTERVIEWED are: " + formatIndexes(interviewedIndexes));
+        System.out.println("OFFERED are: " + formatIndexes(offeredIndexes));
+        System.out.println("ACCEPTED are: " + formatIndexes(acceptedIndexes));
+        System.out.println("REJECTED are: " + formatIndexes(rejectedIndexes));
+        System.out.println("WITHDRAWN are: " + formatIndexes(withdrawnIndexes));
+    }
+
+    private static boolean validateScheduledInterviewsBookedAt(ListInterface<ScheduledInterview> interviews) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+        boolean allValid = true;
+
+        for (int i = 0; i < interviews.size(); i++) {
+            ScheduledInterview interview = interviews.get(i);
+            LocalDateTime bookedAt = interview.getBookedAt();
+            LocalDateTime slotStart = interview.getTimeSlot().getStartDateTime();
+
+            System.out.println("Interview " + i + ":");
+            System.out.println("  Booked At: " + bookedAt.format(formatter));
+            System.out.println("  Slot Date: " + interview.getTimeSlot().getDate());
+            System.out.println("  Time Range: " + interview.getTimeSlot().getTimeRangeString());
+            System.out.println("  Valid: " + (!bookedAt.plusHours(2).isAfter(slotStart)));
+            System.out.println();
+            if (bookedAt.plusHours(2).isAfter(slotStart)) {
+                allValid = false;
+            }
+        }
+
+        return allValid;
+    }
+
+    private static String formatIndexes(ListInterface<Integer> indexes) {
+        if (indexes.isEmpty()) {
+            return "None";
+        }
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < indexes.size(); i++) {
+            sb.append(indexes.get(i));
+            if (i < indexes.size() - 1) {
+                sb.append(", ");
+            }
+        }
+        return sb.toString();
     }
 }

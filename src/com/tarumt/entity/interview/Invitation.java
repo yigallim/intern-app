@@ -2,6 +2,7 @@ package com.tarumt.entity.interview;
 
 import com.tarumt.entity.BaseEntity;
 import com.tarumt.entity.JobApplication;
+import com.tarumt.utility.common.Context;
 import com.tarumt.utility.pretty.annotation.ColumnIndex;
 import com.tarumt.utility.pretty.annotation.Computed;
 import com.tarumt.utility.pretty.annotation.ExcludeKey;
@@ -96,6 +97,15 @@ public class Invitation extends BaseEntity {
 
     @Override
     public String toShortString() {
-        return this.getId() + " | Job: " + this.jobApplication.getJobPosting().toShortString() + " | Company: " + this.jobApplication.getJobPosting().getCompany().toShortString();
+        StringBuilder sb = new StringBuilder(getId())
+                .append(" | Job: ").append(computedJobPosting());
+
+        if (Context.isEmployer()) {
+            sb.append(" | Applicant: ").append(computedApplicant());
+        } else if (Context.isApplicant()) {
+            sb.append(" | Company: ").append(computedCompany());
+        }
+
+        return sb.toString();
     }
 }

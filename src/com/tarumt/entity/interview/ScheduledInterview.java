@@ -2,10 +2,12 @@ package com.tarumt.entity.interview;
 
 import com.tarumt.entity.BaseEntity;
 import com.tarumt.entity.JobApplication;
+import com.tarumt.utility.common.Context;
 import com.tarumt.utility.pretty.annotation.ColumnIndex;
 import com.tarumt.utility.pretty.annotation.Computed;
 import com.tarumt.utility.pretty.annotation.ExcludeKey;
 import com.tarumt.utility.pretty.annotation.OutputLength;
+import com.tarumt.utility.search.annotation.Fuzzy;
 import com.tarumt.utility.validation.annotation.Max;
 import com.tarumt.utility.validation.annotation.Min;
 
@@ -19,23 +21,33 @@ public class ScheduledInterview extends BaseEntity {
     private JobApplication jobApplication;
     @Min(5)
     @Max(50)
+    @Fuzzy
     @OutputLength(50)
     private String remarks;
     @ExcludeKey("default")
     private TimeSlot timeSlot;
-    @ExcludeKey("applicant")
+    @ExcludeKey("default")
     @Min(0)
     @Max(10)
-    @OutputLength(6)
     private int rating;
+    @Fuzzy
     private LocalDateTime bookedAt;
+
+    public ScheduledInterview(JobApplication jobApplication, String remarks, TimeSlot timeSlot, LocalDateTime bookedAt) {
+        super(generateId());
+        this.jobApplication = jobApplication;
+        this.remarks = remarks;
+        this.timeSlot = timeSlot;
+        this.rating = -1;
+        this.bookedAt = bookedAt;
+    }
 
     public ScheduledInterview(JobApplication jobApplication, String remarks, TimeSlot timeSlot, int rating, LocalDateTime bookedAt) {
         super(generateId());
         this.jobApplication = jobApplication;
         this.remarks = remarks;
         this.timeSlot = timeSlot;
-        this.rating = rating;
+        this.rating = (rating >= -1 && rating <= 10) ? rating : -1;
         this.bookedAt = bookedAt;
     }
 
@@ -45,6 +57,7 @@ public class ScheduledInterview extends BaseEntity {
         return id;
     }
 
+    @Fuzzy
     @ColumnIndex(2)
     @OutputLength(14)
     @Computed("Application ID")
@@ -52,6 +65,7 @@ public class ScheduledInterview extends BaseEntity {
         return this.jobApplication.getId();
     }
 
+    @Fuzzy
     @ColumnIndex(3)
     @OutputLength(30)
     @Computed("Job Posting")
@@ -59,6 +73,7 @@ public class ScheduledInterview extends BaseEntity {
         return this.jobApplication.getJobPosting().toShortString();
     }
 
+    @Fuzzy
     @ColumnIndex(4)
     @OutputLength(12)
     @Computed("Date")
@@ -66,6 +81,7 @@ public class ScheduledInterview extends BaseEntity {
         return this.timeSlot.getDate().toString();
     }
 
+    @Fuzzy
     @ColumnIndex(5)
     @OutputLength(12)
     @Computed("Time")
@@ -73,6 +89,7 @@ public class ScheduledInterview extends BaseEntity {
         return this.timeSlot.getTimeRangeString();
     }
 
+    @Fuzzy
     @ExcludeKey("applicant")
     @ColumnIndex(6)
     @OutputLength(30)
@@ -81,12 +98,31 @@ public class ScheduledInterview extends BaseEntity {
         return this.jobApplication.getApplicant().toShortString();
     }
 
+    @Fuzzy
     @ExcludeKey("employer")
     @ColumnIndex(6)
     @OutputLength(26)
     @Computed("Company")
     private String computedCompany() {
         return this.jobApplication.getJobPosting().getCompany().toShortString();
+    }
+
+    @Fuzzy
+    @ExcludeKey({"employer", "admin"})
+    @ColumnIndex(7)
+    @OutputLength(26)
+    @Computed("Location")
+    private String computedLocation() {
+        return this.jobApplication.getJobPosting().getCompany().getLocation().toString();
+    }
+
+    @Fuzzy
+    @ExcludeKey("applicant")
+    @ColumnIndex(8)
+    @OutputLength(6)
+    @Computed("Rating")
+    private String computedRating() {
+        return this.rating == -1 ? "N/A" : String.valueOf(rating);
     }
 
     public static String getNextId() {
@@ -143,10 +179,19 @@ public class ScheduledInterview extends BaseEntity {
 
     @Override
     public String toShortString() {
+        StringBuilder sb = new StringBuilder(getId());
+
         if (timeSlot != null) {
-            return getId() + ", " + timeSlot.getDate().toString() + " " + timeSlot.getTimeRangeString();
+            sb.append(" | ").append(timeSlot.getDate()).append(" ").append(timeSlot.getTimeRangeString());
         }
-        return getId();
+        if (Context.isEmployer()) {
+            sb.append(" | Applicant: ").append(computedApplicant());
+        } else if (Context.isApplicant()) {
+            sb.append(" | Company: ").append(computedCompany());
+        } else {
+            sb.append(" | Job: ").append(computedJobPosting());
+        }
+        return sb.toString();
     }
 
     @Override

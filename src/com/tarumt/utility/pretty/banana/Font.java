@@ -9,13 +9,14 @@ import java.util.zip.ZipInputStream;
 
 import com.tarumt.adt.list.DoublyLinkedList;
 import com.tarumt.adt.list.ListInterface;
+import com.tarumt.adt.map.SimpleHashMap;
 
 public class Font {
     public static final Font ANSI_SHADOW;
     public static final Font STANDARD;
 
     protected static final ListInterface<Font> VALUES;
-    protected static final SimpleMap<String, Font> MAP;
+    protected static final SimpleHashMap<String, Font> MAP;
     protected static final String ROOT_DIR_PATH = "src/resources/banana";
     protected static final String FONT_DIR_PATH = ROOT_DIR_PATH + "/fonts/";
 
@@ -25,7 +26,7 @@ public class Font {
         values.add(STANDARD = new Font("Standard", "Standard.flf"));
         values.add(ANSI_SHADOW = new Font("ANSI Shadow", "ANSI_Shadow.flf"));
 
-        SimpleMap<String, Font> map = new SimpleMap<>(values.size());
+        SimpleHashMap<String, Font> map = new SimpleHashMap<>(values.size());
         for (Font v : values) {
             map.put(v.name, v);
         }

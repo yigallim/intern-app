@@ -16,23 +16,23 @@ import com.tarumt.utility.search.FuzzySearch;
 import com.tarumt.adt.list.ListInterface;
 import com.tarumt.adt.list.DoublyLinkedList;
 
-public class ApplicantService implements Service {
+public class ApplicantController {
 
-    private static ApplicantService instance;
+    private static ApplicantController instance;
     private ListInterface<Applicant> applicants = new DoublyLinkedList<>();
     private final ApplicantUI applicantUI;
     private final LocationUI locationUI;
 
-    private ApplicantService() {
+    private ApplicantController() {
         Input input = new Input();
         this.applicants = Initializer.getApplicants();
         this.applicantUI = new ApplicantUI(input);
         this.locationUI = new LocationUI(input);
     }
 
-    public static ApplicantService getInstance() {
+    public static ApplicantController getInstance() {
         if (instance == null) {
-            instance = new ApplicantService();
+            instance = new ApplicantController();
         }
         return instance;
     }
@@ -49,12 +49,10 @@ public class ApplicantService implements Service {
         }
     }
 
-    @Override
     public void run() {
         this.applicantUI.menu();
     }
 
-    @Override
     public void create() {
         while (true) {
             applicantUI.printCreateApplicantMsg();
@@ -69,12 +67,10 @@ public class ApplicantService implements Service {
         }
     }
 
-    @Override
     public void read() {
         this.applicantUI.printAllApplicants(applicants);
     }
 
-    @Override
     public void search() {
         while (true) {
             applicantUI.printSearchApplicantMsg(applicants);
@@ -88,12 +84,10 @@ public class ApplicantService implements Service {
         }
     }
 
-    @Override
     public void filter() {
         Log.na();
     }
 
-    @Override
     public void update() {
         applicantUI.printUpdateApplicantMsg(applicants);
         if (applicants.isEmpty())
@@ -109,12 +103,10 @@ public class ApplicantService implements Service {
         applicantUI.updateApplicantMode(applicant.getId());
     }
 
-    @Override
     public void delete() {
         applicantUI.deleteMenu(this.applicants);
     }
 
-    @Override
     public void report() {
         applicantUI.reportMenu();
     }
@@ -353,7 +345,7 @@ public class ApplicantService implements Service {
         Applicant applicant = Context.getApplicant();
         if (applicant == null)
             return;
-            
+
         applicantUI.printDeleteProfileMsg();
         if (applicantUI.confirmDeleteProfile()) {
             applicants.remove(applicant);
@@ -361,5 +353,9 @@ public class ApplicantService implements Service {
             Context.setApplicant(null);
             throw new Menu.ExitMenuException();
         }
+    }
+
+    private boolean isEmailUnique(String email) {
+        return !applicants.anyMatch(applicant -> applicant.getContactEmail().equalsIgnoreCase(email));
     }
 }

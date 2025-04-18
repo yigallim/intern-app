@@ -7,6 +7,7 @@ import java.io.InputStreamReader;
 
 import com.tarumt.adt.list.DoublyLinkedList;
 import com.tarumt.adt.list.ListInterface;
+import com.tarumt.adt.map.SimpleHashMap;
 
 public final class BananaUtils {
     private static final int INVALID = 0;
@@ -16,7 +17,7 @@ public final class BananaUtils {
     private static final String WHITESPACE = " ";
     private static final ListInterface<Integer> CODES;
 
-    private static final SimpleMap<Font, Meta> cache = new SimpleMap<>();
+    private static final SimpleHashMap<Font, Meta> cache = new SimpleHashMap<>();
 
     static {
 
@@ -147,7 +148,7 @@ public final class BananaUtils {
         ListInterface<Integer> codes = CODES;
         int height = option.getHeight();
 
-        SimpleMap<Integer, String[]> figletMap = new SimpleMap<>(codes.size());
+        SimpleHashMap<Integer, String[]> figletMap = new SimpleHashMap<>(codes.size());
 
         for (int i = 0; i < codes.size(); i++) {
 
@@ -203,7 +204,7 @@ public final class BananaUtils {
         return new Meta(font, option, figletMap, comment.toString());
     }
 
-    private static String[] generateFigletLine(String text, SimpleMap<Integer, String[]> figletMap, Option option) {
+    private static String[] generateFigletLine(String text, SimpleHashMap<Integer, String[]> figletMap, Option option) {
         int height = option.getHeight();
         String[] output = new String[height];
         for (int i = 0; i < height; i++) {
@@ -397,7 +398,7 @@ public final class BananaUtils {
 
     private static Rule getSmushRule(Integer oldLayout, Integer newLayout) {
 
-        SimpleMap<String, Integer> rules = new SimpleMap<>();
+        SimpleHashMap<String, Integer> rules = new SimpleHashMap<>();
         RuleEnum[] ruleEnums = RuleEnum.values();
         int layout = newLayout != null ? newLayout : oldLayout;
         for (RuleEnum rule : ruleEnums) {

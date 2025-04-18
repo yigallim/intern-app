@@ -1,8 +1,7 @@
 package com.tarumt.boundary;
 
-import com.tarumt.control.JobPostingService;
+import com.tarumt.control.JobPostingController;
 import com.tarumt.dao.Initializer;
-import com.tarumt.entity.BaseEntity;
 import com.tarumt.entity.Company;
 import com.tarumt.entity.JobPosting;
 import com.tarumt.utility.common.Context;
@@ -14,9 +13,9 @@ import com.tarumt.utility.search.FuzzySearch;
 import com.tarumt.utility.validation.*;
 
 import java.lang.reflect.Field;
+import java.time.LocalDate;
 
 import com.tarumt.adt.list.ListInterface;
-import com.tarumt.adt.set.SetInterface;
 
 public class JobPostingUI {
 
@@ -27,18 +26,18 @@ public class JobPostingUI {
     }
 
     public void menu() {
-        JobPostingService jobPostingService = JobPostingService.getInstance();
+        JobPostingController jobPostingController = JobPostingController.getInstance();
 
         new Menu()
                 .header("==> Manage Job Posting <==")
                 .choice(
-                        new Menu.Choice("🆕 Create Job Posting", jobPostingService::create),
-                        new Menu.Choice("📋 Display Job Posting", jobPostingService::read),
-                        new Menu.Choice("🔍 Search Job Posting", jobPostingService::search),
-                        new Menu.Choice("📂 Filter Job Posting", jobPostingService::filter),
-                        new Menu.Choice("🔃 Update Job Posting", jobPostingService::update),
-                        new Menu.Choice("❌ Delete Job Posting", jobPostingService::delete),
-                        new Menu.Choice("📈 Generate Report", jobPostingService::report)
+                        new Menu.Choice("🆕 Create Job Posting", jobPostingController::create),
+                        new Menu.Choice("📋 Display Job Posting", jobPostingController::read),
+                        new Menu.Choice("🔍 Search Job Posting", jobPostingController::search),
+                        new Menu.Choice("📂 Filter Job Posting", jobPostingController::filter),
+                        new Menu.Choice("🔃 Update Job Posting", jobPostingController::update),
+                        new Menu.Choice("❌ Delete Job Posting", jobPostingController::delete),
+                        new Menu.Choice("📈 Generate Report", jobPostingController::report)
                 )
                 .exit("<Return to Main Menu>")
                 .beforeEach(System.out::println)
@@ -99,7 +98,7 @@ public class JobPostingUI {
 
     public void printSearchResult(FuzzySearch.Result<JobPosting> result) {
         ListInterface<JobPosting> matchedJobs = result.getSubList();
-        SetInterface<String> matches = result.getMatches();
+        ListInterface<String> matches = result.getMatches();
         System.out.println();
         if (matchedJobs.isEmpty()) {
             Log.info("No job postings matched the search criteria");
@@ -111,6 +110,39 @@ public class JobPostingUI {
             input.clickAnythingToContinue();
         }
         System.out.println();
+    }
+
+    public void displayFilterMenu(ListInterface<JobPosting> jobs) {
+        JobPostingController controller = JobPostingController.getInstance();
+        System.out.println();
+        new Menu()
+                .header("<== Filter Job Postings ==>")
+                .choice(
+                        new Menu.Choice("Filter by Company", controller::filterByCompany),
+                        new Menu.Choice("Filter by Job Type", controller::filterByJobType),
+                        new Menu.Choice("Filter by Salary Range", controller::filterBySalaryRange),
+                        new Menu.Choice("Filter by Status", controller::filterByStatus),
+                        new Menu.Choice("Filter by Date Range", controller::filterByDateRange),
+                        new Menu.Choice("Sort by Title", controller::sortJobsByTitle),
+                        new Menu.Choice("Sort by Salary", controller::sortJobsBySalary),
+                        new Menu.Choice("Sort by Date", controller::sortJobsByDate)
+                )
+                .exit("<Return>")
+                .beforeEach(System.out::println)
+                .afterEach(System.out::println)
+                .run();
+
+    }
+
+    public void displayFilteredJobs(ListInterface<JobPosting> filteredJobs) {
+        if (filteredJobs.isEmpty()) {
+            Log.info("No job postings match the criteria");
+            input.clickAnythingToContinue();
+            return;
+        }
+        Log.info("Found " + filteredJobs.size() + " job postings matching the criteria");
+        TabularPrint.printTabular(filteredJobs, true, "default");
+        input.clickAnythingToContinue();
     }
 
     public String getJobPostingTitle() {
@@ -172,18 +204,18 @@ public class JobPostingUI {
     }
 
     public void updateJobMode(String id) {
-        JobPostingService service = JobPostingService.getInstance();
+        JobPostingController controller = JobPostingController.getInstance();
         System.out.println();
         new Menu()
                 .header("Select Update Mode ==>")
                 .choice(
-                        new Menu.Choice("Update Job Title", () -> service.updateJobTitle(id)),
-                        new Menu.Choice("Update Job Company", () -> service.updateJobCompany(id)),
-                        new Menu.Choice("Update Salary Range", () -> service.updateSalaryRange(id)),
-                        new Menu.Choice("Update Description", () -> service.updateDescription(id)),
-                        new Menu.Choice("Update Job Type", () -> service.updateJobType(id)),
-                        new Menu.Choice("Update Status", () -> service.updateStatus(id)),
-                        new Menu.Choice("Update All Fields", () -> service.updateAllField(id))
+                        new Menu.Choice("Update Job Title", () -> controller.updateJobTitle(id)),
+                        new Menu.Choice("Update Job Company", () -> controller.updateJobCompany(id)),
+                        new Menu.Choice("Update Salary Range", () -> controller.updateSalaryRange(id)),
+                        new Menu.Choice("Update Description", () -> controller.updateDescription(id)),
+                        new Menu.Choice("Update Job Type", () -> controller.updateJobType(id)),
+                        new Menu.Choice("Update Status", () -> controller.updateStatus(id)),
+                        new Menu.Choice("Update All Fields", () -> controller.updateAllField(id))
                 )
                 .exit("<Return>")
                 .beforeEach(System.out::println)
@@ -196,7 +228,7 @@ public class JobPostingUI {
     }
 
     public void deleteMenu(ListInterface<JobPosting> jobPostings) {
-        JobPostingService service = JobPostingService.getInstance();
+        JobPostingController controller = JobPostingController.getInstance();
         if (jobPostings == null || jobPostings.isEmpty()) {
             Log.info("No job posting to delete");
             input.clickAnythingToContinue();
@@ -205,10 +237,10 @@ public class JobPostingUI {
         new Menu()
                 .header("<== Delete Job Posting ==>")
                 .choice(
-                        new Menu.Choice("Delete By Index", service::deleteByIndex),
-                        new Menu.Choice("Delete By Index Range", service::deleteByRange),
-                        new Menu.Choice("Delete By ID", service::deleteById),
-                        new Menu.Choice("Delete All", service::deleteAll)
+                        new Menu.Choice("Delete By Index", controller::deleteByIndex),
+                        new Menu.Choice("Delete By Index Range", controller::deleteByRange),
+                        new Menu.Choice("Delete By ID", controller::deleteById),
+                        new Menu.Choice("Delete All", controller::deleteAll)
                 )
                 .exit("<Return>")
                 .beforeEach(System.out::println)
@@ -267,5 +299,68 @@ public class JobPostingUI {
         System.out.println();
         Log.info("Deleted all job postings");
         input.clickAnythingToContinue();
+    }
+
+    public LocalDate[] getDateRange() {
+        System.out.println("<== Filter by Date Range [ X to Exit ] ==>");
+
+        LocalDate startDate = getDate("| Start Date (YYYY-MM-DD) => ");
+        if (startDate == null) {
+            return null;
+        }
+
+        LocalDate endDate = getDate("| End Date (YYYY-MM-DD) => ");
+        if (endDate == null) {
+            return null;
+        }
+
+        if (endDate.isBefore(startDate)) {
+            System.out.println("Error: End date must be after start date");
+            input.clickAnythingToContinue();
+            return null;
+        }
+
+        return new LocalDate[]{startDate, endDate};
+    }
+
+    private LocalDate getDate(String prompt) {
+        StringCondition condition = (StringCondition) ConditionFactory.string()
+                .regex("^\\d{4}-\\d{2}-\\d{2}$", "The date format is not valid. Please use YYYY-MM-DD format.")
+                .custom(value -> {
+                    try {
+                        LocalDate date = LocalDate.parse((String) value);
+
+                        String[] parts = ((String) value).split("-");
+                        int year = Integer.parseInt(parts[0]);
+                        int month = Integer.parseInt(parts[1]);
+                        int day = Integer.parseInt(parts[2]);
+
+                        if (month < 1 || month > 12) {
+                            return false;
+                        }
+
+                        int maxDays = date.getMonth().length(date.isLeapYear());
+                        if (day < 1 || day > maxDays) {
+                            return false;
+                        }
+
+                        return true;
+                    } catch (Exception e) {
+                        return false;
+                    }
+                }, "Invalid date. Please enter a valid date");
+
+        String dateStr = input.getString(prompt, condition);
+        if (dateStr == null || dateStr.equals(Input.STRING_EXIT_VALUE)) {
+            return null;
+        }
+
+        try {
+            return LocalDate.parse(dateStr);
+        } catch (Exception e) {
+            System.out.println("Error parsing date: " + e.getMessage());
+            input.clickAnythingToContinue();
+            return null;
+        }
     }
 }

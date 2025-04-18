@@ -2,7 +2,6 @@ package com.tarumt.boundary;
 
 import com.tarumt.control.*;
 import com.tarumt.entity.Applicant;
-import com.tarumt.entity.BaseEntity;
 import com.tarumt.entity.JobPosting;
 import com.tarumt.utility.common.*;
 import com.tarumt.utility.pretty.TabularPrint;
@@ -13,8 +12,6 @@ import java.lang.reflect.Field;
 
 import com.tarumt.adt.list.ListInterface;
 
-import com.tarumt.adt.set.SetInterface;
-
 public class ApplicantUI {
 
     private final Input input;
@@ -24,17 +21,17 @@ public class ApplicantUI {
     }
 
     public void menu() {
-        ApplicantService applicantService = ApplicantService.getInstance();
+        ApplicantController applicantController = ApplicantController.getInstance();
         new Menu()
                 .header("==> Manage Applicant <==")
                 .choice(
-                        new Menu.Choice("🆕 Create Applicant", applicantService::create),
-                        new Menu.Choice("📋 Display Applicants", applicantService::read),
-                        new Menu.Choice("🔍 Search Applicant", applicantService::search),
-                        new Menu.Choice("📂 Filter Applicant", applicantService::filter),
-                        new Menu.Choice("🔃 Update Applicant", applicantService::update),
-                        new Menu.Choice("❌ Delete Applicant", applicantService::delete),
-                        new Menu.Choice("📈 Generate Report", applicantService::report))
+                        new Menu.Choice("🆕 Create Applicant", applicantController::create),
+                        new Menu.Choice("📋 Display Applicants", applicantController::read),
+                        new Menu.Choice("🔍 Search Applicant", applicantController::search),
+                        new Menu.Choice("📂 Filter Applicant", applicantController::filter),
+                        new Menu.Choice("🔃 Update Applicant", applicantController::update),
+                        new Menu.Choice("❌ Delete Applicant", applicantController::delete),
+                        new Menu.Choice("📈 Generate Report", applicantController::report))
                 .exit("<Return to Main Menu>")
                 .beforeEach(System.out::println)
                 .afterEach(System.out::println)
@@ -92,7 +89,7 @@ public class ApplicantUI {
 
     public void printSearchResult(FuzzySearch.Result<Applicant> result) {
         ListInterface<Applicant> matchedApplicants = result.getSubList();
-        SetInterface<String> matches = result.getMatches();
+        ListInterface<String> matches = result.getMatches();
         System.out.println();
         if (matchedApplicants.isEmpty()) {
             Log.info("No applicants matched the search criteria");
@@ -142,17 +139,17 @@ public class ApplicantUI {
     }
 
     public void updateApplicantMode(String id) {
-        ApplicantService service = ApplicantService.getInstance();
+        ApplicantController controller = ApplicantController.getInstance();
         System.out.println();
         new Menu()
                 .header("Select Update Mode ==>")
                 .choice(
-                        new Menu.Choice("Update Name", () -> service.updateApplicantName(id)),
-                        new Menu.Choice("Update Contact Email", () -> service.updateApplicantContactEmail(id)),
-                        new Menu.Choice("Update Contact Phone", () -> service.updateApplicantContactPhone(id)),
-                        new Menu.Choice("Update Desired Job Type", () -> service.updateApplicantDesiredJobType(id)),
-                        new Menu.Choice("Update Location", () -> service.updateApplicantLocation(id)),
-                        new Menu.Choice("Update All Fields", () -> service.updateAllFields(id)))
+                        new Menu.Choice("Update Name", () -> controller.updateApplicantName(id)),
+                        new Menu.Choice("Update Contact Email", () -> controller.updateApplicantContactEmail(id)),
+                        new Menu.Choice("Update Contact Phone", () -> controller.updateApplicantContactPhone(id)),
+                        new Menu.Choice("Update Desired Job Type", () -> controller.updateApplicantDesiredJobType(id)),
+                        new Menu.Choice("Update Location", () -> controller.updateApplicantLocation(id)),
+                        new Menu.Choice("Update All Fields", () -> controller.updateAllFields(id)))
                 .exit("<Return>")
                 .beforeEach(System.out::println)
                 .afterEach(System.out::println)
@@ -175,7 +172,7 @@ public class ApplicantUI {
     }
 
     public void deleteMenu(ListInterface<Applicant> applicants) {
-        ApplicantService service = ApplicantService.getInstance();
+        ApplicantController controller = ApplicantController.getInstance();
         if (applicants == null || applicants.isEmpty()) {
             Log.info("No applicants to delete");
             input.clickAnythingToContinue();
@@ -184,10 +181,10 @@ public class ApplicantUI {
         new Menu()
                 .header("<== Delete Applicant ==>")
                 .choice(
-                        new Menu.Choice("Delete By Index", service::deleteByIndex),
-                        new Menu.Choice("Delete By Index Range", service::deleteByRange),
-                        new Menu.Choice("Delete By ID", service::deleteById),
-                        new Menu.Choice("Delete All", service::deleteAll))
+                        new Menu.Choice("Delete By Index", controller::deleteByIndex),
+                        new Menu.Choice("Delete By Index Range", controller::deleteByRange),
+                        new Menu.Choice("Delete By ID", controller::deleteById),
+                        new Menu.Choice("Delete All", controller::deleteAll))
                 .exit("<Return>")
                 .beforeEach(System.out::println)
                 .afterEach(System.out::println)
@@ -248,13 +245,13 @@ public class ApplicantUI {
     }
 
     public void loginOrRegisterMenu() {
-        ApplicantService service = ApplicantService.getInstance();
+        ApplicantController controller = ApplicantController.getInstance();
         new Menu()
                 .banner("Applicant")
                 .header("==> Applicant Section <==")
                 .choice(
-                        new Menu.Choice("Login", service::login),
-                        new Menu.Choice("Register New Applicant", service::create))
+                        new Menu.Choice("Login", controller::login),
+                        new Menu.Choice("Register New Applicant", controller::create))
                 .exit("<Return>")
                 .beforeEach(System.out::println)
                 .afterEach(System.out::println)
@@ -273,9 +270,9 @@ public class ApplicantUI {
     }
 
     public void accessMenu() {
-        ApplicantService applicantService = ApplicantService.getInstance();
-        JobApplicationService jobApplicationService = JobApplicationService.getInstance();
-        InterviewService interviewService = InterviewService.getInstance();
+        ApplicantController applicantController = ApplicantController.getInstance();
+        JobApplicationController jobApplicationController = JobApplicationController.getInstance();
+        InterviewController interviewController = InterviewController.getInstance();
 
         Applicant applicant = Context.getApplicant();
 
@@ -284,10 +281,10 @@ public class ApplicantUI {
                     .banner(applicant::getName)
                     .header(() -> "==> Welcome, Applicant \"" + applicant.getName() + "\"  |  " + Strings.formatDateTime(Context.getDateTime()) + " <==")
                     .choice(
-                            new Menu.Choice("🔎 Explore Jobs & Companies", applicantService::exploreJobsAndCompanies),
-                            new Menu.Choice("📄 Manage Job Application", jobApplicationService::accessApplicant),
-                            new Menu.Choice("🤝 Manage Interviews", interviewService::accessApplicant),
-                            new Menu.Choice("👤 Manage Applicant Profile", applicantService::manageProfile))
+                            new Menu.Choice("🔎 Explore Jobs & Companies", applicantController::exploreJobsAndCompanies),
+                            new Menu.Choice("📄 Manage Job Application", jobApplicationController::accessApplicant),
+                            new Menu.Choice("🤝 Manage Interviews", interviewController::accessApplicant),
+                            new Menu.Choice("👤 Manage Applicant Profile", applicantController::manageProfile))
                     .exit("<Logout>")
                     .beforeEach(System.out::println)
                     .afterEach(System.out::println)
@@ -300,17 +297,17 @@ public class ApplicantUI {
     }
 
     public void exploreJobsAndCompaniesMenu() {
-        JobPostingService jobPostingService = JobPostingService.getInstance();
-        CompanyService companyService = CompanyService.getInstance();
+        JobPostingController jobPostingController = JobPostingController.getInstance();
+        CompanyController companyController = CompanyController.getInstance();
         new Menu()
                 .header("==> Explore Jobs & Companies <==")
                 .choice(
-                        new Menu.Choice("📋 Display All Job Postings", jobPostingService::read),
-                        new Menu.Choice("🔍 Search Job Postings", jobPostingService::search),
+                        new Menu.Choice("📋 Display All Job Postings", jobPostingController::read),
+                        new Menu.Choice("🔍 Search Job Postings", jobPostingController::search),
                         new Menu.Choice("📂 Filter Job Postings", Log::na),
                         new Menu.Choice("🔖 Display Recommended Job Postings", Log::na),
-                        new Menu.Choice("🏢 Display Companies", companyService::read),
-                        new Menu.Choice("🔍 Search Companies", companyService::search))
+                        new Menu.Choice("🏢 Display Companies", companyController::read),
+                        new Menu.Choice("🔍 Search Companies", companyController::search))
                 .exit("<Return>")
                 .beforeEach(System.out::println)
                 .afterEach(System.out::println)
@@ -318,13 +315,13 @@ public class ApplicantUI {
     }
 
     public void manageProfileMenu() {
-        ApplicantService applicantService = ApplicantService.getInstance();
+        ApplicantController applicantController = ApplicantController.getInstance();
         new Menu()
                 .header("==> Manage Applicant Profile <==")
                 .choice(
-                        new Menu.Choice("📋 Display Applicant Profile", applicantService::displayProfile),
-                        new Menu.Choice("🔃 Update Applicant Profile", applicantService::updateProfile),
-                        new Menu.Choice("❌ Delete Applicant Profile", applicantService::deleteProfile))
+                        new Menu.Choice("📋 Display Applicant Profile", applicantController::displayProfile),
+                        new Menu.Choice("🔃 Update Applicant Profile", applicantController::updateProfile),
+                        new Menu.Choice("❌ Delete Applicant Profile", applicantController::deleteProfile))
                 .exit("<Return>")
                 .beforeEach(System.out::println)
                 .afterEach(System.out::println)
@@ -370,5 +367,9 @@ public class ApplicantUI {
                 .afterEach(System.out::println)
                 .run();
         System.out.println();
+    }
+
+    public void printEmailAlreadyExistsMsg() {
+        System.out.println("| Error: This email is already registered. Please use a different email.");
     }
 }

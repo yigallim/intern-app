@@ -384,23 +384,6 @@ public class DoublyLinkedList<E> implements ListInterface<E> {
             current = current.next;
         }
     }
-
-    @Override
-    public ListInterface<E> sorted() {
-        if (isEmpty()) return new DoublyLinkedList<>();
-        if (!(head.element instanceof Comparable)) {
-            throw new ClassCastException("Elements must be Comparable");
-        }
-        @SuppressWarnings("unchecked") Comparator<E> comparator = (a, b) -> ((Comparable<? super E>) a).compareTo(b);
-        return sorted(comparator);
-    }
-
-    @Override
-    public ListInterface<E> sorted(Comparator<? super E> comparator) {
-        if (comparator == null) throw new NullPointerException();
-        return new DoublyLinkedList<>();
-    }
-
     @Override
     public boolean anyMatch(TestLambda<? super E> testLambda) {
         if (testLambda == null) throw new NullPointerException();
@@ -413,20 +396,7 @@ public class DoublyLinkedList<E> implements ListInterface<E> {
         }
         return false;
     }
-
-    @Override
-    public boolean allMatch(TestLambda<? super E> testLambda) {
-        if (testLambda == null) throw new NullPointerException();
-        Node current = head;
-        while (current != null) {
-            if (!testLambda.test(current.element)) {
-                return false;
-            }
-            current = current.next;
-        }
-        return true;
-    }
-
+    
     @Override
     public Optional<E> min(Comparator<? super E> comparator) {
         if (isEmpty()) {

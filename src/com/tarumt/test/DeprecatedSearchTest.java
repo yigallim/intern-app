@@ -225,7 +225,7 @@ public class DeprecatedSearchTest {
                 System.out.println();
                 continue;
             }
-            SetInterface<String> matches = FuzzySearch.findFuzzyMatches_v4(test.getQuery(), test.getSentence());
+            ListInterface<String> matches = FuzzySearch.findFuzzyMatches(test.getQuery(), test.getSentence());
             System.out.printf("%-5d %-30s %-60s %-50s %-10.2f %-8.2f %-8.2f %-70s%n",
                     testCounter++,
                     Strings.truncate(test.getQuery(), 30),
@@ -291,7 +291,7 @@ public class DeprecatedSearchTest {
                 System.out.println("\n=== " + test.getDescription() + " ===\n");
                 continue;
             }
-            SetInterface<String> matches = FuzzySearch.findFuzzyMatches_v4(test.getQuery(), test.getSentence());
+            ListInterface<String> matches = FuzzySearch.findFuzzyMatches(test.getQuery(), test.getSentence());
         }
     }
 

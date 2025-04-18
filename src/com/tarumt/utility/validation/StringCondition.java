@@ -2,7 +2,7 @@ package com.tarumt.utility.validation;
 
 import java.util.regex.Pattern;
 
-import com.tarumt.adt.list.Arrays;
+import com.tarumt.adt.list.ArrayToLinked;
 import com.tarumt.adt.list.ListInterface;
 
 public class StringCondition extends Condition {
@@ -60,11 +60,11 @@ public class StringCondition extends Condition {
     }
 
     public StringCondition enumeration(String... allowedValues) {
-        return enumeration(allowedValues, "Value must be one of: " + Arrays.asList(allowedValues));
+        return enumeration(allowedValues, "Value must be one of: " + ArrayToLinked.asList(allowedValues));
     }
 
     public StringCondition enumeration(String[] allowedValues, String customMessage) {
-        ListInterface<String> list = Arrays.asList(allowedValues);
+        ListInterface<String> list = ArrayToLinked.asList(allowedValues);
         addConstraint(new Constraint(value -> {
             if (!(value instanceof String)) return false;
             return list.contains(value);

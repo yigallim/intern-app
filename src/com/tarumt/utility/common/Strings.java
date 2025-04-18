@@ -71,6 +71,14 @@ public class Strings {
         return repeatedString.toString();
     }
 
+    public static String center(String text, int width) {
+        if (text == null || text.length() >= width) {
+            return text;
+        }
+        int padding = (width - text.length()) / 2;
+        return repeat(" ", padding) + text;
+    }
+
     public static String formatDateTime(LocalDateTime dateTime) {
         return dateTime != null ? dateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")) : "N/A";
     }
