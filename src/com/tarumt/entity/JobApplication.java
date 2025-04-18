@@ -5,10 +5,11 @@ import com.tarumt.utility.pretty.annotation.ColumnIndex;
 import com.tarumt.utility.pretty.annotation.Computed;
 import com.tarumt.utility.pretty.annotation.ExcludeKey;
 import com.tarumt.utility.pretty.annotation.OutputLength;
-
+import com.tarumt.utility.matching.JobMatchingUtil;
 import java.time.LocalDate;
 
 public class JobApplication extends BaseEntity {
+
     static {
         BaseEntity.registerPrefix(JobApplication.class, "e");
     }
@@ -33,12 +34,12 @@ public class JobApplication extends BaseEntity {
     }
 
     public enum Status {
-        PENDING,     // Not reviewed yet
+        PENDING, // Not reviewed yet
         SHORTLISTED, // Waiting for interview
         INTERVIEWED, // Post interview, waiting for offer
-        OFFERED,     // Employer offer job, waiting applicant to accept
-        ACCEPTED,    // Both parties agreed employment
-        REJECTED,    // Rejected by employer (at any stage)
+        OFFERED, // Employer offer job, waiting applicant to accept
+        ACCEPTED, // Both parties agreed employment
+        REJECTED, // Rejected by employer (at any stage)
         WITHDRAWN;   // Withdrawn by applicant (at any stage)
 
         @Override
@@ -54,6 +55,16 @@ public class JobApplication extends BaseEntity {
     private String computedCompany() {
         return this.jobPosting.getCompany().toShortString();
     }
+
+    @ExcludeKey("applicant")
+    @ColumnIndex(5)
+    @OutputLength(6)
+    @Computed("Score")
+    public String computedScore() {
+        double score = JobMatchingUtil.calculateScore(this.jobPosting, this.applicant);
+        return String.format("%.2f", score);
+    }
+
 
     public JobPosting getJobPosting() {
         return jobPosting;
@@ -86,7 +97,6 @@ public class JobApplication extends BaseEntity {
     public void setAppliedAt(LocalDate appliedAt) {
         this.appliedAt = appliedAt;
     }
-    
 
     @Override
     public String toShortString() {
@@ -95,12 +105,11 @@ public class JobApplication extends BaseEntity {
 
     @Override
     public String toString() {
-        return "Job Application\n" +
-                "|  ID          => " + getId() + ",\n" +
-                "|  Applicant   => " + applicant + ",\n" +
-                "|  Job Posting => " + jobPosting + ",\n" +
-                "|  Status      => " + (status != null ? status.toString() : "N/A") + ",\n" +
-                "|  Applied At  => " + (appliedAt != null ? appliedAt.toString() : "N/A");
+        return "Job Application\n"
+                + "|  ID          => " + getId() + ",\n"
+                + "|  Applicant   => " + applicant + ",\n"
+                + "|  Job Posting => " + jobPosting + ",\n"
+                + "|  Status      => " + (status != null ? status.toString() : "N/A") + ",\n"
+                + "|  Applied At  => " + (appliedAt != null ? appliedAt.toString() : "N/A");
     }
 }
-

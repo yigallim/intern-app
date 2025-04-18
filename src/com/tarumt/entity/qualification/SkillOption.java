@@ -4,18 +4,20 @@
  */
 package com.tarumt.entity.qualification;
 
+import com.tarumt.entity.JobPosting;
+
 
 public class SkillOption {
-    private final Skill.SkillCategory category;
+    private final JobPosting.Type skillType;
     private final String name;
 
-    public SkillOption(Skill.SkillCategory category, String name) {
-        this.category = category;
+    public SkillOption(JobPosting.Type skillType, String name) {
+        this.skillType = skillType;
         this.name = name;
     }
 
-    public Skill.SkillCategory getCategory() {
-        return category;
+    public JobPosting.Type getCategory() {
+        return skillType;
     }
 
     public String getName() {

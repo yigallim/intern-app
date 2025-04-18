@@ -1,5 +1,7 @@
 package com.tarumt.entity.qualification;
 
+import com.tarumt.entity.BaseEntity;
+
 public class WorkExperience extends Qualification {
 
     private Industry industry;
@@ -98,4 +100,14 @@ public class WorkExperience extends Qualification {
                 + ", years=" + years
                 + '}';
     }
+
+    @Override
+    public String toShortString() {
+        return industry + " - " + years + " yrs";
+    }
+
+    static {
+        BaseEntity.registerPrefix(WorkExperience.class, "exp");
+    }
+
 }

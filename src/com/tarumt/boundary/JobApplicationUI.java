@@ -9,10 +9,11 @@ import com.tarumt.utility.common.Context;
 import com.tarumt.utility.common.Input;
 import com.tarumt.utility.common.Log;
 import com.tarumt.utility.common.Menu;
+import com.tarumt.utility.matching.MatchingReport;
 import com.tarumt.utility.pretty.TabularPrint;
 import com.tarumt.utility.validation.ConditionFactory;
 import com.tarumt.utility.validation.StringCondition;
-
+import com.tarumt.control.MatchingSearchService;
 public class JobApplicationUI {
     private Input input;
 
@@ -22,14 +23,16 @@ public class JobApplicationUI {
 
     public void accessEmployerMenu() {
         JobApplicationService jobApplicationService = JobApplicationService.getInstance();
-
+        MatchingSearchService searchService = new MatchingSearchService();
         new Menu()
                 .header("==> Manage Job Application <==")
                 .choice( // View Shortlist Applicant shall be in Schedule
                         new Menu.Choice("📄 Display All Application", jobApplicationService::displayJobApplication),
                         new Menu.Choice("🔄 Display Ongoing Application", jobApplicationService::displayOngoingJobApplication),
                         new Menu.Choice("🏁 Display Terminated Application", jobApplicationService::displayTerminatedJobApplication),
-                        new Menu.Choice("🔍 View Ranked Applications", jobApplicationService::viewRankedApplications),
+                        new Menu.Choice("🔍 View Matched Applications", jobApplicationService::viewMatchedApplications),
+                        new Menu.Choice("📊 View Matched Report", MatchingReport::generateForCurrentCompany),
+                        new Menu.Choice("🔍 Search applicant with certain skill",searchService::searchApplicantsBySkillFuzzy),
                         new Menu.Choice("✅ Shortlist Application", Log::na),
                         new Menu.Choice("❌ Reject Application", Log::na))
                 .exit("<Return>")

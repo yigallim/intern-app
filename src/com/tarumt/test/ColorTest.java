@@ -77,19 +77,19 @@ public class ColorTest {
         List<LanguageProficiency> langs5 = new DoublyLinkedList<>();
         langs5.add(new LanguageProficiency(LanguageProficiency.Language.TM, LanguageProficiency.Proficiency.ELEMENTARY, false, Qualification.Importance.LOW));
         List<Skill> skills1 = new DoublyLinkedList<>();
-        skills1.add(new Skill(Skill.SkillCategory.IT_COMM_TEC, "Java Programming", Skill.ProficiencyLevel.ADVANCED, false, Qualification.Importance.MEDIUM));
+        skills1.add(new Skill(JobPosting.Type.IT_COMM_TEC, "Java Programming", Skill.ProficiencyLevel.ADVANCED, false, Qualification.Importance.MEDIUM));
 
         List<Skill> skills2 = new DoublyLinkedList<>();
-        skills2.add(new Skill(Skill.SkillCategory.MARKETING_COMM, "Content Creation", Skill.ProficiencyLevel.INTERMEDIATE, false, Qualification.Importance.MEDIUM));
+        skills2.add(new Skill(JobPosting.Type.MARKETING_COMM, "Content Creation", Skill.ProficiencyLevel.INTERMEDIATE, false, Qualification.Importance.MEDIUM));
 
         List<Skill> skills3 = new DoublyLinkedList<>();
-        skills3.add(new Skill(Skill.SkillCategory.ENGINEERING, "CAD Drawing", Skill.ProficiencyLevel.ADVANCED, false, Qualification.Importance.HIGH));
+        skills3.add(new Skill(JobPosting.Type.ENGINEERING, "CAD Drawing", Skill.ProficiencyLevel.ADVANCED, false, Qualification.Importance.HIGH));
 
         List<Skill> skills4 = new DoublyLinkedList<>();
-        skills4.add(new Skill(Skill.SkillCategory.HEALTH_MED, "First Aid", Skill.ProficiencyLevel.EXPERT, false, Qualification.Importance.LOW));
+        skills4.add(new Skill(JobPosting.Type.HEALTH_MED, "First Aid", Skill.ProficiencyLevel.EXPERT, false, Qualification.Importance.LOW));
 
         List<Skill> skills5 = new DoublyLinkedList<>();
-        skills5.add(new Skill(Skill.SkillCategory.SALES, "Negotiation", Skill.ProficiencyLevel.INTERMEDIATE, false, Qualification.Importance.MEDIUM));
+        skills5.add(new Skill(JobPosting.Type.SALES, "Negotiation", Skill.ProficiencyLevel.INTERMEDIATE, false, Qualification.Importance.MEDIUM));
 
         // Mock Job Postings
 //        jobPostings.add(new JobPosting("Software Engineer", company2, 5000, 7000, "Develop and maintain web applications.", JobPosting.Type.IT_COMM_TEC, new DoublyLinkedList<>(), JobPosting.Status.OPEN, LocalDate.now(), LocalDate.now()));

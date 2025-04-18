@@ -16,6 +16,8 @@ import com.tarumt.entity.qualification.Skill;
 import com.tarumt.entity.qualification.WorkExperience;
 import com.tarumt.utility.common.Context;
 import com.tarumt.utility.common.Input;
+import com.tarumt.utility.common.Log;
+import com.tarumt.utility.matching.JobMatchingUtil;
 
 import java.time.LocalDate;
 
@@ -88,6 +90,14 @@ public class JobApplicationService {
     public void displayJobApplication() {
         if (Context.isEmployer()) {
             List<JobApplication> applications = this.getEmployerJobApplications();
+
+            // 🔽 Sort by score before display
+            applications.sort((a, b) -> {
+                double scoreA = JobMatchingUtil.calculateScore(a.getJobPosting(), a.getApplicant());
+                double scoreB = JobMatchingUtil.calculateScore(b.getJobPosting(), b.getApplicant());
+                return Double.compare(scoreB, scoreA);
+            });
+
             this.jobApplicationUI.printGroupedJobApplications(applications);
         } else if (Context.isApplicant()) {
             List<JobApplication> applications = this.getApplicantJobApplications();
@@ -135,13 +145,13 @@ public class JobApplicationService {
         }
     }
 
-    public void viewRankedApplications() {
+    public void viewMatchedApplications() {
         List<JobApplication> applications = getEmployerJobApplications();
         if (applications.isEmpty()) {
+            Log.info("No job applications found for this employer.");
             return;
         }
 
-        // Group by JobPosting
         List<JobPosting> uniquePostings = new DoublyLinkedList<>();
         for (JobApplication app : applications) {
             JobPosting job = app.getJobPosting();
@@ -149,125 +159,41 @@ public class JobApplicationService {
                 uniquePostings.add(job);
             }
         }
-
+       
         for (JobPosting job : uniquePostings) {
-            System.out.println("\n\uD83D\uDD0D Ranking Applicants for Job: " + job.getTitle());
-            List<ApplicantScore> rankedApplicants = new DoublyLinkedList<>();
+            System.out.println("\n🔍 Ranking Applicants for Job: " + job.getTitle());
+            System.out.println("------------------------------------------------------------------------------------");
 
+            List<ApplicantScore> rankedApplicants = new DoublyLinkedList<>();
             for (JobApplication app : applications) {
                 if (!app.getJobPosting().equals(job)) {
                     continue;
                 }
 
                 Applicant applicant = app.getApplicant();
-                double totalScore = 0;
-                boolean disqualified = false;
-
-                // Education
-                if (job.getEducationLevel() != null && applicant.getEducationLevel() != null) {
-                    EducationLevel r = job.getEducationLevel();
-                    EducationLevel a = applicant.getEducationLevel();
-
-                    if (r.getDegreeLevel() != null && r.getDegreeLevel() != a.getDegreeLevel() && !r.isOptional()) {
-                        disqualified = true;
-                    } else if (r.getDegreeLevel() != null && r.getDegreeLevel() == a.getDegreeLevel()) {
-                        totalScore += applyWeight(1.0, r.getImportance());
-                    }
-
-                    if (r.getFieldOfStudy() != null && r.getFieldOfStudy() != a.getFieldOfStudy() && !r.isOptional()) {
-                        disqualified = true;
-                    } else if (r.getFieldOfStudy() != null && r.getFieldOfStudy() == a.getFieldOfStudy()) {
-                        totalScore += applyWeight(1.0, r.getImportance());
-                    }
-
-                    double cgpaScore = a.getCgpa() / r.getCgpa();
-                    if (cgpaScore < 0.5 && !r.isOptional()) {
-                        disqualified = true;
-                    } else {
-                        totalScore += applyWeight(cgpaScore, r.getImportance());
-                    }
-                }
-
-                // WorkExp
-                for (WorkExperience req : job.getWorkExperiences()) {
-                    boolean matched = false;
-                    for (WorkExperience exp : applicant.getWorkExperiences()) {
-                        if (req.getIndustry().equals(exp.getIndustry())) {
-                            double s = Math.min(exp.getYears(), req.getYears());
-                            totalScore += applyWeight(s, req.getImportance());
-                            matched = true;
-                            break;
-                        }
-                    }
-                    if (!matched && !req.isOptional()) {
-                        disqualified = true;
-                    }
-                }
-
-                // Languages
-                for (LanguageProficiency req : job.getLanguageProficiencies()) {
-                    boolean matched = false;
-                    for (LanguageProficiency lang : applicant.getLanguageProficiencies()) {
-                        if (req.getLanguage().equals(lang.getLanguage())) {
-                            double s = req.scoreMatch(lang);
-                            totalScore += applyWeight(s, req.getImportance());
-                            matched = true;
-                            break;
-                        }
-                    }
-                    if (!matched && !req.isOptional()) {
-                        disqualified = true;
-                    }
-                }
-
-                // Skills
-                for (Skill req : job.getSkills()) {
-                    boolean matched = false;
-                    for (Skill skill : applicant.getSkills()) {
-                        if (req.getSkillName().equalsIgnoreCase(skill.getSkillName())) {
-                            double s = req.scoreMatch(skill);
-                            totalScore += applyWeight(s, req.getImportance());
-                            matched = true;
-                            break;
-                        }
-                    }
-                    if (!matched && !req.isOptional()) {
-                        disqualified = true;
-                    }
-                }
-                // --- Location Match ---
-                Location jobLocation = job.getCompany().getLocation();
-                Location applicantLocation = applicant.getLocation();
-                if (jobLocation != null && applicantLocation != null) {
-                    double distance = jobLocation.distanceTo(applicantLocation); // in KM
-                    double score;
-
-                    // Example scoring: Full score within 30km, 0 beyond 150km
-                    if (distance <= 30) {
-                        score = 1.0;
-                     } else if (distance > 20 && distance <=50) {
-                        score =0.5;
-                    } else {
-                        score = 1.0 - ((distance - 30) / 120.0);  // Linear drop-off
-                    }
-
-                    totalScore += score * 1.5; // e.g., use a fixed weight for location
-                }
-               
-                if (!disqualified) {
-                    rankedApplicants.add(new ApplicantScore(app, totalScore));
+                if (JobMatchingUtil.isQualified(job, applicant)) {
+                    double score = JobMatchingUtil.calculateScore(job, applicant);
+                    rankedApplicants.add(new ApplicantScore(app, score));
                 }
             }
 
             rankedApplicants.sort((a, b) -> Double.compare(b.score, a.score));
 
+            if (rankedApplicants.isEmpty()) {
+                Log.info("No qualified applicants found.");
+                continue;
+            }
+
             System.out.printf("| %-20s | %-30s | %-15s | %-6s |\n", "Applicant", "Email", "Phone", "Score");
             System.out.println("|----------------------|--------------------------------|-----------------|--------|");
+
             for (ApplicantScore match : rankedApplicants) {
                 Applicant a = match.application.getApplicant();
                 System.out.printf("| %-20s | %-30s | %-15s | %6.2f |\n",
                         a.getName(), a.getContactEmail(), a.getContactPhone(), match.score);
             }
+
+            System.out.println("------------------------------------------------------------------------------------");
         }
     }
 

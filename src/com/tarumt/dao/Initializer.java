@@ -79,23 +79,23 @@ public class Initializer {
         List<LanguageProficiency> langs5 = new DoublyLinkedList<>();
         langs5.add(new LanguageProficiency(LanguageProficiency.Language.TM, LanguageProficiency.Proficiency.ELEMENTARY, false, Qualification.Importance.LOW));
         List<Skill> skills1 = new DoublyLinkedList<>();
-        skills1.add(new Skill(Skill.SkillCategory.IT_COMM_TEC, "Java Programming", Skill.ProficiencyLevel.ADVANCED, false, Qualification.Importance.MEDIUM));
+        skills1.add(new Skill(JobPosting.Type.IT_COMM_TEC, "Java Programming", Skill.ProficiencyLevel.ADVANCED, false, Qualification.Importance.MEDIUM));
 
         List<Skill> skills2 = new DoublyLinkedList<>();
-        skills2.add(new Skill(Skill.SkillCategory.MARKETING_COMM, "Content Creation", Skill.ProficiencyLevel.INTERMEDIATE, false, Qualification.Importance.MEDIUM));
+        skills2.add(new Skill(JobPosting.Type.MARKETING_COMM, "Content Creation", Skill.ProficiencyLevel.INTERMEDIATE, false, Qualification.Importance.MEDIUM));
 
         List<Skill> skills3 = new DoublyLinkedList<>();
-        skills3.add(new Skill(Skill.SkillCategory.ENGINEERING, "CAD Drawing", Skill.ProficiencyLevel.ADVANCED, false, Qualification.Importance.HIGH));
+        skills3.add(new Skill(JobPosting.Type.ENGINEERING, "CAD Drawing", Skill.ProficiencyLevel.ADVANCED, false, Qualification.Importance.HIGH));
 
         List<Skill> skills4 = new DoublyLinkedList<>();
-        skills4.add(new Skill(Skill.SkillCategory.HEALTH_MED, "First Aid", Skill.ProficiencyLevel.EXPERT, false, Qualification.Importance.LOW));
+        skills4.add(new Skill(JobPosting.Type.HEALTH_MED, "First Aid", Skill.ProficiencyLevel.EXPERT, false, Qualification.Importance.LOW));
 
         List<Skill> skills5 = new DoublyLinkedList<>();
-        skills5.add(new Skill(Skill.SkillCategory.SALES, "Negotiation", Skill.ProficiencyLevel.INTERMEDIATE, false, Qualification.Importance.MEDIUM));
+        skills5.add(new Skill(JobPosting.Type.SALES, "Negotiation", Skill.ProficiencyLevel.INTERMEDIATE, false, Qualification.Importance.MEDIUM));
 
         // region Init
         // 15 Companies (Hard-Coded, Adhering to Constraints, Using Malaysian Cities)
-        companies.add(new Company("TechCorp", "Leading tech company focused on innovation", new Location(City.JOHOR_BAHRU), "contact@techcorp.com", "0123456789"));
+        companies.add(new Company("TechCorp", "Leading tech company focused on innovation", new Location(City.SETAPAK), "contact@techcorp.com", "0123456789"));
         companies.add(new Company("Innovatech", "Innovative tech solutions for the future", new Location(City.KUALA_LUMPUR), "info@innovatech.com", "0198765432"));
         companies.add(new Company("FinServe", "Reliable financial services for all sectors", new Location(City.PENANG_HILL), "support@finserve.com", "0123487654"));
         companies.add(new Company("HealthPlus", "Healthcare solutions for better living", new Location(City.IPOH), "hello@healthplus.com", "0129876543"));
@@ -191,18 +191,18 @@ public class Initializer {
                 "Provide patient care and support in hospital settings.",
                 JobPosting.Type.HEALTH_MED,
                 new EducationLevel(EducationLevel.DegreeLevel.BD, EducationLevel.FieldOfStudy.NUR, EducationLevel.University.USM, 3.5, true, Qualification.Importance.HIGH),
-                Arrays.asList(new WorkExperience(WorkExperience.Industry.HEALTH_MED, 2, false, Qualification.Importance.MEDIUM)),
+                Arrays.asList(new WorkExperience(WorkExperience.Industry.HEALTH_MED, 1, false, Qualification.Importance.MEDIUM)),
                 Arrays.asList(new LanguageProficiency(LanguageProficiency.Language.EN, LanguageProficiency.Proficiency.FLUENT, true, Qualification.Importance.MEDIUM)),
-                Arrays.asList(new Skill(Skill.SkillCategory.HEALTH_MED, "Patient Care", Skill.ProficiencyLevel.ADVANCED, false, Qualification.Importance.HIGH)),
+                Arrays.asList(new Skill(JobPosting.Type.HEALTH_MED, "Patient Care", Skill.ProficiencyLevel.BEGINNER, false, Qualification.Importance.HIGH)),
                 JobPosting.Status.OPEN, LocalDate.now().minusDays(10), LocalDate.now()
         ));
         jobPostings.add(new JobPosting(
                 "Assistant Nurse", companies.get(0), 3000, 3500,
                 "Lawyer side relationship rule item son mouth bag lay.", JobPosting.Type.HEALTH_MED,
                 new EducationLevel(EducationLevel.DegreeLevel.MD, EducationLevel.FieldOfStudy.NUR, EducationLevel.University.UNIMAS, 3.0, true, Qualification.Importance.HIGH),
-                Arrays.asList(new WorkExperience(WorkExperience.Industry.HEALTH_MED, 4, false, Qualification.Importance.MEDIUM)),
-                Arrays.asList(new LanguageProficiency(LanguageProficiency.Language.MY, LanguageProficiency.Proficiency.NATIVE, false, Qualification.Importance.LOW)),
-                Arrays.asList(new Skill(Skill.SkillCategory.IT_COMM_TEC, "Network Admin", Skill.ProficiencyLevel.ADVANCED, true, Qualification.Importance.HIGH)),
+                Arrays.asList(new WorkExperience(WorkExperience.Industry.HEALTH_MED, 1, false, Qualification.Importance.MEDIUM)),
+                Arrays.asList(new LanguageProficiency(LanguageProficiency.Language.MY, LanguageProficiency.Proficiency.ELEMENTARY, false, Qualification.Importance.LOW)),
+                Arrays.asList(new Skill(JobPosting.Type.IT_COMM_TEC, "Network Admin", Skill.ProficiencyLevel.ADVANCED, true, Qualification.Importance.HIGH)),
                 JobPosting.Status.OPEN,
                 LocalDate.of(2025, 4, 12),
                 LocalDate.of(2025, 4, 14)
@@ -211,10 +211,10 @@ public class Initializer {
         jobPostings.add(new JobPosting(
                 "Art therapist", companies.get(1), 4750, 7429,
                 "Friend finally should data condition country.", JobPosting.Type.IT_COMM_TEC,
-                new EducationLevel(EducationLevel.DegreeLevel.D, EducationLevel.FieldOfStudy.CS, EducationLevel.University.UM, 3.62, false, Qualification.Importance.HIGH),
-                Arrays.asList(new WorkExperience(WorkExperience.Industry.ENGINEERING, 3, false, Qualification.Importance.MEDIUM)),
+                new EducationLevel(EducationLevel.DegreeLevel.D, EducationLevel.FieldOfStudy.CS, EducationLevel.University.UM, 3.62, true, Qualification.Importance.HIGH),
+                Arrays.asList(new WorkExperience(WorkExperience.Industry.ENGINEERING, 1, false, Qualification.Importance.MEDIUM)),
                 Arrays.asList(new LanguageProficiency(LanguageProficiency.Language.MY, LanguageProficiency.Proficiency.INTERMEDIATE, false, Qualification.Importance.LOW)),
-                Arrays.asList(new Skill(Skill.SkillCategory.HEALTH_MED, "First Aid", Skill.ProficiencyLevel.ADVANCED, false, Qualification.Importance.HIGH)),
+                Arrays.asList(new Skill(JobPosting.Type.HEALTH_MED, "First Aid", Skill.ProficiencyLevel.ADVANCED, true, Qualification.Importance.HIGH)),
                 JobPosting.Status.OPEN,
                 LocalDate.of(2025, 1, 16),
                 LocalDate.of(2025, 4, 14)
@@ -226,7 +226,7 @@ public class Initializer {
                 new EducationLevel(EducationLevel.DegreeLevel.BD, EducationLevel.FieldOfStudy.EE, EducationLevel.University.USM, 2.6, false, Qualification.Importance.HIGH),
                 Arrays.asList(new WorkExperience(WorkExperience.Industry.BANK_FIN_SERV, 8, false, Qualification.Importance.MEDIUM)),
                 Arrays.asList(new LanguageProficiency(LanguageProficiency.Language.EN, LanguageProficiency.Proficiency.FLUENT, false, Qualification.Importance.LOW)),
-                Arrays.asList(new Skill(Skill.SkillCategory.BANK_FIN_SERV, "Accounting", Skill.ProficiencyLevel.ADVANCED, false, Qualification.Importance.HIGH)),
+                Arrays.asList(new Skill(JobPosting.Type.BANK_FIN_SERV, "Accounting", Skill.ProficiencyLevel.ADVANCED, false, Qualification.Importance.HIGH)),
                 JobPosting.Status.OPEN,
                 LocalDate.of(2025, 3, 13),
                 LocalDate.of(2025, 4, 14)
@@ -238,7 +238,7 @@ public class Initializer {
                 new EducationLevel(EducationLevel.DegreeLevel.D, EducationLevel.FieldOfStudy.PHAR, EducationLevel.University.UTM, 3.97, false, Qualification.Importance.HIGH),
                 Arrays.asList(new WorkExperience(WorkExperience.Industry.SCIENCE_TECH, 5, false, Qualification.Importance.MEDIUM)),
                 Arrays.asList(new LanguageProficiency(LanguageProficiency.Language.MY, LanguageProficiency.Proficiency.INTERMEDIATE, false, Qualification.Importance.LOW)),
-                Arrays.asList(new Skill(Skill.SkillCategory.SCIENCE_TECH, "Lab Safety", Skill.ProficiencyLevel.ADVANCED, false, Qualification.Importance.HIGH)),
+                Arrays.asList(new Skill(JobPosting.Type.SCIENCE_TECH, "Lab Safety", Skill.ProficiencyLevel.ADVANCED, false, Qualification.Importance.HIGH)),
                 JobPosting.Status.OPEN,
                 LocalDate.of(2025, 3, 20),
                 LocalDate.of(2025, 4, 14)
@@ -250,7 +250,7 @@ public class Initializer {
                 new EducationLevel(EducationLevel.DegreeLevel.MD, EducationLevel.FieldOfStudy.CS, EducationLevel.University.UM, 3.96, false, Qualification.Importance.HIGH),
                 Arrays.asList(new WorkExperience(WorkExperience.Industry.IT_COMM_TEC, 9, false, Qualification.Importance.MEDIUM)),
                 Arrays.asList(new LanguageProficiency(LanguageProficiency.Language.EN, LanguageProficiency.Proficiency.FLUENT, false, Qualification.Importance.LOW)),
-                Arrays.asList(new Skill(Skill.SkillCategory.IT_COMM_TEC, "Cloud", Skill.ProficiencyLevel.ADVANCED, false, Qualification.Importance.HIGH)),
+                Arrays.asList(new Skill(JobPosting.Type.IT_COMM_TEC, "Cloud", Skill.ProficiencyLevel.ADVANCED, false, Qualification.Importance.HIGH)),
                 JobPosting.Status.OPEN,
                 LocalDate.of(2025, 4, 9),
                 LocalDate.of(2025, 4, 14)
@@ -262,7 +262,7 @@ public class Initializer {
                 new EducationLevel(EducationLevel.DegreeLevel.MD, EducationLevel.FieldOfStudy.PHAR, EducationLevel.University.UM, 3.0, false, Qualification.Importance.HIGH),
                 Arrays.asList(new WorkExperience(WorkExperience.Industry.BANK_FIN_SERV, 8, false, Qualification.Importance.MEDIUM)),
                 Arrays.asList(new LanguageProficiency(LanguageProficiency.Language.CH, LanguageProficiency.Proficiency.INTERMEDIATE, false, Qualification.Importance.LOW)),
-                Arrays.asList(new Skill(Skill.SkillCategory.HEALTH_MED, "First Aid", Skill.ProficiencyLevel.ADVANCED, false, Qualification.Importance.HIGH)),
+                Arrays.asList(new Skill(JobPosting.Type.HEALTH_MED, "First Aid", Skill.ProficiencyLevel.ADVANCED, false, Qualification.Importance.HIGH)),
                 JobPosting.Status.OPEN,
                 LocalDate.of(2025, 3, 2),
                 LocalDate.of(2025, 4, 14)
@@ -274,7 +274,7 @@ public class Initializer {
                 new EducationLevel(EducationLevel.DegreeLevel.MD, EducationLevel.FieldOfStudy.DS, EducationLevel.University.UM, 3.2, false, Qualification.Importance.HIGH),
                 Arrays.asList(new WorkExperience(WorkExperience.Industry.HEALTH_MED, 10, false, Qualification.Importance.MEDIUM)),
                 Arrays.asList(new LanguageProficiency(LanguageProficiency.Language.EN, LanguageProficiency.Proficiency.INTERMEDIATE, false, Qualification.Importance.LOW)),
-                Arrays.asList(new Skill(Skill.SkillCategory.IT_COMM_TEC, "Network Admin", Skill.ProficiencyLevel.ADVANCED, false, Qualification.Importance.HIGH)),
+                Arrays.asList(new Skill(JobPosting.Type.IT_COMM_TEC, "Network Admin", Skill.ProficiencyLevel.ADVANCED, false, Qualification.Importance.HIGH)),
                 JobPosting.Status.OPEN,
                 LocalDate.of(2025, 1, 29),
                 LocalDate.of(2025, 4, 14)
@@ -286,7 +286,7 @@ public class Initializer {
                 new EducationLevel(EducationLevel.DegreeLevel.PhD, EducationLevel.FieldOfStudy.BIO, EducationLevel.University.UKM, 2.95, false, Qualification.Importance.HIGH),
                 Arrays.asList(new WorkExperience(WorkExperience.Industry.ENGINEERING, 5, false, Qualification.Importance.MEDIUM)),
                 Arrays.asList(new LanguageProficiency(LanguageProficiency.Language.EN, LanguageProficiency.Proficiency.FLUENT, false, Qualification.Importance.LOW)),
-                Arrays.asList(new Skill(Skill.SkillCategory.HEALTH_MED, "First Aid", Skill.ProficiencyLevel.ADVANCED, false, Qualification.Importance.HIGH)),
+                Arrays.asList(new Skill(JobPosting.Type.HEALTH_MED, "First Aid", Skill.ProficiencyLevel.ADVANCED, false, Qualification.Importance.HIGH)),
                 JobPosting.Status.OPEN,
                 LocalDate.of(2025, 2, 22),
                 LocalDate.of(2025, 4, 14)
@@ -298,7 +298,7 @@ public class Initializer {
                 new EducationLevel(EducationLevel.DegreeLevel.MD, EducationLevel.FieldOfStudy.AI, EducationLevel.University.UNIMAS, 3.6, false, Qualification.Importance.HIGH),
                 Arrays.asList(new WorkExperience(WorkExperience.Industry.IT_COMM_TEC, 5, false, Qualification.Importance.MEDIUM)),
                 Arrays.asList(new LanguageProficiency(LanguageProficiency.Language.CH, LanguageProficiency.Proficiency.NATIVE, false, Qualification.Importance.LOW)),
-                Arrays.asList(new Skill(Skill.SkillCategory.HEALTH_MED, "Patient Care", Skill.ProficiencyLevel.ADVANCED, false, Qualification.Importance.HIGH)),
+                Arrays.asList(new Skill(JobPosting.Type.HEALTH_MED, "Patient Care", Skill.ProficiencyLevel.ADVANCED, false, Qualification.Importance.HIGH)),
                 JobPosting.Status.OPEN,
                 LocalDate.of(2025, 2, 28),
                 LocalDate.of(2025, 4, 14)
@@ -310,7 +310,7 @@ public class Initializer {
                 new EducationLevel(EducationLevel.DegreeLevel.D, EducationLevel.FieldOfStudy.CY, EducationLevel.University.UTM, 3.6, false, Qualification.Importance.HIGH),
                 Arrays.asList(new WorkExperience(WorkExperience.Industry.ENGINEERING, 2, false, Qualification.Importance.MEDIUM)),
                 Arrays.asList(new LanguageProficiency(LanguageProficiency.Language.EN, LanguageProficiency.Proficiency.INTERMEDIATE, false, Qualification.Importance.LOW)),
-                Arrays.asList(new Skill(Skill.SkillCategory.HEALTH_MED, "Surgery Prep", Skill.ProficiencyLevel.ADVANCED, false, Qualification.Importance.HIGH)),
+                Arrays.asList(new Skill(JobPosting.Type.HEALTH_MED, "Surgery Prep", Skill.ProficiencyLevel.ADVANCED, false, Qualification.Importance.HIGH)),
                 JobPosting.Status.OPEN,
                 LocalDate.of(2025, 2, 10),
                 LocalDate.of(2025, 4, 14)
@@ -322,7 +322,7 @@ public class Initializer {
                 new EducationLevel(EducationLevel.DegreeLevel.SC, EducationLevel.FieldOfStudy.ME, EducationLevel.University.UPM, 3.38, false, Qualification.Importance.HIGH),
                 Arrays.asList(new WorkExperience(WorkExperience.Industry.ENGINEERING, 1, false, Qualification.Importance.MEDIUM)),
                 Arrays.asList(new LanguageProficiency(LanguageProficiency.Language.EN, LanguageProficiency.Proficiency.INTERMEDIATE, false, Qualification.Importance.LOW)),
-                Arrays.asList(new Skill(Skill.SkillCategory.HEALTH_MED, "First Aid", Skill.ProficiencyLevel.ADVANCED, false, Qualification.Importance.HIGH)),
+                Arrays.asList(new Skill(JobPosting.Type.HEALTH_MED, "First Aid", Skill.ProficiencyLevel.ADVANCED, false, Qualification.Importance.HIGH)),
                 JobPosting.Status.OPEN,
                 LocalDate.of(2025, 1, 11),
                 LocalDate.of(2025, 4, 14)
@@ -334,7 +334,7 @@ public class Initializer {
                 new EducationLevel(EducationLevel.DegreeLevel.PhD, EducationLevel.FieldOfStudy.ME, EducationLevel.University.UTM, 3.71, false, Qualification.Importance.HIGH),
                 Arrays.asList(new WorkExperience(WorkExperience.Industry.HEALTH_MED, 10, false, Qualification.Importance.MEDIUM)),
                 Arrays.asList(new LanguageProficiency(LanguageProficiency.Language.EN, LanguageProficiency.Proficiency.INTERMEDIATE, false, Qualification.Importance.LOW)),
-                Arrays.asList(new Skill(Skill.SkillCategory.BANK_FIN_SERV, "Taxation", Skill.ProficiencyLevel.ADVANCED, false, Qualification.Importance.HIGH)),
+                Arrays.asList(new Skill(JobPosting.Type.BANK_FIN_SERV, "Taxation", Skill.ProficiencyLevel.ADVANCED, false, Qualification.Importance.HIGH)),
                 JobPosting.Status.OPEN,
                 LocalDate.of(2025, 1, 10),
                 LocalDate.of(2025, 4, 14)
@@ -346,7 +346,7 @@ public class Initializer {
                 new EducationLevel(EducationLevel.DegreeLevel.MD, EducationLevel.FieldOfStudy.SE, EducationLevel.University.UKM, 3.6, false, Qualification.Importance.HIGH),
                 Arrays.asList(new WorkExperience(WorkExperience.Industry.IT_COMM_TEC, 5, false, Qualification.Importance.MEDIUM)),
                 Arrays.asList(new LanguageProficiency(LanguageProficiency.Language.EN, LanguageProficiency.Proficiency.FLUENT, false, Qualification.Importance.LOW)),
-                Arrays.asList(new Skill(Skill.SkillCategory.BANK_FIN_SERV, "Taxation", Skill.ProficiencyLevel.ADVANCED, false, Qualification.Importance.HIGH)),
+                Arrays.asList(new Skill(JobPosting.Type.BANK_FIN_SERV, "Taxation", Skill.ProficiencyLevel.ADVANCED, false, Qualification.Importance.HIGH)),
                 JobPosting.Status.OPEN,
                 LocalDate.of(2025, 2, 28),
                 LocalDate.of(2025, 4, 14)
@@ -358,7 +358,7 @@ public class Initializer {
                 new EducationLevel(EducationLevel.DegreeLevel.PhD, EducationLevel.FieldOfStudy.CE, EducationLevel.University.UIAM, 3.26, false, Qualification.Importance.HIGH),
                 Arrays.asList(new WorkExperience(WorkExperience.Industry.SCIENCE_TECH, 6, false, Qualification.Importance.MEDIUM)),
                 Arrays.asList(new LanguageProficiency(LanguageProficiency.Language.EN, LanguageProficiency.Proficiency.FLUENT, false, Qualification.Importance.LOW)),
-                Arrays.asList(new Skill(Skill.SkillCategory.ENGINEERING, "Project Planning", Skill.ProficiencyLevel.ADVANCED, false, Qualification.Importance.HIGH)),
+                Arrays.asList(new Skill(JobPosting.Type.ENGINEERING, "Project Planning", Skill.ProficiencyLevel.ADVANCED, false, Qualification.Importance.HIGH)),
                 JobPosting.Status.OPEN,
                 LocalDate.of(2025, 1, 19),
                 LocalDate.of(2025, 4, 14)
@@ -370,7 +370,7 @@ public class Initializer {
                 new EducationLevel(EducationLevel.DegreeLevel.MD, EducationLevel.FieldOfStudy.ME, EducationLevel.University.UIAM, 2.52, false, Qualification.Importance.HIGH),
                 Arrays.asList(new WorkExperience(WorkExperience.Industry.BANK_FIN_SERV, 5, false, Qualification.Importance.MEDIUM)),
                 Arrays.asList(new LanguageProficiency(LanguageProficiency.Language.EN, LanguageProficiency.Proficiency.FLUENT, false, Qualification.Importance.LOW)),
-                Arrays.asList(new Skill(Skill.SkillCategory.BANK_FIN_SERV, "Taxation", Skill.ProficiencyLevel.ADVANCED, false, Qualification.Importance.HIGH)),
+                Arrays.asList(new Skill(JobPosting.Type.BANK_FIN_SERV, "Taxation", Skill.ProficiencyLevel.ADVANCED, false, Qualification.Importance.HIGH)),
                 JobPosting.Status.OPEN,
                 LocalDate.of(2025, 2, 21),
                 LocalDate.of(2025, 4, 14)
@@ -382,7 +382,7 @@ public class Initializer {
                 new EducationLevel(EducationLevel.DegreeLevel.PhD, EducationLevel.FieldOfStudy.CY, EducationLevel.University.USM, 3.13, false, Qualification.Importance.HIGH),
                 Arrays.asList(new WorkExperience(WorkExperience.Industry.ENGINEERING, 7, false, Qualification.Importance.MEDIUM)),
                 Arrays.asList(new LanguageProficiency(LanguageProficiency.Language.EN, LanguageProficiency.Proficiency.INTERMEDIATE, false, Qualification.Importance.LOW)),
-                Arrays.asList(new Skill(Skill.SkillCategory.ENGINEERING, "Project Planning", Skill.ProficiencyLevel.ADVANCED, false, Qualification.Importance.HIGH)),
+                Arrays.asList(new Skill(JobPosting.Type.ENGINEERING, "Project Planning", Skill.ProficiencyLevel.ADVANCED, false, Qualification.Importance.HIGH)),
                 JobPosting.Status.OPEN,
                 LocalDate.of(2025, 2, 13),
                 LocalDate.of(2025, 4, 14)
@@ -394,7 +394,7 @@ public class Initializer {
                 new EducationLevel(EducationLevel.DegreeLevel.MD, EducationLevel.FieldOfStudy.SE, EducationLevel.University.UTM, 2.85, false, Qualification.Importance.HIGH),
                 Arrays.asList(new WorkExperience(WorkExperience.Industry.HEALTH_MED, 8, false, Qualification.Importance.MEDIUM)),
                 Arrays.asList(new LanguageProficiency(LanguageProficiency.Language.EN, LanguageProficiency.Proficiency.FLUENT, false, Qualification.Importance.LOW)),
-                Arrays.asList(new Skill(Skill.SkillCategory.HEALTH_MED, "Surgery Prep", Skill.ProficiencyLevel.ADVANCED, false, Qualification.Importance.HIGH)),
+                Arrays.asList(new Skill(JobPosting.Type.HEALTH_MED, "Surgery Prep", Skill.ProficiencyLevel.ADVANCED, false, Qualification.Importance.HIGH)),
                 JobPosting.Status.OPEN,
                 LocalDate.of(2025, 3, 18),
                 LocalDate.of(2025, 4, 14)
@@ -406,7 +406,7 @@ public class Initializer {
                 new EducationLevel(EducationLevel.DegreeLevel.BD, EducationLevel.FieldOfStudy.BIO, EducationLevel.University.UKM, 2.58, false, Qualification.Importance.HIGH),
                 Arrays.asList(new WorkExperience(WorkExperience.Industry.BANK_FIN_SERV, 7, false, Qualification.Importance.MEDIUM)),
                 Arrays.asList(new LanguageProficiency(LanguageProficiency.Language.CH, LanguageProficiency.Proficiency.INTERMEDIATE, false, Qualification.Importance.LOW)),
-                Arrays.asList(new Skill(Skill.SkillCategory.SCIENCE_TECH, "Scientific Writing", Skill.ProficiencyLevel.ADVANCED, false, Qualification.Importance.HIGH)),
+                Arrays.asList(new Skill(JobPosting.Type.SCIENCE_TECH, "Scientific Writing", Skill.ProficiencyLevel.ADVANCED, false, Qualification.Importance.HIGH)),
                 JobPosting.Status.OPEN,
                 LocalDate.of(2025, 2, 3),
                 LocalDate.of(2025, 4, 14)
@@ -418,7 +418,7 @@ public class Initializer {
                 new EducationLevel(EducationLevel.DegreeLevel.SC, EducationLevel.FieldOfStudy.IT, EducationLevel.University.USM, 3.98, false, Qualification.Importance.HIGH),
                 Arrays.asList(new WorkExperience(WorkExperience.Industry.SCIENCE_TECH, 1, false, Qualification.Importance.MEDIUM)),
                 Arrays.asList(new LanguageProficiency(LanguageProficiency.Language.CH, LanguageProficiency.Proficiency.INTERMEDIATE, false, Qualification.Importance.LOW)),
-                Arrays.asList(new Skill(Skill.SkillCategory.HEALTH_MED, "Surgery Prep", Skill.ProficiencyLevel.ADVANCED, false, Qualification.Importance.HIGH)),
+                Arrays.asList(new Skill(JobPosting.Type.HEALTH_MED, "Surgery Prep", Skill.ProficiencyLevel.ADVANCED, false, Qualification.Importance.HIGH)),
                 JobPosting.Status.OPEN,
                 LocalDate.of(2025, 3, 14),
                 LocalDate.of(2025, 4, 14)
@@ -430,7 +430,7 @@ public class Initializer {
                 new EducationLevel(EducationLevel.DegreeLevel.BD, EducationLevel.FieldOfStudy.IT, EducationLevel.University.UKM, 2.7, false, Qualification.Importance.HIGH),
                 Arrays.asList(new WorkExperience(WorkExperience.Industry.IT_COMM_TEC, 9, false, Qualification.Importance.MEDIUM)),
                 Arrays.asList(new LanguageProficiency(LanguageProficiency.Language.CH, LanguageProficiency.Proficiency.FLUENT, false, Qualification.Importance.LOW)),
-                Arrays.asList(new Skill(Skill.SkillCategory.BANK_FIN_SERV, "Auditing", Skill.ProficiencyLevel.ADVANCED, false, Qualification.Importance.HIGH)),
+                Arrays.asList(new Skill(JobPosting.Type.BANK_FIN_SERV, "Auditing", Skill.ProficiencyLevel.ADVANCED, false, Qualification.Importance.HIGH)),
                 JobPosting.Status.OPEN,
                 LocalDate.of(2025, 1, 17),
                 LocalDate.of(2025, 4, 14)
@@ -442,7 +442,7 @@ public class Initializer {
                 new EducationLevel(EducationLevel.DegreeLevel.SC, EducationLevel.FieldOfStudy.IT, EducationLevel.University.UM, 3.21, false, Qualification.Importance.HIGH),
                 Arrays.asList(new WorkExperience(WorkExperience.Industry.HEALTH_MED, 8, false, Qualification.Importance.MEDIUM)),
                 Arrays.asList(new LanguageProficiency(LanguageProficiency.Language.EN, LanguageProficiency.Proficiency.INTERMEDIATE, false, Qualification.Importance.LOW)),
-                Arrays.asList(new Skill(Skill.SkillCategory.IT_COMM_TEC, "Python", Skill.ProficiencyLevel.ADVANCED, false, Qualification.Importance.HIGH)),
+                Arrays.asList(new Skill(JobPosting.Type.IT_COMM_TEC, "Python", Skill.ProficiencyLevel.ADVANCED, false, Qualification.Importance.HIGH)),
                 JobPosting.Status.OPEN,
                 LocalDate.of(2025, 4, 8),
                 LocalDate.of(2025, 4, 14)
@@ -454,7 +454,7 @@ public class Initializer {
                 new EducationLevel(EducationLevel.DegreeLevel.MD, EducationLevel.FieldOfStudy.EE, EducationLevel.University.UIAM, 3.63, false, Qualification.Importance.HIGH),
                 Arrays.asList(new WorkExperience(WorkExperience.Industry.SCIENCE_TECH, 5, false, Qualification.Importance.MEDIUM)),
                 Arrays.asList(new LanguageProficiency(LanguageProficiency.Language.CH, LanguageProficiency.Proficiency.NATIVE, false, Qualification.Importance.LOW)),
-                Arrays.asList(new Skill(Skill.SkillCategory.BANK_FIN_SERV, "Accounting", Skill.ProficiencyLevel.ADVANCED, false, Qualification.Importance.HIGH)),
+                Arrays.asList(new Skill(JobPosting.Type.BANK_FIN_SERV, "Accounting", Skill.ProficiencyLevel.ADVANCED, false, Qualification.Importance.HIGH)),
                 JobPosting.Status.OPEN,
                 LocalDate.of(2025, 2, 3),
                 LocalDate.of(2025, 4, 14)
@@ -466,7 +466,7 @@ public class Initializer {
                 new EducationLevel(EducationLevel.DegreeLevel.PhD, EducationLevel.FieldOfStudy.NUR, EducationLevel.University.UKM, 3.8, false, Qualification.Importance.HIGH),
                 Arrays.asList(new WorkExperience(WorkExperience.Industry.IT_COMM_TEC, 7, false, Qualification.Importance.MEDIUM)),
                 Arrays.asList(new LanguageProficiency(LanguageProficiency.Language.EN, LanguageProficiency.Proficiency.FLUENT, false, Qualification.Importance.LOW)),
-                Arrays.asList(new Skill(Skill.SkillCategory.BANK_FIN_SERV, "Taxation", Skill.ProficiencyLevel.ADVANCED, false, Qualification.Importance.HIGH)),
+                Arrays.asList(new Skill(JobPosting.Type.BANK_FIN_SERV, "Taxation", Skill.ProficiencyLevel.ADVANCED, false, Qualification.Importance.HIGH)),
                 JobPosting.Status.OPEN,
                 LocalDate.of(2025, 1, 30),
                 LocalDate.of(2025, 4, 14)
@@ -478,7 +478,7 @@ public class Initializer {
                 new EducationLevel(EducationLevel.DegreeLevel.BD, EducationLevel.FieldOfStudy.NUR, EducationLevel.University.UTeM, 3.06, false, Qualification.Importance.HIGH),
                 Arrays.asList(new WorkExperience(WorkExperience.Industry.ENGINEERING, 1, false, Qualification.Importance.MEDIUM)),
                 Arrays.asList(new LanguageProficiency(LanguageProficiency.Language.EN, LanguageProficiency.Proficiency.FLUENT, false, Qualification.Importance.LOW)),
-                Arrays.asList(new Skill(Skill.SkillCategory.ENGINEERING, "Project Planning", Skill.ProficiencyLevel.ADVANCED, false, Qualification.Importance.HIGH)),
+                Arrays.asList(new Skill(JobPosting.Type.ENGINEERING, "Project Planning", Skill.ProficiencyLevel.ADVANCED, false, Qualification.Importance.HIGH)),
                 JobPosting.Status.OPEN,
                 LocalDate.of(2025, 3, 20),
                 LocalDate.of(2025, 4, 14)
@@ -490,7 +490,7 @@ public class Initializer {
                 new EducationLevel(EducationLevel.DegreeLevel.BD, EducationLevel.FieldOfStudy.IS, EducationLevel.University.UTeM, 3.5, false, Qualification.Importance.HIGH),
                 Arrays.asList(new WorkExperience(WorkExperience.Industry.SCIENCE_TECH, 8, false, Qualification.Importance.MEDIUM)),
                 Arrays.asList(new LanguageProficiency(LanguageProficiency.Language.EN, LanguageProficiency.Proficiency.NATIVE, false, Qualification.Importance.LOW)),
-                Arrays.asList(new Skill(Skill.SkillCategory.ENGINEERING, "AutoCAD", Skill.ProficiencyLevel.ADVANCED, false, Qualification.Importance.HIGH)),
+                Arrays.asList(new Skill(JobPosting.Type.ENGINEERING, "AutoCAD", Skill.ProficiencyLevel.ADVANCED, false, Qualification.Importance.HIGH)),
                 JobPosting.Status.OPEN,
                 LocalDate.of(2025, 1, 24),
                 LocalDate.of(2025, 4, 14)
@@ -502,7 +502,7 @@ public class Initializer {
                 new EducationLevel(EducationLevel.DegreeLevel.BD, EducationLevel.FieldOfStudy.BIO, EducationLevel.University.UTeM, 3.4, false, Qualification.Importance.HIGH),
                 Arrays.asList(new WorkExperience(WorkExperience.Industry.HEALTH_MED, 7, false, Qualification.Importance.MEDIUM)),
                 Arrays.asList(new LanguageProficiency(LanguageProficiency.Language.EN, LanguageProficiency.Proficiency.FLUENT, false, Qualification.Importance.LOW)),
-                Arrays.asList(new Skill(Skill.SkillCategory.BANK_FIN_SERV, "Investment Analysis", Skill.ProficiencyLevel.ADVANCED, false, Qualification.Importance.HIGH)),
+                Arrays.asList(new Skill(JobPosting.Type.BANK_FIN_SERV, "Investment Analysis", Skill.ProficiencyLevel.ADVANCED, false, Qualification.Importance.HIGH)),
                 JobPosting.Status.OPEN,
                 LocalDate.of(2025, 3, 21),
                 LocalDate.of(2025, 4, 14)
@@ -514,7 +514,7 @@ public class Initializer {
                 new EducationLevel(EducationLevel.DegreeLevel.PhD, EducationLevel.FieldOfStudy.ME, EducationLevel.University.UNIMAS, 3.19, false, Qualification.Importance.HIGH),
                 Arrays.asList(new WorkExperience(WorkExperience.Industry.BANK_FIN_SERV, 1, false, Qualification.Importance.MEDIUM)),
                 Arrays.asList(new LanguageProficiency(LanguageProficiency.Language.EN, LanguageProficiency.Proficiency.INTERMEDIATE, false, Qualification.Importance.LOW)),
-                Arrays.asList(new Skill(Skill.SkillCategory.HEALTH_MED, "Surgery Prep", Skill.ProficiencyLevel.ADVANCED, false, Qualification.Importance.HIGH)),
+                Arrays.asList(new Skill(JobPosting.Type.HEALTH_MED, "Surgery Prep", Skill.ProficiencyLevel.ADVANCED, false, Qualification.Importance.HIGH)),
                 JobPosting.Status.OPEN,
                 LocalDate.of(2025, 2, 10),
                 LocalDate.of(2025, 4, 14)
@@ -526,7 +526,7 @@ public class Initializer {
                 new EducationLevel(EducationLevel.DegreeLevel.MD, EducationLevel.FieldOfStudy.PHAR, EducationLevel.University.USM, 3.53, false, Qualification.Importance.HIGH),
                 Arrays.asList(new WorkExperience(WorkExperience.Industry.BANK_FIN_SERV, 1, false, Qualification.Importance.MEDIUM)),
                 Arrays.asList(new LanguageProficiency(LanguageProficiency.Language.EN, LanguageProficiency.Proficiency.NATIVE, false, Qualification.Importance.LOW)),
-                Arrays.asList(new Skill(Skill.SkillCategory.HEALTH_MED, "Surgery Prep", Skill.ProficiencyLevel.ADVANCED, false, Qualification.Importance.HIGH)),
+                Arrays.asList(new Skill(JobPosting.Type.HEALTH_MED, "Surgery Prep", Skill.ProficiencyLevel.ADVANCED, false, Qualification.Importance.HIGH)),
                 JobPosting.Status.OPEN,
                 LocalDate.of(2025, 3, 24),
                 LocalDate.of(2025, 4, 14)
@@ -538,7 +538,7 @@ public class Initializer {
                 new EducationLevel(EducationLevel.DegreeLevel.MD, EducationLevel.FieldOfStudy.IT, EducationLevel.University.UTeM, 3.5, false, Qualification.Importance.HIGH),
                 Arrays.asList(new WorkExperience(WorkExperience.Industry.BANK_FIN_SERV, 6, false, Qualification.Importance.MEDIUM)),
                 Arrays.asList(new LanguageProficiency(LanguageProficiency.Language.CH, LanguageProficiency.Proficiency.FLUENT, false, Qualification.Importance.LOW)),
-                Arrays.asList(new Skill(Skill.SkillCategory.SCIENCE_TECH, "Data Recording", Skill.ProficiencyLevel.ADVANCED, false, Qualification.Importance.HIGH)),
+                Arrays.asList(new Skill(JobPosting.Type.SCIENCE_TECH, "Data Recording", Skill.ProficiencyLevel.ADVANCED, false, Qualification.Importance.HIGH)),
                 JobPosting.Status.OPEN,
                 LocalDate.of(2025, 2, 10),
                 LocalDate.of(2025, 4, 14)
@@ -550,7 +550,7 @@ public class Initializer {
                 new EducationLevel(EducationLevel.DegreeLevel.MD, EducationLevel.FieldOfStudy.PHAR, EducationLevel.University.UTM, 3.19, false, Qualification.Importance.HIGH),
                 Arrays.asList(new WorkExperience(WorkExperience.Industry.HEALTH_MED, 6, false, Qualification.Importance.MEDIUM)),
                 Arrays.asList(new LanguageProficiency(LanguageProficiency.Language.CH, LanguageProficiency.Proficiency.NATIVE, false, Qualification.Importance.LOW)),
-                Arrays.asList(new Skill(Skill.SkillCategory.BANK_FIN_SERV, "Taxation", Skill.ProficiencyLevel.ADVANCED, false, Qualification.Importance.HIGH)),
+                Arrays.asList(new Skill(JobPosting.Type.BANK_FIN_SERV, "Taxation", Skill.ProficiencyLevel.ADVANCED, false, Qualification.Importance.HIGH)),
                 JobPosting.Status.OPEN,
                 LocalDate.of(2025, 1, 20),
                 LocalDate.of(2025, 4, 14)
@@ -562,7 +562,7 @@ public class Initializer {
                 new EducationLevel(EducationLevel.DegreeLevel.MD, EducationLevel.FieldOfStudy.CS, EducationLevel.University.UM, 3.33, false, Qualification.Importance.HIGH),
                 Arrays.asList(new WorkExperience(WorkExperience.Industry.ENGINEERING, 6, false, Qualification.Importance.MEDIUM)),
                 Arrays.asList(new LanguageProficiency(LanguageProficiency.Language.CH, LanguageProficiency.Proficiency.NATIVE, false, Qualification.Importance.LOW)),
-                Arrays.asList(new Skill(Skill.SkillCategory.HEALTH_MED, "Pharmacology", Skill.ProficiencyLevel.ADVANCED, false, Qualification.Importance.HIGH)),
+                Arrays.asList(new Skill(JobPosting.Type.HEALTH_MED, "Pharmacology", Skill.ProficiencyLevel.ADVANCED, false, Qualification.Importance.HIGH)),
                 JobPosting.Status.OPEN,
                 LocalDate.of(2025, 4, 10),
                 LocalDate.of(2025, 4, 14)
@@ -574,7 +574,7 @@ public class Initializer {
                 new EducationLevel(EducationLevel.DegreeLevel.D, EducationLevel.FieldOfStudy.SE, EducationLevel.University.UTeM, 2.56, false, Qualification.Importance.HIGH),
                 Arrays.asList(new WorkExperience(WorkExperience.Industry.HEALTH_MED, 5, false, Qualification.Importance.MEDIUM)),
                 Arrays.asList(new LanguageProficiency(LanguageProficiency.Language.MY, LanguageProficiency.Proficiency.FLUENT, false, Qualification.Importance.LOW)),
-                Arrays.asList(new Skill(Skill.SkillCategory.SCIENCE_TECH, "Scientific Writing", Skill.ProficiencyLevel.ADVANCED, false, Qualification.Importance.HIGH)),
+                Arrays.asList(new Skill(JobPosting.Type.SCIENCE_TECH, "Scientific Writing", Skill.ProficiencyLevel.ADVANCED, false, Qualification.Importance.HIGH)),
                 JobPosting.Status.OPEN,
                 LocalDate.of(2025, 4, 1),
                 LocalDate.of(2025, 4, 14)
@@ -586,7 +586,7 @@ public class Initializer {
                 new EducationLevel(EducationLevel.DegreeLevel.BD, EducationLevel.FieldOfStudy.BIO, EducationLevel.University.UTM, 2.56, false, Qualification.Importance.HIGH),
                 Arrays.asList(new WorkExperience(WorkExperience.Industry.SCIENCE_TECH, 7, false, Qualification.Importance.MEDIUM)),
                 Arrays.asList(new LanguageProficiency(LanguageProficiency.Language.CH, LanguageProficiency.Proficiency.NATIVE, false, Qualification.Importance.LOW)),
-                Arrays.asList(new Skill(Skill.SkillCategory.BANK_FIN_SERV, "Risk Analysis", Skill.ProficiencyLevel.ADVANCED, false, Qualification.Importance.HIGH)),
+                Arrays.asList(new Skill(JobPosting.Type.BANK_FIN_SERV, "Risk Analysis", Skill.ProficiencyLevel.ADVANCED, false, Qualification.Importance.HIGH)),
                 JobPosting.Status.OPEN,
                 LocalDate.of(2025, 3, 1),
                 LocalDate.of(2025, 4, 14)
@@ -598,7 +598,7 @@ public class Initializer {
                 new EducationLevel(EducationLevel.DegreeLevel.D, EducationLevel.FieldOfStudy.CE, EducationLevel.University.UNIMAS, 2.98, false, Qualification.Importance.HIGH),
                 Arrays.asList(new WorkExperience(WorkExperience.Industry.IT_COMM_TEC, 6, false, Qualification.Importance.MEDIUM)),
                 Arrays.asList(new LanguageProficiency(LanguageProficiency.Language.CH, LanguageProficiency.Proficiency.NATIVE, false, Qualification.Importance.LOW)),
-                Arrays.asList(new Skill(Skill.SkillCategory.ENGINEERING, "AutoCAD", Skill.ProficiencyLevel.ADVANCED, false, Qualification.Importance.HIGH)),
+                Arrays.asList(new Skill(JobPosting.Type.ENGINEERING, "AutoCAD", Skill.ProficiencyLevel.ADVANCED, false, Qualification.Importance.HIGH)),
                 JobPosting.Status.OPEN,
                 LocalDate.of(2025, 2, 28),
                 LocalDate.of(2025, 4, 14)
@@ -610,7 +610,7 @@ public class Initializer {
                 new EducationLevel(EducationLevel.DegreeLevel.PhD, EducationLevel.FieldOfStudy.IS, EducationLevel.University.UNIMAS, 2.82, false, Qualification.Importance.HIGH),
                 Arrays.asList(new WorkExperience(WorkExperience.Industry.HEALTH_MED, 3, false, Qualification.Importance.MEDIUM)),
                 Arrays.asList(new LanguageProficiency(LanguageProficiency.Language.EN, LanguageProficiency.Proficiency.INTERMEDIATE, false, Qualification.Importance.LOW)),
-                Arrays.asList(new Skill(Skill.SkillCategory.HEALTH_MED, "Patient Care", Skill.ProficiencyLevel.ADVANCED, false, Qualification.Importance.HIGH)),
+                Arrays.asList(new Skill(JobPosting.Type.HEALTH_MED, "Patient Care", Skill.ProficiencyLevel.ADVANCED, false, Qualification.Importance.HIGH)),
                 JobPosting.Status.OPEN,
                 LocalDate.of(2025, 4, 3),
                 LocalDate.of(2025, 4, 14)
@@ -622,7 +622,7 @@ public class Initializer {
                 new EducationLevel(EducationLevel.DegreeLevel.SC, EducationLevel.FieldOfStudy.SE, EducationLevel.University.UKM, 3.82, false, Qualification.Importance.HIGH),
                 Arrays.asList(new WorkExperience(WorkExperience.Industry.BANK_FIN_SERV, 3, false, Qualification.Importance.MEDIUM)),
                 Arrays.asList(new LanguageProficiency(LanguageProficiency.Language.MY, LanguageProficiency.Proficiency.INTERMEDIATE, false, Qualification.Importance.LOW)),
-                Arrays.asList(new Skill(Skill.SkillCategory.SCIENCE_TECH, "Lab Safety", Skill.ProficiencyLevel.ADVANCED, false, Qualification.Importance.HIGH)),
+                Arrays.asList(new Skill(JobPosting.Type.SCIENCE_TECH, "Lab Safety", Skill.ProficiencyLevel.ADVANCED, false, Qualification.Importance.HIGH)),
                 JobPosting.Status.OPEN,
                 LocalDate.of(2025, 2, 2),
                 LocalDate.of(2025, 4, 14)
@@ -634,7 +634,7 @@ public class Initializer {
                 new EducationLevel(EducationLevel.DegreeLevel.D, EducationLevel.FieldOfStudy.IT, EducationLevel.University.UKM, 3.41, false, Qualification.Importance.HIGH),
                 Arrays.asList(new WorkExperience(WorkExperience.Industry.BANK_FIN_SERV, 7, false, Qualification.Importance.MEDIUM)),
                 Arrays.asList(new LanguageProficiency(LanguageProficiency.Language.MY, LanguageProficiency.Proficiency.NATIVE, false, Qualification.Importance.LOW)),
-                Arrays.asList(new Skill(Skill.SkillCategory.IT_COMM_TEC, "Network Admin", Skill.ProficiencyLevel.ADVANCED, false, Qualification.Importance.HIGH)),
+                Arrays.asList(new Skill(JobPosting.Type.IT_COMM_TEC, "Network Admin", Skill.ProficiencyLevel.ADVANCED, false, Qualification.Importance.HIGH)),
                 JobPosting.Status.OPEN,
                 LocalDate.of(2025, 3, 30),
                 LocalDate.of(2025, 4, 14)
@@ -646,7 +646,7 @@ public class Initializer {
                 new EducationLevel(EducationLevel.DegreeLevel.D, EducationLevel.FieldOfStudy.IS, EducationLevel.University.UKM, 3.48, false, Qualification.Importance.HIGH),
                 Arrays.asList(new WorkExperience(WorkExperience.Industry.ENGINEERING, 1, false, Qualification.Importance.MEDIUM)),
                 Arrays.asList(new LanguageProficiency(LanguageProficiency.Language.CH, LanguageProficiency.Proficiency.INTERMEDIATE, false, Qualification.Importance.LOW)),
-                Arrays.asList(new Skill(Skill.SkillCategory.BANK_FIN_SERV, "Accounting", Skill.ProficiencyLevel.ADVANCED, false, Qualification.Importance.HIGH)),
+                Arrays.asList(new Skill(JobPosting.Type.BANK_FIN_SERV, "Accounting", Skill.ProficiencyLevel.ADVANCED, false, Qualification.Importance.HIGH)),
                 JobPosting.Status.OPEN,
                 LocalDate.of(2025, 3, 14),
                 LocalDate.of(2025, 4, 14)
@@ -658,7 +658,7 @@ public class Initializer {
                 new EducationLevel(EducationLevel.DegreeLevel.MD, EducationLevel.FieldOfStudy.CE, EducationLevel.University.UTM, 2.83, false, Qualification.Importance.HIGH),
                 Arrays.asList(new WorkExperience(WorkExperience.Industry.BANK_FIN_SERV, 9, false, Qualification.Importance.MEDIUM)),
                 Arrays.asList(new LanguageProficiency(LanguageProficiency.Language.EN, LanguageProficiency.Proficiency.NATIVE, false, Qualification.Importance.LOW)),
-                Arrays.asList(new Skill(Skill.SkillCategory.SCIENCE_TECH, "Microscopy", Skill.ProficiencyLevel.ADVANCED, false, Qualification.Importance.HIGH)),
+                Arrays.asList(new Skill(JobPosting.Type.SCIENCE_TECH, "Microscopy", Skill.ProficiencyLevel.ADVANCED, false, Qualification.Importance.HIGH)),
                 JobPosting.Status.OPEN,
                 LocalDate.of(2025, 3, 21),
                 LocalDate.of(2025, 4, 14)
@@ -670,7 +670,7 @@ public class Initializer {
                 new EducationLevel(EducationLevel.DegreeLevel.D, EducationLevel.FieldOfStudy.BIO, EducationLevel.University.UIAM, 2.56, false, Qualification.Importance.HIGH),
                 Arrays.asList(new WorkExperience(WorkExperience.Industry.BANK_FIN_SERV, 4, false, Qualification.Importance.MEDIUM)),
                 Arrays.asList(new LanguageProficiency(LanguageProficiency.Language.CH, LanguageProficiency.Proficiency.FLUENT, false, Qualification.Importance.LOW)),
-                Arrays.asList(new Skill(Skill.SkillCategory.SCIENCE_TECH, "Lab Safety", Skill.ProficiencyLevel.ADVANCED, false, Qualification.Importance.HIGH)),
+                Arrays.asList(new Skill(JobPosting.Type.SCIENCE_TECH, "Lab Safety", Skill.ProficiencyLevel.ADVANCED, false, Qualification.Importance.HIGH)),
                 JobPosting.Status.OPEN,
                 LocalDate.of(2025, 4, 9),
                 LocalDate.of(2025, 4, 14)
@@ -682,7 +682,7 @@ public class Initializer {
                 new EducationLevel(EducationLevel.DegreeLevel.MD, EducationLevel.FieldOfStudy.IS, EducationLevel.University.UKM, 2.76, false, Qualification.Importance.HIGH),
                 Arrays.asList(new WorkExperience(WorkExperience.Industry.HEALTH_MED, 10, false, Qualification.Importance.MEDIUM)),
                 Arrays.asList(new LanguageProficiency(LanguageProficiency.Language.CH, LanguageProficiency.Proficiency.NATIVE, false, Qualification.Importance.LOW)),
-                Arrays.asList(new Skill(Skill.SkillCategory.HEALTH_MED, "Surgery Prep", Skill.ProficiencyLevel.ADVANCED, false, Qualification.Importance.HIGH)),
+                Arrays.asList(new Skill(JobPosting.Type.HEALTH_MED, "Surgery Prep", Skill.ProficiencyLevel.ADVANCED, false, Qualification.Importance.HIGH)),
                 JobPosting.Status.OPEN,
                 LocalDate.of(2025, 1, 10),
                 LocalDate.of(2025, 4, 14)
@@ -694,7 +694,7 @@ public class Initializer {
                 new EducationLevel(EducationLevel.DegreeLevel.BD, EducationLevel.FieldOfStudy.ME, EducationLevel.University.USM, 2.71, false, Qualification.Importance.HIGH),
                 Arrays.asList(new WorkExperience(WorkExperience.Industry.ENGINEERING, 7, false, Qualification.Importance.MEDIUM)),
                 Arrays.asList(new LanguageProficiency(LanguageProficiency.Language.MY, LanguageProficiency.Proficiency.INTERMEDIATE, false, Qualification.Importance.LOW)),
-                Arrays.asList(new Skill(Skill.SkillCategory.ENGINEERING, "Project Planning", Skill.ProficiencyLevel.ADVANCED, false, Qualification.Importance.HIGH)),
+                Arrays.asList(new Skill(JobPosting.Type.ENGINEERING, "Project Planning", Skill.ProficiencyLevel.ADVANCED, false, Qualification.Importance.HIGH)),
                 JobPosting.Status.OPEN,
                 LocalDate.of(2025, 2, 22),
                 LocalDate.of(2025, 4, 14)
@@ -706,7 +706,7 @@ public class Initializer {
                 new EducationLevel(EducationLevel.DegreeLevel.SC, EducationLevel.FieldOfStudy.ME, EducationLevel.University.USM, 2.87, false, Qualification.Importance.HIGH),
                 Arrays.asList(new WorkExperience(WorkExperience.Industry.IT_COMM_TEC, 3, false, Qualification.Importance.MEDIUM)),
                 Arrays.asList(new LanguageProficiency(LanguageProficiency.Language.CH, LanguageProficiency.Proficiency.NATIVE, false, Qualification.Importance.LOW)),
-                Arrays.asList(new Skill(Skill.SkillCategory.BANK_FIN_SERV, "Taxation", Skill.ProficiencyLevel.ADVANCED, false, Qualification.Importance.HIGH)),
+                Arrays.asList(new Skill(JobPosting.Type.BANK_FIN_SERV, "Taxation", Skill.ProficiencyLevel.ADVANCED, false, Qualification.Importance.HIGH)),
                 JobPosting.Status.OPEN,
                 LocalDate.of(2025, 1, 4),
                 LocalDate.of(2025, 4, 14)
@@ -718,7 +718,7 @@ public class Initializer {
                 new EducationLevel(EducationLevel.DegreeLevel.BD, EducationLevel.FieldOfStudy.CY, EducationLevel.University.UPM, 3.82, false, Qualification.Importance.HIGH),
                 Arrays.asList(new WorkExperience(WorkExperience.Industry.HEALTH_MED, 6, false, Qualification.Importance.MEDIUM)),
                 Arrays.asList(new LanguageProficiency(LanguageProficiency.Language.EN, LanguageProficiency.Proficiency.FLUENT, false, Qualification.Importance.LOW)),
-                Arrays.asList(new Skill(Skill.SkillCategory.ENGINEERING, "Circuit Design", Skill.ProficiencyLevel.ADVANCED, false, Qualification.Importance.HIGH)),
+                Arrays.asList(new Skill(JobPosting.Type.ENGINEERING, "Circuit Design", Skill.ProficiencyLevel.ADVANCED, false, Qualification.Importance.HIGH)),
                 JobPosting.Status.OPEN,
                 LocalDate.of(2025, 1, 12),
                 LocalDate.of(2025, 4, 14)
@@ -730,7 +730,7 @@ public class Initializer {
                 new EducationLevel(EducationLevel.DegreeLevel.MD, EducationLevel.FieldOfStudy.BIO, EducationLevel.University.UTM, 2.83, false, Qualification.Importance.HIGH),
                 Arrays.asList(new WorkExperience(WorkExperience.Industry.SCIENCE_TECH, 1, false, Qualification.Importance.MEDIUM)),
                 Arrays.asList(new LanguageProficiency(LanguageProficiency.Language.MY, LanguageProficiency.Proficiency.INTERMEDIATE, false, Qualification.Importance.LOW)),
-                Arrays.asList(new Skill(Skill.SkillCategory.BANK_FIN_SERV, "Investment Analysis", Skill.ProficiencyLevel.ADVANCED, false, Qualification.Importance.HIGH)),
+                Arrays.asList(new Skill(JobPosting.Type.BANK_FIN_SERV, "Investment Analysis", Skill.ProficiencyLevel.ADVANCED, false, Qualification.Importance.HIGH)),
                 JobPosting.Status.OPEN,
                 LocalDate.of(2025, 4, 7),
                 LocalDate.of(2025, 4, 14)
@@ -742,7 +742,7 @@ public class Initializer {
                 new EducationLevel(EducationLevel.DegreeLevel.PhD, EducationLevel.FieldOfStudy.CE, EducationLevel.University.UNIMAS, 2.95, false, Qualification.Importance.HIGH),
                 Arrays.asList(new WorkExperience(WorkExperience.Industry.SCIENCE_TECH, 6, false, Qualification.Importance.MEDIUM)),
                 Arrays.asList(new LanguageProficiency(LanguageProficiency.Language.MY, LanguageProficiency.Proficiency.FLUENT, false, Qualification.Importance.LOW)),
-                Arrays.asList(new Skill(Skill.SkillCategory.ENGINEERING, "CAD", Skill.ProficiencyLevel.ADVANCED, false, Qualification.Importance.HIGH)),
+                Arrays.asList(new Skill(JobPosting.Type.ENGINEERING, "CAD", Skill.ProficiencyLevel.ADVANCED, false, Qualification.Importance.HIGH)),
                 JobPosting.Status.OPEN,
                 LocalDate.of(2025, 2, 5),
                 LocalDate.of(2025, 4, 14)
@@ -754,7 +754,7 @@ public class Initializer {
                 new EducationLevel(EducationLevel.DegreeLevel.PhD, EducationLevel.FieldOfStudy.CE, EducationLevel.University.UTM, 3.93, false, Qualification.Importance.HIGH),
                 Arrays.asList(new WorkExperience(WorkExperience.Industry.SCIENCE_TECH, 7, false, Qualification.Importance.MEDIUM)),
                 Arrays.asList(new LanguageProficiency(LanguageProficiency.Language.EN, LanguageProficiency.Proficiency.NATIVE, false, Qualification.Importance.LOW)),
-                Arrays.asList(new Skill(Skill.SkillCategory.IT_COMM_TEC, "Network Admin", Skill.ProficiencyLevel.ADVANCED, false, Qualification.Importance.HIGH)),
+                Arrays.asList(new Skill(JobPosting.Type.IT_COMM_TEC, "Network Admin", Skill.ProficiencyLevel.ADVANCED, false, Qualification.Importance.HIGH)),
                 JobPosting.Status.OPEN,
                 LocalDate.of(2025, 3, 31),
                 LocalDate.of(2025, 4, 14)
@@ -766,7 +766,7 @@ public class Initializer {
                 new EducationLevel(EducationLevel.DegreeLevel.PhD, EducationLevel.FieldOfStudy.PHAR, EducationLevel.University.UPM, 3.68, false, Qualification.Importance.HIGH),
                 Arrays.asList(new WorkExperience(WorkExperience.Industry.IT_COMM_TEC, 9, false, Qualification.Importance.MEDIUM)),
                 Arrays.asList(new LanguageProficiency(LanguageProficiency.Language.CH, LanguageProficiency.Proficiency.NATIVE, false, Qualification.Importance.LOW)),
-                Arrays.asList(new Skill(Skill.SkillCategory.BANK_FIN_SERV, "Accounting", Skill.ProficiencyLevel.ADVANCED, false, Qualification.Importance.HIGH)),
+                Arrays.asList(new Skill(JobPosting.Type.BANK_FIN_SERV, "Accounting", Skill.ProficiencyLevel.ADVANCED, false, Qualification.Importance.HIGH)),
                 JobPosting.Status.OPEN,
                 LocalDate.of(2025, 1, 26),
                 LocalDate.of(2025, 4, 14)
@@ -778,7 +778,7 @@ public class Initializer {
                 new EducationLevel(EducationLevel.DegreeLevel.MD, EducationLevel.FieldOfStudy.SE, EducationLevel.University.USM, 3.8, false, Qualification.Importance.HIGH),
                 Arrays.asList(new WorkExperience(WorkExperience.Industry.BANK_FIN_SERV, 3, false, Qualification.Importance.MEDIUM)),
                 Arrays.asList(new LanguageProficiency(LanguageProficiency.Language.MY, LanguageProficiency.Proficiency.FLUENT, false, Qualification.Importance.LOW)),
-                Arrays.asList(new Skill(Skill.SkillCategory.ENGINEERING, "AutoCAD", Skill.ProficiencyLevel.ADVANCED, false, Qualification.Importance.HIGH)),
+                Arrays.asList(new Skill(JobPosting.Type.ENGINEERING, "AutoCAD", Skill.ProficiencyLevel.ADVANCED, false, Qualification.Importance.HIGH)),
                 JobPosting.Status.OPEN,
                 LocalDate.of(2025, 1, 29),
                 LocalDate.of(2025, 4, 14)
@@ -968,7 +968,7 @@ public class Initializer {
         },
                 new DoublyLinkedList<Skill>() {
             {
-                add(new Skill(Skill.SkillCategory.HEALTH_MED, "Patient Care", Skill.ProficiencyLevel.ADVANCED));
+                add(new Skill(JobPosting.Type.HEALTH_MED, "Patient Care", Skill.ProficiencyLevel.ADVANCED));
             }
         }
         ));
@@ -989,7 +989,7 @@ public class Initializer {
         },
                 new DoublyLinkedList<Skill>() {
             {
-                add(new Skill(Skill.SkillCategory.HEALTH_MED, "Patient Care", Skill.ProficiencyLevel.INTERMEDIATE));
+                add(new Skill(JobPosting.Type.HEALTH_MED, "Patient Care", Skill.ProficiencyLevel.INTERMEDIATE));
             }
         }
         ));
@@ -1010,11 +1010,156 @@ public class Initializer {
         },
                 new DoublyLinkedList<Skill>() {
             {
-                add(new Skill(Skill.SkillCategory.IT_COMM_TEC, "Network Admin", Skill.ProficiencyLevel.EXPERT));
+                add(new Skill(JobPosting.Type.IT_COMM_TEC, "Network Admin", Skill.ProficiencyLevel.EXPERT));
+            }
+        }
+        ));
+        applicants.add(new Applicant(
+                "Siti Aminah", "aminah02@example.com", "01234567890", JobPosting.Type.HEALTH_MED,
+                new Location(City.PETALING_JAYA),
+                new EducationLevel(EducationLevel.DegreeLevel.BD, EducationLevel.FieldOfStudy.NUR, EducationLevel.University.USM, 3.6),
+                new DoublyLinkedList<WorkExperience>() {
+            {
+                add(new WorkExperience(WorkExperience.Industry.HEALTH_MED, 2));
+            }
+        },
+                new DoublyLinkedList<LanguageProficiency>() {
+            {
+                add(new LanguageProficiency(LanguageProficiency.Language.EN, LanguageProficiency.Proficiency.FLUENT));
+            }
+        },
+                new DoublyLinkedList<Skill>() {
+            {
+                add(new Skill(JobPosting.Type.HEALTH_MED, "Patient Care", Skill.ProficiencyLevel.ADVANCED));
             }
         }
         ));
 
+// 2. Assistant Nurse (HEALTH_MED)
+        applicants.add(new Applicant(
+                "Aminah Binti", "aminah03@example.com", "01311111111", JobPosting.Type.HEALTH_MED,
+                new Location(City.JOHOR_BAHRU),
+                new EducationLevel(EducationLevel.DegreeLevel.MD, EducationLevel.FieldOfStudy.NUR, EducationLevel.University.UNIMAS, 3.2),
+                new DoublyLinkedList<WorkExperience>() {
+            {
+                add(new WorkExperience(WorkExperience.Industry.HEALTH_MED, 5));
+            }
+        },
+                new DoublyLinkedList<LanguageProficiency>() {
+            {
+                add(new LanguageProficiency(LanguageProficiency.Language.MY, LanguageProficiency.Proficiency.NATIVE));
+            }
+        },
+                new DoublyLinkedList<Skill>() {
+            {
+                add(new Skill(JobPosting.Type.IT_COMM_TEC, "Network Admin", Skill.ProficiencyLevel.ADVANCED));
+            }
+        }
+        ));
+        applicants.add(new Applicant(
+                "Ming Wei", "mingwei04@example.com", "01422222222", JobPosting.Type.HEALTH_MED,
+                new Location(City.MUAR),
+                new EducationLevel(EducationLevel.DegreeLevel.MD, EducationLevel.FieldOfStudy.NUR, EducationLevel.University.UNIMAS, 3.1),
+                new DoublyLinkedList<WorkExperience>() {
+            {
+                add(new WorkExperience(WorkExperience.Industry.HEALTH_MED, 4));
+            }
+        },
+                new DoublyLinkedList<LanguageProficiency>() {
+            {
+                add(new LanguageProficiency(LanguageProficiency.Language.MY, LanguageProficiency.Proficiency.NATIVE));
+            }
+        },
+                new DoublyLinkedList<Skill>() {
+            {
+                add(new Skill(JobPosting.Type.IT_COMM_TEC, "Network Admin", Skill.ProficiencyLevel.ADVANCED));
+            }
+        }
+        ));
+
+// 3. Maintenance engineer (ENGINEERING)
+        applicants.add(new Applicant(
+                "John Doe", "johndoe05@example.com", "01433333333", JobPosting.Type.ENGINEERING,
+                new Location(City.KLANG),
+                new EducationLevel(EducationLevel.DegreeLevel.MD, EducationLevel.FieldOfStudy.PHAR, EducationLevel.University.UTM, 3.5),
+                new DoublyLinkedList<WorkExperience>() {
+            {
+                add(new WorkExperience(WorkExperience.Industry.HEALTH_MED, 7));
+            }
+        },
+                new DoublyLinkedList<LanguageProficiency>() {
+            {
+                add(new LanguageProficiency(LanguageProficiency.Language.CH, LanguageProficiency.Proficiency.NATIVE));
+            }
+        },
+                new DoublyLinkedList<Skill>() {
+            {
+                add(new Skill(JobPosting.Type.BANK_FIN_SERV, "Taxation", Skill.ProficiencyLevel.ADVANCED));
+            }
+        }
+        ));
+        applicants.add(new Applicant(
+                "Jane Smith", "janesmith06@example.com", "01444444444", JobPosting.Type.ENGINEERING,
+                new Location(City.SHAH_ALAM),
+                new EducationLevel(EducationLevel.DegreeLevel.MD, EducationLevel.FieldOfStudy.PHAR, EducationLevel.University.UTM, 3.2),
+                new DoublyLinkedList<WorkExperience>() {
+            {
+                add(new WorkExperience(WorkExperience.Industry.HEALTH_MED, 6));
+            }
+        },
+                new DoublyLinkedList<LanguageProficiency>() {
+            {
+                add(new LanguageProficiency(LanguageProficiency.Language.CH, LanguageProficiency.Proficiency.NATIVE));
+            }
+        },
+                new DoublyLinkedList<Skill>() {
+            {
+                add(new Skill(JobPosting.Type.BANK_FIN_SERV, "Taxation", Skill.ProficiencyLevel.ADVANCED));
+            }
+        }
+        ));
+
+// 4. Neurosurgeon (BANK_FIN_SERV)
+        applicants.add(new Applicant(
+                "Adam Lee", "adamlee07@example.com", "01455555555", JobPosting.Type.BANK_FIN_SERV,
+                new Location(City.KUALA_LUMPUR),
+                new EducationLevel(EducationLevel.DegreeLevel.MD, EducationLevel.FieldOfStudy.BIO, EducationLevel.University.UTM, 3.0),
+                new DoublyLinkedList<WorkExperience>() {
+            {
+                add(new WorkExperience(WorkExperience.Industry.SCIENCE_TECH, 2));
+            }
+        },
+                new DoublyLinkedList<LanguageProficiency>() {
+            {
+                add(new LanguageProficiency(LanguageProficiency.Language.MY, LanguageProficiency.Proficiency.INTERMEDIATE));
+            }
+        },
+                new DoublyLinkedList<Skill>() {
+            {
+                add(new Skill(JobPosting.Type.BANK_FIN_SERV, "Investment Analysis", Skill.ProficiencyLevel.ADVANCED));
+            }
+        }
+        ));
+        applicants.add(new Applicant(
+                "Chloe Tan", "chloetan08@example.com", "01466666666", JobPosting.Type.BANK_FIN_SERV,
+                new Location(City.SEREMBAN),
+                new EducationLevel(EducationLevel.DegreeLevel.MD, EducationLevel.FieldOfStudy.BIO, EducationLevel.University.UTM, 2.9),
+                new DoublyLinkedList<WorkExperience>() {
+            {
+                add(new WorkExperience(WorkExperience.Industry.SCIENCE_TECH, 1));
+            }
+        },
+                new DoublyLinkedList<LanguageProficiency>() {
+            {
+                add(new LanguageProficiency(LanguageProficiency.Language.MY, LanguageProficiency.Proficiency.INTERMEDIATE));
+            }
+        },
+                new DoublyLinkedList<Skill>() {
+            {
+                add(new Skill(JobPosting.Type.BANK_FIN_SERV, "Investment Analysis", Skill.ProficiencyLevel.ADVANCED));
+            }
+        }
+        ));
         applicants.add(new Applicant(
                 "Farid Hakim", "farid.hakim@example.com", "01398765432", JobPosting.Type.HEALTH_MED,
                 new Location(City.JOHOR_BAHRU),
@@ -1031,7 +1176,7 @@ public class Initializer {
         },
                 new DoublyLinkedList<Skill>() {
             {
-                add(new Skill(Skill.SkillCategory.IT_COMM_TEC, "Network Admin", Skill.ProficiencyLevel.INTERMEDIATE));
+                add(new Skill(JobPosting.Type.IT_COMM_TEC, "Network Admin", Skill.ProficiencyLevel.INTERMEDIATE));
             }
         }
         ));
@@ -1052,7 +1197,7 @@ public class Initializer {
         },
                 new DoublyLinkedList<Skill>() {
             {
-                add(new Skill(Skill.SkillCategory.HEALTH_MED, "Patient Care", Skill.ProficiencyLevel.INTERMEDIATE));
+                add(new Skill(JobPosting.Type.HEALTH_MED, "Patient Care", Skill.ProficiencyLevel.INTERMEDIATE));
             }
         }
         ));
@@ -1071,7 +1216,7 @@ public class Initializer {
         },
                 new DoublyLinkedList<Skill>() {
             {
-                add(new Skill(Skill.SkillCategory.DESIGN_ARCH, "AutoCAD", Skill.ProficiencyLevel.EXPERT));
+                add(new Skill(JobPosting.Type.DESIGN_ARCH, "AutoCAD", Skill.ProficiencyLevel.EXPERT));
             }
         }
         ));
@@ -1089,7 +1234,7 @@ public class Initializer {
         },
                 new DoublyLinkedList<Skill>() {
             {
-                add(new Skill(Skill.SkillCategory.ACCOUNTING, "QuickBooks", Skill.ProficiencyLevel.EXPERT));
+                add(new Skill(JobPosting.Type.ACCOUNTING, "QuickBooks", Skill.ProficiencyLevel.EXPERT));
             }
         }
         ));
@@ -1107,7 +1252,7 @@ public class Initializer {
         },
                 new DoublyLinkedList<Skill>() {
             {
-                add(new Skill(Skill.SkillCategory.ACCOUNTING, "Tax Filing", Skill.ProficiencyLevel.EXPERT));
+                add(new Skill(JobPosting.Type.ACCOUNTING, "Tax Filing", Skill.ProficiencyLevel.EXPERT));
             }
         }
         ));
@@ -1125,7 +1270,7 @@ public class Initializer {
         },
                 new DoublyLinkedList<Skill>() {
             {
-                add(new Skill(Skill.SkillCategory.DESIGN_ARCH, "Revit", Skill.ProficiencyLevel.EXPERT));
+                add(new Skill(JobPosting.Type.DESIGN_ARCH, "Revit", Skill.ProficiencyLevel.EXPERT));
             }
         }
         ));
@@ -1143,7 +1288,7 @@ public class Initializer {
         },
                 new DoublyLinkedList<Skill>() {
             {
-                add(new Skill(Skill.SkillCategory.IT_COMM_TEC, "Database Management", Skill.ProficiencyLevel.EXPERT));
+                add(new Skill(JobPosting.Type.IT_COMM_TEC, "Database Management", Skill.ProficiencyLevel.EXPERT));
             }
         }
         ));
@@ -1161,7 +1306,7 @@ public class Initializer {
         },
                 new DoublyLinkedList<Skill>() {
             {
-                add(new Skill(Skill.SkillCategory.DESIGN_ARCH, "UI Design", Skill.ProficiencyLevel.EXPERT));
+                add(new Skill(JobPosting.Type.DESIGN_ARCH, "UI Design", Skill.ProficiencyLevel.EXPERT));
             }
         }
         ));
@@ -1179,7 +1324,7 @@ public class Initializer {
         },
                 new DoublyLinkedList<Skill>() {
             {
-                add(new Skill(Skill.SkillCategory.HR_RECRUIT, "HR Policies", Skill.ProficiencyLevel.EXPERT));
+                add(new Skill(JobPosting.Type.HR_RECRUIT, "HR Policies", Skill.ProficiencyLevel.EXPERT));
             }
         }
         ));
@@ -1197,7 +1342,7 @@ public class Initializer {
         },
                 new DoublyLinkedList<Skill>() {
             {
-                add(new Skill(Skill.SkillCategory.ACCOUNTING, "Budgeting", Skill.ProficiencyLevel.EXPERT));
+                add(new Skill(JobPosting.Type.ACCOUNTING, "Budgeting", Skill.ProficiencyLevel.EXPERT));
             }
         }
         ));
@@ -1215,7 +1360,7 @@ public class Initializer {
         },
                 new DoublyLinkedList<Skill>() {
             {
-                add(new Skill(Skill.SkillCategory.HEALTH_MED, "Medical Terminology", Skill.ProficiencyLevel.EXPERT));
+                add(new Skill(JobPosting.Type.HEALTH_MED, "Medical Terminology", Skill.ProficiencyLevel.EXPERT));
             }
         }
         ));
@@ -1233,7 +1378,7 @@ public class Initializer {
         },
                 new DoublyLinkedList<Skill>() {
             {
-                add(new Skill(Skill.SkillCategory.IT_COMM_TEC, "Machine Learning", Skill.ProficiencyLevel.EXPERT));
+                add(new Skill(JobPosting.Type.IT_COMM_TEC, "Machine Learning", Skill.ProficiencyLevel.EXPERT));
             }
         }
         ));
@@ -1251,7 +1396,7 @@ public class Initializer {
         },
                 new DoublyLinkedList<Skill>() {
             {
-                add(new Skill(Skill.SkillCategory.HEALTH_MED, "CPR", Skill.ProficiencyLevel.EXPERT));
+                add(new Skill(JobPosting.Type.HEALTH_MED, "CPR", Skill.ProficiencyLevel.EXPERT));
             }
         }
         ));
@@ -1269,7 +1414,7 @@ public class Initializer {
         },
                 new DoublyLinkedList<Skill>() {
             {
-                add(new Skill(Skill.SkillCategory.HR_RECRUIT, "Compliance", Skill.ProficiencyLevel.EXPERT));
+                add(new Skill(JobPosting.Type.HR_RECRUIT, "Compliance", Skill.ProficiencyLevel.EXPERT));
             }
         }
         ));
@@ -1287,7 +1432,7 @@ public class Initializer {
         },
                 new DoublyLinkedList<Skill>() {
             {
-                add(new Skill(Skill.SkillCategory.ACCOUNTING, "Payroll", Skill.ProficiencyLevel.EXPERT));
+                add(new Skill(JobPosting.Type.ACCOUNTING, "Payroll", Skill.ProficiencyLevel.EXPERT));
             }
         }
         ));
@@ -1305,7 +1450,7 @@ public class Initializer {
         },
                 new DoublyLinkedList<Skill>() {
             {
-                add(new Skill(Skill.SkillCategory.HEALTH_MED, "Phlebotomy", Skill.ProficiencyLevel.EXPERT));
+                add(new Skill(JobPosting.Type.HEALTH_MED, "Phlebotomy", Skill.ProficiencyLevel.EXPERT));
             }
         }
         ));
@@ -1323,7 +1468,7 @@ public class Initializer {
         },
                 new DoublyLinkedList<Skill>() {
             {
-                add(new Skill(Skill.SkillCategory.HEALTH_MED, "Health Records", Skill.ProficiencyLevel.EXPERT));
+                add(new Skill(JobPosting.Type.HEALTH_MED, "Health Records", Skill.ProficiencyLevel.EXPERT));
             }
         }
         ));
@@ -1341,7 +1486,7 @@ public class Initializer {
         },
                 new DoublyLinkedList<Skill>() {
             {
-                add(new Skill(Skill.SkillCategory.ACCOUNTING, "Bookkeeping", Skill.ProficiencyLevel.EXPERT));
+                add(new Skill(JobPosting.Type.ACCOUNTING, "Bookkeeping", Skill.ProficiencyLevel.EXPERT));
             }
         }
         ));
@@ -1359,7 +1504,7 @@ public class Initializer {
         },
                 new DoublyLinkedList<Skill>() {
             {
-                add(new Skill(Skill.SkillCategory.IT_COMM_TEC, "Software Testing", Skill.ProficiencyLevel.EXPERT));
+                add(new Skill(JobPosting.Type.IT_COMM_TEC, "Software Testing", Skill.ProficiencyLevel.EXPERT));
             }
         }
         ));
@@ -1377,7 +1522,7 @@ public class Initializer {
         },
                 new DoublyLinkedList<Skill>() {
             {
-                add(new Skill(Skill.SkillCategory.HR_RECRUIT, "Conflict Resolution", Skill.ProficiencyLevel.EXPERT));
+                add(new Skill(JobPosting.Type.HR_RECRUIT, "Conflict Resolution", Skill.ProficiencyLevel.EXPERT));
             }
         }
         ));
@@ -1395,7 +1540,7 @@ public class Initializer {
         },
                 new DoublyLinkedList<Skill>() {
             {
-                add(new Skill(Skill.SkillCategory.HR_RECRUIT, "Onboarding", Skill.ProficiencyLevel.EXPERT));
+                add(new Skill(JobPosting.Type.HR_RECRUIT, "Onboarding", Skill.ProficiencyLevel.EXPERT));
             }
         }
         ));
@@ -1413,7 +1558,7 @@ public class Initializer {
         },
                 new DoublyLinkedList<Skill>() {
             {
-                add(new Skill(Skill.SkillCategory.IT_COMM_TEC, "Web Development", Skill.ProficiencyLevel.EXPERT));
+                add(new Skill(JobPosting.Type.IT_COMM_TEC, "Web Development", Skill.ProficiencyLevel.EXPERT));
             }
         }
         ));
@@ -1431,7 +1576,7 @@ public class Initializer {
         },
                 new DoublyLinkedList<Skill>() {
             {
-                add(new Skill(Skill.SkillCategory.ACCOUNTING, "Accounts Payable", Skill.ProficiencyLevel.EXPERT));
+                add(new Skill(JobPosting.Type.ACCOUNTING, "Accounts Payable", Skill.ProficiencyLevel.EXPERT));
             }
         }
         ));
@@ -1449,7 +1594,7 @@ public class Initializer {
         },
                 new DoublyLinkedList<Skill>() {
             {
-                add(new Skill(Skill.SkillCategory.ACCOUNTING, "Bookkeeping", Skill.ProficiencyLevel.EXPERT));
+                add(new Skill(JobPosting.Type.ACCOUNTING, "Bookkeeping", Skill.ProficiencyLevel.EXPERT));
             }
         }
         ));
@@ -1467,7 +1612,7 @@ public class Initializer {
         },
                 new DoublyLinkedList<Skill>() {
             {
-                add(new Skill(Skill.SkillCategory.HEALTH_MED, "Patient Care", Skill.ProficiencyLevel.EXPERT));
+                add(new Skill(JobPosting.Type.HEALTH_MED, "Patient Care", Skill.ProficiencyLevel.EXPERT));
             }
         }
         ));
@@ -1485,7 +1630,7 @@ public class Initializer {
         },
                 new DoublyLinkedList<Skill>() {
             {
-                add(new Skill(Skill.SkillCategory.ACCOUNTING, "Payroll", Skill.ProficiencyLevel.EXPERT));
+                add(new Skill(JobPosting.Type.ACCOUNTING, "Payroll", Skill.ProficiencyLevel.EXPERT));
             }
         }
         ));
@@ -1503,7 +1648,7 @@ public class Initializer {
         },
                 new DoublyLinkedList<Skill>() {
             {
-                add(new Skill(Skill.SkillCategory.DESIGN_ARCH, "SketchUp", Skill.ProficiencyLevel.EXPERT));
+                add(new Skill(JobPosting.Type.DESIGN_ARCH, "SketchUp", Skill.ProficiencyLevel.EXPERT));
             }
         }
         ));
@@ -1521,7 +1666,7 @@ public class Initializer {
         },
                 new DoublyLinkedList<Skill>() {
             {
-                add(new Skill(Skill.SkillCategory.DESIGN_ARCH, "UI Design", Skill.ProficiencyLevel.EXPERT));
+                add(new Skill(JobPosting.Type.DESIGN_ARCH, "UI Design", Skill.ProficiencyLevel.EXPERT));
             }
         }
         ));
@@ -1539,7 +1684,7 @@ public class Initializer {
         },
                 new DoublyLinkedList<Skill>() {
             {
-                add(new Skill(Skill.SkillCategory.HEALTH_MED, "Phlebotomy", Skill.ProficiencyLevel.EXPERT));
+                add(new Skill(JobPosting.Type.HEALTH_MED, "Phlebotomy", Skill.ProficiencyLevel.EXPERT));
             }
         }
         ));
@@ -1557,7 +1702,7 @@ public class Initializer {
         },
                 new DoublyLinkedList<Skill>() {
             {
-                add(new Skill(Skill.SkillCategory.HEALTH_MED, "First Aid", Skill.ProficiencyLevel.EXPERT));
+                add(new Skill(JobPosting.Type.HEALTH_MED, "First Aid", Skill.ProficiencyLevel.EXPERT));
             }
         }
         ));
@@ -1575,7 +1720,7 @@ public class Initializer {
         },
                 new DoublyLinkedList<Skill>() {
             {
-                add(new Skill(Skill.SkillCategory.DESIGN_ARCH, "UI Design", Skill.ProficiencyLevel.EXPERT));
+                add(new Skill(JobPosting.Type.DESIGN_ARCH, "UI Design", Skill.ProficiencyLevel.EXPERT));
             }
         }
         ));
@@ -1593,7 +1738,7 @@ public class Initializer {
         },
                 new DoublyLinkedList<Skill>() {
             {
-                add(new Skill(Skill.SkillCategory.IT_COMM_TEC, "Web Development", Skill.ProficiencyLevel.EXPERT));
+                add(new Skill(JobPosting.Type.IT_COMM_TEC, "Web Development", Skill.ProficiencyLevel.EXPERT));
             }
         }
         ));
@@ -1611,7 +1756,7 @@ public class Initializer {
         },
                 new DoublyLinkedList<Skill>() {
             {
-                add(new Skill(Skill.SkillCategory.IT_COMM_TEC, "Cybersecurity", Skill.ProficiencyLevel.EXPERT));
+                add(new Skill(JobPosting.Type.IT_COMM_TEC, "Cybersecurity", Skill.ProficiencyLevel.EXPERT));
             }
         }
         ));
@@ -1629,7 +1774,7 @@ public class Initializer {
         },
                 new DoublyLinkedList<Skill>() {
             {
-                add(new Skill(Skill.SkillCategory.IT_COMM_TEC, "Python Development", Skill.ProficiencyLevel.EXPERT));
+                add(new Skill(JobPosting.Type.IT_COMM_TEC, "Python Development", Skill.ProficiencyLevel.EXPERT));
             }
         }
         ));
@@ -1647,7 +1792,7 @@ public class Initializer {
         },
                 new DoublyLinkedList<Skill>() {
             {
-                add(new Skill(Skill.SkillCategory.HR_RECRUIT, "Performance Reviews", Skill.ProficiencyLevel.EXPERT));
+                add(new Skill(JobPosting.Type.HR_RECRUIT, "Performance Reviews", Skill.ProficiencyLevel.EXPERT));
             }
         }
         ));
@@ -1665,7 +1810,7 @@ public class Initializer {
         },
                 new DoublyLinkedList<Skill>() {
             {
-                add(new Skill(Skill.SkillCategory.IT_COMM_TEC, "Database Management", Skill.ProficiencyLevel.EXPERT));
+                add(new Skill(JobPosting.Type.IT_COMM_TEC, "Database Management", Skill.ProficiencyLevel.EXPERT));
             }
         }
         ));
@@ -1683,7 +1828,7 @@ public class Initializer {
         },
                 new DoublyLinkedList<Skill>() {
             {
-                add(new Skill(Skill.SkillCategory.IT_COMM_TEC, "Machine Learning", Skill.ProficiencyLevel.EXPERT));
+                add(new Skill(JobPosting.Type.IT_COMM_TEC, "Machine Learning", Skill.ProficiencyLevel.EXPERT));
             }
         }
         ));
@@ -1701,7 +1846,7 @@ public class Initializer {
         },
                 new DoublyLinkedList<Skill>() {
             {
-                add(new Skill(Skill.SkillCategory.HR_RECRUIT, "HR Policies", Skill.ProficiencyLevel.EXPERT));
+                add(new Skill(JobPosting.Type.HR_RECRUIT, "HR Policies", Skill.ProficiencyLevel.EXPERT));
             }
         }
         ));
@@ -1719,7 +1864,7 @@ public class Initializer {
         },
                 new DoublyLinkedList<Skill>() {
             {
-                add(new Skill(Skill.SkillCategory.DESIGN_ARCH, "Illustrator", Skill.ProficiencyLevel.EXPERT));
+                add(new Skill(JobPosting.Type.DESIGN_ARCH, "Illustrator", Skill.ProficiencyLevel.EXPERT));
             }
         }
         ));
@@ -1737,7 +1882,7 @@ public class Initializer {
         },
                 new DoublyLinkedList<Skill>() {
             {
-                add(new Skill(Skill.SkillCategory.HEALTH_MED, "Radiology Basics", Skill.ProficiencyLevel.EXPERT));
+                add(new Skill(JobPosting.Type.HEALTH_MED, "Radiology Basics", Skill.ProficiencyLevel.EXPERT));
             }
         }
         ));
@@ -1755,7 +1900,7 @@ public class Initializer {
         },
                 new DoublyLinkedList<Skill>() {
             {
-                add(new Skill(Skill.SkillCategory.HR_RECRUIT, "Interviewing", Skill.ProficiencyLevel.EXPERT));
+                add(new Skill(JobPosting.Type.HR_RECRUIT, "Interviewing", Skill.ProficiencyLevel.EXPERT));
             }
         }
         ));
@@ -1773,7 +1918,7 @@ public class Initializer {
         },
                 new DoublyLinkedList<Skill>() {
             {
-                add(new Skill(Skill.SkillCategory.ACCOUNTING, "Accounts Payable", Skill.ProficiencyLevel.EXPERT));
+                add(new Skill(JobPosting.Type.ACCOUNTING, "Accounts Payable", Skill.ProficiencyLevel.EXPERT));
             }
         }
         ));
@@ -1791,7 +1936,7 @@ public class Initializer {
         },
                 new DoublyLinkedList<Skill>() {
             {
-                add(new Skill(Skill.SkillCategory.HR_RECRUIT, "Compliance", Skill.ProficiencyLevel.EXPERT));
+                add(new Skill(JobPosting.Type.HR_RECRUIT, "Compliance", Skill.ProficiencyLevel.EXPERT));
             }
         }
         ));
@@ -1809,7 +1954,7 @@ public class Initializer {
         },
                 new DoublyLinkedList<Skill>() {
             {
-                add(new Skill(Skill.SkillCategory.ACCOUNTING, "Financial Reporting", Skill.ProficiencyLevel.EXPERT));
+                add(new Skill(JobPosting.Type.ACCOUNTING, "Financial Reporting", Skill.ProficiencyLevel.EXPERT));
             }
         }
         ));
@@ -1827,7 +1972,7 @@ public class Initializer {
         },
                 new DoublyLinkedList<Skill>() {
             {
-                add(new Skill(Skill.SkillCategory.HEALTH_MED, "Patient Care", Skill.ProficiencyLevel.EXPERT));
+                add(new Skill(JobPosting.Type.HEALTH_MED, "Patient Care", Skill.ProficiencyLevel.EXPERT));
             }
         }
         ));
@@ -1845,7 +1990,7 @@ public class Initializer {
         },
                 new DoublyLinkedList<Skill>() {
             {
-                add(new Skill(Skill.SkillCategory.DESIGN_ARCH, "Interior Design", Skill.ProficiencyLevel.EXPERT));
+                add(new Skill(JobPosting.Type.DESIGN_ARCH, "Interior Design", Skill.ProficiencyLevel.EXPERT));
             }
         }
         ));
@@ -1863,7 +2008,7 @@ public class Initializer {
         },
                 new DoublyLinkedList<Skill>() {
             {
-                add(new Skill(Skill.SkillCategory.ACCOUNTING, "Accounts Payable", Skill.ProficiencyLevel.EXPERT));
+                add(new Skill(JobPosting.Type.ACCOUNTING, "Accounts Payable", Skill.ProficiencyLevel.EXPERT));
             }
         }
         ));
@@ -1881,7 +2026,7 @@ public class Initializer {
         },
                 new DoublyLinkedList<Skill>() {
             {
-                add(new Skill(Skill.SkillCategory.HEALTH_MED, "Health Records", Skill.ProficiencyLevel.EXPERT));
+                add(new Skill(JobPosting.Type.HEALTH_MED, "Health Records", Skill.ProficiencyLevel.EXPERT));
             }
         }
         ));
@@ -1899,7 +2044,7 @@ public class Initializer {
         },
                 new DoublyLinkedList<Skill>() {
             {
-                add(new Skill(Skill.SkillCategory.HR_RECRUIT, "HRIS Systems", Skill.ProficiencyLevel.EXPERT));
+                add(new Skill(JobPosting.Type.HR_RECRUIT, "HRIS Systems", Skill.ProficiencyLevel.EXPERT));
             }
         }
         ));
@@ -1917,7 +2062,7 @@ public class Initializer {
         },
                 new DoublyLinkedList<Skill>() {
             {
-                add(new Skill(Skill.SkillCategory.HEALTH_MED, "First Aid", Skill.ProficiencyLevel.EXPERT));
+                add(new Skill(JobPosting.Type.HEALTH_MED, "First Aid", Skill.ProficiencyLevel.EXPERT));
             }
         }
         ));
@@ -1935,7 +2080,7 @@ public class Initializer {
         },
                 new DoublyLinkedList<Skill>() {
             {
-                add(new Skill(Skill.SkillCategory.ACCOUNTING, "Tax Filing", Skill.ProficiencyLevel.EXPERT));
+                add(new Skill(JobPosting.Type.ACCOUNTING, "Tax Filing", Skill.ProficiencyLevel.EXPERT));
             }
         }
         ));
@@ -1953,7 +2098,7 @@ public class Initializer {
         },
                 new DoublyLinkedList<Skill>() {
             {
-                add(new Skill(Skill.SkillCategory.HEALTH_MED, "First Aid", Skill.ProficiencyLevel.EXPERT));
+                add(new Skill(JobPosting.Type.HEALTH_MED, "First Aid", Skill.ProficiencyLevel.EXPERT));
             }
         }
         ));
@@ -1971,7 +2116,7 @@ public class Initializer {
         },
                 new DoublyLinkedList<Skill>() {
             {
-                add(new Skill(Skill.SkillCategory.HR_RECRUIT, "Onboarding", Skill.ProficiencyLevel.EXPERT));
+                add(new Skill(JobPosting.Type.HR_RECRUIT, "Onboarding", Skill.ProficiencyLevel.EXPERT));
             }
         }
         ));
@@ -1989,7 +2134,7 @@ public class Initializer {
         },
                 new DoublyLinkedList<Skill>() {
             {
-                add(new Skill(Skill.SkillCategory.IT_COMM_TEC, "Python Development", Skill.ProficiencyLevel.EXPERT));
+                add(new Skill(JobPosting.Type.IT_COMM_TEC, "Python Development", Skill.ProficiencyLevel.EXPERT));
             }
         }
         ));
@@ -2007,7 +2152,7 @@ public class Initializer {
         },
                 new DoublyLinkedList<Skill>() {
             {
-                add(new Skill(Skill.SkillCategory.HEALTH_MED, "First Aid", Skill.ProficiencyLevel.EXPERT));
+                add(new Skill(JobPosting.Type.HEALTH_MED, "First Aid", Skill.ProficiencyLevel.EXPERT));
             }
         }
         ));
@@ -2025,7 +2170,7 @@ public class Initializer {
         },
                 new DoublyLinkedList<Skill>() {
             {
-                add(new Skill(Skill.SkillCategory.HR_RECRUIT, "HRIS Systems", Skill.ProficiencyLevel.EXPERT));
+                add(new Skill(JobPosting.Type.HR_RECRUIT, "HRIS Systems", Skill.ProficiencyLevel.EXPERT));
             }
         }
         ));
@@ -2043,7 +2188,7 @@ public class Initializer {
         },
                 new DoublyLinkedList<Skill>() {
             {
-                add(new Skill(Skill.SkillCategory.HR_RECRUIT, "Conflict Resolution", Skill.ProficiencyLevel.EXPERT));
+                add(new Skill(JobPosting.Type.HR_RECRUIT, "Conflict Resolution", Skill.ProficiencyLevel.EXPERT));
             }
         }
         ));
@@ -2061,7 +2206,7 @@ public class Initializer {
         },
                 new DoublyLinkedList<Skill>() {
             {
-                add(new Skill(Skill.SkillCategory.HR_RECRUIT, "Compliance", Skill.ProficiencyLevel.EXPERT));
+                add(new Skill(JobPosting.Type.HR_RECRUIT, "Compliance", Skill.ProficiencyLevel.EXPERT));
             }
         }
         ));
@@ -2079,7 +2224,7 @@ public class Initializer {
         },
                 new DoublyLinkedList<Skill>() {
             {
-                add(new Skill(Skill.SkillCategory.IT_COMM_TEC, "Networking", Skill.ProficiencyLevel.EXPERT));
+                add(new Skill(JobPosting.Type.IT_COMM_TEC, "Networking", Skill.ProficiencyLevel.EXPERT));
             }
         }
         ));
@@ -2097,7 +2242,7 @@ public class Initializer {
         },
                 new DoublyLinkedList<Skill>() {
             {
-                add(new Skill(Skill.SkillCategory.ACCOUNTING, "Accounts Payable", Skill.ProficiencyLevel.EXPERT));
+                add(new Skill(JobPosting.Type.ACCOUNTING, "Accounts Payable", Skill.ProficiencyLevel.EXPERT));
             }
         }
         ));
@@ -2115,7 +2260,7 @@ public class Initializer {
         },
                 new DoublyLinkedList<Skill>() {
             {
-                add(new Skill(Skill.SkillCategory.HR_RECRUIT, "Payroll Processing", Skill.ProficiencyLevel.EXPERT));
+                add(new Skill(JobPosting.Type.HR_RECRUIT, "Payroll Processing", Skill.ProficiencyLevel.EXPERT));
             }
         }
         ));
@@ -2133,7 +2278,7 @@ public class Initializer {
         },
                 new DoublyLinkedList<Skill>() {
             {
-                add(new Skill(Skill.SkillCategory.HEALTH_MED, "Medical Terminology", Skill.ProficiencyLevel.EXPERT));
+                add(new Skill(JobPosting.Type.HEALTH_MED, "Medical Terminology", Skill.ProficiencyLevel.EXPERT));
             }
         }
         ));
@@ -2151,7 +2296,7 @@ public class Initializer {
         },
                 new DoublyLinkedList<Skill>() {
             {
-                add(new Skill(Skill.SkillCategory.HEALTH_MED, "Health Records", Skill.ProficiencyLevel.EXPERT));
+                add(new Skill(JobPosting.Type.HEALTH_MED, "Health Records", Skill.ProficiencyLevel.EXPERT));
             }
         }
         ));
@@ -2169,7 +2314,7 @@ public class Initializer {
         },
                 new DoublyLinkedList<Skill>() {
             {
-                add(new Skill(Skill.SkillCategory.DESIGN_ARCH, "SketchUp", Skill.ProficiencyLevel.EXPERT));
+                add(new Skill(JobPosting.Type.DESIGN_ARCH, "SketchUp", Skill.ProficiencyLevel.EXPERT));
             }
         }
         ));
@@ -2187,7 +2332,7 @@ public class Initializer {
         },
                 new DoublyLinkedList<Skill>() {
             {
-                add(new Skill(Skill.SkillCategory.HEALTH_MED, "Phlebotomy", Skill.ProficiencyLevel.EXPERT));
+                add(new Skill(JobPosting.Type.HEALTH_MED, "Phlebotomy", Skill.ProficiencyLevel.EXPERT));
             }
         }
         ));
@@ -2205,7 +2350,7 @@ public class Initializer {
         },
                 new DoublyLinkedList<Skill>() {
             {
-                add(new Skill(Skill.SkillCategory.HEALTH_MED, "Radiology Basics", Skill.ProficiencyLevel.EXPERT));
+                add(new Skill(JobPosting.Type.HEALTH_MED, "Radiology Basics", Skill.ProficiencyLevel.EXPERT));
             }
         }
         ));
@@ -2223,7 +2368,7 @@ public class Initializer {
         },
                 new DoublyLinkedList<Skill>() {
             {
-                add(new Skill(Skill.SkillCategory.ACCOUNTING, "Bookkeeping", Skill.ProficiencyLevel.EXPERT));
+                add(new Skill(JobPosting.Type.ACCOUNTING, "Bookkeeping", Skill.ProficiencyLevel.EXPERT));
             }
         }
         ));
@@ -2241,7 +2386,7 @@ public class Initializer {
         },
                 new DoublyLinkedList<Skill>() {
             {
-                add(new Skill(Skill.SkillCategory.HEALTH_MED, "Nursing Skills", Skill.ProficiencyLevel.EXPERT));
+                add(new Skill(JobPosting.Type.HEALTH_MED, "Nursing Skills", Skill.ProficiencyLevel.EXPERT));
             }
         }
         ));
@@ -2259,7 +2404,7 @@ public class Initializer {
         },
                 new DoublyLinkedList<Skill>() {
             {
-                add(new Skill(Skill.SkillCategory.HEALTH_MED, "Nursing Skills", Skill.ProficiencyLevel.EXPERT));
+                add(new Skill(JobPosting.Type.HEALTH_MED, "Nursing Skills", Skill.ProficiencyLevel.EXPERT));
             }
         }
         ));
@@ -2277,7 +2422,7 @@ public class Initializer {
         },
                 new DoublyLinkedList<Skill>() {
             {
-                add(new Skill(Skill.SkillCategory.HR_RECRUIT, "Interviewing", Skill.ProficiencyLevel.EXPERT));
+                add(new Skill(JobPosting.Type.HR_RECRUIT, "Interviewing", Skill.ProficiencyLevel.EXPERT));
             }
         }
         ));
@@ -2295,438 +2440,871 @@ public class Initializer {
         },
                 new DoublyLinkedList<Skill>() {
             {
-                add(new Skill(Skill.SkillCategory.DESIGN_ARCH, "Revit", Skill.ProficiencyLevel.EXPERT));
+                add(new Skill(JobPosting.Type.DESIGN_ARCH, "Revit", Skill.ProficiencyLevel.EXPERT));
             }
         }
-        ));applicants.add(new Applicant("William Baker", "applicant70@example.com", "011-3939212", JobPosting.Type.HEALTH_MED, new Location(City.KOTA_KINABALU),
-            new EducationLevel(EducationLevel.DegreeLevel.D, EducationLevel.FieldOfStudy.AI, EducationLevel.University.USM, 4.0),
-            new DoublyLinkedList<WorkExperience>() {
-                { add(new WorkExperience(WorkExperience.Industry.HR_RECRUIT, 8)); }
-            },
-            new DoublyLinkedList<LanguageProficiency>() {
-                { add(new LanguageProficiency(LanguageProficiency.Language.EN, LanguageProficiency.Proficiency.ELEMENTARY)); }
-            },
-            new DoublyLinkedList<Skill>() {
-                { add(new Skill(Skill.SkillCategory.HEALTH_MED, "Clinical Procedures", Skill.ProficiencyLevel.EXPERT)); }
+        ));
+        applicants.add(new Applicant("William Baker", "applicant70@example.com", "011-3939212", JobPosting.Type.HEALTH_MED, new Location(City.KOTA_KINABALU),
+                new EducationLevel(EducationLevel.DegreeLevel.D, EducationLevel.FieldOfStudy.AI, EducationLevel.University.USM, 4.0),
+                new DoublyLinkedList<WorkExperience>() {
+            {
+                add(new WorkExperience(WorkExperience.Industry.HR_RECRUIT, 8));
             }
-        ));applicants.add(new Applicant("Jordan Henderson", "applicant71@example.com", "017-6591986", JobPosting.Type.IT_COMM_TEC, new Location(City.IPOH),
-            new EducationLevel(EducationLevel.DegreeLevel.MD, EducationLevel.FieldOfStudy.CE, EducationLevel.University.UUM, 3.54),
-            new DoublyLinkedList<WorkExperience>() {
-                { add(new WorkExperience(WorkExperience.Industry.DESIGN_ARCH, 7)); }
-            },
-            new DoublyLinkedList<LanguageProficiency>() {
-                { add(new LanguageProficiency(LanguageProficiency.Language.KR, LanguageProficiency.Proficiency.NATIVE)); }
-            },
-            new DoublyLinkedList<Skill>() {
-                { add(new Skill(Skill.SkillCategory.IT_COMM_TEC, "Networking", Skill.ProficiencyLevel.EXPERT)); }
+        },
+                new DoublyLinkedList<LanguageProficiency>() {
+            {
+                add(new LanguageProficiency(LanguageProficiency.Language.EN, LanguageProficiency.Proficiency.ELEMENTARY));
             }
-        ));applicants.add(new Applicant("Whitney Peters", "applicant72@example.com", "012-6276722", JobPosting.Type.DESIGN_ARCH, new Location(City.IPOH),
-            new EducationLevel(EducationLevel.DegreeLevel.PhD, EducationLevel.FieldOfStudy.BBA, EducationLevel.University.TAYLORS, 3.74),
-            new DoublyLinkedList<WorkExperience>() {
-                { add(new WorkExperience(WorkExperience.Industry.IT_COMM_TEC, 9)); }
-            },
-            new DoublyLinkedList<LanguageProficiency>() {
-                { add(new LanguageProficiency(LanguageProficiency.Language.JP, LanguageProficiency.Proficiency.ELEMENTARY)); }
-            },
-            new DoublyLinkedList<Skill>() {
-                { add(new Skill(Skill.SkillCategory.DESIGN_ARCH, "AutoCAD", Skill.ProficiencyLevel.EXPERT)); }
+        },
+                new DoublyLinkedList<Skill>() {
+            {
+                add(new Skill(JobPosting.Type.HEALTH_MED, "Clinical Procedures", Skill.ProficiencyLevel.EXPERT));
             }
-        ));applicants.add(new Applicant("Brittney Phillips", "applicant73@example.com", "014-9697969", JobPosting.Type.HEALTH_MED, new Location(City.IPOH),
-            new EducationLevel(EducationLevel.DegreeLevel.D, EducationLevel.FieldOfStudy.ARCH, EducationLevel.University.UCSI, 3.64),
-            new DoublyLinkedList<WorkExperience>() {
-                { add(new WorkExperience(WorkExperience.Industry.ACCOUNTING, 5)); }
-            },
-            new DoublyLinkedList<LanguageProficiency>() {
-                { add(new LanguageProficiency(LanguageProficiency.Language.KR, LanguageProficiency.Proficiency.FLUENT)); }
-            },
-            new DoublyLinkedList<Skill>() {
-                { add(new Skill(Skill.SkillCategory.HEALTH_MED, "Nursing Skills", Skill.ProficiencyLevel.EXPERT)); }
+        }
+        ));
+        applicants.add(new Applicant("Jordan Henderson", "applicant71@example.com", "017-6591986", JobPosting.Type.IT_COMM_TEC, new Location(City.IPOH),
+                new EducationLevel(EducationLevel.DegreeLevel.MD, EducationLevel.FieldOfStudy.CE, EducationLevel.University.UUM, 3.54),
+                new DoublyLinkedList<WorkExperience>() {
+            {
+                add(new WorkExperience(WorkExperience.Industry.DESIGN_ARCH, 7));
             }
-        ));applicants.add(new Applicant("Lauren Daniels", "applicant74@example.com", "018-9132114", JobPosting.Type.IT_COMM_TEC, new Location(City.JOHOR_BAHRU),
-            new EducationLevel(EducationLevel.DegreeLevel.SC, EducationLevel.FieldOfStudy.SE, EducationLevel.University.USM, 2.97),
-            new DoublyLinkedList<WorkExperience>() {
-                { add(new WorkExperience(WorkExperience.Industry.IT_COMM_TEC, 9)); }
-            },
-            new DoublyLinkedList<LanguageProficiency>() {
-                { add(new LanguageProficiency(LanguageProficiency.Language.JP, LanguageProficiency.Proficiency.NATIVE)); }
-            },
-            new DoublyLinkedList<Skill>() {
-                { add(new Skill(Skill.SkillCategory.IT_COMM_TEC, "Cybersecurity", Skill.ProficiencyLevel.EXPERT)); }
+        },
+                new DoublyLinkedList<LanguageProficiency>() {
+            {
+                add(new LanguageProficiency(LanguageProficiency.Language.KR, LanguageProficiency.Proficiency.NATIVE));
             }
-        ));applicants.add(new Applicant("Amy Silva", "applicant75@example.com", "012-8741810", JobPosting.Type.ACCOUNTING, new Location(City.JOHOR_BAHRU),
-            new EducationLevel(EducationLevel.DegreeLevel.D, EducationLevel.FieldOfStudy.ACC, EducationLevel.University.UTM, 3.26),
-            new DoublyLinkedList<WorkExperience>() {
-                { add(new WorkExperience(WorkExperience.Industry.DESIGN_ARCH, 7)); }
-            },
-            new DoublyLinkedList<LanguageProficiency>() {
-                { add(new LanguageProficiency(LanguageProficiency.Language.JP, LanguageProficiency.Proficiency.ELEMENTARY)); }
-            },
-            new DoublyLinkedList<Skill>() {
-                { add(new Skill(Skill.SkillCategory.ACCOUNTING, "Auditing", Skill.ProficiencyLevel.EXPERT)); }
+        },
+                new DoublyLinkedList<Skill>() {
+            {
+                add(new Skill(JobPosting.Type.IT_COMM_TEC, "Networking", Skill.ProficiencyLevel.EXPERT));
             }
-        ));applicants.add(new Applicant("Sarah Moore", "applicant76@example.com", "018-3426689", JobPosting.Type.ACCOUNTING, new Location(City.KOTA_KINABALU),
-            new EducationLevel(EducationLevel.DegreeLevel.SC, EducationLevel.FieldOfStudy.MED, EducationLevel.University.USM, 3.8),
-            new DoublyLinkedList<WorkExperience>() {
-                { add(new WorkExperience(WorkExperience.Industry.DESIGN_ARCH, 7)); }
-            },
-            new DoublyLinkedList<LanguageProficiency>() {
-                { add(new LanguageProficiency(LanguageProficiency.Language.CH, LanguageProficiency.Proficiency.INTERMEDIATE)); }
-            },
-            new DoublyLinkedList<Skill>() {
-                { add(new Skill(Skill.SkillCategory.ACCOUNTING, "Bookkeeping", Skill.ProficiencyLevel.EXPERT)); }
+        }
+        ));
+        applicants.add(new Applicant("Whitney Peters", "applicant72@example.com", "012-6276722", JobPosting.Type.DESIGN_ARCH, new Location(City.IPOH),
+                new EducationLevel(EducationLevel.DegreeLevel.PhD, EducationLevel.FieldOfStudy.BBA, EducationLevel.University.TAYLORS, 3.74),
+                new DoublyLinkedList<WorkExperience>() {
+            {
+                add(new WorkExperience(WorkExperience.Industry.IT_COMM_TEC, 9));
             }
-        ));applicants.add(new Applicant("Angela Lopez", "applicant77@example.com", "015-6008935", JobPosting.Type.HEALTH_MED, new Location(City.SUNGAI_PETANI),
-            new EducationLevel(EducationLevel.DegreeLevel.SC, EducationLevel.FieldOfStudy.ARCH, EducationLevel.University.UCSI, 3.8),
-            new DoublyLinkedList<WorkExperience>() {
-                { add(new WorkExperience(WorkExperience.Industry.HR_RECRUIT, 9)); }
-            },
-            new DoublyLinkedList<LanguageProficiency>() {
-                { add(new LanguageProficiency(LanguageProficiency.Language.JP, LanguageProficiency.Proficiency.INTERMEDIATE)); }
-            },
-            new DoublyLinkedList<Skill>() {
-                { add(new Skill(Skill.SkillCategory.HEALTH_MED, "Clinical Procedures", Skill.ProficiencyLevel.EXPERT)); }
+        },
+                new DoublyLinkedList<LanguageProficiency>() {
+            {
+                add(new LanguageProficiency(LanguageProficiency.Language.JP, LanguageProficiency.Proficiency.ELEMENTARY));
             }
-        ));applicants.add(new Applicant("Megan Young", "applicant78@example.com", "019-7328534", JobPosting.Type.DESIGN_ARCH, new Location(City.KOTA_KINABALU),
-            new EducationLevel(EducationLevel.DegreeLevel.MD, EducationLevel.FieldOfStudy.ACC, EducationLevel.University.UPM, 3.36),
-            new DoublyLinkedList<WorkExperience>() {
-                { add(new WorkExperience(WorkExperience.Industry.ACCOUNTING, 7)); }
-            },
-            new DoublyLinkedList<LanguageProficiency>() {
-                { add(new LanguageProficiency(LanguageProficiency.Language.EN, LanguageProficiency.Proficiency.INTERMEDIATE)); }
-            },
-            new DoublyLinkedList<Skill>() {
-                { add(new Skill(Skill.SkillCategory.DESIGN_ARCH, "UX Design", Skill.ProficiencyLevel.EXPERT)); }
+        },
+                new DoublyLinkedList<Skill>() {
+            {
+                add(new Skill(JobPosting.Type.DESIGN_ARCH, "AutoCAD", Skill.ProficiencyLevel.EXPERT));
             }
-        ));applicants.add(new Applicant("Steve Sanchez", "applicant79@example.com", "017-7477326", JobPosting.Type.ACCOUNTING, new Location(City.KUANTAN_PAHANG),
-            new EducationLevel(EducationLevel.DegreeLevel.D, EducationLevel.FieldOfStudy.CS, EducationLevel.University.USM, 3.25),
-            new DoublyLinkedList<WorkExperience>() {
-                { add(new WorkExperience(WorkExperience.Industry.HEALTH_MED, 6)); }
-            },
-            new DoublyLinkedList<LanguageProficiency>() {
-                { add(new LanguageProficiency(LanguageProficiency.Language.EN, LanguageProficiency.Proficiency.ELEMENTARY)); }
-            },
-            new DoublyLinkedList<Skill>() {
-                { add(new Skill(Skill.SkillCategory.ACCOUNTING, "Tax Filing", Skill.ProficiencyLevel.EXPERT)); }
+        }
+        ));
+        applicants.add(new Applicant("Brittney Phillips", "applicant73@example.com", "014-9697969", JobPosting.Type.HEALTH_MED, new Location(City.IPOH),
+                new EducationLevel(EducationLevel.DegreeLevel.D, EducationLevel.FieldOfStudy.ARCH, EducationLevel.University.UCSI, 3.64),
+                new DoublyLinkedList<WorkExperience>() {
+            {
+                add(new WorkExperience(WorkExperience.Industry.ACCOUNTING, 5));
             }
-        ));applicants.add(new Applicant("Lisa Barnes", "applicant80@example.com", "019-8665981", JobPosting.Type.ACCOUNTING, new Location(City.JOHOR_BAHRU),
-            new EducationLevel(EducationLevel.DegreeLevel.D, EducationLevel.FieldOfStudy.ARCH, EducationLevel.University.USM, 2.61),
-            new DoublyLinkedList<WorkExperience>() {
-                { add(new WorkExperience(WorkExperience.Industry.DESIGN_ARCH, 6)); }
-            },
-            new DoublyLinkedList<LanguageProficiency>() {
-                { add(new LanguageProficiency(LanguageProficiency.Language.KR, LanguageProficiency.Proficiency.ELEMENTARY)); }
-            },
-            new DoublyLinkedList<Skill>() {
-                { add(new Skill(Skill.SkillCategory.ACCOUNTING, "Tax Filing", Skill.ProficiencyLevel.EXPERT)); }
+        },
+                new DoublyLinkedList<LanguageProficiency>() {
+            {
+                add(new LanguageProficiency(LanguageProficiency.Language.KR, LanguageProficiency.Proficiency.FLUENT));
             }
-        ));applicants.add(new Applicant("Kelly Donovan", "applicant81@example.com", "016-9952696", JobPosting.Type.DESIGN_ARCH, new Location(City.KOTA_KINABALU),
-            new EducationLevel(EducationLevel.DegreeLevel.D, EducationLevel.FieldOfStudy.MED, EducationLevel.University.UM, 3.43),
-            new DoublyLinkedList<WorkExperience>() {
-                { add(new WorkExperience(WorkExperience.Industry.ACCOUNTING, 5)); }
-            },
-            new DoublyLinkedList<LanguageProficiency>() {
-                { add(new LanguageProficiency(LanguageProficiency.Language.MY, LanguageProficiency.Proficiency.NATIVE)); }
-            },
-            new DoublyLinkedList<Skill>() {
-                { add(new Skill(Skill.SkillCategory.DESIGN_ARCH, "Illustrator", Skill.ProficiencyLevel.EXPERT)); }
+        },
+                new DoublyLinkedList<Skill>() {
+            {
+                add(new Skill(JobPosting.Type.HEALTH_MED, "Nursing Skills", Skill.ProficiencyLevel.EXPERT));
             }
-        ));applicants.add(new Applicant("Mike Allen", "applicant82@example.com", "012-2686231", JobPosting.Type.ACCOUNTING, new Location(City.KOTA_KINABALU),
-            new EducationLevel(EducationLevel.DegreeLevel.BD, EducationLevel.FieldOfStudy.CS, EducationLevel.University.UM, 2.99),
-            new DoublyLinkedList<WorkExperience>() {
-                { add(new WorkExperience(WorkExperience.Industry.IT_COMM_TEC, 5)); }
-            },
-            new DoublyLinkedList<LanguageProficiency>() {
-                { add(new LanguageProficiency(LanguageProficiency.Language.CH, LanguageProficiency.Proficiency.INTERMEDIATE)); }
-            },
-            new DoublyLinkedList<Skill>() {
-                { add(new Skill(Skill.SkillCategory.ACCOUNTING, "Accounts Payable", Skill.ProficiencyLevel.EXPERT)); }
+        }
+        ));
+        applicants.add(new Applicant("Lauren Daniels", "applicant74@example.com", "018-9132114", JobPosting.Type.IT_COMM_TEC, new Location(City.JOHOR_BAHRU),
+                new EducationLevel(EducationLevel.DegreeLevel.SC, EducationLevel.FieldOfStudy.SE, EducationLevel.University.USM, 2.97),
+                new DoublyLinkedList<WorkExperience>() {
+            {
+                add(new WorkExperience(WorkExperience.Industry.IT_COMM_TEC, 9));
             }
-        ));applicants.add(new Applicant("Michael Evans", "applicant83@example.com", "013-5096953", JobPosting.Type.HR_RECRUIT, new Location(City.MELAKA),
-            new EducationLevel(EducationLevel.DegreeLevel.SC, EducationLevel.FieldOfStudy.ARCH, EducationLevel.University.USM, 2.75),
-            new DoublyLinkedList<WorkExperience>() {
-                { add(new WorkExperience(WorkExperience.Industry.IT_COMM_TEC, 10)); }
-            },
-            new DoublyLinkedList<LanguageProficiency>() {
-                { add(new LanguageProficiency(LanguageProficiency.Language.JP, LanguageProficiency.Proficiency.FLUENT)); }
-            },
-            new DoublyLinkedList<Skill>() {
-                { add(new Skill(Skill.SkillCategory.HR_RECRUIT, "Conflict Resolution", Skill.ProficiencyLevel.EXPERT)); }
+        },
+                new DoublyLinkedList<LanguageProficiency>() {
+            {
+                add(new LanguageProficiency(LanguageProficiency.Language.JP, LanguageProficiency.Proficiency.NATIVE));
             }
-        ));applicants.add(new Applicant("Paul Jones", "applicant84@example.com", "013-4895475", JobPosting.Type.DESIGN_ARCH, new Location(City.KOTA_KINABALU),
-            new EducationLevel(EducationLevel.DegreeLevel.D, EducationLevel.FieldOfStudy.AI, EducationLevel.University.UM, 3.85),
-            new DoublyLinkedList<WorkExperience>() {
-                { add(new WorkExperience(WorkExperience.Industry.HR_RECRUIT, 5)); }
-            },
-            new DoublyLinkedList<LanguageProficiency>() {
-                { add(new LanguageProficiency(LanguageProficiency.Language.FR, LanguageProficiency.Proficiency.FLUENT)); }
-            },
-            new DoublyLinkedList<Skill>() {
-                { add(new Skill(Skill.SkillCategory.DESIGN_ARCH, "SketchUp", Skill.ProficiencyLevel.EXPERT)); }
+        },
+                new DoublyLinkedList<Skill>() {
+            {
+                add(new Skill(JobPosting.Type.IT_COMM_TEC, "Cybersecurity", Skill.ProficiencyLevel.EXPERT));
             }
-        ));applicants.add(new Applicant("Zachary Ferrell", "applicant85@example.com", "018-6797629", JobPosting.Type.DESIGN_ARCH, new Location(City.MELAKA),
-            new EducationLevel(EducationLevel.DegreeLevel.D, EducationLevel.FieldOfStudy.ACC, EducationLevel.University.UTM, 3.19),
-            new DoublyLinkedList<WorkExperience>() {
-                { add(new WorkExperience(WorkExperience.Industry.DESIGN_ARCH, 4)); }
-            },
-            new DoublyLinkedList<LanguageProficiency>() {
-                { add(new LanguageProficiency(LanguageProficiency.Language.JP, LanguageProficiency.Proficiency.ELEMENTARY)); }
-            },
-            new DoublyLinkedList<Skill>() {
-                { add(new Skill(Skill.SkillCategory.DESIGN_ARCH, "SketchUp", Skill.ProficiencyLevel.EXPERT)); }
+        }
+        ));
+        applicants.add(new Applicant("Amy Silva", "applicant75@example.com", "012-8741810", JobPosting.Type.ACCOUNTING, new Location(City.JOHOR_BAHRU),
+                new EducationLevel(EducationLevel.DegreeLevel.D, EducationLevel.FieldOfStudy.ACC, EducationLevel.University.UTM, 3.26),
+                new DoublyLinkedList<WorkExperience>() {
+            {
+                add(new WorkExperience(WorkExperience.Industry.DESIGN_ARCH, 7));
             }
-        ));applicants.add(new Applicant("Daniel Baker", "applicant86@example.com", "014-7398231", JobPosting.Type.DESIGN_ARCH, new Location(City.MELAKA),
-            new EducationLevel(EducationLevel.DegreeLevel.SC, EducationLevel.FieldOfStudy.AI, EducationLevel.University.UTM, 2.53),
-            new DoublyLinkedList<WorkExperience>() {
-                { add(new WorkExperience(WorkExperience.Industry.HR_RECRUIT, 5)); }
-            },
-            new DoublyLinkedList<LanguageProficiency>() {
-                { add(new LanguageProficiency(LanguageProficiency.Language.EN, LanguageProficiency.Proficiency.NATIVE)); }
-            },
-            new DoublyLinkedList<Skill>() {
-                { add(new Skill(Skill.SkillCategory.DESIGN_ARCH, "Revit", Skill.ProficiencyLevel.EXPERT)); }
+        },
+                new DoublyLinkedList<LanguageProficiency>() {
+            {
+                add(new LanguageProficiency(LanguageProficiency.Language.JP, LanguageProficiency.Proficiency.ELEMENTARY));
             }
-        ));applicants.add(new Applicant("Shirley Suarez", "applicant87@example.com", "018-5801541", JobPosting.Type.ACCOUNTING, new Location(City.SUNGAI_PETANI),
-            new EducationLevel(EducationLevel.DegreeLevel.SC, EducationLevel.FieldOfStudy.CE, EducationLevel.University.UPM, 3.45),
-            new DoublyLinkedList<WorkExperience>() {
-                { add(new WorkExperience(WorkExperience.Industry.HEALTH_MED, 5)); }
-            },
-            new DoublyLinkedList<LanguageProficiency>() {
-                { add(new LanguageProficiency(LanguageProficiency.Language.FR, LanguageProficiency.Proficiency.FLUENT)); }
-            },
-            new DoublyLinkedList<Skill>() {
-                { add(new Skill(Skill.SkillCategory.ACCOUNTING, "Tax Filing", Skill.ProficiencyLevel.EXPERT)); }
+        },
+                new DoublyLinkedList<Skill>() {
+            {
+                add(new Skill(JobPosting.Type.ACCOUNTING, "Auditing", Skill.ProficiencyLevel.EXPERT));
             }
-        ));applicants.add(new Applicant("Christopher Bass", "applicant88@example.com", "011-6183033", JobPosting.Type.HR_RECRUIT, new Location(City.SUNGAI_PETANI),
-            new EducationLevel(EducationLevel.DegreeLevel.PhD, EducationLevel.FieldOfStudy.NUR, EducationLevel.University.UiTM, 3.6),
-            new DoublyLinkedList<WorkExperience>() {
-                { add(new WorkExperience(WorkExperience.Industry.IT_COMM_TEC, 5)); }
-            },
-            new DoublyLinkedList<LanguageProficiency>() {
-                { add(new LanguageProficiency(LanguageProficiency.Language.CH, LanguageProficiency.Proficiency.ELEMENTARY)); }
-            },
-            new DoublyLinkedList<Skill>() {
-                { add(new Skill(Skill.SkillCategory.HR_RECRUIT, "Onboarding", Skill.ProficiencyLevel.EXPERT)); }
+        }
+        ));
+        applicants.add(new Applicant("Sarah Moore", "applicant76@example.com", "018-3426689", JobPosting.Type.ACCOUNTING, new Location(City.KOTA_KINABALU),
+                new EducationLevel(EducationLevel.DegreeLevel.SC, EducationLevel.FieldOfStudy.MED, EducationLevel.University.USM, 3.8),
+                new DoublyLinkedList<WorkExperience>() {
+            {
+                add(new WorkExperience(WorkExperience.Industry.DESIGN_ARCH, 7));
             }
-        ));applicants.add(new Applicant("Lisa Archer", "applicant89@example.com", "014-3217273", JobPosting.Type.HEALTH_MED, new Location(City.SUNGAI_PETANI),
-            new EducationLevel(EducationLevel.DegreeLevel.BD, EducationLevel.FieldOfStudy.MED, EducationLevel.University.TAYLORS, 3.87),
-            new DoublyLinkedList<WorkExperience>() {
-                { add(new WorkExperience(WorkExperience.Industry.ACCOUNTING, 5)); }
-            },
-            new DoublyLinkedList<LanguageProficiency>() {
-                { add(new LanguageProficiency(LanguageProficiency.Language.JP, LanguageProficiency.Proficiency.INTERMEDIATE)); }
-            },
-            new DoublyLinkedList<Skill>() {
-                { add(new Skill(Skill.SkillCategory.HEALTH_MED, "Clinical Procedures", Skill.ProficiencyLevel.EXPERT)); }
+        },
+                new DoublyLinkedList<LanguageProficiency>() {
+            {
+                add(new LanguageProficiency(LanguageProficiency.Language.CH, LanguageProficiency.Proficiency.INTERMEDIATE));
             }
-        ));applicants.add(new Applicant("Aimee Montoya", "applicant90@example.com", "012-8857296", JobPosting.Type.ACCOUNTING, new Location(City.JOHOR_BAHRU),
-            new EducationLevel(EducationLevel.DegreeLevel.MD, EducationLevel.FieldOfStudy.ARCH, EducationLevel.University.UUM, 3.95),
-            new DoublyLinkedList<WorkExperience>() {
-                { add(new WorkExperience(WorkExperience.Industry.HEALTH_MED, 6)); }
-            },
-            new DoublyLinkedList<LanguageProficiency>() {
-                { add(new LanguageProficiency(LanguageProficiency.Language.EN, LanguageProficiency.Proficiency.ELEMENTARY)); }
-            },
-            new DoublyLinkedList<Skill>() {
-                { add(new Skill(Skill.SkillCategory.ACCOUNTING, "Bookkeeping", Skill.ProficiencyLevel.EXPERT)); }
+        },
+                new DoublyLinkedList<Skill>() {
+            {
+                add(new Skill(JobPosting.Type.ACCOUNTING, "Bookkeeping", Skill.ProficiencyLevel.EXPERT));
             }
-        ));applicants.add(new Applicant("Matthew Mcmillan", "applicant91@example.com", "015-3073474", JobPosting.Type.DESIGN_ARCH, new Location(City.KOTA_KINABALU),
-            new EducationLevel(EducationLevel.DegreeLevel.BD, EducationLevel.FieldOfStudy.NUR, EducationLevel.University.UUM, 3.73),
-            new DoublyLinkedList<WorkExperience>() {
-                { add(new WorkExperience(WorkExperience.Industry.DESIGN_ARCH, 2)); }
-            },
-            new DoublyLinkedList<LanguageProficiency>() {
-                { add(new LanguageProficiency(LanguageProficiency.Language.FR, LanguageProficiency.Proficiency.FLUENT)); }
-            },
-            new DoublyLinkedList<Skill>() {
-                { add(new Skill(Skill.SkillCategory.DESIGN_ARCH, "UX Design", Skill.ProficiencyLevel.EXPERT)); }
+        }
+        ));
+        applicants.add(new Applicant("Angela Lopez", "applicant77@example.com", "015-6008935", JobPosting.Type.HEALTH_MED, new Location(City.SUNGAI_PETANI),
+                new EducationLevel(EducationLevel.DegreeLevel.SC, EducationLevel.FieldOfStudy.ARCH, EducationLevel.University.UCSI, 3.8),
+                new DoublyLinkedList<WorkExperience>() {
+            {
+                add(new WorkExperience(WorkExperience.Industry.HR_RECRUIT, 9));
             }
-        ));applicants.add(new Applicant("Brian Rodriguez", "applicant92@example.com", "011-6503032", JobPosting.Type.ACCOUNTING, new Location(City.MELAKA),
-            new EducationLevel(EducationLevel.DegreeLevel.PhD, EducationLevel.FieldOfStudy.ARCH, EducationLevel.University.UCSI, 3.86),
-            new DoublyLinkedList<WorkExperience>() {
-                { add(new WorkExperience(WorkExperience.Industry.DESIGN_ARCH, 7)); }
-            },
-            new DoublyLinkedList<LanguageProficiency>() {
-                { add(new LanguageProficiency(LanguageProficiency.Language.EN, LanguageProficiency.Proficiency.FLUENT)); }
-            },
-            new DoublyLinkedList<Skill>() {
-                { add(new Skill(Skill.SkillCategory.ACCOUNTING, "Bookkeeping", Skill.ProficiencyLevel.EXPERT)); }
+        },
+                new DoublyLinkedList<LanguageProficiency>() {
+            {
+                add(new LanguageProficiency(LanguageProficiency.Language.JP, LanguageProficiency.Proficiency.INTERMEDIATE));
             }
-        ));applicants.add(new Applicant("Denise Jacobs", "applicant93@example.com", "011-6106390", JobPosting.Type.IT_COMM_TEC, new Location(City.KOTA_KINABALU),
-            new EducationLevel(EducationLevel.DegreeLevel.PhD, EducationLevel.FieldOfStudy.SE, EducationLevel.University.TAYLORS, 2.7),
-            new DoublyLinkedList<WorkExperience>() {
-                { add(new WorkExperience(WorkExperience.Industry.HR_RECRUIT, 6)); }
-            },
-            new DoublyLinkedList<LanguageProficiency>() {
-                { add(new LanguageProficiency(LanguageProficiency.Language.FR, LanguageProficiency.Proficiency.ELEMENTARY)); }
-            },
-            new DoublyLinkedList<Skill>() {
-                { add(new Skill(Skill.SkillCategory.IT_COMM_TEC, "Software Testing", Skill.ProficiencyLevel.EXPERT)); }
+        },
+                new DoublyLinkedList<Skill>() {
+            {
+                add(new Skill(JobPosting.Type.HEALTH_MED, "Clinical Procedures", Skill.ProficiencyLevel.EXPERT));
             }
-        ));applicants.add(new Applicant("Christina Walters", "applicant94@example.com", "013-7960607", JobPosting.Type.IT_COMM_TEC, new Location(City.KUANTAN_PAHANG),
-            new EducationLevel(EducationLevel.DegreeLevel.D, EducationLevel.FieldOfStudy.NUR, EducationLevel.University.UUM, 3.91),
-            new DoublyLinkedList<WorkExperience>() {
-                { add(new WorkExperience(WorkExperience.Industry.DESIGN_ARCH, 1)); }
-            },
-            new DoublyLinkedList<LanguageProficiency>() {
-                { add(new LanguageProficiency(LanguageProficiency.Language.FR, LanguageProficiency.Proficiency.INTERMEDIATE)); }
-            },
-            new DoublyLinkedList<Skill>() {
-                { add(new Skill(Skill.SkillCategory.IT_COMM_TEC, "Cybersecurity", Skill.ProficiencyLevel.EXPERT)); }
+        }
+        ));
+        applicants.add(new Applicant("Megan Young", "applicant78@example.com", "019-7328534", JobPosting.Type.DESIGN_ARCH, new Location(City.KOTA_KINABALU),
+                new EducationLevel(EducationLevel.DegreeLevel.MD, EducationLevel.FieldOfStudy.ACC, EducationLevel.University.UPM, 3.36),
+                new DoublyLinkedList<WorkExperience>() {
+            {
+                add(new WorkExperience(WorkExperience.Industry.ACCOUNTING, 7));
             }
-        ));applicants.add(new Applicant("John Whitehead", "applicant95@example.com", "018-8460758", JobPosting.Type.DESIGN_ARCH, new Location(City.KUALA_LUMPUR),
-            new EducationLevel(EducationLevel.DegreeLevel.PhD, EducationLevel.FieldOfStudy.ARCH, EducationLevel.University.UiTM, 3.32),
-            new DoublyLinkedList<WorkExperience>() {
-                { add(new WorkExperience(WorkExperience.Industry.DESIGN_ARCH, 1)); }
-            },
-            new DoublyLinkedList<LanguageProficiency>() {
-                { add(new LanguageProficiency(LanguageProficiency.Language.JP, LanguageProficiency.Proficiency.INTERMEDIATE)); }
-            },
-            new DoublyLinkedList<Skill>() {
-                { add(new Skill(Skill.SkillCategory.DESIGN_ARCH, "Interior Design", Skill.ProficiencyLevel.EXPERT)); }
+        },
+                new DoublyLinkedList<LanguageProficiency>() {
+            {
+                add(new LanguageProficiency(LanguageProficiency.Language.EN, LanguageProficiency.Proficiency.INTERMEDIATE));
             }
-        ));applicants.add(new Applicant("Anna Henderson", "applicant96@example.com", "012-8628891", JobPosting.Type.ACCOUNTING, new Location(City.JOHOR_BAHRU),
-            new EducationLevel(EducationLevel.DegreeLevel.SC, EducationLevel.FieldOfStudy.CS, EducationLevel.University.UM, 3.68),
-            new DoublyLinkedList<WorkExperience>() {
-                { add(new WorkExperience(WorkExperience.Industry.ACCOUNTING, 3)); }
-            },
-            new DoublyLinkedList<LanguageProficiency>() {
-                { add(new LanguageProficiency(LanguageProficiency.Language.KR, LanguageProficiency.Proficiency.FLUENT)); }
-            },
-            new DoublyLinkedList<Skill>() {
-                { add(new Skill(Skill.SkillCategory.ACCOUNTING, "Tax Filing", Skill.ProficiencyLevel.EXPERT)); }
+        },
+                new DoublyLinkedList<Skill>() {
+            {
+                add(new Skill(JobPosting.Type.DESIGN_ARCH, "UX Design", Skill.ProficiencyLevel.EXPERT));
             }
-        ));applicants.add(new Applicant("Aaron Wise", "applicant97@example.com", "019-4475523", JobPosting.Type.ACCOUNTING, new Location(City.MELAKA),
-            new EducationLevel(EducationLevel.DegreeLevel.MD, EducationLevel.FieldOfStudy.CE, EducationLevel.University.USM, 3.68),
-            new DoublyLinkedList<WorkExperience>() {
-                { add(new WorkExperience(WorkExperience.Industry.HEALTH_MED, 1)); }
-            },
-            new DoublyLinkedList<LanguageProficiency>() {
-                { add(new LanguageProficiency(LanguageProficiency.Language.CH, LanguageProficiency.Proficiency.FLUENT)); }
-            },
-            new DoublyLinkedList<Skill>() {
-                { add(new Skill(Skill.SkillCategory.ACCOUNTING, "Budgeting", Skill.ProficiencyLevel.EXPERT)); }
+        }
+        ));
+        applicants.add(new Applicant("Steve Sanchez", "applicant79@example.com", "017-7477326", JobPosting.Type.ACCOUNTING, new Location(City.KUANTAN_PAHANG),
+                new EducationLevel(EducationLevel.DegreeLevel.D, EducationLevel.FieldOfStudy.CS, EducationLevel.University.USM, 3.25),
+                new DoublyLinkedList<WorkExperience>() {
+            {
+                add(new WorkExperience(WorkExperience.Industry.HEALTH_MED, 6));
             }
-        ));applicants.add(new Applicant("Deborah Figueroa", "applicant98@example.com", "019-5205279", JobPosting.Type.ACCOUNTING, new Location(City.SUNGAI_PETANI),
-            new EducationLevel(EducationLevel.DegreeLevel.PhD, EducationLevel.FieldOfStudy.ARCH, EducationLevel.University.UM, 2.7),
-            new DoublyLinkedList<WorkExperience>() {
-                { add(new WorkExperience(WorkExperience.Industry.DESIGN_ARCH, 4)); }
-            },
-            new DoublyLinkedList<LanguageProficiency>() {
-                { add(new LanguageProficiency(LanguageProficiency.Language.KR, LanguageProficiency.Proficiency.INTERMEDIATE)); }
-            },
-            new DoublyLinkedList<Skill>() {
-                { add(new Skill(Skill.SkillCategory.ACCOUNTING, "Bookkeeping", Skill.ProficiencyLevel.EXPERT)); }
+        },
+                new DoublyLinkedList<LanguageProficiency>() {
+            {
+                add(new LanguageProficiency(LanguageProficiency.Language.EN, LanguageProficiency.Proficiency.ELEMENTARY));
             }
-        ));applicants.add(new Applicant("Jessica Smith", "applicant99@example.com", "013-5452128", JobPosting.Type.ACCOUNTING, new Location(City.JOHOR_BAHRU),
-            new EducationLevel(EducationLevel.DegreeLevel.D, EducationLevel.FieldOfStudy.MED, EducationLevel.University.UKM, 3.62),
-            new DoublyLinkedList<WorkExperience>() {
-                { add(new WorkExperience(WorkExperience.Industry.HR_RECRUIT, 8)); }
-            },
-            new DoublyLinkedList<LanguageProficiency>() {
-                { add(new LanguageProficiency(LanguageProficiency.Language.CH, LanguageProficiency.Proficiency.NATIVE)); }
-            },
-            new DoublyLinkedList<Skill>() {
-                { add(new Skill(Skill.SkillCategory.ACCOUNTING, "Financial Reporting", Skill.ProficiencyLevel.EXPERT)); }
+        },
+                new DoublyLinkedList<Skill>() {
+            {
+                add(new Skill(JobPosting.Type.ACCOUNTING, "Tax Filing", Skill.ProficiencyLevel.EXPERT));
             }
-        ));applicants.add(new Applicant("Stephen Mckee", "applicant100@example.com", "019-4716988", JobPosting.Type.IT_COMM_TEC, new Location(City.MELAKA),
-            new EducationLevel(EducationLevel.DegreeLevel.SC, EducationLevel.FieldOfStudy.AI, EducationLevel.University.UCSI, 3.47),
-            new DoublyLinkedList<WorkExperience>() {
-                { add(new WorkExperience(WorkExperience.Industry.IT_COMM_TEC, 1)); }
-            },
-            new DoublyLinkedList<LanguageProficiency>() {
-                { add(new LanguageProficiency(LanguageProficiency.Language.JP, LanguageProficiency.Proficiency.ELEMENTARY)); }
-            },
-            new DoublyLinkedList<Skill>() {
-                { add(new Skill(Skill.SkillCategory.IT_COMM_TEC, "Machine Learning", Skill.ProficiencyLevel.EXPERT)); }
+        }
+        ));
+        applicants.add(new Applicant("Lisa Barnes", "applicant80@example.com", "019-8665981", JobPosting.Type.ACCOUNTING, new Location(City.JOHOR_BAHRU),
+                new EducationLevel(EducationLevel.DegreeLevel.D, EducationLevel.FieldOfStudy.ARCH, EducationLevel.University.USM, 2.61),
+                new DoublyLinkedList<WorkExperience>() {
+            {
+                add(new WorkExperience(WorkExperience.Industry.DESIGN_ARCH, 6));
             }
-        ));applicants.add(new Applicant("Sandra Aguilar", "applicant101@example.com", "012-9225346", JobPosting.Type.HR_RECRUIT, new Location(City.KUANTAN_PAHANG),
-            new EducationLevel(EducationLevel.DegreeLevel.PhD, EducationLevel.FieldOfStudy.IT, EducationLevel.University.UiTM, 3.41),
-            new DoublyLinkedList<WorkExperience>() {
-                { add(new WorkExperience(WorkExperience.Industry.IT_COMM_TEC, 3)); }
-            },
-            new DoublyLinkedList<LanguageProficiency>() {
-                { add(new LanguageProficiency(LanguageProficiency.Language.CH, LanguageProficiency.Proficiency.INTERMEDIATE)); }
-            },
-            new DoublyLinkedList<Skill>() {
-                { add(new Skill(Skill.SkillCategory.HR_RECRUIT, "Performance Reviews", Skill.ProficiencyLevel.EXPERT)); }
+        },
+                new DoublyLinkedList<LanguageProficiency>() {
+            {
+                add(new LanguageProficiency(LanguageProficiency.Language.KR, LanguageProficiency.Proficiency.ELEMENTARY));
             }
-        ));applicants.add(new Applicant("Cameron Parker", "applicant102@example.com", "019-5947563", JobPosting.Type.HEALTH_MED, new Location(City.KOTA_KINABALU),
-            new EducationLevel(EducationLevel.DegreeLevel.SC, EducationLevel.FieldOfStudy.BBA, EducationLevel.University.UKM, 3.69),
-            new DoublyLinkedList<WorkExperience>() {
-                { add(new WorkExperience(WorkExperience.Industry.IT_COMM_TEC, 9)); }
-            },
-            new DoublyLinkedList<LanguageProficiency>() {
-                { add(new LanguageProficiency(LanguageProficiency.Language.FR, LanguageProficiency.Proficiency.FLUENT)); }
-            },
-            new DoublyLinkedList<Skill>() {
-                { add(new Skill(Skill.SkillCategory.HEALTH_MED, "Medical Coding", Skill.ProficiencyLevel.EXPERT)); }
+        },
+                new DoublyLinkedList<Skill>() {
+            {
+                add(new Skill(JobPosting.Type.ACCOUNTING, "Tax Filing", Skill.ProficiencyLevel.EXPERT));
             }
-        ));applicants.add(new Applicant("Rebecca Valencia", "applicant103@example.com", "018-4833486", JobPosting.Type.DESIGN_ARCH, new Location(City.KOTA_KINABALU),
-            new EducationLevel(EducationLevel.DegreeLevel.D, EducationLevel.FieldOfStudy.BBA, EducationLevel.University.UUM, 3.59),
-            new DoublyLinkedList<WorkExperience>() {
-                { add(new WorkExperience(WorkExperience.Industry.DESIGN_ARCH, 7)); }
-            },
-            new DoublyLinkedList<LanguageProficiency>() {
-                { add(new LanguageProficiency(LanguageProficiency.Language.CH, LanguageProficiency.Proficiency.INTERMEDIATE)); }
-            },
-            new DoublyLinkedList<Skill>() {
-                { add(new Skill(Skill.SkillCategory.DESIGN_ARCH, "Photoshop", Skill.ProficiencyLevel.EXPERT)); }
+        }
+        ));
+        applicants.add(new Applicant("Kelly Donovan", "applicant81@example.com", "016-9952696", JobPosting.Type.DESIGN_ARCH, new Location(City.KOTA_KINABALU),
+                new EducationLevel(EducationLevel.DegreeLevel.D, EducationLevel.FieldOfStudy.MED, EducationLevel.University.UM, 3.43),
+                new DoublyLinkedList<WorkExperience>() {
+            {
+                add(new WorkExperience(WorkExperience.Industry.ACCOUNTING, 5));
             }
-        ));applicants.add(new Applicant("Christine Wright", "applicant104@example.com", "013-8956894", JobPosting.Type.IT_COMM_TEC, new Location(City.JOHOR_BAHRU),
-            new EducationLevel(EducationLevel.DegreeLevel.PhD, EducationLevel.FieldOfStudy.IT, EducationLevel.University.UUM, 2.64),
-            new DoublyLinkedList<WorkExperience>() {
-                { add(new WorkExperience(WorkExperience.Industry.DESIGN_ARCH, 3)); }
-            },
-            new DoublyLinkedList<LanguageProficiency>() {
-                { add(new LanguageProficiency(LanguageProficiency.Language.KR, LanguageProficiency.Proficiency.NATIVE)); }
-            },
-            new DoublyLinkedList<Skill>() {
-                { add(new Skill(Skill.SkillCategory.IT_COMM_TEC, "Software Testing", Skill.ProficiencyLevel.EXPERT)); }
+        },
+                new DoublyLinkedList<LanguageProficiency>() {
+            {
+                add(new LanguageProficiency(LanguageProficiency.Language.MY, LanguageProficiency.Proficiency.NATIVE));
             }
-        ));applicants.add(new Applicant("Richard Henson", "applicant105@example.com", "019-6530541", JobPosting.Type.IT_COMM_TEC, new Location(City.KUANTAN_PAHANG),
-            new EducationLevel(EducationLevel.DegreeLevel.D, EducationLevel.FieldOfStudy.CE, EducationLevel.University.UUM, 3.8),
-            new DoublyLinkedList<WorkExperience>() {
-                { add(new WorkExperience(WorkExperience.Industry.IT_COMM_TEC, 5)); }
-            },
-            new DoublyLinkedList<LanguageProficiency>() {
-                { add(new LanguageProficiency(LanguageProficiency.Language.KR, LanguageProficiency.Proficiency.INTERMEDIATE)); }
-            },
-            new DoublyLinkedList<Skill>() {
-                { add(new Skill(Skill.SkillCategory.IT_COMM_TEC, "Cloud Computing", Skill.ProficiencyLevel.EXPERT)); }
+        },
+                new DoublyLinkedList<Skill>() {
+            {
+                add(new Skill(JobPosting.Type.DESIGN_ARCH, "Illustrator", Skill.ProficiencyLevel.EXPERT));
             }
-        ));applicants.add(new Applicant("Marc Moore", "applicant106@example.com", "012-9512969", JobPosting.Type.ACCOUNTING, new Location(City.KUALA_LUMPUR),
-            new EducationLevel(EducationLevel.DegreeLevel.D, EducationLevel.FieldOfStudy.SE, EducationLevel.University.UKM, 3.03),
-            new DoublyLinkedList<WorkExperience>() {
-                { add(new WorkExperience(WorkExperience.Industry.HEALTH_MED, 6)); }
-            },
-            new DoublyLinkedList<LanguageProficiency>() {
-                { add(new LanguageProficiency(LanguageProficiency.Language.EN, LanguageProficiency.Proficiency.INTERMEDIATE)); }
-            },
-            new DoublyLinkedList<Skill>() {
-                { add(new Skill(Skill.SkillCategory.ACCOUNTING, "QuickBooks", Skill.ProficiencyLevel.EXPERT)); }
+        }
+        ));
+        applicants.add(new Applicant("Mike Allen", "applicant82@example.com", "012-2686231", JobPosting.Type.ACCOUNTING, new Location(City.KOTA_KINABALU),
+                new EducationLevel(EducationLevel.DegreeLevel.BD, EducationLevel.FieldOfStudy.CS, EducationLevel.University.UM, 2.99),
+                new DoublyLinkedList<WorkExperience>() {
+            {
+                add(new WorkExperience(WorkExperience.Industry.IT_COMM_TEC, 5));
             }
-        ));applicants.add(new Applicant("Sharon Cherry", "applicant107@example.com", "014-8199311", JobPosting.Type.HEALTH_MED, new Location(City.SUNGAI_PETANI),
-            new EducationLevel(EducationLevel.DegreeLevel.SC, EducationLevel.FieldOfStudy.NUR, EducationLevel.University.TAYLORS, 2.54),
-            new DoublyLinkedList<WorkExperience>() {
-                { add(new WorkExperience(WorkExperience.Industry.DESIGN_ARCH, 1)); }
-            },
-            new DoublyLinkedList<LanguageProficiency>() {
-                { add(new LanguageProficiency(LanguageProficiency.Language.MY, LanguageProficiency.Proficiency.INTERMEDIATE)); }
-            },
-            new DoublyLinkedList<Skill>() {
-                { add(new Skill(Skill.SkillCategory.HEALTH_MED, "Nursing Skills", Skill.ProficiencyLevel.EXPERT)); }
+        },
+                new DoublyLinkedList<LanguageProficiency>() {
+            {
+                add(new LanguageProficiency(LanguageProficiency.Language.CH, LanguageProficiency.Proficiency.INTERMEDIATE));
             }
-        ));applicants.add(new Applicant("Sierra Johnson", "applicant108@example.com", "016-6889195", JobPosting.Type.ACCOUNTING, new Location(City.JOHOR_BAHRU),
-            new EducationLevel(EducationLevel.DegreeLevel.MD, EducationLevel.FieldOfStudy.NUR, EducationLevel.University.UUM, 2.6),
-            new DoublyLinkedList<WorkExperience>() {
-                { add(new WorkExperience(WorkExperience.Industry.IT_COMM_TEC, 2)); }
-            },
-            new DoublyLinkedList<LanguageProficiency>() {
-                { add(new LanguageProficiency(LanguageProficiency.Language.FR, LanguageProficiency.Proficiency.FLUENT)); }
-            },
-            new DoublyLinkedList<Skill>() {
-                { add(new Skill(Skill.SkillCategory.ACCOUNTING, "Accounts Payable", Skill.ProficiencyLevel.EXPERT)); }
+        },
+                new DoublyLinkedList<Skill>() {
+            {
+                add(new Skill(JobPosting.Type.ACCOUNTING, "Accounts Payable", Skill.ProficiencyLevel.EXPERT));
             }
+        }
+        ));
+        applicants.add(new Applicant("Michael Evans", "applicant83@example.com", "013-5096953", JobPosting.Type.HR_RECRUIT, new Location(City.MELAKA),
+                new EducationLevel(EducationLevel.DegreeLevel.SC, EducationLevel.FieldOfStudy.ARCH, EducationLevel.University.USM, 2.75),
+                new DoublyLinkedList<WorkExperience>() {
+            {
+                add(new WorkExperience(WorkExperience.Industry.IT_COMM_TEC, 10));
+            }
+        },
+                new DoublyLinkedList<LanguageProficiency>() {
+            {
+                add(new LanguageProficiency(LanguageProficiency.Language.JP, LanguageProficiency.Proficiency.FLUENT));
+            }
+        },
+                new DoublyLinkedList<Skill>() {
+            {
+                add(new Skill(JobPosting.Type.HR_RECRUIT, "Conflict Resolution", Skill.ProficiencyLevel.EXPERT));
+            }
+        }
+        ));
+        applicants.add(new Applicant("Paul Jones", "applicant84@example.com", "013-4895475", JobPosting.Type.DESIGN_ARCH, new Location(City.KOTA_KINABALU),
+                new EducationLevel(EducationLevel.DegreeLevel.D, EducationLevel.FieldOfStudy.AI, EducationLevel.University.UM, 3.85),
+                new DoublyLinkedList<WorkExperience>() {
+            {
+                add(new WorkExperience(WorkExperience.Industry.HR_RECRUIT, 5));
+            }
+        },
+                new DoublyLinkedList<LanguageProficiency>() {
+            {
+                add(new LanguageProficiency(LanguageProficiency.Language.FR, LanguageProficiency.Proficiency.FLUENT));
+            }
+        },
+                new DoublyLinkedList<Skill>() {
+            {
+                add(new Skill(JobPosting.Type.DESIGN_ARCH, "SketchUp", Skill.ProficiencyLevel.EXPERT));
+            }
+        }
+        ));
+        applicants.add(new Applicant("Zachary Ferrell", "applicant85@example.com", "018-6797629", JobPosting.Type.DESIGN_ARCH, new Location(City.MELAKA),
+                new EducationLevel(EducationLevel.DegreeLevel.D, EducationLevel.FieldOfStudy.ACC, EducationLevel.University.UTM, 3.19),
+                new DoublyLinkedList<WorkExperience>() {
+            {
+                add(new WorkExperience(WorkExperience.Industry.DESIGN_ARCH, 4));
+            }
+        },
+                new DoublyLinkedList<LanguageProficiency>() {
+            {
+                add(new LanguageProficiency(LanguageProficiency.Language.JP, LanguageProficiency.Proficiency.ELEMENTARY));
+            }
+        },
+                new DoublyLinkedList<Skill>() {
+            {
+                add(new Skill(JobPosting.Type.DESIGN_ARCH, "SketchUp", Skill.ProficiencyLevel.EXPERT));
+            }
+        }
+        ));
+        applicants.add(new Applicant("Daniel Baker", "applicant86@example.com", "014-7398231", JobPosting.Type.DESIGN_ARCH, new Location(City.MELAKA),
+                new EducationLevel(EducationLevel.DegreeLevel.SC, EducationLevel.FieldOfStudy.AI, EducationLevel.University.UTM, 2.53),
+                new DoublyLinkedList<WorkExperience>() {
+            {
+                add(new WorkExperience(WorkExperience.Industry.HR_RECRUIT, 5));
+            }
+        },
+                new DoublyLinkedList<LanguageProficiency>() {
+            {
+                add(new LanguageProficiency(LanguageProficiency.Language.EN, LanguageProficiency.Proficiency.NATIVE));
+            }
+        },
+                new DoublyLinkedList<Skill>() {
+            {
+                add(new Skill(JobPosting.Type.DESIGN_ARCH, "Revit", Skill.ProficiencyLevel.EXPERT));
+            }
+        }
+        ));
+        applicants.add(new Applicant("Shirley Suarez", "applicant87@example.com", "018-5801541", JobPosting.Type.ACCOUNTING, new Location(City.SUNGAI_PETANI),
+                new EducationLevel(EducationLevel.DegreeLevel.SC, EducationLevel.FieldOfStudy.CE, EducationLevel.University.UPM, 3.45),
+                new DoublyLinkedList<WorkExperience>() {
+            {
+                add(new WorkExperience(WorkExperience.Industry.HEALTH_MED, 5));
+            }
+        },
+                new DoublyLinkedList<LanguageProficiency>() {
+            {
+                add(new LanguageProficiency(LanguageProficiency.Language.FR, LanguageProficiency.Proficiency.FLUENT));
+            }
+        },
+                new DoublyLinkedList<Skill>() {
+            {
+                add(new Skill(JobPosting.Type.ACCOUNTING, "Tax Filing", Skill.ProficiencyLevel.EXPERT));
+            }
+        }
+        ));
+        applicants.add(new Applicant("Christopher Bass", "applicant88@example.com", "011-6183033", JobPosting.Type.HR_RECRUIT, new Location(City.SUNGAI_PETANI),
+                new EducationLevel(EducationLevel.DegreeLevel.PhD, EducationLevel.FieldOfStudy.NUR, EducationLevel.University.UiTM, 3.6),
+                new DoublyLinkedList<WorkExperience>() {
+            {
+                add(new WorkExperience(WorkExperience.Industry.IT_COMM_TEC, 5));
+            }
+        },
+                new DoublyLinkedList<LanguageProficiency>() {
+            {
+                add(new LanguageProficiency(LanguageProficiency.Language.CH, LanguageProficiency.Proficiency.ELEMENTARY));
+            }
+        },
+                new DoublyLinkedList<Skill>() {
+            {
+                add(new Skill(JobPosting.Type.HR_RECRUIT, "Onboarding", Skill.ProficiencyLevel.EXPERT));
+            }
+        }
+        ));
+        applicants.add(new Applicant("Lisa Archer", "applicant89@example.com", "014-3217273", JobPosting.Type.HEALTH_MED, new Location(City.SUNGAI_PETANI),
+                new EducationLevel(EducationLevel.DegreeLevel.BD, EducationLevel.FieldOfStudy.MED, EducationLevel.University.TAYLORS, 3.87),
+                new DoublyLinkedList<WorkExperience>() {
+            {
+                add(new WorkExperience(WorkExperience.Industry.ACCOUNTING, 5));
+            }
+        },
+                new DoublyLinkedList<LanguageProficiency>() {
+            {
+                add(new LanguageProficiency(LanguageProficiency.Language.JP, LanguageProficiency.Proficiency.INTERMEDIATE));
+            }
+        },
+                new DoublyLinkedList<Skill>() {
+            {
+                add(new Skill(JobPosting.Type.HEALTH_MED, "Clinical Procedures", Skill.ProficiencyLevel.EXPERT));
+            }
+        }
+        ));
+        applicants.add(new Applicant("Aimee Montoya", "applicant90@example.com", "012-8857296", JobPosting.Type.ACCOUNTING, new Location(City.JOHOR_BAHRU),
+                new EducationLevel(EducationLevel.DegreeLevel.MD, EducationLevel.FieldOfStudy.ARCH, EducationLevel.University.UUM, 3.95),
+                new DoublyLinkedList<WorkExperience>() {
+            {
+                add(new WorkExperience(WorkExperience.Industry.HEALTH_MED, 6));
+            }
+        },
+                new DoublyLinkedList<LanguageProficiency>() {
+            {
+                add(new LanguageProficiency(LanguageProficiency.Language.EN, LanguageProficiency.Proficiency.ELEMENTARY));
+            }
+        },
+                new DoublyLinkedList<Skill>() {
+            {
+                add(new Skill(JobPosting.Type.ACCOUNTING, "Bookkeeping", Skill.ProficiencyLevel.EXPERT));
+            }
+        }
+        ));
+        applicants.add(new Applicant("Matthew Mcmillan", "applicant91@example.com", "015-3073474", JobPosting.Type.DESIGN_ARCH, new Location(City.KOTA_KINABALU),
+                new EducationLevel(EducationLevel.DegreeLevel.BD, EducationLevel.FieldOfStudy.NUR, EducationLevel.University.UUM, 3.73),
+                new DoublyLinkedList<WorkExperience>() {
+            {
+                add(new WorkExperience(WorkExperience.Industry.DESIGN_ARCH, 2));
+            }
+        },
+                new DoublyLinkedList<LanguageProficiency>() {
+            {
+                add(new LanguageProficiency(LanguageProficiency.Language.FR, LanguageProficiency.Proficiency.FLUENT));
+            }
+        },
+                new DoublyLinkedList<Skill>() {
+            {
+                add(new Skill(JobPosting.Type.DESIGN_ARCH, "UX Design", Skill.ProficiencyLevel.EXPERT));
+            }
+        }
+        ));
+        applicants.add(new Applicant("Brian Rodriguez", "applicant92@example.com", "011-6503032", JobPosting.Type.ACCOUNTING, new Location(City.MELAKA),
+                new EducationLevel(EducationLevel.DegreeLevel.PhD, EducationLevel.FieldOfStudy.ARCH, EducationLevel.University.UCSI, 3.86),
+                new DoublyLinkedList<WorkExperience>() {
+            {
+                add(new WorkExperience(WorkExperience.Industry.DESIGN_ARCH, 7));
+            }
+        },
+                new DoublyLinkedList<LanguageProficiency>() {
+            {
+                add(new LanguageProficiency(LanguageProficiency.Language.EN, LanguageProficiency.Proficiency.FLUENT));
+            }
+        },
+                new DoublyLinkedList<Skill>() {
+            {
+                add(new Skill(JobPosting.Type.ACCOUNTING, "Bookkeeping", Skill.ProficiencyLevel.EXPERT));
+            }
+        }
+        ));
+        applicants.add(new Applicant("Denise Jacobs", "applicant93@example.com", "011-6106390", JobPosting.Type.IT_COMM_TEC, new Location(City.KOTA_KINABALU),
+                new EducationLevel(EducationLevel.DegreeLevel.PhD, EducationLevel.FieldOfStudy.SE, EducationLevel.University.TAYLORS, 2.7),
+                new DoublyLinkedList<WorkExperience>() {
+            {
+                add(new WorkExperience(WorkExperience.Industry.HR_RECRUIT, 6));
+            }
+        },
+                new DoublyLinkedList<LanguageProficiency>() {
+            {
+                add(new LanguageProficiency(LanguageProficiency.Language.FR, LanguageProficiency.Proficiency.ELEMENTARY));
+            }
+        },
+                new DoublyLinkedList<Skill>() {
+            {
+                add(new Skill(JobPosting.Type.IT_COMM_TEC, "Software Testing", Skill.ProficiencyLevel.EXPERT));
+            }
+        }
+        ));
+        applicants.add(new Applicant("Christina Walters", "applicant94@example.com", "013-7960607", JobPosting.Type.IT_COMM_TEC, new Location(City.KUANTAN_PAHANG),
+                new EducationLevel(EducationLevel.DegreeLevel.D, EducationLevel.FieldOfStudy.NUR, EducationLevel.University.UUM, 3.91),
+                new DoublyLinkedList<WorkExperience>() {
+            {
+                add(new WorkExperience(WorkExperience.Industry.DESIGN_ARCH, 1));
+            }
+        },
+                new DoublyLinkedList<LanguageProficiency>() {
+            {
+                add(new LanguageProficiency(LanguageProficiency.Language.FR, LanguageProficiency.Proficiency.INTERMEDIATE));
+            }
+        },
+                new DoublyLinkedList<Skill>() {
+            {
+                add(new Skill(JobPosting.Type.IT_COMM_TEC, "Cybersecurity", Skill.ProficiencyLevel.EXPERT));
+            }
+        }
+        ));
+        applicants.add(new Applicant("John Whitehead", "applicant95@example.com", "018-8460758", JobPosting.Type.DESIGN_ARCH, new Location(City.KUALA_LUMPUR),
+                new EducationLevel(EducationLevel.DegreeLevel.PhD, EducationLevel.FieldOfStudy.ARCH, EducationLevel.University.UiTM, 3.32),
+                new DoublyLinkedList<WorkExperience>() {
+            {
+                add(new WorkExperience(WorkExperience.Industry.DESIGN_ARCH, 1));
+            }
+        },
+                new DoublyLinkedList<LanguageProficiency>() {
+            {
+                add(new LanguageProficiency(LanguageProficiency.Language.JP, LanguageProficiency.Proficiency.INTERMEDIATE));
+            }
+        },
+                new DoublyLinkedList<Skill>() {
+            {
+                add(new Skill(JobPosting.Type.DESIGN_ARCH, "Interior Design", Skill.ProficiencyLevel.EXPERT));
+            }
+        }
+        ));
+        applicants.add(new Applicant("Anna Henderson", "applicant96@example.com", "012-8628891", JobPosting.Type.ACCOUNTING, new Location(City.JOHOR_BAHRU),
+                new EducationLevel(EducationLevel.DegreeLevel.SC, EducationLevel.FieldOfStudy.CS, EducationLevel.University.UM, 3.68),
+                new DoublyLinkedList<WorkExperience>() {
+            {
+                add(new WorkExperience(WorkExperience.Industry.ACCOUNTING, 3));
+            }
+        },
+                new DoublyLinkedList<LanguageProficiency>() {
+            {
+                add(new LanguageProficiency(LanguageProficiency.Language.KR, LanguageProficiency.Proficiency.FLUENT));
+            }
+        },
+                new DoublyLinkedList<Skill>() {
+            {
+                add(new Skill(JobPosting.Type.ACCOUNTING, "Tax Filing", Skill.ProficiencyLevel.EXPERT));
+            }
+        }
+        ));
+        applicants.add(new Applicant("Aaron Wise", "applicant97@example.com", "019-4475523", JobPosting.Type.ACCOUNTING, new Location(City.MELAKA),
+                new EducationLevel(EducationLevel.DegreeLevel.MD, EducationLevel.FieldOfStudy.CE, EducationLevel.University.USM, 3.68),
+                new DoublyLinkedList<WorkExperience>() {
+            {
+                add(new WorkExperience(WorkExperience.Industry.HEALTH_MED, 1));
+            }
+        },
+                new DoublyLinkedList<LanguageProficiency>() {
+            {
+                add(new LanguageProficiency(LanguageProficiency.Language.CH, LanguageProficiency.Proficiency.FLUENT));
+            }
+        },
+                new DoublyLinkedList<Skill>() {
+            {
+                add(new Skill(JobPosting.Type.ACCOUNTING, "Budgeting", Skill.ProficiencyLevel.EXPERT));
+            }
+        }
+        ));
+        applicants.add(new Applicant("Deborah Figueroa", "applicant98@example.com", "019-5205279", JobPosting.Type.ACCOUNTING, new Location(City.SUNGAI_PETANI),
+                new EducationLevel(EducationLevel.DegreeLevel.PhD, EducationLevel.FieldOfStudy.ARCH, EducationLevel.University.UM, 2.7),
+                new DoublyLinkedList<WorkExperience>() {
+            {
+                add(new WorkExperience(WorkExperience.Industry.DESIGN_ARCH, 4));
+            }
+        },
+                new DoublyLinkedList<LanguageProficiency>() {
+            {
+                add(new LanguageProficiency(LanguageProficiency.Language.KR, LanguageProficiency.Proficiency.INTERMEDIATE));
+            }
+        },
+                new DoublyLinkedList<Skill>() {
+            {
+                add(new Skill(JobPosting.Type.ACCOUNTING, "Bookkeeping", Skill.ProficiencyLevel.EXPERT));
+            }
+        }
+        ));
+        applicants.add(new Applicant("Jessica Smith", "applicant99@example.com", "013-5452128", JobPosting.Type.ACCOUNTING, new Location(City.JOHOR_BAHRU),
+                new EducationLevel(EducationLevel.DegreeLevel.D, EducationLevel.FieldOfStudy.MED, EducationLevel.University.UKM, 3.62),
+                new DoublyLinkedList<WorkExperience>() {
+            {
+                add(new WorkExperience(WorkExperience.Industry.HR_RECRUIT, 8));
+            }
+        },
+                new DoublyLinkedList<LanguageProficiency>() {
+            {
+                add(new LanguageProficiency(LanguageProficiency.Language.CH, LanguageProficiency.Proficiency.NATIVE));
+            }
+        },
+                new DoublyLinkedList<Skill>() {
+            {
+                add(new Skill(JobPosting.Type.ACCOUNTING, "Financial Reporting", Skill.ProficiencyLevel.EXPERT));
+            }
+        }
+        ));
+        applicants.add(new Applicant("Stephen Mckee", "applicant100@example.com", "019-4716988", JobPosting.Type.IT_COMM_TEC, new Location(City.MELAKA),
+                new EducationLevel(EducationLevel.DegreeLevel.SC, EducationLevel.FieldOfStudy.AI, EducationLevel.University.UCSI, 3.47),
+                new DoublyLinkedList<WorkExperience>() {
+            {
+                add(new WorkExperience(WorkExperience.Industry.IT_COMM_TEC, 1));
+            }
+        },
+                new DoublyLinkedList<LanguageProficiency>() {
+            {
+                add(new LanguageProficiency(LanguageProficiency.Language.JP, LanguageProficiency.Proficiency.ELEMENTARY));
+            }
+        },
+                new DoublyLinkedList<Skill>() {
+            {
+                add(new Skill(JobPosting.Type.IT_COMM_TEC, "Machine Learning", Skill.ProficiencyLevel.EXPERT));
+            }
+        }
+        ));
+        applicants.add(new Applicant("Sandra Aguilar", "applicant101@example.com", "012-9225346", JobPosting.Type.HR_RECRUIT, new Location(City.KUANTAN_PAHANG),
+                new EducationLevel(EducationLevel.DegreeLevel.PhD, EducationLevel.FieldOfStudy.IT, EducationLevel.University.UiTM, 3.41),
+                new DoublyLinkedList<WorkExperience>() {
+            {
+                add(new WorkExperience(WorkExperience.Industry.IT_COMM_TEC, 3));
+            }
+        },
+                new DoublyLinkedList<LanguageProficiency>() {
+            {
+                add(new LanguageProficiency(LanguageProficiency.Language.CH, LanguageProficiency.Proficiency.INTERMEDIATE));
+            }
+        },
+                new DoublyLinkedList<Skill>() {
+            {
+                add(new Skill(JobPosting.Type.HR_RECRUIT, "Performance Reviews", Skill.ProficiencyLevel.EXPERT));
+            }
+        }
+        ));
+        applicants.add(new Applicant("Cameron Parker", "applicant102@example.com", "019-5947563", JobPosting.Type.HEALTH_MED, new Location(City.KOTA_KINABALU),
+                new EducationLevel(EducationLevel.DegreeLevel.SC, EducationLevel.FieldOfStudy.BBA, EducationLevel.University.UKM, 3.69),
+                new DoublyLinkedList<WorkExperience>() {
+            {
+                add(new WorkExperience(WorkExperience.Industry.IT_COMM_TEC, 9));
+            }
+        },
+                new DoublyLinkedList<LanguageProficiency>() {
+            {
+                add(new LanguageProficiency(LanguageProficiency.Language.FR, LanguageProficiency.Proficiency.FLUENT));
+            }
+        },
+                new DoublyLinkedList<Skill>() {
+            {
+                add(new Skill(JobPosting.Type.HEALTH_MED, "Medical Coding", Skill.ProficiencyLevel.EXPERT));
+            }
+        }
+        ));
+        applicants.add(new Applicant("Rebecca Valencia", "applicant103@example.com", "018-4833486", JobPosting.Type.DESIGN_ARCH, new Location(City.KOTA_KINABALU),
+                new EducationLevel(EducationLevel.DegreeLevel.D, EducationLevel.FieldOfStudy.BBA, EducationLevel.University.UUM, 3.59),
+                new DoublyLinkedList<WorkExperience>() {
+            {
+                add(new WorkExperience(WorkExperience.Industry.DESIGN_ARCH, 7));
+            }
+        },
+                new DoublyLinkedList<LanguageProficiency>() {
+            {
+                add(new LanguageProficiency(LanguageProficiency.Language.CH, LanguageProficiency.Proficiency.INTERMEDIATE));
+            }
+        },
+                new DoublyLinkedList<Skill>() {
+            {
+                add(new Skill(JobPosting.Type.DESIGN_ARCH, "Photoshop", Skill.ProficiencyLevel.EXPERT));
+            }
+        }
+        ));
+        applicants.add(new Applicant("Christine Wright", "applicant104@example.com", "013-8956894", JobPosting.Type.IT_COMM_TEC, new Location(City.JOHOR_BAHRU),
+                new EducationLevel(EducationLevel.DegreeLevel.PhD, EducationLevel.FieldOfStudy.IT, EducationLevel.University.UUM, 2.64),
+                new DoublyLinkedList<WorkExperience>() {
+            {
+                add(new WorkExperience(WorkExperience.Industry.DESIGN_ARCH, 3));
+            }
+        },
+                new DoublyLinkedList<LanguageProficiency>() {
+            {
+                add(new LanguageProficiency(LanguageProficiency.Language.KR, LanguageProficiency.Proficiency.NATIVE));
+            }
+        },
+                new DoublyLinkedList<Skill>() {
+            {
+                add(new Skill(JobPosting.Type.IT_COMM_TEC, "Software Testing", Skill.ProficiencyLevel.EXPERT));
+            }
+        }
+        ));
+        applicants.add(new Applicant("Richard Henson", "applicant105@example.com", "019-6530541", JobPosting.Type.IT_COMM_TEC, new Location(City.KUANTAN_PAHANG),
+                new EducationLevel(EducationLevel.DegreeLevel.D, EducationLevel.FieldOfStudy.CE, EducationLevel.University.UUM, 3.8),
+                new DoublyLinkedList<WorkExperience>() {
+            {
+                add(new WorkExperience(WorkExperience.Industry.IT_COMM_TEC, 5));
+            }
+        },
+                new DoublyLinkedList<LanguageProficiency>() {
+            {
+                add(new LanguageProficiency(LanguageProficiency.Language.KR, LanguageProficiency.Proficiency.INTERMEDIATE));
+            }
+        },
+                new DoublyLinkedList<Skill>() {
+            {
+                add(new Skill(JobPosting.Type.IT_COMM_TEC, "Cloud Computing", Skill.ProficiencyLevel.EXPERT));
+            }
+        }
+        ));
+        applicants.add(new Applicant("Marc Moore", "applicant106@example.com", "012-9512969", JobPosting.Type.ACCOUNTING, new Location(City.KUALA_LUMPUR),
+                new EducationLevel(EducationLevel.DegreeLevel.D, EducationLevel.FieldOfStudy.SE, EducationLevel.University.UKM, 3.03),
+                new DoublyLinkedList<WorkExperience>() {
+            {
+                add(new WorkExperience(WorkExperience.Industry.HEALTH_MED, 6));
+            }
+        },
+                new DoublyLinkedList<LanguageProficiency>() {
+            {
+                add(new LanguageProficiency(LanguageProficiency.Language.EN, LanguageProficiency.Proficiency.INTERMEDIATE));
+            }
+        },
+                new DoublyLinkedList<Skill>() {
+            {
+                add(new Skill(JobPosting.Type.ACCOUNTING, "QuickBooks", Skill.ProficiencyLevel.EXPERT));
+            }
+        }
+        ));
+        applicants.add(new Applicant("Sharon Cherry", "applicant107@example.com", "014-8199311", JobPosting.Type.HEALTH_MED, new Location(City.SUNGAI_PETANI),
+                new EducationLevel(EducationLevel.DegreeLevel.SC, EducationLevel.FieldOfStudy.NUR, EducationLevel.University.TAYLORS, 2.54),
+                new DoublyLinkedList<WorkExperience>() {
+            {
+                add(new WorkExperience(WorkExperience.Industry.DESIGN_ARCH, 1));
+            }
+        },
+                new DoublyLinkedList<LanguageProficiency>() {
+            {
+                add(new LanguageProficiency(LanguageProficiency.Language.MY, LanguageProficiency.Proficiency.INTERMEDIATE));
+            }
+        },
+                new DoublyLinkedList<Skill>() {
+            {
+                add(new Skill(JobPosting.Type.HEALTH_MED, "Nursing Skills", Skill.ProficiencyLevel.EXPERT));
+            }
+        }
+        ));
+        applicants.add(new Applicant("Sierra Johnson", "applicant108@example.com", "016-6889195", JobPosting.Type.ACCOUNTING, new Location(City.JOHOR_BAHRU),
+                new EducationLevel(EducationLevel.DegreeLevel.MD, EducationLevel.FieldOfStudy.NUR, EducationLevel.University.UUM, 2.6),
+                new DoublyLinkedList<WorkExperience>() {
+            {
+                add(new WorkExperience(WorkExperience.Industry.IT_COMM_TEC, 2));
+            }
+        },
+                new DoublyLinkedList<LanguageProficiency>() {
+            {
+                add(new LanguageProficiency(LanguageProficiency.Language.FR, LanguageProficiency.Proficiency.FLUENT));
+            }
+        },
+                new DoublyLinkedList<Skill>() {
+            {
+                add(new Skill(JobPosting.Type.ACCOUNTING, "Accounts Payable", Skill.ProficiencyLevel.EXPERT));
+            }
+        }
+        ));
+        applicants.add(new Applicant(
+                "Bin Chong", "bin01@example.com", "01112345678", JobPosting.Type.HEALTH_MED,
+                new Location(City.KUALA_LUMPUR),
+                new EducationLevel(EducationLevel.DegreeLevel.BD, EducationLevel.FieldOfStudy.NUR, EducationLevel.University.APU, 3.6),
+                new DoublyLinkedList<WorkExperience>() {
+            {
+                add(new WorkExperience(WorkExperience.Industry.HEALTH_MED, 2));
+            }
+        },
+                new DoublyLinkedList<LanguageProficiency>() {
+            {
+                add(new LanguageProficiency(LanguageProficiency.Language.EN, LanguageProficiency.Proficiency.FLUENT));
+            }
+        },
+                new DoublyLinkedList<Skill>() {
+            {
+                add(new Skill(JobPosting.Type.HEALTH_MED, "Patient Care", Skill.ProficiencyLevel.BEGINNER));
+            }
+        }
+        ));
+        applicants.add(new Applicant(
+                "Siti Aminah", "aminah02@example.com", "01234567890", JobPosting.Type.HEALTH_MED,
+                new Location(City.PETALING_JAYA),
+                new EducationLevel(EducationLevel.DegreeLevel.BD, EducationLevel.FieldOfStudy.NUR, EducationLevel.University.USM, 3.6),
+                new DoublyLinkedList<WorkExperience>() {
+            {
+                add(new WorkExperience(WorkExperience.Industry.HEALTH_MED, 2));
+            }
+        },
+                new DoublyLinkedList<LanguageProficiency>() {
+            {
+                add(new LanguageProficiency(LanguageProficiency.Language.EN, LanguageProficiency.Proficiency.FLUENT));
+            }
+        },
+                new DoublyLinkedList<Skill>() {
+            {
+                add(new Skill(JobPosting.Type.HEALTH_MED, "Patient Care", Skill.ProficiencyLevel.ADVANCED));
+            }
+        }
+        ));
+        applicants.add(new Applicant(
+                "Aminah Binti", "aminah03@example.com", "01311111111", JobPosting.Type.HEALTH_MED,
+                new Location(City.JOHOR_BAHRU),
+                new EducationLevel(EducationLevel.DegreeLevel.MD, EducationLevel.FieldOfStudy.NUR, EducationLevel.University.UNIMAS, 3.2),
+                new DoublyLinkedList<WorkExperience>() {
+            {
+                add(new WorkExperience(WorkExperience.Industry.HEALTH_MED, 5));
+            }
+        },
+                new DoublyLinkedList<LanguageProficiency>() {
+            {
+                add(new LanguageProficiency(LanguageProficiency.Language.MY, LanguageProficiency.Proficiency.NATIVE));
+            }
+        },
+                new DoublyLinkedList<Skill>() {
+            {
+                add(new Skill(JobPosting.Type.IT_COMM_TEC, "Network Admin", Skill.ProficiencyLevel.ADVANCED));
+            }
+        }
+        ));
+        applicants.add(new Applicant(
+                "Ming Wei", "mingwei04@example.com", "01422222222", JobPosting.Type.HEALTH_MED,
+                new Location(City.MUAR),
+                new EducationLevel(EducationLevel.DegreeLevel.MD, EducationLevel.FieldOfStudy.NUR, EducationLevel.University.UNIMAS, 3.1),
+                new DoublyLinkedList<WorkExperience>() {
+            {
+                add(new WorkExperience(WorkExperience.Industry.HEALTH_MED, 4));
+            }
+        },
+                new DoublyLinkedList<LanguageProficiency>() {
+            {
+                add(new LanguageProficiency(LanguageProficiency.Language.MY, LanguageProficiency.Proficiency.NATIVE));
+            }
+        },
+                new DoublyLinkedList<Skill>() {
+            {
+                add(new Skill(JobPosting.Type.IT_COMM_TEC, "Network Admin", Skill.ProficiencyLevel.ADVANCED));
+            }
+        }
+        ));
+        applicants.add(new Applicant(
+                "John Doe", "johndoe05@example.com", "01433333333", JobPosting.Type.ENGINEERING,
+                new Location(City.KLANG),
+                new EducationLevel(EducationLevel.DegreeLevel.MD, EducationLevel.FieldOfStudy.PHAR, EducationLevel.University.UTM, 3.5),
+                new DoublyLinkedList<WorkExperience>() {
+            {
+                add(new WorkExperience(WorkExperience.Industry.HEALTH_MED, 7));
+            }
+        },
+                new DoublyLinkedList<LanguageProficiency>() {
+            {
+                add(new LanguageProficiency(LanguageProficiency.Language.CH, LanguageProficiency.Proficiency.NATIVE));
+            }
+        },
+                new DoublyLinkedList<Skill>() {
+            {
+                add(new Skill(JobPosting.Type.BANK_FIN_SERV, "Taxation", Skill.ProficiencyLevel.ADVANCED));
+            }
+        }
+        ));
+        applicants.add(new Applicant(
+                "Jane Smith", "janesmith06@example.com", "01444444444", JobPosting.Type.ENGINEERING,
+                new Location(City.SHAH_ALAM),
+                new EducationLevel(EducationLevel.DegreeLevel.MD, EducationLevel.FieldOfStudy.PHAR, EducationLevel.University.UTM, 3.2),
+                new DoublyLinkedList<WorkExperience>() {
+            {
+                add(new WorkExperience(WorkExperience.Industry.HEALTH_MED, 6));
+            }
+        },
+                new DoublyLinkedList<LanguageProficiency>() {
+            {
+                add(new LanguageProficiency(LanguageProficiency.Language.CH, LanguageProficiency.Proficiency.NATIVE));
+            }
+        },
+                new DoublyLinkedList<Skill>() {
+            {
+                add(new Skill(JobPosting.Type.BANK_FIN_SERV, "Taxation", Skill.ProficiencyLevel.ADVANCED));
+            }
+        }
+        ));
+        applicants.add(new Applicant(
+                "Adam Lee", "adamlee07@example.com", "01455555555", JobPosting.Type.BANK_FIN_SERV,
+                new Location(City.KUALA_LUMPUR),
+                new EducationLevel(EducationLevel.DegreeLevel.MD, EducationLevel.FieldOfStudy.BIO, EducationLevel.University.UTM, 3.0),
+                new DoublyLinkedList<WorkExperience>() {
+            {
+                add(new WorkExperience(WorkExperience.Industry.SCIENCE_TECH, 2));
+            }
+        },
+                new DoublyLinkedList<LanguageProficiency>() {
+            {
+                add(new LanguageProficiency(LanguageProficiency.Language.MY, LanguageProficiency.Proficiency.INTERMEDIATE));
+            }
+        },
+                new DoublyLinkedList<Skill>() {
+            {
+                add(new Skill(JobPosting.Type.BANK_FIN_SERV, "Investment Analysis", Skill.ProficiencyLevel.ADVANCED));
+            }
+        }
+        ));
+        applicants.add(new Applicant(
+                "Chloe Tan", "chloetan08@example.com", "01466666666", JobPosting.Type.BANK_FIN_SERV,
+                new Location(City.SEREMBAN),
+                new EducationLevel(EducationLevel.DegreeLevel.MD, EducationLevel.FieldOfStudy.BIO, EducationLevel.University.UTM, 2.9),
+                new DoublyLinkedList<WorkExperience>() {
+            {
+                add(new WorkExperience(WorkExperience.Industry.SCIENCE_TECH, 1));
+            }
+        },
+                new DoublyLinkedList<LanguageProficiency>() {
+            {
+                add(new LanguageProficiency(LanguageProficiency.Language.MY, LanguageProficiency.Proficiency.INTERMEDIATE));
+            }
+        },
+                new DoublyLinkedList<Skill>() {
+            {
+                add(new Skill(JobPosting.Type.BANK_FIN_SERV, "Investment Analysis", Skill.ProficiencyLevel.ADVANCED));
+            }
+        }
         ));
         jobApplications.add(new JobApplication(jobPostings.get(0), applicants.get(0), JobApplication.Status.PENDING, LocalDate.of(2025, 3, 1)));
         jobApplications.add(new JobApplication(jobPostings.get(40), applicants.get(19), JobApplication.Status.WITHDRAWN, LocalDate.of(2025, 3, 29)));
@@ -2783,21 +3361,29 @@ public class Initializer {
         jobApplications.add(new JobApplication(jobPostings.get(0), applicants.get(3), JobApplication.Status.SHORTLISTED, LocalDate.of(2025, 3, 16)));
         jobApplications.add(new JobApplication(jobPostings.get(0), applicants.get(5), JobApplication.Status.INTERVIEWED, LocalDate.of(2025, 3, 17)));
         jobApplications.add(new JobApplication(jobPostings.get(0), applicants.get(7), JobApplication.Status.REJECTED, LocalDate.of(2025, 3, 18)));
+        jobApplications.add(new JobApplication(jobPostings.get(0), applicants.get(5), JobApplication.Status.INTERVIEWED, LocalDate.of(2025, 3, 17)));
+        jobApplications.add(new JobApplication(jobPostings.get(0), applicants.get(7), JobApplication.Status.REJECTED, LocalDate.of(2025, 3, 18)));
 
         jobApplications.add(new JobApplication(jobPostings.get(1), applicants.get(8), JobApplication.Status.PENDING, LocalDate.of(2025, 3, 19)));
         jobApplications.add(new JobApplication(jobPostings.get(1), applicants.get(10), JobApplication.Status.OFFERED, LocalDate.of(2025, 3, 20)));
         jobApplications.add(new JobApplication(jobPostings.get(1), applicants.get(12), JobApplication.Status.ACCEPTED, LocalDate.of(2025, 3, 21)));
         jobApplications.add(new JobApplication(jobPostings.get(1), applicants.get(15), JobApplication.Status.WITHDRAWN, LocalDate.of(2025, 3, 22)));
+        jobApplications.add(new JobApplication(jobPostings.get(1), applicants.get(114), JobApplication.Status.PENDING, LocalDate.of(2025, 3, 16)));
+        jobApplications.add(new JobApplication(jobPostings.get(1), applicants.get(115), JobApplication.Status.PENDING, LocalDate.of(2025, 3, 24)));
 
         jobApplications.add(new JobApplication(jobPostings.get(2), applicants.get(17), JobApplication.Status.PENDING, LocalDate.of(2025, 3, 23)));
         jobApplications.add(new JobApplication(jobPostings.get(2), applicants.get(19), JobApplication.Status.SHORTLISTED, LocalDate.of(2025, 3, 24)));
         jobApplications.add(new JobApplication(jobPostings.get(2), applicants.get(21), JobApplication.Status.INTERVIEWED, LocalDate.of(2025, 3, 25)));
         jobApplications.add(new JobApplication(jobPostings.get(2), applicants.get(23), JobApplication.Status.REJECTED, LocalDate.of(2025, 3, 26)));
+        jobApplications.add(new JobApplication(jobPostings.get(2), applicants.get(116), JobApplication.Status.PENDING, LocalDate.of(2025, 3, 10)));
+        jobApplications.add(new JobApplication(jobPostings.get(2), applicants.get(117), JobApplication.Status.PENDING, LocalDate.of(2025, 3, 26)));
 
         jobApplications.add(new JobApplication(jobPostings.get(3), applicants.get(25), JobApplication.Status.PENDING, LocalDate.of(2025, 3, 27)));
         jobApplications.add(new JobApplication(jobPostings.get(3), applicants.get(27), JobApplication.Status.OFFERED, LocalDate.of(2025, 3, 28)));
         jobApplications.add(new JobApplication(jobPostings.get(3), applicants.get(29), JobApplication.Status.ACCEPTED, LocalDate.of(2025, 3, 29)));
         jobApplications.add(new JobApplication(jobPostings.get(3), applicants.get(31), JobApplication.Status.WITHDRAWN, LocalDate.of(2025, 3, 30)));
+        jobApplications.add(new JobApplication(jobPostings.get(3), applicants.get(118), JobApplication.Status.PENDING, LocalDate.of(2025, 3, 22)));
+        jobApplications.add(new JobApplication(jobPostings.get(3), applicants.get(119), JobApplication.Status.PENDING, LocalDate.of(2025, 3, 30)));
 
         jobApplications.add(new JobApplication(jobPostings.get(4), applicants.get(33), JobApplication.Status.PENDING, LocalDate.of(2025, 4, 1)));
         jobApplications.add(new JobApplication(jobPostings.get(4), applicants.get(35), JobApplication.Status.SHORTLISTED, LocalDate.of(2025, 4, 2)));
@@ -2806,349 +3392,349 @@ public class Initializer {
 
         // IT & Communication Tech
         list.addAll(Arrays.asList(
-                new SkillOption(Skill.SkillCategory.IT_COMM_TEC, "Java Programming"),
-                new SkillOption(Skill.SkillCategory.IT_COMM_TEC, "Python Development"),
-                new SkillOption(Skill.SkillCategory.IT_COMM_TEC, "Web Development"),
-                new SkillOption(Skill.SkillCategory.IT_COMM_TEC, "Cybersecurity"),
-                new SkillOption(Skill.SkillCategory.IT_COMM_TEC, "Database Management"),
-                new SkillOption(Skill.SkillCategory.IT_COMM_TEC, "Cloud Computing"),
-                new SkillOption(Skill.SkillCategory.IT_COMM_TEC, "Machine Learning"),
-                new SkillOption(Skill.SkillCategory.IT_COMM_TEC, "Networking"),
-                new SkillOption(Skill.SkillCategory.IT_COMM_TEC, "DevOps"),
-                new SkillOption(Skill.SkillCategory.IT_COMM_TEC, "Software Testing")
+                new SkillOption(JobPosting.Type.IT_COMM_TEC, "Java Programming"),
+                new SkillOption(JobPosting.Type.IT_COMM_TEC, "Python Development"),
+                new SkillOption(JobPosting.Type.IT_COMM_TEC, "Web Development"),
+                new SkillOption(JobPosting.Type.IT_COMM_TEC, "Cybersecurity"),
+                new SkillOption(JobPosting.Type.IT_COMM_TEC, "Database Management"),
+                new SkillOption(JobPosting.Type.IT_COMM_TEC, "Cloud Computing"),
+                new SkillOption(JobPosting.Type.IT_COMM_TEC, "Machine Learning"),
+                new SkillOption(JobPosting.Type.IT_COMM_TEC, "Networking"),
+                new SkillOption(JobPosting.Type.IT_COMM_TEC, "DevOps"),
+                new SkillOption(JobPosting.Type.IT_COMM_TEC, "Software Testing")
         ));
 
 // Accounting
         list.addAll(Arrays.asList(
-                new SkillOption(Skill.SkillCategory.ACCOUNTING, "Bookkeeping"),
-                new SkillOption(Skill.SkillCategory.ACCOUNTING, "Tax Filing"),
-                new SkillOption(Skill.SkillCategory.ACCOUNTING, "Budgeting"),
-                new SkillOption(Skill.SkillCategory.ACCOUNTING, "Auditing"),
-                new SkillOption(Skill.SkillCategory.ACCOUNTING, "Payroll"),
-                new SkillOption(Skill.SkillCategory.ACCOUNTING, "Accounts Receivable"),
-                new SkillOption(Skill.SkillCategory.ACCOUNTING, "Accounts Payable"),
-                new SkillOption(Skill.SkillCategory.ACCOUNTING, "Financial Reporting"),
-                new SkillOption(Skill.SkillCategory.ACCOUNTING, "Cost Accounting"),
-                new SkillOption(Skill.SkillCategory.ACCOUNTING, "QuickBooks")
+                new SkillOption(JobPosting.Type.ACCOUNTING, "Bookkeeping"),
+                new SkillOption(JobPosting.Type.ACCOUNTING, "Tax Filing"),
+                new SkillOption(JobPosting.Type.ACCOUNTING, "Budgeting"),
+                new SkillOption(JobPosting.Type.ACCOUNTING, "Auditing"),
+                new SkillOption(JobPosting.Type.ACCOUNTING, "Payroll"),
+                new SkillOption(JobPosting.Type.ACCOUNTING, "Accounts Receivable"),
+                new SkillOption(JobPosting.Type.ACCOUNTING, "Accounts Payable"),
+                new SkillOption(JobPosting.Type.ACCOUNTING, "Financial Reporting"),
+                new SkillOption(JobPosting.Type.ACCOUNTING, "Cost Accounting"),
+                new SkillOption(JobPosting.Type.ACCOUNTING, "QuickBooks")
         ));
 
 // Design & Architecture
         list.addAll(Arrays.asList(
-                new SkillOption(Skill.SkillCategory.DESIGN_ARCH, "AutoCAD"),
-                new SkillOption(Skill.SkillCategory.DESIGN_ARCH, "SketchUp"),
-                new SkillOption(Skill.SkillCategory.DESIGN_ARCH, "3D Modeling"),
-                new SkillOption(Skill.SkillCategory.DESIGN_ARCH, "Interior Design"),
-                new SkillOption(Skill.SkillCategory.DESIGN_ARCH, "Urban Planning"),
-                new SkillOption(Skill.SkillCategory.DESIGN_ARCH, "Photoshop"),
-                new SkillOption(Skill.SkillCategory.DESIGN_ARCH, "Illustrator"),
-                new SkillOption(Skill.SkillCategory.DESIGN_ARCH, "UX Design"),
-                new SkillOption(Skill.SkillCategory.DESIGN_ARCH, "UI Design"),
-                new SkillOption(Skill.SkillCategory.DESIGN_ARCH, "Revit")
+                new SkillOption(JobPosting.Type.DESIGN_ARCH, "AutoCAD"),
+                new SkillOption(JobPosting.Type.DESIGN_ARCH, "SketchUp"),
+                new SkillOption(JobPosting.Type.DESIGN_ARCH, "3D Modeling"),
+                new SkillOption(JobPosting.Type.DESIGN_ARCH, "Interior Design"),
+                new SkillOption(JobPosting.Type.DESIGN_ARCH, "Urban Planning"),
+                new SkillOption(JobPosting.Type.DESIGN_ARCH, "Photoshop"),
+                new SkillOption(JobPosting.Type.DESIGN_ARCH, "Illustrator"),
+                new SkillOption(JobPosting.Type.DESIGN_ARCH, "UX Design"),
+                new SkillOption(JobPosting.Type.DESIGN_ARCH, "UI Design"),
+                new SkillOption(JobPosting.Type.DESIGN_ARCH, "Revit")
         ));
 
 // HR & Recruitment
         list.addAll(Arrays.asList(
-                new SkillOption(Skill.SkillCategory.HR_RECRUIT, "Recruitment"),
-                new SkillOption(Skill.SkillCategory.HR_RECRUIT, "Interviewing"),
-                new SkillOption(Skill.SkillCategory.HR_RECRUIT, "Onboarding"),
-                new SkillOption(Skill.SkillCategory.HR_RECRUIT, "Payroll Processing"),
-                new SkillOption(Skill.SkillCategory.HR_RECRUIT, "Employee Engagement"),
-                new SkillOption(Skill.SkillCategory.HR_RECRUIT, "HR Policies"),
-                new SkillOption(Skill.SkillCategory.HR_RECRUIT, "Performance Reviews"),
-                new SkillOption(Skill.SkillCategory.HR_RECRUIT, "Conflict Resolution"),
-                new SkillOption(Skill.SkillCategory.HR_RECRUIT, "Compliance"),
-                new SkillOption(Skill.SkillCategory.HR_RECRUIT, "HRIS Systems")
+                new SkillOption(JobPosting.Type.HR_RECRUIT, "Recruitment"),
+                new SkillOption(JobPosting.Type.HR_RECRUIT, "Interviewing"),
+                new SkillOption(JobPosting.Type.HR_RECRUIT, "Onboarding"),
+                new SkillOption(JobPosting.Type.HR_RECRUIT, "Payroll Processing"),
+                new SkillOption(JobPosting.Type.HR_RECRUIT, "Employee Engagement"),
+                new SkillOption(JobPosting.Type.HR_RECRUIT, "HR Policies"),
+                new SkillOption(JobPosting.Type.HR_RECRUIT, "Performance Reviews"),
+                new SkillOption(JobPosting.Type.HR_RECRUIT, "Conflict Resolution"),
+                new SkillOption(JobPosting.Type.HR_RECRUIT, "Compliance"),
+                new SkillOption(JobPosting.Type.HR_RECRUIT, "HRIS Systems")
         ));
 
 // Admin & Office Support
         list.addAll(Arrays.asList(
-                new SkillOption(Skill.SkillCategory.ADMIN_OFFICE, "Data Entry"),
-                new SkillOption(Skill.SkillCategory.ADMIN_OFFICE, "Office Management"),
-                new SkillOption(Skill.SkillCategory.ADMIN_OFFICE, "Receptionist Duties"),
-                new SkillOption(Skill.SkillCategory.ADMIN_OFFICE, "Scheduling"),
-                new SkillOption(Skill.SkillCategory.ADMIN_OFFICE, "Microsoft Office"),
-                new SkillOption(Skill.SkillCategory.ADMIN_OFFICE, "Filing Systems"),
-                new SkillOption(Skill.SkillCategory.ADMIN_OFFICE, "Customer Support"),
-                new SkillOption(Skill.SkillCategory.ADMIN_OFFICE, "Travel Planning"),
-                new SkillOption(Skill.SkillCategory.ADMIN_OFFICE, "Clerical Support"),
-                new SkillOption(Skill.SkillCategory.ADMIN_OFFICE, "Minute Taking")
+                new SkillOption(JobPosting.Type.ADMIN_OFFICE, "Data Entry"),
+                new SkillOption(JobPosting.Type.ADMIN_OFFICE, "Office Management"),
+                new SkillOption(JobPosting.Type.ADMIN_OFFICE, "Receptionist Duties"),
+                new SkillOption(JobPosting.Type.ADMIN_OFFICE, "Scheduling"),
+                new SkillOption(JobPosting.Type.ADMIN_OFFICE, "Microsoft Office"),
+                new SkillOption(JobPosting.Type.ADMIN_OFFICE, "Filing Systems"),
+                new SkillOption(JobPosting.Type.ADMIN_OFFICE, "Customer Support"),
+                new SkillOption(JobPosting.Type.ADMIN_OFFICE, "Travel Planning"),
+                new SkillOption(JobPosting.Type.ADMIN_OFFICE, "Clerical Support"),
+                new SkillOption(JobPosting.Type.ADMIN_OFFICE, "Minute Taking")
         ));
 
 // Marketing & Communications
         list.addAll(Arrays.asList(
-                new SkillOption(Skill.SkillCategory.MARKETING_COMM, "Content Creation"),
-                new SkillOption(Skill.SkillCategory.MARKETING_COMM, "SEO"),
-                new SkillOption(Skill.SkillCategory.MARKETING_COMM, "Social Media"),
-                new SkillOption(Skill.SkillCategory.MARKETING_COMM, "Email Marketing"),
-                new SkillOption(Skill.SkillCategory.MARKETING_COMM, "Market Research"),
-                new SkillOption(Skill.SkillCategory.MARKETING_COMM, "Copywriting"),
-                new SkillOption(Skill.SkillCategory.MARKETING_COMM, "Campaign Planning"),
-                new SkillOption(Skill.SkillCategory.MARKETING_COMM, "Brand Management"),
-                new SkillOption(Skill.SkillCategory.MARKETING_COMM, "Google Ads"),
-                new SkillOption(Skill.SkillCategory.MARKETING_COMM, "Influencer Marketing")
+                new SkillOption(JobPosting.Type.MARKETING_COMM, "Content Creation"),
+                new SkillOption(JobPosting.Type.MARKETING_COMM, "SEO"),
+                new SkillOption(JobPosting.Type.MARKETING_COMM, "Social Media"),
+                new SkillOption(JobPosting.Type.MARKETING_COMM, "Email Marketing"),
+                new SkillOption(JobPosting.Type.MARKETING_COMM, "Market Research"),
+                new SkillOption(JobPosting.Type.MARKETING_COMM, "Copywriting"),
+                new SkillOption(JobPosting.Type.MARKETING_COMM, "Campaign Planning"),
+                new SkillOption(JobPosting.Type.MARKETING_COMM, "Brand Management"),
+                new SkillOption(JobPosting.Type.MARKETING_COMM, "Google Ads"),
+                new SkillOption(JobPosting.Type.MARKETING_COMM, "Influencer Marketing")
         ));
 
 // Engineering
         list.addAll(Arrays.asList(
-                new SkillOption(Skill.SkillCategory.ENGINEERING, "CAD Design"),
-                new SkillOption(Skill.SkillCategory.ENGINEERING, "Thermodynamics"),
-                new SkillOption(Skill.SkillCategory.ENGINEERING, "Electrical Systems"),
-                new SkillOption(Skill.SkillCategory.ENGINEERING, "Mechanical Analysis"),
-                new SkillOption(Skill.SkillCategory.ENGINEERING, "Control Systems"),
-                new SkillOption(Skill.SkillCategory.ENGINEERING, "Project Management"),
-                new SkillOption(Skill.SkillCategory.ENGINEERING, "Circuit Design"),
-                new SkillOption(Skill.SkillCategory.ENGINEERING, "Materials Testing"),
-                new SkillOption(Skill.SkillCategory.ENGINEERING, "Fluid Dynamics"),
-                new SkillOption(Skill.SkillCategory.ENGINEERING, "SolidWorks")
+                new SkillOption(JobPosting.Type.ENGINEERING, "CAD Design"),
+                new SkillOption(JobPosting.Type.ENGINEERING, "Thermodynamics"),
+                new SkillOption(JobPosting.Type.ENGINEERING, "Electrical Systems"),
+                new SkillOption(JobPosting.Type.ENGINEERING, "Mechanical Analysis"),
+                new SkillOption(JobPosting.Type.ENGINEERING, "Control Systems"),
+                new SkillOption(JobPosting.Type.ENGINEERING, "Project Management"),
+                new SkillOption(JobPosting.Type.ENGINEERING, "Circuit Design"),
+                new SkillOption(JobPosting.Type.ENGINEERING, "Materials Testing"),
+                new SkillOption(JobPosting.Type.ENGINEERING, "Fluid Dynamics"),
+                new SkillOption(JobPosting.Type.ENGINEERING, "SolidWorks")
         ));
 
 // Healthcare & Medical
         list.addAll(Arrays.asList(
-                new SkillOption(Skill.SkillCategory.HEALTH_MED, "First Aid"),
-                new SkillOption(Skill.SkillCategory.HEALTH_MED, "CPR"),
-                new SkillOption(Skill.SkillCategory.HEALTH_MED, "Medical Terminology"),
-                new SkillOption(Skill.SkillCategory.HEALTH_MED, "Patient Care"),
-                new SkillOption(Skill.SkillCategory.HEALTH_MED, "Nursing Skills"),
-                new SkillOption(Skill.SkillCategory.HEALTH_MED, "Clinical Procedures"),
-                new SkillOption(Skill.SkillCategory.HEALTH_MED, "Medical Coding"),
-                new SkillOption(Skill.SkillCategory.HEALTH_MED, "Health Records"),
-                new SkillOption(Skill.SkillCategory.HEALTH_MED, "Phlebotomy"),
-                new SkillOption(Skill.SkillCategory.HEALTH_MED, "Radiology Basics")
+                new SkillOption(JobPosting.Type.HEALTH_MED, "First Aid"),
+                new SkillOption(JobPosting.Type.HEALTH_MED, "CPR"),
+                new SkillOption(JobPosting.Type.HEALTH_MED, "Medical Terminology"),
+                new SkillOption(JobPosting.Type.HEALTH_MED, "Patient Care"),
+                new SkillOption(JobPosting.Type.HEALTH_MED, "Nursing Skills"),
+                new SkillOption(JobPosting.Type.HEALTH_MED, "Clinical Procedures"),
+                new SkillOption(JobPosting.Type.HEALTH_MED, "Medical Coding"),
+                new SkillOption(JobPosting.Type.HEALTH_MED, "Health Records"),
+                new SkillOption(JobPosting.Type.HEALTH_MED, "Phlebotomy"),
+                new SkillOption(JobPosting.Type.HEALTH_MED, "Radiology Basics")
         ));
 
 // Community Services & Development
         list.addAll(Arrays.asList(
-                new SkillOption(Skill.SkillCategory.COMM_SVC_DEV, "Social Work"),
-                new SkillOption(Skill.SkillCategory.COMM_SVC_DEV, "Crisis Intervention"),
-                new SkillOption(Skill.SkillCategory.COMM_SVC_DEV, "Counseling"),
-                new SkillOption(Skill.SkillCategory.COMM_SVC_DEV, "Case Management"),
-                new SkillOption(Skill.SkillCategory.COMM_SVC_DEV, "Public Speaking"),
-                new SkillOption(Skill.SkillCategory.COMM_SVC_DEV, "Conflict Resolution"),
-                new SkillOption(Skill.SkillCategory.COMM_SVC_DEV, "Empathy"),
-                new SkillOption(Skill.SkillCategory.COMM_SVC_DEV, "Community Engagement"),
-                new SkillOption(Skill.SkillCategory.COMM_SVC_DEV, "Volunteer Coordination"),
-                new SkillOption(Skill.SkillCategory.COMM_SVC_DEV, "Report Writing")
+                new SkillOption(JobPosting.Type.COMM_SVC_DEV, "Social Work"),
+                new SkillOption(JobPosting.Type.COMM_SVC_DEV, "Crisis Intervention"),
+                new SkillOption(JobPosting.Type.COMM_SVC_DEV, "Counseling"),
+                new SkillOption(JobPosting.Type.COMM_SVC_DEV, "Case Management"),
+                new SkillOption(JobPosting.Type.COMM_SVC_DEV, "Public Speaking"),
+                new SkillOption(JobPosting.Type.COMM_SVC_DEV, "Conflict Resolution"),
+                new SkillOption(JobPosting.Type.COMM_SVC_DEV, "Empathy"),
+                new SkillOption(JobPosting.Type.COMM_SVC_DEV, "Community Engagement"),
+                new SkillOption(JobPosting.Type.COMM_SVC_DEV, "Volunteer Coordination"),
+                new SkillOption(JobPosting.Type.COMM_SVC_DEV, "Report Writing")
         ));
 
 // Sales
         list.addAll(Arrays.asList(
-                new SkillOption(Skill.SkillCategory.SALES, "Customer Prospecting"),
-                new SkillOption(Skill.SkillCategory.SALES, "Closing Deals"),
-                new SkillOption(Skill.SkillCategory.SALES, "CRM Usage"),
-                new SkillOption(Skill.SkillCategory.SALES, "Cold Calling"),
-                new SkillOption(Skill.SkillCategory.SALES, "Negotiation"),
-                new SkillOption(Skill.SkillCategory.SALES, "Upselling"),
-                new SkillOption(Skill.SkillCategory.SALES, "Pipeline Management"),
-                new SkillOption(Skill.SkillCategory.SALES, "Client Retention"),
-                new SkillOption(Skill.SkillCategory.SALES, "Sales Forecasting"),
-                new SkillOption(Skill.SkillCategory.SALES, "B2B Sales")
+                new SkillOption(JobPosting.Type.SALES, "Customer Prospecting"),
+                new SkillOption(JobPosting.Type.SALES, "Closing Deals"),
+                new SkillOption(JobPosting.Type.SALES, "CRM Usage"),
+                new SkillOption(JobPosting.Type.SALES, "Cold Calling"),
+                new SkillOption(JobPosting.Type.SALES, "Negotiation"),
+                new SkillOption(JobPosting.Type.SALES, "Upselling"),
+                new SkillOption(JobPosting.Type.SALES, "Pipeline Management"),
+                new SkillOption(JobPosting.Type.SALES, "Client Retention"),
+                new SkillOption(JobPosting.Type.SALES, "Sales Forecasting"),
+                new SkillOption(JobPosting.Type.SALES, "B2B Sales")
         ));
         list.addAll(Arrays.asList(
-                new SkillOption(Skill.SkillCategory.CONSTRUCTION, "Blueprint Reading"),
-                new SkillOption(Skill.SkillCategory.CONSTRUCTION, "Concrete Work"),
-                new SkillOption(Skill.SkillCategory.CONSTRUCTION, "Scaffolding"),
-                new SkillOption(Skill.SkillCategory.CONSTRUCTION, "Site Safety"),
-                new SkillOption(Skill.SkillCategory.CONSTRUCTION, "Masonry"),
-                new SkillOption(Skill.SkillCategory.CONSTRUCTION, "Plumbing"),
-                new SkillOption(Skill.SkillCategory.CONSTRUCTION, "Electrical Wiring"),
-                new SkillOption(Skill.SkillCategory.CONSTRUCTION, "Roofing"),
-                new SkillOption(Skill.SkillCategory.CONSTRUCTION, "Carpentry"),
-                new SkillOption(Skill.SkillCategory.CONSTRUCTION, "Site Supervision")
-        ));
-
-        list.addAll(Arrays.asList(
-                new SkillOption(Skill.SkillCategory.SCIENCE_TECH, "Lab Safety"),
-                new SkillOption(Skill.SkillCategory.SCIENCE_TECH, "Microscopy"),
-                new SkillOption(Skill.SkillCategory.SCIENCE_TECH, "Data Analysis"),
-                new SkillOption(Skill.SkillCategory.SCIENCE_TECH, "Research Writing"),
-                new SkillOption(Skill.SkillCategory.SCIENCE_TECH, "Experiment Design"),
-                new SkillOption(Skill.SkillCategory.SCIENCE_TECH, "Scientific Modelling"),
-                new SkillOption(Skill.SkillCategory.SCIENCE_TECH, "Data Collection"),
-                new SkillOption(Skill.SkillCategory.SCIENCE_TECH, "SPSS"),
-                new SkillOption(Skill.SkillCategory.SCIENCE_TECH, "Lab Equipment Handling"),
-                new SkillOption(Skill.SkillCategory.SCIENCE_TECH, "Hypothesis Testing")
+                new SkillOption(JobPosting.Type.CONSTRUCTION, "Blueprint Reading"),
+                new SkillOption(JobPosting.Type.CONSTRUCTION, "Concrete Work"),
+                new SkillOption(JobPosting.Type.CONSTRUCTION, "Scaffolding"),
+                new SkillOption(JobPosting.Type.CONSTRUCTION, "Site Safety"),
+                new SkillOption(JobPosting.Type.CONSTRUCTION, "Masonry"),
+                new SkillOption(JobPosting.Type.CONSTRUCTION, "Plumbing"),
+                new SkillOption(JobPosting.Type.CONSTRUCTION, "Electrical Wiring"),
+                new SkillOption(JobPosting.Type.CONSTRUCTION, "Roofing"),
+                new SkillOption(JobPosting.Type.CONSTRUCTION, "Carpentry"),
+                new SkillOption(JobPosting.Type.CONSTRUCTION, "Site Supervision")
         ));
 
         list.addAll(Arrays.asList(
-                new SkillOption(Skill.SkillCategory.REAL_EST, "Property Valuation"),
-                new SkillOption(Skill.SkillCategory.REAL_EST, "Real Estate Law"),
-                new SkillOption(Skill.SkillCategory.REAL_EST, "Client Networking"),
-                new SkillOption(Skill.SkillCategory.REAL_EST, "Property Listings"),
-                new SkillOption(Skill.SkillCategory.REAL_EST, "Open House Hosting"),
-                new SkillOption(Skill.SkillCategory.REAL_EST, "Sales Agreements"),
-                new SkillOption(Skill.SkillCategory.REAL_EST, "CRM Software"),
-                new SkillOption(Skill.SkillCategory.REAL_EST, "Investment Analysis"),
-                new SkillOption(Skill.SkillCategory.REAL_EST, "Lease Management"),
-                new SkillOption(Skill.SkillCategory.REAL_EST, "Market Trend Analysis")
+                new SkillOption(JobPosting.Type.SCIENCE_TECH, "Lab Safety"),
+                new SkillOption(JobPosting.Type.SCIENCE_TECH, "Microscopy"),
+                new SkillOption(JobPosting.Type.SCIENCE_TECH, "Data Analysis"),
+                new SkillOption(JobPosting.Type.SCIENCE_TECH, "Research Writing"),
+                new SkillOption(JobPosting.Type.SCIENCE_TECH, "Experiment Design"),
+                new SkillOption(JobPosting.Type.SCIENCE_TECH, "Scientific Modelling"),
+                new SkillOption(JobPosting.Type.SCIENCE_TECH, "Data Collection"),
+                new SkillOption(JobPosting.Type.SCIENCE_TECH, "SPSS"),
+                new SkillOption(JobPosting.Type.SCIENCE_TECH, "Lab Equipment Handling"),
+                new SkillOption(JobPosting.Type.SCIENCE_TECH, "Hypothesis Testing")
         ));
 
         list.addAll(Arrays.asList(
-                new SkillOption(Skill.SkillCategory.AD_ARTS_MEDIA, "Graphic Design"),
-                new SkillOption(Skill.SkillCategory.AD_ARTS_MEDIA, "Video Editing"),
-                new SkillOption(Skill.SkillCategory.AD_ARTS_MEDIA, "Photography"),
-                new SkillOption(Skill.SkillCategory.AD_ARTS_MEDIA, "Script Writing"),
-                new SkillOption(Skill.SkillCategory.AD_ARTS_MEDIA, "Voice Over"),
-                new SkillOption(Skill.SkillCategory.AD_ARTS_MEDIA, "Brand Design"),
-                new SkillOption(Skill.SkillCategory.AD_ARTS_MEDIA, "Animation"),
-                new SkillOption(Skill.SkillCategory.AD_ARTS_MEDIA, "Storyboarding"),
-                new SkillOption(Skill.SkillCategory.AD_ARTS_MEDIA, "Motion Graphics"),
-                new SkillOption(Skill.SkillCategory.AD_ARTS_MEDIA, "Podcast Editing")
+                new SkillOption(JobPosting.Type.REAL_EST, "Property Valuation"),
+                new SkillOption(JobPosting.Type.REAL_EST, "Real Estate Law"),
+                new SkillOption(JobPosting.Type.REAL_EST, "Client Networking"),
+                new SkillOption(JobPosting.Type.REAL_EST, "Property Listings"),
+                new SkillOption(JobPosting.Type.REAL_EST, "Open House Hosting"),
+                new SkillOption(JobPosting.Type.REAL_EST, "Sales Agreements"),
+                new SkillOption(JobPosting.Type.REAL_EST, "CRM Software"),
+                new SkillOption(JobPosting.Type.REAL_EST, "Investment Analysis"),
+                new SkillOption(JobPosting.Type.REAL_EST, "Lease Management"),
+                new SkillOption(JobPosting.Type.REAL_EST, "Market Trend Analysis")
         ));
 
         list.addAll(Arrays.asList(
-                new SkillOption(Skill.SkillCategory.CALL_CUST_SVC, "Phone Etiquette"),
-                new SkillOption(Skill.SkillCategory.CALL_CUST_SVC, "CRM Systems"),
-                new SkillOption(Skill.SkillCategory.CALL_CUST_SVC, "Problem Solving"),
-                new SkillOption(Skill.SkillCategory.CALL_CUST_SVC, "Live Chat Support"),
-                new SkillOption(Skill.SkillCategory.CALL_CUST_SVC, "Customer Onboarding"),
-                new SkillOption(Skill.SkillCategory.CALL_CUST_SVC, "Ticketing Systems"),
-                new SkillOption(Skill.SkillCategory.CALL_CUST_SVC, "Escalation Handling"),
-                new SkillOption(Skill.SkillCategory.CALL_CUST_SVC, "Time Management"),
-                new SkillOption(Skill.SkillCategory.CALL_CUST_SVC, "Empathy"),
-                new SkillOption(Skill.SkillCategory.CALL_CUST_SVC, "Call Handling")
+                new SkillOption(JobPosting.Type.AD_ARTS_MEDIA, "Graphic Design"),
+                new SkillOption(JobPosting.Type.AD_ARTS_MEDIA, "Video Editing"),
+                new SkillOption(JobPosting.Type.AD_ARTS_MEDIA, "Photography"),
+                new SkillOption(JobPosting.Type.AD_ARTS_MEDIA, "Script Writing"),
+                new SkillOption(JobPosting.Type.AD_ARTS_MEDIA, "Voice Over"),
+                new SkillOption(JobPosting.Type.AD_ARTS_MEDIA, "Brand Design"),
+                new SkillOption(JobPosting.Type.AD_ARTS_MEDIA, "Animation"),
+                new SkillOption(JobPosting.Type.AD_ARTS_MEDIA, "Storyboarding"),
+                new SkillOption(JobPosting.Type.AD_ARTS_MEDIA, "Motion Graphics"),
+                new SkillOption(JobPosting.Type.AD_ARTS_MEDIA, "Podcast Editing")
         ));
 
         list.addAll(Arrays.asList(
-                new SkillOption(Skill.SkillCategory.CONSULTING, "Business Strategy"),
-                new SkillOption(Skill.SkillCategory.CONSULTING, "Market Research"),
-                new SkillOption(Skill.SkillCategory.CONSULTING, "Presentation Skills"),
-                new SkillOption(Skill.SkillCategory.CONSULTING, "Financial Modelling"),
-                new SkillOption(Skill.SkillCategory.CONSULTING, "Client Communication"),
-                new SkillOption(Skill.SkillCategory.CONSULTING, "SWOT Analysis"),
-                new SkillOption(Skill.SkillCategory.CONSULTING, "Data Analytics"),
-                new SkillOption(Skill.SkillCategory.CONSULTING, "Problem Solving"),
-                new SkillOption(Skill.SkillCategory.CONSULTING, "Risk Assessment"),
-                new SkillOption(Skill.SkillCategory.CONSULTING, "Stakeholder Engagement")
+                new SkillOption(JobPosting.Type.CALL_CUST_SVC, "Phone Etiquette"),
+                new SkillOption(JobPosting.Type.CALL_CUST_SVC, "CRM Systems"),
+                new SkillOption(JobPosting.Type.CALL_CUST_SVC, "Problem Solving"),
+                new SkillOption(JobPosting.Type.CALL_CUST_SVC, "Live Chat Support"),
+                new SkillOption(JobPosting.Type.CALL_CUST_SVC, "Customer Onboarding"),
+                new SkillOption(JobPosting.Type.CALL_CUST_SVC, "Ticketing Systems"),
+                new SkillOption(JobPosting.Type.CALL_CUST_SVC, "Escalation Handling"),
+                new SkillOption(JobPosting.Type.CALL_CUST_SVC, "Time Management"),
+                new SkillOption(JobPosting.Type.CALL_CUST_SVC, "Empathy"),
+                new SkillOption(JobPosting.Type.CALL_CUST_SVC, "Call Handling")
         ));
 
         list.addAll(Arrays.asList(
-                new SkillOption(Skill.SkillCategory.LEGAL, "Legal Research"),
-                new SkillOption(Skill.SkillCategory.LEGAL, "Contract Drafting"),
-                new SkillOption(Skill.SkillCategory.LEGAL, "Litigation Support"),
-                new SkillOption(Skill.SkillCategory.LEGAL, "Legal Compliance"),
-                new SkillOption(Skill.SkillCategory.LEGAL, "Case Filing"),
-                new SkillOption(Skill.SkillCategory.LEGAL, "Legal Writing"),
-                new SkillOption(Skill.SkillCategory.LEGAL, "Court Procedures"),
-                new SkillOption(Skill.SkillCategory.LEGAL, "Intellectual Property"),
-                new SkillOption(Skill.SkillCategory.LEGAL, "Legal Software"),
-                new SkillOption(Skill.SkillCategory.LEGAL, "Due Diligence")
+                new SkillOption(JobPosting.Type.CONSULTING, "Business Strategy"),
+                new SkillOption(JobPosting.Type.CONSULTING, "Market Research"),
+                new SkillOption(JobPosting.Type.CONSULTING, "Presentation Skills"),
+                new SkillOption(JobPosting.Type.CONSULTING, "Financial Modelling"),
+                new SkillOption(JobPosting.Type.CONSULTING, "Client Communication"),
+                new SkillOption(JobPosting.Type.CONSULTING, "SWOT Analysis"),
+                new SkillOption(JobPosting.Type.CONSULTING, "Data Analytics"),
+                new SkillOption(JobPosting.Type.CONSULTING, "Problem Solving"),
+                new SkillOption(JobPosting.Type.CONSULTING, "Risk Assessment"),
+                new SkillOption(JobPosting.Type.CONSULTING, "Stakeholder Engagement")
         ));
 
         list.addAll(Arrays.asList(
-                new SkillOption(Skill.SkillCategory.EDUC_TRAINING, "Lesson Planning"),
-                new SkillOption(Skill.SkillCategory.EDUC_TRAINING, "Teaching"),
-                new SkillOption(Skill.SkillCategory.EDUC_TRAINING, "Public Speaking"),
-                new SkillOption(Skill.SkillCategory.EDUC_TRAINING, "Curriculum Design"),
-                new SkillOption(Skill.SkillCategory.EDUC_TRAINING, "Assessment Design"),
-                new SkillOption(Skill.SkillCategory.EDUC_TRAINING, "Learning Management Systems"),
-                new SkillOption(Skill.SkillCategory.EDUC_TRAINING, "Tutoring"),
-                new SkillOption(Skill.SkillCategory.EDUC_TRAINING, "Training Delivery"),
-                new SkillOption(Skill.SkillCategory.EDUC_TRAINING, "Educational Tech"),
-                new SkillOption(Skill.SkillCategory.EDUC_TRAINING, "Student Evaluation")
+                new SkillOption(JobPosting.Type.LEGAL, "Legal Research"),
+                new SkillOption(JobPosting.Type.LEGAL, "Contract Drafting"),
+                new SkillOption(JobPosting.Type.LEGAL, "Litigation Support"),
+                new SkillOption(JobPosting.Type.LEGAL, "Legal Compliance"),
+                new SkillOption(JobPosting.Type.LEGAL, "Case Filing"),
+                new SkillOption(JobPosting.Type.LEGAL, "Legal Writing"),
+                new SkillOption(JobPosting.Type.LEGAL, "Court Procedures"),
+                new SkillOption(JobPosting.Type.LEGAL, "Intellectual Property"),
+                new SkillOption(JobPosting.Type.LEGAL, "Legal Software"),
+                new SkillOption(JobPosting.Type.LEGAL, "Due Diligence")
         ));
 
         list.addAll(Arrays.asList(
-                new SkillOption(Skill.SkillCategory.INSURANCE, "Policy Explanation"),
-                new SkillOption(Skill.SkillCategory.INSURANCE, "Risk Assessment"),
-                new SkillOption(Skill.SkillCategory.INSURANCE, "Client Consultation"),
-                new SkillOption(Skill.SkillCategory.INSURANCE, "Claims Handling"),
-                new SkillOption(Skill.SkillCategory.INSURANCE, "Insurance Law"),
-                new SkillOption(Skill.SkillCategory.INSURANCE, "Underwriting"),
-                new SkillOption(Skill.SkillCategory.INSURANCE, "Fraud Detection"),
-                new SkillOption(Skill.SkillCategory.INSURANCE, "CRM Tools"),
-                new SkillOption(Skill.SkillCategory.INSURANCE, "Customer Retention"),
-                new SkillOption(Skill.SkillCategory.INSURANCE, "Policy Customization")
+                new SkillOption(JobPosting.Type.EDUC_TRAINING, "Lesson Planning"),
+                new SkillOption(JobPosting.Type.EDUC_TRAINING, "Teaching"),
+                new SkillOption(JobPosting.Type.EDUC_TRAINING, "Public Speaking"),
+                new SkillOption(JobPosting.Type.EDUC_TRAINING, "Curriculum Design"),
+                new SkillOption(JobPosting.Type.EDUC_TRAINING, "Assessment Design"),
+                new SkillOption(JobPosting.Type.EDUC_TRAINING, "Learning Management Systems"),
+                new SkillOption(JobPosting.Type.EDUC_TRAINING, "Tutoring"),
+                new SkillOption(JobPosting.Type.EDUC_TRAINING, "Training Delivery"),
+                new SkillOption(JobPosting.Type.EDUC_TRAINING, "Educational Tech"),
+                new SkillOption(JobPosting.Type.EDUC_TRAINING, "Student Evaluation")
         ));
 
         list.addAll(Arrays.asList(
-                new SkillOption(Skill.SkillCategory.BANK_FIN_SERV, "Banking Operations"),
-                new SkillOption(Skill.SkillCategory.BANK_FIN_SERV, "Credit Analysis"),
-                new SkillOption(Skill.SkillCategory.BANK_FIN_SERV, "Financial Advising"),
-                new SkillOption(Skill.SkillCategory.BANK_FIN_SERV, "Loan Processing"),
-                new SkillOption(Skill.SkillCategory.BANK_FIN_SERV, "Risk Management"),
-                new SkillOption(Skill.SkillCategory.BANK_FIN_SERV, "Anti-Money Laundering"),
-                new SkillOption(Skill.SkillCategory.BANK_FIN_SERV, "Teller Operations"),
-                new SkillOption(Skill.SkillCategory.BANK_FIN_SERV, "Account Management"),
-                new SkillOption(Skill.SkillCategory.BANK_FIN_SERV, "Portfolio Management"),
-                new SkillOption(Skill.SkillCategory.BANK_FIN_SERV, "Compliance")
+                new SkillOption(JobPosting.Type.INSURANCE, "Policy Explanation"),
+                new SkillOption(JobPosting.Type.INSURANCE, "Risk Assessment"),
+                new SkillOption(JobPosting.Type.INSURANCE, "Client Consultation"),
+                new SkillOption(JobPosting.Type.INSURANCE, "Claims Handling"),
+                new SkillOption(JobPosting.Type.INSURANCE, "Insurance Law"),
+                new SkillOption(JobPosting.Type.INSURANCE, "Underwriting"),
+                new SkillOption(JobPosting.Type.INSURANCE, "Fraud Detection"),
+                new SkillOption(JobPosting.Type.INSURANCE, "CRM Tools"),
+                new SkillOption(JobPosting.Type.INSURANCE, "Customer Retention"),
+                new SkillOption(JobPosting.Type.INSURANCE, "Policy Customization")
         ));
 
         list.addAll(Arrays.asList(
-                new SkillOption(Skill.SkillCategory.SPORT_RECREATION, "Fitness Training"),
-                new SkillOption(Skill.SkillCategory.SPORT_RECREATION, "Team Management"),
-                new SkillOption(Skill.SkillCategory.SPORT_RECREATION, "Event Planning"),
-                new SkillOption(Skill.SkillCategory.SPORT_RECREATION, "Injury Prevention"),
-                new SkillOption(Skill.SkillCategory.SPORT_RECREATION, "Nutrition Planning"),
-                new SkillOption(Skill.SkillCategory.SPORT_RECREATION, "Sports Coaching"),
-                new SkillOption(Skill.SkillCategory.SPORT_RECREATION, "First Aid"),
-                new SkillOption(Skill.SkillCategory.SPORT_RECREATION, "Youth Engagement"),
-                new SkillOption(Skill.SkillCategory.SPORT_RECREATION, "Public Speaking"),
-                new SkillOption(Skill.SkillCategory.SPORT_RECREATION, "Game Officiating")
+                new SkillOption(JobPosting.Type.BANK_FIN_SERV, "Banking Operations"),
+                new SkillOption(JobPosting.Type.BANK_FIN_SERV, "Credit Analysis"),
+                new SkillOption(JobPosting.Type.BANK_FIN_SERV, "Financial Advising"),
+                new SkillOption(JobPosting.Type.BANK_FIN_SERV, "Loan Processing"),
+                new SkillOption(JobPosting.Type.BANK_FIN_SERV, "Risk Management"),
+                new SkillOption(JobPosting.Type.BANK_FIN_SERV, "Anti-Money Laundering"),
+                new SkillOption(JobPosting.Type.BANK_FIN_SERV, "Teller Operations"),
+                new SkillOption(JobPosting.Type.BANK_FIN_SERV, "Account Management"),
+                new SkillOption(JobPosting.Type.BANK_FIN_SERV, "Portfolio Management"),
+                new SkillOption(JobPosting.Type.BANK_FIN_SERV, "Compliance")
         ));
 
         list.addAll(Arrays.asList(
-                new SkillOption(Skill.SkillCategory.MANF_LOG, "Supply Chain"),
-                new SkillOption(Skill.SkillCategory.MANF_LOG, "Inventory Control"),
-                new SkillOption(Skill.SkillCategory.MANF_LOG, "Quality Inspection"),
-                new SkillOption(Skill.SkillCategory.MANF_LOG, "Warehouse Management"),
-                new SkillOption(Skill.SkillCategory.MANF_LOG, "Forklift Operation"),
-                new SkillOption(Skill.SkillCategory.MANF_LOG, "Safety Standards"),
-                new SkillOption(Skill.SkillCategory.MANF_LOG, "Lean Manufacturing"),
-                new SkillOption(Skill.SkillCategory.MANF_LOG, "Process Optimization"),
-                new SkillOption(Skill.SkillCategory.MANF_LOG, "Production Planning"),
-                new SkillOption(Skill.SkillCategory.MANF_LOG, "Shipping Logistics")
+                new SkillOption(JobPosting.Type.SPORT_RECREATION, "Fitness Training"),
+                new SkillOption(JobPosting.Type.SPORT_RECREATION, "Team Management"),
+                new SkillOption(JobPosting.Type.SPORT_RECREATION, "Event Planning"),
+                new SkillOption(JobPosting.Type.SPORT_RECREATION, "Injury Prevention"),
+                new SkillOption(JobPosting.Type.SPORT_RECREATION, "Nutrition Planning"),
+                new SkillOption(JobPosting.Type.SPORT_RECREATION, "Sports Coaching"),
+                new SkillOption(JobPosting.Type.SPORT_RECREATION, "First Aid"),
+                new SkillOption(JobPosting.Type.SPORT_RECREATION, "Youth Engagement"),
+                new SkillOption(JobPosting.Type.SPORT_RECREATION, "Public Speaking"),
+                new SkillOption(JobPosting.Type.SPORT_RECREATION, "Game Officiating")
         ));
 
         list.addAll(Arrays.asList(
-                new SkillOption(Skill.SkillCategory.HOSP_TOURISM, "Guest Services"),
-                new SkillOption(Skill.SkillCategory.HOSP_TOURISM, "Reservation Management"),
-                new SkillOption(Skill.SkillCategory.HOSP_TOURISM, "Tour Planning"),
-                new SkillOption(Skill.SkillCategory.HOSP_TOURISM, "Travel Booking"),
-                new SkillOption(Skill.SkillCategory.HOSP_TOURISM, "Customer Service"),
-                new SkillOption(Skill.SkillCategory.HOSP_TOURISM, "Event Coordination"),
-                new SkillOption(Skill.SkillCategory.HOSP_TOURISM, "Front Desk Operations"),
-                new SkillOption(Skill.SkillCategory.HOSP_TOURISM, "Housekeeping"),
-                new SkillOption(Skill.SkillCategory.HOSP_TOURISM, "Food & Beverage"),
-                new SkillOption(Skill.SkillCategory.HOSP_TOURISM, "Cultural Awareness")
+                new SkillOption(JobPosting.Type.MANF_LOG, "Supply Chain"),
+                new SkillOption(JobPosting.Type.MANF_LOG, "Inventory Control"),
+                new SkillOption(JobPosting.Type.MANF_LOG, "Quality Inspection"),
+                new SkillOption(JobPosting.Type.MANF_LOG, "Warehouse Management"),
+                new SkillOption(JobPosting.Type.MANF_LOG, "Forklift Operation"),
+                new SkillOption(JobPosting.Type.MANF_LOG, "Safety Standards"),
+                new SkillOption(JobPosting.Type.MANF_LOG, "Lean Manufacturing"),
+                new SkillOption(JobPosting.Type.MANF_LOG, "Process Optimization"),
+                new SkillOption(JobPosting.Type.MANF_LOG, "Production Planning"),
+                new SkillOption(JobPosting.Type.MANF_LOG, "Shipping Logistics")
         ));
 
         list.addAll(Arrays.asList(
-                new SkillOption(Skill.SkillCategory.AGRICULTURE, "Crop Management"),
-                new SkillOption(Skill.SkillCategory.AGRICULTURE, "Irrigation"),
-                new SkillOption(Skill.SkillCategory.AGRICULTURE, "Fertilizer Application"),
-                new SkillOption(Skill.SkillCategory.AGRICULTURE, "Harvesting"),
-                new SkillOption(Skill.SkillCategory.AGRICULTURE, "Pest Control"),
-                new SkillOption(Skill.SkillCategory.AGRICULTURE, "Farm Equipment Operation"),
-                new SkillOption(Skill.SkillCategory.AGRICULTURE, "Animal Husbandry"),
-                new SkillOption(Skill.SkillCategory.AGRICULTURE, "Agribusiness"),
-                new SkillOption(Skill.SkillCategory.AGRICULTURE, "Soil Testing"),
-                new SkillOption(Skill.SkillCategory.AGRICULTURE, "Sustainable Practices")
+                new SkillOption(JobPosting.Type.HOSP_TOURISM, "Guest Services"),
+                new SkillOption(JobPosting.Type.HOSP_TOURISM, "Reservation Management"),
+                new SkillOption(JobPosting.Type.HOSP_TOURISM, "Tour Planning"),
+                new SkillOption(JobPosting.Type.HOSP_TOURISM, "Travel Booking"),
+                new SkillOption(JobPosting.Type.HOSP_TOURISM, "Customer Service"),
+                new SkillOption(JobPosting.Type.HOSP_TOURISM, "Event Coordination"),
+                new SkillOption(JobPosting.Type.HOSP_TOURISM, "Front Desk Operations"),
+                new SkillOption(JobPosting.Type.HOSP_TOURISM, "Housekeeping"),
+                new SkillOption(JobPosting.Type.HOSP_TOURISM, "Food & Beverage"),
+                new SkillOption(JobPosting.Type.HOSP_TOURISM, "Cultural Awareness")
         ));
 
         list.addAll(Arrays.asList(
-                new SkillOption(Skill.SkillCategory.RETAIL_CONSUMER, "Cash Handling"),
-                new SkillOption(Skill.SkillCategory.RETAIL_CONSUMER, "POS Operation"),
-                new SkillOption(Skill.SkillCategory.RETAIL_CONSUMER, "Inventory Tracking"),
-                new SkillOption(Skill.SkillCategory.RETAIL_CONSUMER, "Customer Service"),
-                new SkillOption(Skill.SkillCategory.RETAIL_CONSUMER, "Sales Techniques"),
-                new SkillOption(Skill.SkillCategory.RETAIL_CONSUMER, "Visual Merchandising"),
-                new SkillOption(Skill.SkillCategory.RETAIL_CONSUMER, "Stock Replenishment"),
-                new SkillOption(Skill.SkillCategory.RETAIL_CONSUMER, "Product Knowledge"),
-                new SkillOption(Skill.SkillCategory.RETAIL_CONSUMER, "Loss Prevention"),
-                new SkillOption(Skill.SkillCategory.RETAIL_CONSUMER, "Returns Handling")
+                new SkillOption(JobPosting.Type.AGRICULTURE, "Crop Management"),
+                new SkillOption(JobPosting.Type.AGRICULTURE, "Irrigation"),
+                new SkillOption(JobPosting.Type.AGRICULTURE, "Fertilizer Application"),
+                new SkillOption(JobPosting.Type.AGRICULTURE, "Harvesting"),
+                new SkillOption(JobPosting.Type.AGRICULTURE, "Pest Control"),
+                new SkillOption(JobPosting.Type.AGRICULTURE, "Farm Equipment Operation"),
+                new SkillOption(JobPosting.Type.AGRICULTURE, "Animal Husbandry"),
+                new SkillOption(JobPosting.Type.AGRICULTURE, "Agribusiness"),
+                new SkillOption(JobPosting.Type.AGRICULTURE, "Soil Testing"),
+                new SkillOption(JobPosting.Type.AGRICULTURE, "Sustainable Practices")
         ));
 
         list.addAll(Arrays.asList(
-                new SkillOption(Skill.SkillCategory.OTHER, "Time Management"),
-                new SkillOption(Skill.SkillCategory.OTHER, "Problem Solving"),
-                new SkillOption(Skill.SkillCategory.OTHER, "Team Collaboration"),
-                new SkillOption(Skill.SkillCategory.OTHER, "Creative Thinking"),
-                new SkillOption(Skill.SkillCategory.OTHER, "Adaptability"),
-                new SkillOption(Skill.SkillCategory.OTHER, "Critical Thinking"),
-                new SkillOption(Skill.SkillCategory.OTHER, "Work Ethic"),
-                new SkillOption(Skill.SkillCategory.OTHER, "Conflict Resolution"),
-                new SkillOption(Skill.SkillCategory.OTHER, "Digital Literacy"),
-                new SkillOption(Skill.SkillCategory.OTHER, "Multitasking")
+                new SkillOption(JobPosting.Type.RETAIL_CONSUMER, "Cash Handling"),
+                new SkillOption(JobPosting.Type.RETAIL_CONSUMER, "POS Operation"),
+                new SkillOption(JobPosting.Type.RETAIL_CONSUMER, "Inventory Tracking"),
+                new SkillOption(JobPosting.Type.RETAIL_CONSUMER, "Customer Service"),
+                new SkillOption(JobPosting.Type.RETAIL_CONSUMER, "Sales Techniques"),
+                new SkillOption(JobPosting.Type.RETAIL_CONSUMER, "Visual Merchandising"),
+                new SkillOption(JobPosting.Type.RETAIL_CONSUMER, "Stock Replenishment"),
+                new SkillOption(JobPosting.Type.RETAIL_CONSUMER, "Product Knowledge"),
+                new SkillOption(JobPosting.Type.RETAIL_CONSUMER, "Loss Prevention"),
+                new SkillOption(JobPosting.Type.RETAIL_CONSUMER, "Returns Handling")
+        ));
+
+        list.addAll(Arrays.asList(
+                new SkillOption(JobPosting.Type.OTHER, "Time Management"),
+                new SkillOption(JobPosting.Type.OTHER, "Problem Solving"),
+                new SkillOption(JobPosting.Type.OTHER, "Team Collaboration"),
+                new SkillOption(JobPosting.Type.OTHER, "Creative Thinking"),
+                new SkillOption(JobPosting.Type.OTHER, "Adaptability"),
+                new SkillOption(JobPosting.Type.OTHER, "Critical Thinking"),
+                new SkillOption(JobPosting.Type.OTHER, "Work Ethic"),
+                new SkillOption(JobPosting.Type.OTHER, "Conflict Resolution"),
+                new SkillOption(JobPosting.Type.OTHER, "Digital Literacy"),
+                new SkillOption(JobPosting.Type.OTHER, "Multitasking")
         ));
     }
 

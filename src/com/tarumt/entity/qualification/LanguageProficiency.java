@@ -1,5 +1,7 @@
 package com.tarumt.entity.qualification;
 
+import com.tarumt.entity.BaseEntity;
+
 public class LanguageProficiency extends Qualification {
 
     private Language language;
@@ -129,4 +131,14 @@ public class LanguageProficiency extends Qualification {
                 + ", proficiency='" + proficiency + '\''
                 + '}';
     }
+
+    @Override
+    public String toShortString() {
+        return language + " (" + proficiency + ")";
+    }
+
+    static {
+        BaseEntity.registerPrefix(LanguageProficiency.class, "lang");
+    }
+
 }

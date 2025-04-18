@@ -1,5 +1,7 @@
 package com.tarumt.entity.qualification;
 
+import com.tarumt.entity.BaseEntity;
+
 public class EducationLevel extends Qualification {
 
     private DegreeLevel degreeLevel;
@@ -246,4 +248,14 @@ public class EducationLevel extends Qualification {
                 + ", importance=" + getImportance()
                 + '}';
     }
+
+    @Override
+    public String toShortString() {
+        return degreeLevel + " in " + fieldOfStudy + " (CGPA: " + cgpa + ")";
+    }
+
+    static {
+        BaseEntity.registerPrefix(EducationLevel.class, "edu");
+    }
+
 }
