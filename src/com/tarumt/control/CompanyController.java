@@ -12,26 +12,26 @@ import com.tarumt.utility.common.Log;
 import com.tarumt.utility.common.Menu;
 import com.tarumt.utility.search.FuzzySearch;
 
-import com.tarumt.adt.list.List;
+import com.tarumt.adt.list.ListInterface;
 import com.tarumt.adt.list.DoublyLinkedList;
 
-public class CompanyService implements Service {
+public class CompanyController {
 
-    private static CompanyService instance;
-    private List<Company> companies = new DoublyLinkedList<>();
+    private static CompanyController instance;
+    private ListInterface<Company> companies = new DoublyLinkedList<>();
     private final CompanyUI companyUI;
     private final LocationUI locationUI;
 
-    private CompanyService() {
+    private CompanyController() {
         Input input = new Input();
         this.companies = Initializer.getCompanies();
         this.companyUI = new CompanyUI(input);
         this.locationUI = new LocationUI(input);
     }
 
-    public static CompanyService getInstance() {
+    public static CompanyController getInstance() {
         if (instance == null) {
-            instance = new CompanyService();
+            instance = new CompanyController();
         }
         return instance;
     }
@@ -50,12 +50,10 @@ public class CompanyService implements Service {
         }
     }
 
-    @Override
     public void run() {
         companyUI.menu();
     }
 
-    @Override
     public void create() {
         while (true) {
             companyUI.printCreateCompanyMsg();
@@ -72,12 +70,10 @@ public class CompanyService implements Service {
         }
     }
 
-    @Override
     public void read() {
         companyUI.printAllCompanies(companies);
     }
 
-    @Override
     public void search() {
         while (true) {
             companyUI.printSearchCompanyMsg(companies);
@@ -93,18 +89,16 @@ public class CompanyService implements Service {
         }
     }
 
-    @Override
     public void filter() {
         Log.na();
     }
 
-    @Override
     public void update() {
         companyUI.printUpdateCompanyMsg(this.companies);
         if (this.companies.isEmpty()) {
             return;
         }
-        List<String> ids = BaseEntity.getIds(companies);
+        ListInterface<String> ids = BaseEntity.getIds(companies);
         String id = companyUI.getCompanyId("| Select Company ID => ", ids);
         if (id.equals(Input.STRING_EXIT_VALUE)) {
             return;
@@ -115,7 +109,6 @@ public class CompanyService implements Service {
         companyUI.updateCompanyMode(company.getId());
     }
 
-    @Override
     public void delete() {
         companyUI.deleteMenu(this.companies);
     }
@@ -147,7 +140,7 @@ public class CompanyService implements Service {
 
         if (endIndex >= startIndex) {
             if (companyUI.confirmDelete()) {
-                List<Company> toRemove = companies.subList(startIndex - 1, endIndex);
+                ListInterface<Company> toRemove = companies.subList(startIndex - 1, endIndex);
                 companies.removeAll(toRemove);
                 companyUI.printSuccessDeleteByRangeMsg(startIndex, endIndex);
             }
@@ -156,7 +149,7 @@ public class CompanyService implements Service {
 
     public void deleteById() {
         companyUI.printDeleteByIdMsg();
-        List<String> ids = BaseEntity.getIds(companies);
+        ListInterface<String> ids = BaseEntity.getIds(companies);
         String id = companyUI.getCompanyId("| Select Company ID => ", ids);
         if (id.equals(Input.STRING_EXIT_VALUE)) {
             return;
@@ -176,9 +169,12 @@ public class CompanyService implements Service {
         }
     }
 
-    @Override
     public void report() {
         Log.na();
+    }
+
+    private boolean isEmailUnique(String email) {
+        return !companies.anyMatch(company -> company.getContactEmail().equalsIgnoreCase(email));
     }
 
     private Company getCompany() {
@@ -199,6 +195,11 @@ public class CompanyService implements Service {
 
         String email = companyUI.getCompanyEmail();
         if (email.equals(Input.STRING_EXIT_VALUE)) {
+            return null;
+        }
+
+        if (!isEmailUnique(email)) {
+            companyUI.printEmailAlreadyExistsMsg();
             return null;
         }
 
@@ -270,6 +271,13 @@ public class CompanyService implements Service {
         if (newEmail.equals(Input.STRING_EXIT_VALUE)) {
             return;
         }
+
+        // Check if the new email is different from current and is unique
+        if (!company.getContactEmail().equals(newEmail) && !isEmailUnique(newEmail)) {
+            companyUI.printEmailAlreadyExistsMsg();
+            return;
+        }
+
         company.setContactEmail(newEmail);
         companyUI.printUpdateSuccessMessage(company, fieldName);
     }
@@ -319,6 +327,12 @@ public class CompanyService implements Service {
             return;
         }
 
+        // Check if the new email is different from current and is unique
+        if (!company.getContactEmail().equals(newEmail) && !isEmailUnique(newEmail)) {
+            companyUI.printEmailAlreadyExistsMsg();
+            return;
+        }
+
         String newPhone = companyUI.getCompanyPhone();
         if (newPhone.equals(Input.STRING_EXIT_VALUE)) {
             return;
@@ -348,7 +362,7 @@ public class CompanyService implements Service {
     }
 
     public void login() {
-        List<String> ids = BaseEntity.getIds(this.companies);
+        ListInterface<String> ids = BaseEntity.getIds(this.companies);
         companyUI.printLoginMsg();
         String companyId = companyUI.getCompanyId("| Company ID => ", ids);
         if (ids.contains(companyId)) {

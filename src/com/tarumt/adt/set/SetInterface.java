@@ -1,8 +1,8 @@
-package com.tarumt.adt;
+package com.tarumt.adt.set;
 
 import java.util.Iterator;
 
-public interface Collection<E> extends Iterable<E> {
+public interface SetInterface<E>  extends Iterable<E> {
     int size();
 
     boolean isEmpty();
@@ -15,18 +15,15 @@ public interface Collection<E> extends Iterable<E> {
 
     boolean contains(Object o);
 
-    boolean addAll(Collection<? extends E> c);
+    boolean addAll(SetInterface<? extends E> c);
 
-    boolean removeAll(Collection<?> c);
+    boolean removeAll(SetInterface<?> c);
 
-    boolean containsAll(Collection<?> c);
+    boolean containsAll(SetInterface<?> c);
 
     void clear();
-
-    Object[] toArray();
 
     boolean equals(Object o);
 
     int hashCode();
 }
-

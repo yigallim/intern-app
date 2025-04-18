@@ -1,5 +1,6 @@
 package com.tarumt.entity;
 
+import com.tarumt.utility.common.Context;
 import com.tarumt.utility.common.Strings;
 import com.tarumt.utility.pretty.annotation.ColumnIndex;
 import com.tarumt.utility.pretty.annotation.Computed;
@@ -7,12 +8,11 @@ import com.tarumt.utility.pretty.annotation.ExcludeKey;
 import com.tarumt.utility.pretty.annotation.OutputLength;
 import com.tarumt.utility.matching.JobMatchingUtil;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 public class JobApplication extends BaseEntity {
-
-    static {
-        BaseEntity.registerPrefix(JobApplication.class, "e");
-    }
+    private static final String PREFIX = "e";
+    private static int counter = 1;
 
     @ExcludeKey("employer")
     @OutputLength(30)
@@ -22,24 +22,33 @@ public class JobApplication extends BaseEntity {
     private Applicant applicant;
     @OutputLength(14)
     private Status status;
-    @OutputLength(12)
-    private LocalDate appliedAt;
+    private LocalDateTime appliedAt;
 
-    public JobApplication(JobPosting jobPosting, Applicant applicant, Status status, LocalDate appliedAt) {
-        super();
+    public JobApplication(JobPosting jobPosting, Applicant applicant, Status status, LocalDateTime appliedAt) {
+        super(generateId());
         this.jobPosting = jobPosting;
         this.applicant = applicant;
         this.status = status;
         this.appliedAt = appliedAt;
     }
 
+    private static String generateId() {
+        String id = PREFIX + counter;
+        counter++;
+        return id;
+    }
+
+    public static String getNextId() {
+        return PREFIX + counter;
+    }
+
     public enum Status {
-        PENDING, // Not reviewed yet
+        PENDING,     // Not reviewed yet
         SHORTLISTED, // Waiting for interview
         INTERVIEWED, // Post interview, waiting for offer
-        OFFERED, // Employer offer job, waiting applicant to accept
-        ACCEPTED, // Both parties agreed employment
-        REJECTED, // Rejected by employer (at any stage)
+        OFFERED,     // Employer offer job, waiting applicant to accept
+        ACCEPTED,    // Both parties agreed employment
+        REJECTED,    // Rejected by employer (at any stage)
         WITHDRAWN;   // Withdrawn by applicant (at any stage)
 
         @Override
@@ -49,22 +58,14 @@ public class JobApplication extends BaseEntity {
     }
 
     @ExcludeKey("employer")
-    @ColumnIndex(2)
+    @ColumnIndex(3)
     @OutputLength(26)
     @Computed("Company")
     private String computedCompany() {
         return this.jobPosting.getCompany().toShortString();
     }
 
-    @ExcludeKey("applicant")
-    @ColumnIndex(5)
-    @OutputLength(6)
-    @Computed("Score")
-    public String computedScore() {
-        double score = JobMatchingUtil.calculateScore(this.jobPosting, this.applicant);
-        return String.format("%.2f", score);
-    }
-
+    // TODO : computed score
 
     public JobPosting getJobPosting() {
         return jobPosting;
@@ -90,26 +91,51 @@ public class JobApplication extends BaseEntity {
         this.status = status;
     }
 
-    public LocalDate getAppliedAt() {
+    public LocalDateTime getAppliedAt() {
         return appliedAt;
     }
 
-    public void setAppliedAt(LocalDate appliedAt) {
+    public void setAppliedAt(LocalDateTime appliedAt) {
         this.appliedAt = appliedAt;
+    }
+
+    public boolean isOngoing() {
+        return status == Status.PENDING ||
+                status == Status.SHORTLISTED ||
+                status == Status.INTERVIEWED ||
+                status == Status.OFFERED;
+    }
+
+    public boolean isTerminated() {
+        return status == Status.ACCEPTED ||
+                status == Status.REJECTED ||
+                status == Status.WITHDRAWN;
+    }
+
+    public boolean isReadyForInterview() {
+        return status == Status.SHORTLISTED || status == Status.INTERVIEWED;
     }
 
     @Override
     public String toShortString() {
-        return this.getId() + ", " + this.getJobPosting().getTitle();
+        StringBuilder sb = new StringBuilder(getId())
+                .append(" | Job: ").append(jobPosting.toShortString());
+        if (Context.isEmployer()) {
+            sb.append(" | Applicant: ").append(applicant.toShortString());
+        } else if (Context.isApplicant()) {
+            sb.append(" | Company: ").append(computedCompany());
+        }
+        return sb.toString();
     }
 
     @Override
     public String toString() {
-        return "Job Application\n"
-                + "|  ID          => " + getId() + ",\n"
-                + "|  Applicant   => " + applicant + ",\n"
-                + "|  Job Posting => " + jobPosting + ",\n"
-                + "|  Status      => " + (status != null ? status.toString() : "N/A") + ",\n"
-                + "|  Applied At  => " + (appliedAt != null ? appliedAt.toString() : "N/A");
+        return "Job Application\n" +
+                "|  ID          => " + getId() + ",\n" +
+                "|  Applicant   => " + applicant + ",\n" +
+                "|  Job Posting => " + jobPosting + ",\n" +
+                "|  Status      => " + (status != null ? status.toString() : "N/A") + ",\n" +
+                "|  Applied At  => " + Strings.formatDateTime(appliedAt);
     }
 }
+

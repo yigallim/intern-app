@@ -1,11 +1,9 @@
 package com.tarumt.adt.set;
 
-import com.tarumt.adt.Collection;
-
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-public class HashSet<E> implements Set<E> {
+public class HashSet<E> implements SetInterface<E> {
 
     private static final int DEFAULT_INITIAL_CAPACITY = 16;
 
@@ -47,7 +45,7 @@ public class HashSet<E> implements Set<E> {
     }
 
     @SuppressWarnings("unchecked")
-    public HashSet(Collection<? extends E> c) {
+    public HashSet(SetInterface<? extends E> c) {
         this(Math.max((int) (c.size() / DEFAULT_LOAD_FACTOR) + 1, DEFAULT_INITIAL_CAPACITY), DEFAULT_LOAD_FACTOR);
         if (c == null) throw new NullPointerException("Collection cannot be null");
         addAll(c);
@@ -143,7 +141,7 @@ public class HashSet<E> implements Set<E> {
     }
 
     @Override
-    public boolean addAll(Collection<? extends E> c) {
+    public boolean addAll(SetInterface<? extends E> c) {
         boolean modified = false;
         for (E element : c) {
             if (add(element)) {
@@ -154,7 +152,7 @@ public class HashSet<E> implements Set<E> {
     }
 
     @Override
-    public boolean removeAll(Collection<?> c) {
+    public boolean removeAll(SetInterface<?> c) {
         boolean modified = false;
         for (Object element : c) {
             if (remove(element)) {
@@ -165,7 +163,7 @@ public class HashSet<E> implements Set<E> {
     }
 
     @Override
-    public boolean containsAll(Collection<?> c) {
+    public boolean containsAll(SetInterface<?> c) {
         for (Object element : c) {
             if (!contains(element)) {
                 return false;
@@ -175,27 +173,15 @@ public class HashSet<E> implements Set<E> {
     }
 
     @Override
-    public Object[] toArray() {
-        Object[] array = new Object[size];
-        int index = 0;
-        for (int i = 0; i < buckets.length; i++) {
-            for (Node<E> node = buckets[i]; node != null; node = node.next) {
-                array[index++] = node.element;
-            }
-        }
-        return array;
-    }
-
-    @Override
     public boolean equals(Object o) {
         if (o == this) {
             return true;
         }
-        if (!(o instanceof Set)) {
+        if (!(o instanceof SetInterface)) {
             return false;
         }
 
-        Set<?> other = (Set<?>) o;
+        SetInterface<?> other = (SetInterface<?>) o;
         if (other.size() != size()) {
             return false;
         }

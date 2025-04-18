@@ -3,7 +3,6 @@ package com.tarumt.entity.qualification;
 import com.tarumt.entity.BaseEntity;
 
 public class EducationLevel extends Qualification {
-
     private DegreeLevel degreeLevel;
     private FieldOfStudy fieldOfStudy;
     private University university;

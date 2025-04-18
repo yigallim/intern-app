@@ -11,14 +11,12 @@ import com.tarumt.utility.validation.annotation.Max;
 import com.tarumt.utility.validation.annotation.Min;
 import com.tarumt.utility.validation.annotation.Regex;
 
-import com.tarumt.adt.list.List;
+import com.tarumt.adt.list.ListInterface;
 import com.tarumt.entity.qualification.Skill;
 
 public class Applicant extends BaseEntity {
-
-    static {
-        BaseEntity.registerPrefix(Applicant.class, "a");
-    }
+    private static final String PREFIX = "a";
+    private static int counter = 1;
 
     @Min(3)
     @Max(30)
@@ -42,11 +40,9 @@ public class Applicant extends BaseEntity {
     @ExcludeKey("default")
     private EducationLevel educationLevel;
     @ExcludeKey("default")
-    private List<WorkExperience> workExperiences;
+    private ListInterface<WorkExperience> workExperiences;
     @ExcludeKey("default")
-    private List<LanguageProficiency> languageProficiencies;
-    @ExcludeKey("default")
-    private List<Skill> skills;
+    private ListInterface<LanguageProficiency> languageProficiencies;
 
     public Applicant(String name, String contactEmail, String contactPhone, JobPosting.Type desiredJobType, Location location,
             EducationLevel educationLevel, List<WorkExperience> workExperiences,
@@ -64,6 +60,16 @@ public class Applicant extends BaseEntity {
 
     public Applicant(String name, String contactEmail, String contactPhone, JobPosting.Type desiredJobType, Location location) {
         this(name, contactEmail, contactPhone, desiredJobType, location, null, null, null,null);
+    }
+
+    private static String generateId() {
+        String id = PREFIX + counter;
+        counter++;
+        return id;
+    }
+
+    public static String getNextId() {
+        return PREFIX + counter;
     }
 
     public String getName() {
@@ -114,19 +120,19 @@ public class Applicant extends BaseEntity {
         this.educationLevel = educationLevel;
     }
 
-    public List<WorkExperience> getWorkExperiences() {
+    public ListInterface<WorkExperience> getWorkExperiences() {
         return workExperiences;
     }
 
-    public void setWorkExperiences(List<WorkExperience> workExperiences) {
+    public void setWorkExperiences(ListInterface<WorkExperience> workExperiences) {
         this.workExperiences = workExperiences;
     }
 
-    public List<LanguageProficiency> getLanguageProficiencies() {
+    public ListInterface<LanguageProficiency> getLanguageProficiencies() {
         return languageProficiencies;
     }
 
-    public void setLanguageProficiencies(List<LanguageProficiency> languageProficiencies) {
+    public void setLanguageProficiencies(ListInterface<LanguageProficiency> languageProficiencies) {
         this.languageProficiencies = languageProficiencies;
     }
 
@@ -145,13 +151,14 @@ public class Applicant extends BaseEntity {
 
     @Override
     public String toString() {
-        return "Applicant\n"
-                + "|  ID          => " + getId() + ",\n"
-                + "|  Name        => " + name + ",\n"
-                + "|  Email       => " + contactEmail + ",\n"
-                + "|  Phone       => " + contactPhone + ",\n"
-                + "|  Desired Job => " + (desiredJobType != null ? desiredJobType : "N/A") + ",\n"
-                + "|  Location    => " + (location != null ? location.toString() : "N/A");
+        return "Applicant\n" +
+                "|  ID          => " + getId() + ",\n" +
+                "|  Name        => " + name + ",\n" +
+                "|  Email       => " + contactEmail + ",\n" +
+                "|  Phone       => " + contactPhone + ",\n" +
+                "|  Desired Job => " + (desiredJobType != null ? desiredJobType : "N/A") + ",\n" +
+                "|  Location    => " + (location != null ? location.toString() : "N/A");
     }
+
 
 }

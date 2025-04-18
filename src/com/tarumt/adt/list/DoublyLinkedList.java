@@ -1,18 +1,15 @@
 package com.tarumt.adt.list;
 
-import com.tarumt.adt.Arrays;
-import com.tarumt.adt.Collection;
-
 import java.util.Objects;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.Optional;
-import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.function.Predicate;
 
-public class DoublyLinkedList<E> implements List<E> {
+import com.tarumt.adt.function.SingleArgLambda;
+import com.tarumt.adt.function.TestLambda;
+
+public class DoublyLinkedList<E> implements ListInterface<E> {
     private class Node {
         E element;
         Node prev;
@@ -35,10 +32,10 @@ public class DoublyLinkedList<E> implements List<E> {
         size = 0;
     }
 
-    public DoublyLinkedList(Collection<? extends E> c) {
+    public DoublyLinkedList(ListInterface<? extends E> c) {
         this();
         if (c == null) throw new NullPointerException("Collection cannot be null");
-        addAll(c);
+        merge(c);
     }
 
     @Override
@@ -95,7 +92,7 @@ public class DoublyLinkedList<E> implements List<E> {
     }
 
     @Override
-    public boolean addAll(Collection<? extends E> c) {
+    public boolean merge(ListInterface<? extends E> c) {
         boolean modified = false;
         for (E element : c) {
             if (add(element)) {
@@ -106,7 +103,7 @@ public class DoublyLinkedList<E> implements List<E> {
     }
 
     @Override
-    public boolean removeAll(Collection<?> c) {
+    public boolean removeAll(ListInterface<?> c) {
         boolean modified = false;
         Iterator<?> it = c.iterator();
         while (it.hasNext()) {
@@ -115,16 +112,6 @@ public class DoublyLinkedList<E> implements List<E> {
             }
         }
         return modified;
-    }
-
-    @Override
-    public boolean containsAll(Collection<?> c) {
-        for (Object element : c) {
-            if (!contains(element)) {
-                return false;
-            }
-        }
-        return true;
     }
 
     @Override
@@ -191,7 +178,45 @@ public class DoublyLinkedList<E> implements List<E> {
     }
 
     @Override
-    public List<E> subList(int fromIndex, int toIndex) {
+    public E set(int index, E element) {
+        if (index < 0 || index >= size) {
+            throw new IndexOutOfBoundsException("Index: " + index + ", Size: " + size);
+        }
+
+        Node current;
+        if (index < size / 2) {
+            current = head;
+            for (int i = 0; i < index; i++) {
+                current = current.next;
+            }
+        } else {
+            current = tail;
+            for (int i = size - 1; i > index; i--) {
+                current = current.prev;
+            }
+        }
+
+        E oldElement = current.element;
+        current.element = element;
+        return oldElement;
+    }
+
+    @Override
+    public int indexOf(Object o) {
+        int index = 0;
+        Node current = head;
+        while (current != null) {
+            if (Objects.equals(o, current.element)) {
+                return index;
+            }
+            current = current.next;
+            index++;
+        }
+        return -1;
+    }
+
+    @Override
+    public ListInterface<E> subList(int fromIndex, int toIndex) {
         if (fromIndex < 0 || toIndex > size || fromIndex > toIndex) {
             throw new IndexOutOfBoundsException("fromIndex: " + fromIndex + ", toIndex: " + toIndex + ", Size: " + size);
         }
@@ -212,7 +237,7 @@ public class DoublyLinkedList<E> implements List<E> {
     }
 
     @Override
-    public <R> List<R> map(Function<? super E, ? extends R> mapper) {
+    public <R> ListInterface<R> map(SingleArgLambda<? super E, ? extends R> mapper) {
         if (mapper == null) throw new NullPointerException();
         DoublyLinkedList<R> result = new DoublyLinkedList<>();
         Node current = head;
@@ -224,12 +249,12 @@ public class DoublyLinkedList<E> implements List<E> {
     }
 
     @Override
-    public List<E> filter(Predicate<? super E> predicate) {
-        if (predicate == null) throw new NullPointerException();
+    public ListInterface<E> filter(TestLambda<? super E> testLambda) {
+        if (testLambda == null) throw new NullPointerException();
         DoublyLinkedList<E> result = new DoublyLinkedList<>();
         Node current = head;
         while (current != null) {
-            if (predicate.test(current.element)) {
+            if (testLambda.test(current.element)) {
                 result.add(current.element);
             }
             current = current.next;
@@ -238,74 +263,153 @@ public class DoublyLinkedList<E> implements List<E> {
     }
 
     @Override
-    public void forEach(Consumer<? super E> action) {
-        if (action == null) throw new NullPointerException();
-        Node current = head;
+    public void sort(Comparator<? super E> c) {
+        if (c == null) throw new NullPointerException("Comparator cannot be null");
+        if (size <= 1) return;
+        if (size < 64) {
+            insertionSort(c);
+            return;
+        }
+        int minRun = calculateMinRun(size);
+
+        for (int i = 0; i < size; i += minRun) {
+            int end = Math.min(i + minRun - 1, size - 1);
+            insertionSortRange(i, end, c);
+        }
+
+        for (int runSize = minRun; runSize < size; runSize *= 2) {
+            for (int left = 0; left < size; left += 2 * runSize) {
+                int mid = left + runSize - 1;
+                int right = Math.min(left + 2 * runSize - 1, size - 1);
+
+                if (mid < right) {
+                    merge(left, mid, right, c);
+                }
+            }
+        }
+    }
+
+    private int calculateMinRun(int n) {
+        int r = 0;
+        while (n >= 64) {
+            r |= (n & 1);
+            n >>= 1;
+        }
+        return n + r;
+    }
+
+    private void insertionSort(Comparator<? super E> c) {
+        if (head == null || head.next == null) return;
+
+        Node current = head.next;
         while (current != null) {
-            action.accept(current.element);
+            E key = current.element;
+            Node j = current.prev;
+
+            while (j != null && c.compare(j.element, key) > 0) {
+                j.next.element = j.element;
+                j = j.prev;
+            }
+
+            if (j == null) {
+                head.element = key;
+            } else {
+                j.next.element = key;
+            }
+
+            current = current.next;
+        }
+    }
+
+    private void insertionSortRange(int start, int end, Comparator<? super E> c) {
+        Node startNode = getNodeAt(start);
+        Node endNode = getNodeAt(end);
+
+        Node current = startNode.next;
+        Node lastSorted = startNode;
+
+        while (current != endNode.next && current != null) {
+            E key = current.element;
+            Node j = current.prev;
+
+            while (j != null && j != startNode.prev && c.compare(j.element, key) > 0) {
+                j.next.element = j.element;
+                j = j.prev;
+            }
+
+            if (j == startNode.prev) {
+                startNode.element = key;
+            } else {
+                j.next.element = key;
+            }
+            lastSorted = current;
+            current = current.next;
+        }
+    }
+
+    private Node getNodeAt(int index) {
+        if (index < 0 || index >= size) {
+            throw new IndexOutOfBoundsException("Index: " + index + ", Size: " + size);
+        }
+
+        Node current;
+        if (index < size / 2) {
+            current = head;
+            for (int i = 0; i < index; i++) {
+                current = current.next;
+            }
+        } else {
+            current = tail;
+            for (int i = size - 1; i > index; i--) {
+                current = current.prev;
+            }
+        }
+        return current;
+    }
+
+    private void merge(int left, int mid, int right, Comparator<? super E> c) {
+        DoublyLinkedList<E> temp = new DoublyLinkedList<>();
+
+        Node leftNode = getNodeAt(left);
+        Node rightNode = getNodeAt(mid + 1);
+        Node leftEnd = getNodeAt(mid);
+        Node rightEnd = getNodeAt(right);
+
+        while (leftNode != leftEnd.next && rightNode != rightEnd.next && leftNode != null && rightNode != null) {
+            if (c.compare(leftNode.element, rightNode.element) <= 0) {
+                temp.add(leftNode.element);
+                leftNode = leftNode.next;
+            } else {
+                temp.add(rightNode.element);
+                rightNode = rightNode.next;
+            }
+        }
+        while (leftNode != leftEnd.next && leftNode != null) {
+            temp.add(leftNode.element);
+            leftNode = leftNode.next;
+        }
+        while (rightNode != rightEnd.next && rightNode != null) {
+            temp.add(rightNode.element);
+            rightNode = rightNode.next;
+        }
+        Node current = getNodeAt(left);
+        for (E element : temp) {
+            current.element = element;
             current = current.next;
         }
     }
 
     @Override
-    public void sort(Comparator<? super E> c) {
-        if (c == null) throw new NullPointerException("Comparator cannot be null");
-        if (size <= 1) return;
-        Object[] array = toArray();
-        Arrays.sort(array, (a, b) -> c.compare((E) a, (E) b));
-        clear();
-        for (Object item : array) {
-            add((E) item);
-        }
-    }
-
-    @Override
-    public List<E> sorted() {
-        if (isEmpty()) return new DoublyLinkedList<>();
-        if (!(head.element instanceof Comparable)) {
-            throw new ClassCastException("Elements must be Comparable");
-        }
-        @SuppressWarnings("unchecked") Comparator<E> comparator = (a, b) -> ((Comparable<? super E>) a).compareTo(b);
-        return sorted(comparator);
-    }
-
-    @Override
-    public List<E> sorted(Comparator<? super E> comparator) {
-        if (comparator == null) throw new NullPointerException();
-        Object[] array = toArray();
-
-        Arrays.sort(array, (a, b) -> comparator.compare((E) a, (E) b));
-        DoublyLinkedList<E> result = new DoublyLinkedList<>();
-        for (Object item : array) {
-            result.add((E) item);
-        }
-        return result;
-    }
-
-    @Override
-    public boolean anyMatch(Predicate<? super E> predicate) {
-        if (predicate == null) throw new NullPointerException();
+    public boolean anyMatch(TestLambda<? super E> testLambda) {
+        if (testLambda == null) throw new NullPointerException();
         Node current = head;
         while (current != null) {
-            if (predicate.test(current.element)) {
+            if (testLambda.test(current.element)) {
                 return true;
             }
             current = current.next;
         }
         return false;
-    }
-
-    @Override
-    public boolean allMatch(Predicate<? super E> predicate) {
-        if (predicate == null) throw new NullPointerException();
-        Node current = head;
-        while (current != null) {
-            if (!predicate.test(current.element)) {
-                return false;
-            }
-            current = current.next;
-        }
-        return true;
     }
 
     @Override
@@ -346,18 +450,6 @@ public class DoublyLinkedList<E> implements List<E> {
             current = current.next;
         }
         return Optional.ofNullable(max);
-    }
-
-    @Override
-    public Object[] toArray() {
-        Object[] result = new Object[size];
-        int index = 0;
-        Node current = head;
-        while (current != null) {
-            result[index++] = current.element;
-            current = current.next;
-        }
-        return result;
     }
 
     @Override
@@ -452,4 +544,4 @@ public class DoublyLinkedList<E> implements List<E> {
             canRemove = false;
         }
     }
-}   
+}
