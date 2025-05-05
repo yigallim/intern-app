@@ -6,6 +6,7 @@ package com.tarumt.boundary;
 
 import com.tarumt.adt.list.ListInterface;
 import com.tarumt.control.InterviewController;
+import com.tarumt.control.JobApplicationController;
 import com.tarumt.entity.Company;
 import com.tarumt.entity.JobApplication;
 import com.tarumt.entity.interview.ScheduledInterview;
@@ -29,9 +30,11 @@ public class InterviewUI {
 
     public void menu() {
         InterviewController interviewController = InterviewController.getInstance();
+        JobApplicationController applicationController = JobApplicationController.getInstance();
         new Menu()
-                .header("==> Manage Interviews <==")
+                .header("==> Manage Interviews & Applications <==")
                 .choice(
+                        new Menu.Choice("📄 Display Job Applications", applicationController::displayJobApplication),
                         new Menu.Choice("📨 Display Interview Invitation", interviewController::displayInvitation),
                         new Menu.Choice("📅 Display All Interview", interviewController::displayAllInterview),
                         new Menu.Choice("📜 Display Past Interview", interviewController::displayPastInterview),

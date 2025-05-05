@@ -9,6 +9,7 @@ import com.tarumt.boundary.LocationUI;
 import com.tarumt.dao.Initializer;
 import com.tarumt.entity.BaseEntity;
 import com.tarumt.entity.Company;
+import com.tarumt.entity.JobPosting;
 import com.tarumt.entity.location.Location;
 import com.tarumt.utility.common.Context;
 import com.tarumt.utility.common.Input;
@@ -23,12 +24,14 @@ public class CompanyController {
 
     private static CompanyController instance;
     private ListInterface<Company> companies = new DoublyLinkedList<>();
+    private ListInterface<JobPosting> jobPostings = new DoublyLinkedList<>();
     private final CompanyUI companyUI;
     private final LocationUI locationUI;
 
     private CompanyController() {
         Input input = new Input();
         this.companies = Initializer.getCompanies();
+        this.jobPostings = Initializer.getJobPostings();
         this.companyUI = new CompanyUI(input);
         this.locationUI = new LocationUI(input);
     }
@@ -38,6 +41,14 @@ public class CompanyController {
             instance = new CompanyController();
         }
         return instance;
+    }
+
+    private boolean hasJobPostings(Company company) {
+        for (JobPosting jp : jobPostings) {
+            if (jp != null && jp.getCompany() != null && jp.getCompany().equals(company))
+                return true;
+        }
+        return false;
     }
 
     public void accessEmployer() {
@@ -120,6 +131,12 @@ public class CompanyController {
             return;
         }
 
+        Company companyToDelete = companies.get(index - 1);
+        if (hasJobPostings(companyToDelete)) {
+            companyUI.printCannotDeleteCompanyWarning(companyToDelete);
+            return;
+        }
+
         if (companyUI.confirmDelete()) {
             Company company = companies.remove(index - 1);
             companyUI.printSuccessDeleteMsg(company.getId());
@@ -139,8 +156,14 @@ public class CompanyController {
         }
 
         if (endIndex >= startIndex) {
+            ListInterface<Company> toRemove = companies.subList(startIndex - 1, endIndex);
+            for (Company companyInRange : toRemove) {
+                if (hasJobPostings(companyInRange)) {
+                    companyUI.printCannotDeleteCompanyWarning(companyInRange);
+                    return;
+                }
+            }
             if (companyUI.confirmDelete()) {
-                ListInterface<Company> toRemove = companies.subList(startIndex - 1, endIndex);
                 companies.removeAll(toRemove);
                 companyUI.printSuccessDeleteByRangeMsg(startIndex, endIndex);
             }
@@ -152,6 +175,12 @@ public class CompanyController {
         ListInterface<String> ids = BaseEntity.getIds(companies);
         String id = companyUI.getCompanyId("| Select Company ID => ", ids);
         if (id.equals(Input.STRING_EXIT_VALUE)) {
+            return;
+        }
+
+        Company companyToDelete = BaseEntity.getById(id, companies);
+        if (hasJobPostings(companyToDelete)) {
+            companyUI.printCannotDeleteCompanyWarning(companyToDelete);
             return;
         }
 
@@ -272,7 +301,6 @@ public class CompanyController {
             return;
         }
 
-        // Check if the new email is different from current and is unique
         if (!company.getContactEmail().equals(newEmail) && !isEmailUnique(newEmail)) {
             companyUI.printEmailAlreadyExistsMsg();
             return;
@@ -394,7 +422,13 @@ public class CompanyController {
         if (company == null)
             return;
 
+        if (hasJobPostings(company)) {
+            companyUI.printCannotDeleteCompanyProfileWarning(company);
+            return;
+        }
+
         companyUI.printDeleteProfileMsg();
+
         if (companyUI.confirmDeleteProfile()) {
             companies.remove(company);
             companyUI.printSuccessDeleteProfileMsg();

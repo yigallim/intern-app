@@ -627,6 +627,12 @@ public class JobPostingUI {
         input.clickAnythingToContinue();
     }
 
+    public void printCannotDeleteJobPostingWarning(JobPosting jobPosting) {
+        System.out.println();
+        Log.warn("Cannot delete job posting " + jobPosting.getId() + " (" + jobPosting.getTitle() + ") because it has ongoing job applications.");
+        input.clickAnythingToContinue();
+    }
+
     public static class MonthRangeSummaryReportRow {
         private String jobTitle;
         private String companyName;

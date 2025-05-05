@@ -43,6 +43,15 @@ public class ApplicantController {
         return instance;
     }
 
+    private boolean hasJobApplications(Applicant applicant) {
+        for (JobApplication ja : jobApplications) {
+            if (ja != null && ja.getApplicant() != null && ja.getApplicant().equals(applicant) && ja.isOngoing()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public void accessApplicant() {
         boolean applicantExists = !Initializer.getApplicants().isEmpty();
         if (!applicantExists)
@@ -124,7 +133,7 @@ public class ApplicantController {
         int width = 90;
 
         System.out.print(Report.buildReportHeader(width, module, reportName));
-
+        System.out.println();
         System.out.printf("| %-13s | %-20s | %-13s | %-31s |%n",
                 "Applicant ID", "Name", "Applications", "Status Summary");
         System.out.println(Strings.repeat("-", width));
@@ -399,6 +408,13 @@ public class ApplicantController {
         int index = applicantUI.getApplicantIndex(applicants.size());
         if (index == Input.INT_EXIT_VALUE)
             return;
+
+        Applicant applicantToDelete = applicants.get(index - 1);
+        if (hasJobApplications(applicantToDelete)) {
+            applicantUI.printCannotDeleteApplicantWarning(applicantToDelete);
+            return;
+        }
+
         if (applicantUI.confirmDelete()) {
             Applicant applicant = applicants.remove(index - 1);
             applicantUI.printSuccessDeleteMsg(applicant.getId());
@@ -410,12 +426,20 @@ public class ApplicantController {
         int startIndex = applicantUI.getDeleteStartIndex(applicants.size());
         if (startIndex == Input.INT_EXIT_VALUE)
             return;
+
         int endIndex = applicantUI.getDeleteEndIndex(startIndex, applicants.size());
         if (endIndex == Input.INT_EXIT_VALUE)
             return;
+
         if (endIndex >= startIndex) {
+            ListInterface<Applicant> toRemove = applicants.subList(startIndex - 1, endIndex);
+            for (Applicant applicantInRange : toRemove) {
+                if (hasJobApplications(applicantInRange)) {
+                    applicantUI.printCannotDeleteApplicantWarning(applicantInRange);
+                    return;
+                }
+            }
             if (applicantUI.confirmDelete()) {
-                ListInterface<Applicant> toRemove = applicants.subList(startIndex - 1, endIndex);
                 applicants.removeAll(toRemove);
                 applicantUI.printSuccessDeleteByRangeMsg(startIndex, endIndex);
             }
@@ -428,6 +452,13 @@ public class ApplicantController {
         String id = applicantUI.getApplicantId("| Select Applicant ID => ", ids);
         if (id.equals(Input.STRING_EXIT_VALUE))
             return;
+
+        Applicant applicantToDelete = BaseEntity.getById(id, applicants);
+        if (hasJobApplications(applicantToDelete)) {
+            applicantUI.printCannotDeleteApplicantWarning(applicantToDelete);
+            return;
+        }
+
         if (applicantUI.confirmDelete()) {
             Applicant applicant = BaseEntity.getById(id, applicants);
             applicants.remove(applicant);
@@ -492,6 +523,11 @@ public class ApplicantController {
         Applicant applicant = Context.getApplicant();
         if (applicant == null)
             return;
+
+        if (hasJobApplications(applicant)) {
+            applicantUI.printCannotDeleteApplicantProfileWarning(applicant);
+            return;
+        }
 
         applicantUI.printDeleteProfileMsg();
         if (applicantUI.confirmDeleteProfile()) {

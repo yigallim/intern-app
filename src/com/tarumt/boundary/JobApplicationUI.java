@@ -8,10 +8,7 @@ import com.tarumt.adt.list.ListInterface;
 import com.tarumt.control.JobApplicationController;
 import com.tarumt.entity.JobApplication;
 import com.tarumt.entity.JobPosting;
-import com.tarumt.utility.common.Input;
-import com.tarumt.utility.common.Log;
-import com.tarumt.utility.common.Menu;
-import com.tarumt.utility.common.Strings;
+import com.tarumt.utility.common.*;
 import com.tarumt.utility.pretty.TabularPrint;
 import com.tarumt.utility.validation.ConditionFactory;
 import com.tarumt.utility.validation.StringCondition;
@@ -108,7 +105,6 @@ public class JobApplicationUI {
         }
 
         System.out.println("<== Reject Job Application [ X to Exit ] ==>");
-        System.out.println(Strings.warnHighlight("| Recommended ==> "));
         return input.getObjectFromList("|\n| Select Job Application To Reject =>", jobApplications, 80, 2);
     }
 
@@ -159,7 +155,12 @@ public class JobApplicationUI {
             return;
         }
         Log.info("Displaying " + jobApplications.size() + " job applications");
-        TabularPrint.printTabular(jobApplications, true, "applicant");
+        if(Context.isApplicant()) {
+            TabularPrint.printTabular(jobApplications, true, "applicant");
+        }
+        if(Context.isAdmin()) {
+            TabularPrint.printTabular(jobApplications, true);
+        }
         input.clickAnythingToContinue();
     }
 

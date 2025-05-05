@@ -156,7 +156,9 @@ public class InterviewController {
 
     public void displayAllInterview() {
         ListInterface<ScheduledInterview> interviews = getAllScheduledInterviews();
-        this.interviewUI.printAllInterviews(interviews);
+        ListInterface<ScheduledInterview> sortedInterviews = new DoublyLinkedList<>(interviews);
+        sortedInterviews.sort((a, b) -> a.getTimeSlot().getStartDateTime().compareTo(b.getTimeSlot().getStartDateTime()));
+        this.interviewUI.printAllInterviews(sortedInterviews);
     }
 
     public void accessEmployer() {

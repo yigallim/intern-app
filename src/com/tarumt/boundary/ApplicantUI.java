@@ -570,4 +570,14 @@ public class ApplicantUI {
         }
     }
 
+    public void printCannotDeleteApplicantWarning(Applicant applicant) {
+        System.out.println();
+        Log.warn("Cannot delete applicant " + applicant.getId() + " (" + applicant.getName() + ") because they have ongoing job applications.");
+        input.clickAnythingToContinue();
+    }
+
+    public void printCannotDeleteApplicantProfileWarning(Applicant applicant) {
+        Log.warn("Cannot delete profile: Your profile (" + applicant.getName() + ") has ongoing job applications.");
+        input.clickAnythingToContinue();
+    }
 }

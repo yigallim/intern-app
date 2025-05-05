@@ -3,11 +3,13 @@ package com.tarumt.dao;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.time.format.TextStyle;
 import java.time.temporal.ChronoUnit;
 import java.util.Locale;
 import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
 import com.tarumt.adt.list.ArrayToLinked;
 import com.tarumt.entity.Applicant;
@@ -882,7 +884,7 @@ public class Initializer {
         ListInterface<Integer> appWithPast = computeAppsWithPast();
         ListInterface<Integer> appWithFuture = computeAppsWithFuture();
         ListInterface<String> remarks = new DoublyLinkedList<>();
-        // region
+        // region Remarks
         remarks.add("Technical skills assessment");
         remarks.add("Behavioral fit interview");
         remarks.add("Coding challenge session");
@@ -988,6 +990,12 @@ public class Initializer {
             String remark = remarks.get(random.nextInt(remarks.size()));
             ScheduledInterview interview = genPastSchedule(jobApplications.get(i), remark);
             interviews.add(interview);
+
+            JobApplication application = jobApplications.get(i);
+            if (application.isTerminated()) {
+                LocalDateTime terminatedAt = getRandomDateTimeBetween(interview.getTimeSlot().getEndDateTime(), Context.getDateTime());
+                application.setTerminatedAt(terminatedAt);
+            }
         }
 
         for (Integer i : appWithFuture) {
@@ -995,6 +1003,16 @@ public class Initializer {
             ScheduledInterview interview = genFutureSchedule(jobApplications.get(i), remark);
             interviews.add(interview);
         }
+    }
+
+    public static LocalDateTime getRandomDateTimeBetween(LocalDateTime start, LocalDateTime end) {
+        if (start.isAfter(end)) {
+            throw new IllegalArgumentException("Start datetime must be before end datetime");
+        }
+        long startEpoch = start.toEpochSecond(ZoneOffset.UTC);
+        long endEpoch = end.toEpochSecond(ZoneOffset.UTC);
+        long randomEpoch = ThreadLocalRandom.current().nextLong(startEpoch, endEpoch + 1);
+        return LocalDateTime.ofEpochSecond(randomEpoch, 0, ZoneOffset.UTC);
     }
 
     /*
@@ -1140,6 +1158,7 @@ public class Initializer {
             System.out.println(logBuilder.toString());
             System.out.println("===============================");
         }
+
         return new ScheduledInterview(jobApplication, remark, timeslot, rate, bookedAt);
     }
 

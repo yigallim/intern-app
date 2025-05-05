@@ -125,11 +125,16 @@ public class JobApplicationController {
     }
 
     public void displayJobApplication() {
+        if(Context.isAdmin()) {
+            ListInterface<JobApplication> applications = this.getAllJobApplications();
+            this.jobApplicationUI.printJobApplication(applications);
+        }
         if (Context.isEmployer()) {
             ListInterface<JobApplication> applications = this.getEmployerJobApplications();
             ListInterface<JobPosting> uniqueJobPosting = getUniqueJobPostings(jobApplications);
             this.jobApplicationUI.printGroupedJobApplications(applications, uniqueJobPosting);
-        } else if (Context.isApplicant()) {
+        }
+        if (Context.isApplicant()) {
             ListInterface<JobApplication> applications = this.getApplicantJobApplications();
             this.jobApplicationUI.printJobApplication(applications);
         }
@@ -250,6 +255,7 @@ public class JobApplicationController {
                 invitations.removeAll(associatedInvitations);
             }
             jobApplication.setStatus(JobApplication.Status.REJECTED);
+            jobApplication.setTerminatedAt(Context.getDateTime());
             jobApplicationUI.printSuccessRejectApplicationMsg();
         }
     }
@@ -293,6 +299,7 @@ public class JobApplicationController {
 
         if (jobApplicationUI.confirmAccept()) {
             applicationToAccept.setStatus(JobApplication.Status.ACCEPTED);
+            applicationToAccept.setTerminatedAt(Context.getDateTime());
             jobApplicationUI.printSuccessAcceptJobApplicationMsg(applicationToAccept);
         }
     }
@@ -326,6 +333,7 @@ public class JobApplicationController {
                 invitations.removeAll(associatedInvitations);
             }
             jobApplication.setStatus(JobApplication.Status.WITHDRAWN);
+            jobApplication.setTerminatedAt(Context.getDateTime());
             jobApplicationUI.printSuccessWithdrawJobApplicationMsg();
         }
     }

@@ -32,6 +32,7 @@ public class MatchingController {
     private ListInterface<JobPosting> jobPostings = new DoublyLinkedList<>();
     private ListInterface<JobApplication> jobApplications = new DoublyLinkedList<>();
     private ListInterface<ScheduledInterview> scheduledInterviews = new DoublyLinkedList<>();
+    private ListInterface<Applicant> applicants = new DoublyLinkedList<>();
     private final MatchingUI matchingUI;
 
     private MatchingController() {
@@ -40,6 +41,7 @@ public class MatchingController {
         this.jobPostings = Initializer.getJobPostings();
         this.jobApplications = Initializer.getJobApplications();
         this.scheduledInterviews = Initializer.getScheduledInterviews();
+        this.applicants = Initializer.getApplicants();
     }
 
     public static MatchingController getInstance() {
@@ -179,19 +181,19 @@ public class MatchingController {
 
     public void displayApplicantQualification() {
         Applicant applicant = Context.getApplicant();
-        if(applicant == null) return;
+        if (applicant == null) return;
         this.matchingUI.displayAllQualifications(applicant.getEducationLevel(), applicant.getWorkExperiences(), applicant.getLanguageProficiencies(), applicant.getSkills());
     }
 
     public void checkJobQualification() {
         JobPosting job = matchingUI.getJobPostingToAddQualification(this.jobPostings, "Check Job Posting Qualification Requirement");
-        if(job == null) return;
+        if (job == null) return;
         this.matchingUI.displayAllQualificationsWithDetails(job.getEducationLevel(), job.getWorkExperiences(), job.getLanguageProficiencies(), job.getSkills());
     }
 
     public void searchApplicant() {
         String keyword = this.matchingUI.getSearchQuery();
-        if(keyword == Input.STRING_EXIT_VALUE) return;
+        if (keyword == Input.STRING_EXIT_VALUE) return;
         ListInterface<Applicant> allApplicants = Initializer.getApplicants();
         ListInterface<MatchedApplicant> matchedList = new DoublyLinkedList<>();
         ListInterface<String> matches = new DoublyLinkedList<>();
@@ -331,13 +333,26 @@ public class MatchingController {
                 names.add(e.getApplicant().getName());
                 scores.add((int) Math.round(e.getScore()));
             }
-
-            // Use pretty Chart to display bar chart
-            Chart.barChart(names, scores, "Top Match Score Chart", 56, '#', true);
+            System.out.println(Chart.barChart(names, scores, "Top Match Score Chart", width, '█', true));
             System.out.println("\n");
         }
 
         System.out.print(Report.buildReportFooter(width));
+    }
+
+    public void checkApplicantQualification() {
+        Applicant applicant = matchingUI.getApplicantChoice(this.applicants);
+        if (applicant == null) {
+            return;
+        }
+
+        System.out.println("\n📋 Qualification Details for Applicant: " + applicant.getName());
+        matchingUI.displayAllQualifications(
+                applicant.getEducationLevel(),
+                applicant.getWorkExperiences(),
+                applicant.getLanguageProficiencies(),
+                applicant.getSkills()
+        );
     }
 
     public static class MatchedApplicant {

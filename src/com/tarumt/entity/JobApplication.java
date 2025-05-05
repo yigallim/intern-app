@@ -26,7 +26,6 @@ public class JobApplication extends BaseEntity {
     @OutputLength(14)
     private Status status;
     private LocalDateTime appliedAt;
-    @ExcludeKey("default")
     private LocalDateTime terminatedAt;
 
     public JobApplication(JobPosting jobPosting, Applicant applicant, Status status, LocalDateTime appliedAt) {

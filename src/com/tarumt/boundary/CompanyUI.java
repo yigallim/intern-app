@@ -345,4 +345,15 @@ public class CompanyUI {
     public void printEmailAlreadyExistsMsg() {
         System.out.println("| Error: This email is already registered. Please use a different email.");
     }
+
+    public void printCannotDeleteCompanyWarning(Company company) {
+        System.out.println();
+        Log.warn("Cannot delete company " + company.getId() + " (" + company.getName() + ") because it has active job postings.");
+        input.clickAnythingToContinue();
+    }
+
+    public void printCannotDeleteCompanyProfileWarning(Company company) {
+        Log.warn("Cannot delete profile: Your company (" + company.getName() + ") has active job postings.");
+        input.clickAnythingToContinue();
+    }
 }

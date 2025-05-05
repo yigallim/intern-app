@@ -10,6 +10,7 @@ import com.tarumt.control.MatchingController;
 import com.tarumt.dao.Initializer;
 import com.tarumt.entity.Applicant;
 import com.tarumt.entity.JobPosting;
+import com.tarumt.entity.location.City;
 import com.tarumt.entity.qualification.*;
 import com.tarumt.utility.common.Context;
 import com.tarumt.utility.common.Input;
@@ -64,6 +65,7 @@ public class MatchingUI {
                 .choice(
                         new Menu.Choice("🎓 Modify Job Qualification", controller::modifyJobQualification),
                         new Menu.Choice("📄 Display Job Qualification", controller::displayJobQualification),
+                        new Menu.Choice("🔍 Check Applicant Qualification", controller::checkApplicantQualification),
                         new Menu.Choice("🛠️ Search Applicant with Certain Skills", controller::searchApplicant),
                         new Menu.Choice("📊 View Matched Qualification", controller::viewMatchApplications),
                         new Menu.Choice("📈 View Matched Report", controller::viewMatchReport)
@@ -409,5 +411,9 @@ public class MatchingUI {
 
     private Qualification.Importance getImportanceInput() {
         return input.getEnum("\n⇐ Select importance level ⇒", Qualification.Importance.class);
+    }
+
+    public Applicant getApplicantChoice(ListInterface<Applicant> applicants) {
+        return input.getObjectFromList("|\n| Select a applicant => ", applicants);
     }
 }

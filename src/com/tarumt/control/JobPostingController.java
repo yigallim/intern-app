@@ -19,14 +19,15 @@ import com.tarumt.adt.list.ListInterface;
 import com.tarumt.adt.list.DoublyLinkedList;
 import com.tarumt.adt.map.MapInterface;
 import com.tarumt.adt.map.SimpleHashMap;
+
 import java.time.YearMonth;
 
 public class JobPostingController {
 
     private static JobPostingController instance;
     private ListInterface<JobPosting> jobPostings = new DoublyLinkedList<>();
+    private ListInterface<JobApplication> jobApplications = new DoublyLinkedList<>();
     private final JobPostingUI jobPostingUI;
-    private final ListInterface<JobApplication> jobApplications;
 
     private JobPostingController() {
         Input input = new Input();
@@ -40,6 +41,15 @@ public class JobPostingController {
             instance = new JobPostingController();
         }
         return instance;
+    }
+
+    private boolean hasJobApplications(JobPosting jobPosting) {
+        for (JobApplication ja : jobApplications) {
+            if (ja != null && ja.getJobPosting() != null && ja.getJobPosting().equals(jobPosting) && ja.isOngoing()) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private ListInterface<JobPosting> getEmployerJobPostings() {
@@ -229,10 +239,16 @@ public class JobPostingController {
         if (index == Input.INT_EXIT_VALUE) {
             return;
         }
+
+        JobPosting jobPostingToDelete = accessiblePostings.get(index - 1);
+        if (hasJobApplications(jobPostingToDelete)) {
+            jobPostingUI.printCannotDeleteJobPostingWarning(jobPostingToDelete);
+            return;
+        }
+
         if (jobPostingUI.confirmDelete()) {
-            JobPosting jobPosting = accessiblePostings.get(index - 1);
-            jobPostings.remove(jobPosting);
-            jobPostingUI.printSuccessDeleteMsg(jobPosting.getId());
+            jobPostings.remove(jobPostingToDelete);
+            jobPostingUI.printSuccessDeleteMsg(jobPostingToDelete.getId());
         }
     }
 
@@ -252,8 +268,15 @@ public class JobPostingController {
         }
 
         if (endIndex >= startIndex) {
+            ListInterface<JobPosting> toRemove = accessiblePostings.subList(startIndex - 1, endIndex);
+            for (JobPosting jobInRange : toRemove) {
+                if (hasJobApplications(jobInRange)) {
+                    jobPostingUI.printCannotDeleteJobPostingWarning(jobInRange);
+                    return;
+                }
+            }
+
             if (jobPostingUI.confirmDelete()) {
-                ListInterface<JobPosting> toRemove = accessiblePostings.subList(startIndex - 1, endIndex);
                 jobPostings.removeAll(toRemove);
                 jobPostingUI.printSuccessDeleteByRangeMsg(startIndex, endIndex);
             }
@@ -271,10 +294,15 @@ public class JobPostingController {
             return;
         }
 
+        JobPosting jobPostingToDelete = BaseEntity.getById(id, accessiblePostings);
+        if (hasJobApplications(jobPostingToDelete)) {
+            jobPostingUI.printCannotDeleteJobPostingWarning(jobPostingToDelete);
+            return;
+        }
+
         if (jobPostingUI.confirmDelete()) {
-            JobPosting jobPosting = BaseEntity.getById(id, accessiblePostings);
-            jobPostings.remove(jobPosting);
-            jobPostingUI.printSuccessDeleteMsg(jobPosting.getId());
+            jobPostings.remove(jobPostingToDelete);
+            jobPostingUI.printSuccessDeleteMsg(jobPostingToDelete.getId());
         }
     }
 
