@@ -252,6 +252,9 @@ public class DoublyLinkedList<E> implements ListInterface<E> {
         return result;
     }
 
+    /**
+     * @author Yeoh Ming Zhe
+     */
     @Override
     public void sort(Comparator<? super E> c) {
         if (c == null) throw new NullPointerException("Comparator cannot be null");

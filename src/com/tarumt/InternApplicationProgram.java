@@ -3,7 +3,6 @@ package com.tarumt;
 import com.tarumt.control.AdminController;
 import com.tarumt.control.ApplicantController;
 import com.tarumt.control.CompanyController;
-import com.tarumt.dao.Initializer;
 import com.tarumt.utility.common.Context;
 import com.tarumt.utility.common.Log;
 import com.tarumt.utility.common.Menu;
@@ -11,11 +10,10 @@ import com.tarumt.utility.common.Menu;
 public class InternApplicationProgram {
 
     public static void main(String[] args) {
+
         Log.info("Intern Application Program starting");
         System.out.println();
 
-//        Context.setCompany(Initializer.getCompanies().get(0));
-//        CompanyController.getInstance().accessEmployer();
         new Menu()
                 .banner("Intern Application")
                 .header("==> Intern Application Program <==")

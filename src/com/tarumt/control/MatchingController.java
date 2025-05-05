@@ -1,3 +1,7 @@
+/**
+ * @author Choo Zhen Hao
+ */
+
 package com.tarumt.control;
 
 import com.tarumt.adt.list.DoublyLinkedList;
@@ -26,7 +30,6 @@ import com.tarumt.utility.search.FuzzySearch;
 public class MatchingController {
     private static MatchingController instance;
     private ListInterface<JobPosting> jobPostings = new DoublyLinkedList<>();
-    private ListInterface<Applicant> applicants = new DoublyLinkedList<>();
     private ListInterface<JobApplication> jobApplications = new DoublyLinkedList<>();
     private ListInterface<ScheduledInterview> scheduledInterviews = new DoublyLinkedList<>();
     private final MatchingUI matchingUI;
@@ -35,7 +38,6 @@ public class MatchingController {
         Input input = new Input();
         this.matchingUI = new MatchingUI(input);
         this.jobPostings = Initializer.getJobPostings();
-        this.applicants = Initializer.getApplicants();
         this.jobApplications = Initializer.getJobApplications();
         this.scheduledInterviews = Initializer.getScheduledInterviews();
     }
@@ -159,32 +161,37 @@ public class MatchingController {
 
     public void modifyJobQualification() {
         JobPosting job = matchingUI.getJobPostingToAddQualification(getEmployerJobPostings(), "Modify Job Posting Qualification Requirement");
+        if (job == null) return;
         matchingUI.modifyQualificationMenu(job);
     }
 
     public void displayJobQualification() {
         JobPosting job = matchingUI.getJobPostingToAddQualification(getEmployerJobPostings(), "Display Job Posting Qualification Requirement");
-        this.matchingUI.displayAllQualifications(job.getEducationLevel(), job.getWorkExperiences(), job.getLanguageProficiencies(), job.getSkills());
+        if (job == null) return;
+        this.matchingUI.displayAllQualificationsWithDetails(job.getEducationLevel(), job.getWorkExperiences(), job.getLanguageProficiencies(), job.getSkills());
     }
 
     public void modifyApplicantQualification() {
         Applicant applicant = Context.getApplicant();
+        if (applicant == null) return;
         matchingUI.modifyQualificationMenu(applicant);
     }
 
     public void displayApplicantQualification() {
         Applicant applicant = Context.getApplicant();
+        if(applicant == null) return;
         this.matchingUI.displayAllQualifications(applicant.getEducationLevel(), applicant.getWorkExperiences(), applicant.getLanguageProficiencies(), applicant.getSkills());
     }
 
     public void checkJobQualification() {
         JobPosting job = matchingUI.getJobPostingToAddQualification(this.jobPostings, "Check Job Posting Qualification Requirement");
-        this.matchingUI.displayAllQualifications(job.getEducationLevel(), job.getWorkExperiences(), job.getLanguageProficiencies(), job.getSkills());
+        if(job == null) return;
+        this.matchingUI.displayAllQualificationsWithDetails(job.getEducationLevel(), job.getWorkExperiences(), job.getLanguageProficiencies(), job.getSkills());
     }
 
     public void searchApplicant() {
         String keyword = this.matchingUI.getSearchQuery();
-
+        if(keyword == Input.STRING_EXIT_VALUE) return;
         ListInterface<Applicant> allApplicants = Initializer.getApplicants();
         ListInterface<MatchedApplicant> matchedList = new DoublyLinkedList<>();
         ListInterface<String> matches = new DoublyLinkedList<>();
@@ -319,6 +326,8 @@ public class MatchingController {
             for (MatchingReport.ReportEntry e : matched) {
                 System.out.printf("%-3d | %-25s | %-35s | %6.2f\n",
                         index++, e.getApplicant().getName(), e.getApplicant().getContactEmail(), e.getScore());
+                // TODO
+                JobMatchingUtil.showScoreBreakdown(job, e.getApplicant());
                 names.add(e.getApplicant().getName());
                 scores.add((int) Math.round(e.getScore()));
             }

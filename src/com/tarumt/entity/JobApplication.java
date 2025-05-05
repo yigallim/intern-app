@@ -1,6 +1,5 @@
 /**
  * @author Lim Yuet Yang
- * @author Leong Hon Yan
  */
 package com.tarumt.entity;
 
@@ -27,6 +26,8 @@ public class JobApplication extends BaseEntity {
     @OutputLength(14)
     private Status status;
     private LocalDateTime appliedAt;
+    @ExcludeKey("default")
+    private LocalDateTime terminatedAt;
 
     public JobApplication(JobPosting jobPosting, Applicant applicant, Status status, LocalDateTime appliedAt) {
         super(generateId());
@@ -34,6 +35,16 @@ public class JobApplication extends BaseEntity {
         this.applicant = applicant;
         this.status = status;
         this.appliedAt = appliedAt;
+        this.terminatedAt = null;
+    }
+
+    public JobApplication(JobPosting jobPosting, Applicant applicant, Status status, LocalDateTime appliedAt, LocalDateTime terminatedAt) {
+        super(generateId());
+        this.jobPosting = jobPosting;
+        this.applicant = applicant;
+        this.status = status;
+        this.appliedAt = appliedAt;
+        this.terminatedAt = terminatedAt;
     }
 
     private static String generateId() {
@@ -103,6 +114,14 @@ public class JobApplication extends BaseEntity {
         this.appliedAt = appliedAt;
     }
 
+    public LocalDateTime getTerminatedAt() {
+        return terminatedAt;
+    }
+
+    public void setTerminatedAt(LocalDateTime terminatedAt) {
+        this.terminatedAt = terminatedAt;
+    }
+
     public boolean isOngoing() {
         return status == Status.PENDING ||
                 status == Status.SHORTLISTED ||
@@ -136,8 +155,9 @@ public class JobApplication extends BaseEntity {
     public String toString() {
         return "Job Application\n" +
                 "|  ID          => " + getId() + ",\n" +
-                "|  Applicant   => " + applicant + ",\n" +
-                "|  Job Posting => " + jobPosting + ",\n" +
+                "|  Applicant   => " + (applicant != null ? applicant.toShortString() : "N/A") + ",\n" +
+                "|  Company     => " + (jobPosting != null ? jobPosting.getCompany().toShortString() : "N/A") + ",\n" +
+                "|  Job Posting => " + (jobPosting != null ? jobPosting.toShortString() : "N/A") + ",\n" +
                 "|  Status      => " + (status != null ? status.toString() : "N/A") + ",\n" +
                 "|  Applied At  => " + Strings.formatDateTime(appliedAt);
     }

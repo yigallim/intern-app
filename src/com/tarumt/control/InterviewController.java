@@ -776,7 +776,7 @@ public class InterviewController {
                 report.append(jobInterviewTable);
             }
         }
-        if (pastInterviews.size() < 3 || jobPostings.isEmpty()) {
+        if (pastInterviews.size() < 2 || jobPostings.isEmpty()) {
             return null;
         }
         report.append(Strings.repeat("-", width));
@@ -927,7 +927,8 @@ public class InterviewController {
         for (int i = 0; i < jobCounts.size(); i++) {
             JobInterviewCount jic = jobCounts.get(i);
 
-            String category = jic.jobPosting.getTitle() + " (" + jic.interviewCount + ")";
+            String companyInfo = Context.isAdmin() ? jic.jobPosting.getCompany().toShortString() + " - " : "";
+            String category = companyInfo + jic.jobPosting.getTitle();
             categories.add(category);
             values.add(jic.interviewCount);
         }
@@ -945,28 +946,32 @@ public class InterviewController {
     }
 
     private String buildRecruitmentReportBody(int previousDays) {
+        LocalDateTime now = Context.getDateTime();
+        LocalDateTime startDate = now.minusDays(previousDays);
+
         StringBuilder report = new StringBuilder();
         int width = 120;
+
         report.append(String.format("%" + width + "s", "Report Generated For Past (" + previousDays + ") Days"));
 
         if (Context.isEmployer()) {
-            report.append(buildRecruitmentTable(Context.getCompany()));
+            report.append(buildRecruitmentTable(Context.getCompany(), startDate));
         }
         if (Context.isAdmin()) {
             ListInterface<Company> companies = Initializer.getCompanies();
             for (Company company : companies) {
-                report.append(buildRecruitmentTable(company));
+                report.append(buildRecruitmentTable(company, startDate));
             }
         }
-        report.append(buildCountByApplicationStatus());
+        report.append(buildCountByApplicationStatus(startDate));
         report.append("\n");
-        report.append(buildRecruitmentBarChart());
+        report.append(buildRecruitmentBarChart(startDate));
         report.append("\n");
-        report.append(getJobsWithMostAndLeastAccepted());
+        report.append(getJobsWithMostAndLeastAccepted(startDate));
         return report.toString();
     }
 
-    public String getJobsWithMostAndLeastAccepted() {
+    public String getJobsWithMostAndLeastAccepted(LocalDateTime reportStartDate) {
         ListInterface<JobPosting> jobs = new DoublyLinkedList<>();
         ListInterface<JobApplication> applications = new DoublyLinkedList<>();
 
@@ -978,6 +983,8 @@ public class InterviewController {
             jobs = new DoublyLinkedList<>(jobPostings);
             applications = getAllJobApplications();
         }
+
+        applications = applications.filter(app -> !app.getAppliedAt().isBefore(reportStartDate));
 
         class JobAccepted {
             JobPosting job;
@@ -1052,7 +1059,7 @@ public class InterviewController {
         return sb.toString();
     }
 
-    public String buildRecruitmentBarChart() {
+    public String buildRecruitmentBarChart(LocalDateTime reportStartDate) {
         class Entry {
             String category;
             int count;
@@ -1069,7 +1076,7 @@ public class InterviewController {
             Company company = Context.getCompany();
             ListInterface<JobPosting> jobPostings = getEmployerJobPostings(company);
             ListInterface<JobApplication> applications = getEmployerJobApplications(company);
-
+            applications = applications.filter(app -> !app.getAppliedAt().isBefore(reportStartDate));
             for (int i = 0; i < jobPostings.size(); i++) {
                 JobPosting job = jobPostings.get(i);
                 String title = job.getTitle();
@@ -1086,7 +1093,7 @@ public class InterviewController {
             for (Company company : companies) {
                 ListInterface<JobPosting> jobPostings = getEmployerJobPostings(company);
                 ListInterface<JobApplication> applications = getEmployerJobApplications(company);
-
+                applications = applications.filter(app -> !app.getAppliedAt().isBefore(reportStartDate));
                 for (int i = 0; i < jobPostings.size(); i++) {
                     JobPosting job = jobPostings.get(i);
                     String title = company.toShortString() + " - " + job.getTitle();
@@ -1099,10 +1106,8 @@ public class InterviewController {
             }
         }
 
-        // Sort entries in descending order of count
         entries.sort((e1, e2) -> Integer.compare(e2.count, e1.count));
 
-        // Split back into separate category and count lists
         ListInterface<String> acceptedCategories = new DoublyLinkedList<>();
         ListInterface<Integer> acceptedCounts = new DoublyLinkedList<>();
 
@@ -1122,28 +1127,25 @@ public class InterviewController {
         );
     }
 
-    public String buildCountByApplicationStatus() {
-        ListInterface<JobApplication> applications = new DoublyLinkedList<>();
-
-        if (Context.isEmployer()) {
-            applications = getEmployerJobApplications();
-        }
-        if (Context.isAdmin()) {
-            applications = getAllJobApplications();
-        }
+    public String buildCountByApplicationStatus(LocalDateTime reportStartDate) {
+        ListInterface<JobApplication> applications = Context.isEmployer()
+                ? getEmployerJobApplications(Context.getCompany())
+                : getAllJobApplications();
+        applications = applications.filter(app -> !app.getAppliedAt().isBefore(reportStartDate));
 
         int accepted = applications.filter(app -> app.getStatus() == JobApplication.Status.ACCEPTED).size();
         int rejected = applications.filter(app -> app.getStatus() == JobApplication.Status.REJECTED).size();
         int withdrawn = applications.filter(app -> app.getStatus() == JobApplication.Status.WITHDRAWN).size();
         return String.format(
-                "Total ACCEPTED Count: %d\nTotal REJECTED Count: %d\nTotal WITHDRAWN Count: %d",
+                "\nTotal ACCEPTED Count: %d\nTotal REJECTED Count: %d\nTotal WITHDRAWN Count: %d",
                 accepted, rejected, withdrawn
         );
     }
 
-    public String buildRecruitmentTable(Company company) {
+    public String buildRecruitmentTable(Company company, LocalDateTime reportStartDate) {
         StringBuilder report = new StringBuilder();
-        ListInterface<JobApplication> applications = getEmployerJobApplications(company);
+        ListInterface<JobApplication> applications = getEmployerJobApplications(company)
+                .filter(app -> !app.getAppliedAt().isBefore(reportStartDate) && app.isTerminated());
         if (applications.isEmpty()) return report.toString();
         report.append("\nCompany: " + company.toShortString() + "\n");
         report.append(this.buildJobApplicationStatusTable(applications));
@@ -1156,10 +1158,9 @@ public class InterviewController {
         sb.append(String.format("%-10s %-46s %-40s %-20s\n", "Job ID", "Job Title", "Applicants", "Status"));
         sb.append("------------------------------------------------------------------------------------------------------------------------\n");
 
-        ListInterface<JobApplication> terminatedApplications = applications.filter(JobApplication::isTerminated);
         DoublyLinkedList<String> processedJobIds = new DoublyLinkedList<>();
 
-        for (JobApplication app1 : terminatedApplications) {
+        for (JobApplication app1 : applications) {
             String jobId = app1.getJobPosting().getId();
             if (processedJobIds.contains(jobId)) {
                 continue;
@@ -1168,7 +1169,7 @@ public class InterviewController {
             processedJobIds.add(jobId);
             String jobTitle = app1.getJobPosting().getTitle();
 
-            ListInterface<JobApplication> matchingApps = terminatedApplications.filter(app2 ->
+            ListInterface<JobApplication> matchingApps = applications.filter(app2 ->
                     app2.getJobPosting().getId().equals(jobId)
             );
             boolean isFirstRow = true;

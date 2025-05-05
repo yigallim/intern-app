@@ -33,6 +33,7 @@ public class JobApplicationUI {
                         new Menu.Choice("🔄 Display Ongoing Application", jobApplicationController::displayOngoingJobApplication),
                         new Menu.Choice("🏁 Display Terminated Application", jobApplicationController::displayTerminatedJobApplication),
                         new Menu.Choice("✅ Shortlist Application", jobApplicationController::shortlistApplication),
+                        new Menu.Choice("🎯 Filter Successful Applicants", jobApplicationController::filterSuccessfulApplicant),
                         new Menu.Choice("🎉 Offer Application", jobApplicationController::offerApplication),
                         new Menu.Choice("❌ Reject Application", jobApplicationController::rejectApplication)
                 )
@@ -262,4 +263,21 @@ public class JobApplicationUI {
         input.clickAnythingToContinue();
     }
 
+    public void printSuccessfulApplications(ListInterface<JobApplicationController.SuccessfulJobApplication> jobApplications, ListInterface<JobPosting> uniqueJobPostings) {
+        if (jobApplications == null || jobApplications.isEmpty()) {
+            Log.info("No successful job applications to display");
+            input.clickAnythingToContinue();
+            return;
+        }
+        Log.info("Displaying " + jobApplications.size() + " successful job applications");
+        for (JobPosting jobPosting : uniqueJobPostings) {
+            ListInterface<JobApplicationController.SuccessfulJobApplication> applicationsForPosting = jobApplications.filter(application -> application.getJobPosting().equals(jobPosting));
+
+            if (!applicationsForPosting.isEmpty()) {
+                System.out.println("\nJob Posting ID => " + jobPosting.getId() + "  |  Title => " + jobPosting.getTitle() + "  |  Count => " + applicationsForPosting.size());
+                TabularPrint.printTabular(applicationsForPosting, true, "employer");
+            }
+        }
+        input.clickAnythingToContinue();
+    }
 }

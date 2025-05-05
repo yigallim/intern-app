@@ -7,6 +7,127 @@ import com.tarumt.entity.location.Location;
 import com.tarumt.entity.qualification.*;
 
 public class JobMatchingUtil {
+    public static void showScoreBreakdown(JobPosting job, Applicant applicant) {
+        System.out.println("🔍 Score Breakdown for Applicant: " + applicant.getName());
+
+        double totalScore = 0.0;
+
+        // --- Education ---
+        EducationLevel jEdu = job.getEducationLevel();
+        EducationLevel aEdu = applicant.getEducationLevel();
+        double eduScore = 0.0;
+        if (jEdu != null && aEdu != null) {
+            if (jEdu.getDegreeLevel() == aEdu.getDegreeLevel()) {
+                double partial = applyWeight(1.0, jEdu.getImportance());
+                eduScore += partial;
+                System.out.printf("🎓 Degree Match: %.2f\n", partial);
+            }
+            if (jEdu.getFieldOfStudy() == aEdu.getFieldOfStudy()) {
+                double partial = applyWeight(1.0, jEdu.getImportance());
+                eduScore += partial;
+                System.out.printf("📚 Field Match: %.2f\n", partial);
+            }
+            double cgpaScore = aEdu.getCgpa() / jEdu.getCgpa();
+            double weightedCgpa = applyWeight(cgpaScore, jEdu.getImportance());
+            eduScore += weightedCgpa;
+            System.out.printf("🎯 CGPA Match: %.2f (%.2f / %.2f) → %.2f\n", cgpaScore, aEdu.getCgpa(), jEdu.getCgpa(), weightedCgpa);
+        }
+        totalScore += eduScore;
+        System.out.printf("✅ Total Education Score: %.2f\n", eduScore);
+
+        // --- Work Experience ---
+        double workScore = 0.0;
+        ListInterface<WorkExperience> requiredExp = job.getWorkExperiences();
+        ListInterface<WorkExperience> applicantExp = applicant.getWorkExperiences();
+        if (requiredExp != null && applicantExp != null) {
+            for (WorkExperience req : requiredExp) {
+                for (WorkExperience exp : applicantExp) {
+                    if (req.getIndustry() == exp.getIndustry()) {
+                        double raw = Math.min(exp.getYears(), req.getYears());
+                        double partial = applyWeight(raw, req.getImportance());
+                        workScore += partial;
+                        System.out.printf("💼 Work Exp Match [%s]: %.2f yrs → %.2f\n", req.getIndustry(), raw, partial);
+                        break;
+                    }
+                }
+            }
+        }
+        totalScore += workScore;
+        System.out.printf("✅ Total Work Experience Score: %.2f\n", workScore);
+
+        // --- Language Proficiency ---
+        double langScore = 0.0;
+        ListInterface<LanguageProficiency> requiredLangs = job.getLanguageProficiencies();
+        ListInterface<LanguageProficiency> applicantLangs = applicant.getLanguageProficiencies();
+        if (requiredLangs != null && applicantLangs != null) {
+            for (LanguageProficiency req : requiredLangs) {
+                for (LanguageProficiency lang : applicantLangs) {
+                    if (req.getLanguage() == lang.getLanguage()) {
+                        double raw = req.scoreMatch(lang);
+                        double partial = applyWeight(raw, req.getImportance());
+                        langScore += partial;
+                        System.out.printf("🗣️ Language Match [%s]: %.2f → %.2f\n", req.getLanguage(), raw, partial);
+                        break;
+                    }
+                }
+            }
+        }
+        totalScore += langScore;
+        System.out.printf("✅ Total Language Score: %.2f\n", langScore);
+
+        // --- Skills ---
+        double skillScore = 0.0;
+        ListInterface<Skill> requiredSkills = job.getSkills();
+        ListInterface<Skill> applicantSkills = applicant.getSkills();
+        if (requiredSkills != null && applicantSkills != null) {
+            for (Skill req : requiredSkills) {
+                for (Skill s : applicantSkills) {
+                    if (req.getSkillName().equalsIgnoreCase(s.getSkillName())) {
+                        double raw = req.scoreMatch(s);
+                        double partial = applyWeight(raw, req.getImportance());
+                        skillScore += partial;
+                        System.out.printf("🧠 Skill Match [%s]: %.2f → %.2f\n", req.getSkillName(), raw, partial);
+                        break;
+                    }
+                }
+            }
+        }
+        totalScore += skillScore;
+        System.out.printf("✅ Total Skill Score: %.2f\n", skillScore);
+
+        // --- Location ---
+        double locScore = 0.0;
+        Location jobLoc = job.getCompany().getLocation();
+        Location appLoc = applicant.getLocation();
+        if (jobLoc != null && appLoc != null) {
+            double distance = jobLoc.distanceTo(appLoc);
+            if (distance <= 20) {
+                locScore = 1.0;
+            } else if (distance <= 50) {
+                locScore = 0.5;
+            } else {
+                locScore = 0.0;
+            }
+            System.out.printf("📍 Location Distance: %.2f km → Score: %.2f\n", distance, locScore);
+        }
+        totalScore += locScore;
+
+        // === Total ===
+        System.out.printf("📊 ✅ Final Total Score: %.2f\n", totalScore);
+    }
+
+    private static int getImportanceWeight(Qualification.Importance importance) {
+        switch (importance) {
+            case HIGH:
+                return 3;
+            case MEDIUM:
+                return 2;
+            case LOW:
+                return 1;
+            default:
+                return 1;
+        }
+    }
 
     public static double calculateScore(JobPosting job, Applicant applicant) {
         double totalScore = 0.0;

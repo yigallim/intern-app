@@ -56,7 +56,6 @@ public class LanguageProficiency extends Qualification {
         INTERMEDIATE,
         FLUENT,
         NATIVE;
-
     }
 
     public LanguageProficiency(Language language, Proficiency proficiency, boolean optional, Importance importance) {

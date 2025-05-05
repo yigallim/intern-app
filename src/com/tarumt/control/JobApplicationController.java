@@ -1,6 +1,5 @@
 /**
  * @author Lim Yuet Yang
- * @author Leong Hon Yan
  */
 
 package com.tarumt.control;
@@ -9,14 +8,16 @@ import com.tarumt.adt.list.DoublyLinkedList;
 import com.tarumt.adt.list.ListInterface;
 import com.tarumt.boundary.JobApplicationUI;
 import com.tarumt.dao.Initializer;
-import com.tarumt.entity.Applicant;
-import com.tarumt.entity.Company;
-import com.tarumt.entity.JobApplication;
-import com.tarumt.entity.JobPosting;
+import com.tarumt.entity.*;
 import com.tarumt.entity.interview.Invitation;
 import com.tarumt.entity.interview.ScheduledInterview;
 import com.tarumt.utility.common.Context;
 import com.tarumt.utility.common.Input;
+import com.tarumt.utility.pretty.annotation.ExcludeKey;
+import com.tarumt.utility.pretty.annotation.OutputLength;
+
+import java.time.LocalDateTime;
+import java.util.Comparator;
 
 public class JobApplicationController {
 
@@ -329,4 +330,77 @@ public class JobApplicationController {
         }
     }
 
+    public static class SuccessfulJobApplication {
+        @OutputLength(4)
+        String id;
+        @ExcludeKey("employer")
+        JobPosting jobPosting;
+        @OutputLength(26)
+        Applicant applicant;
+        @OutputLength(14)
+        JobApplication.Status status;
+        @OutputLength(13)
+        int averageScore;
+        LocalDateTime appliedAt;
+
+        public SuccessfulJobApplication(String id, JobPosting jobPosting, Applicant applicant, JobApplication.Status status, int averageScore, LocalDateTime appliedAt) {
+            this.id = id;
+            this.jobPosting = jobPosting;
+            this.applicant = applicant;
+            this.status = status;
+            this.averageScore = averageScore;
+            this.appliedAt = appliedAt;
+        }
+
+        public JobPosting getJobPosting() {
+            return jobPosting;
+        }
+
+        public int getAverageScore() {
+            return averageScore;
+        }
+
+    }
+
+    public void filterSuccessfulApplicant() {
+        ListInterface<SuccessfulJobApplication> successfulJobApplications = new DoublyLinkedList<>();
+        ListInterface<JobApplication> jobApplications = getEmployerJobApplications()
+                .filter(app -> app.getStatus() == JobApplication.Status.INTERVIEWED);
+        ListInterface<ScheduledInterview> allInterviews = getAllScheduledInterviews();
+        ListInterface<JobPosting> uniqueJobPostings = getUniqueJobPostings(jobApplications);
+        for (JobApplication jobApplication : jobApplications) {
+            ListInterface<ScheduledInterview> interviews = allInterviews
+                    .filter(si ->
+                            si.getJobApplication().equals(jobApplication)
+                                    && si.getRating() >= 0
+                    );
+            int totalScore = 0;
+            int count = 0;
+            for (ScheduledInterview si : interviews) {
+                totalScore += si.getRating();
+                count++;
+            }
+            int averageScore = (count > 0) ? (totalScore / count) : 0;
+
+            SuccessfulJobApplication sja = new SuccessfulJobApplication(
+                    jobApplication.getId(),
+                    jobApplication.getJobPosting(),
+                    jobApplication.getApplicant(),
+                    jobApplication.getStatus(),
+                    averageScore,
+                    jobApplication.getAppliedAt()
+            );
+
+            if (sja.averageScore > 5)
+                successfulJobApplications.add(sja);
+        }
+        successfulJobApplications.sort(
+                Comparator.comparingInt(SuccessfulJobApplication::getAverageScore)
+                        .reversed()
+        );
+        this.jobApplicationUI.printSuccessfulApplications(
+                successfulJobApplications,
+                uniqueJobPostings
+        );
+    }
 }

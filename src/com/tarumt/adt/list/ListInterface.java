@@ -47,8 +47,4 @@ public interface ListInterface<E> extends Iterable<E> {
     boolean anyMatch(TestLambda<? super E> testLambda);
 
     Optional<E> max(Comparator<? super E> comparator);
-
-    boolean equals(Object o);
-
-    int hashCode();
 }
