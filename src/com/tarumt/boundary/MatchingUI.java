@@ -68,7 +68,8 @@ public class MatchingUI {
                         new Menu.Choice("🔍 Check Applicant Qualification", controller::checkApplicantQualification),
                         new Menu.Choice("🛠️ Search Applicant with Certain Skills", controller::searchApplicant),
                         new Menu.Choice("📊 View Matched Qualification", controller::viewMatchApplications),
-                        new Menu.Choice("📈 View Matched Report", controller::viewMatchReport)
+                        new Menu.Choice("📈 View Matched Report", controller::viewMatchReport),
+                        new Menu.Choice("📈 View Matched Report (Detailed)", controller::viewDetailedMatchReport)
                 )
                 .exit("<Return>")
                 .beforeEach(System.out::println)

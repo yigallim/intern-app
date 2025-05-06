@@ -30,7 +30,7 @@ import com.tarumt.utility.common.Context;
 import com.tarumt.utility.common.Log;
 
 public class Initializer {
-    static final Random random = new Random();
+    static final Random random = new Random(41);
     private static final ListInterface<Company> companies = new DoublyLinkedList<>();
     private static final ListInterface<JobPosting> jobPostings = new DoublyLinkedList<>();
     private static final ListInterface<Applicant> applicants = new DoublyLinkedList<>();
@@ -236,7 +236,6 @@ public class Initializer {
         companies.add(new Company("SmartHome", "IoT solutions for connected home automation", new Location(City.SEREMBAN), "hello@smarthome.com", "0167890124"));
         companies.add(new Company("EcoFarm", "Sustainable agriculture and precision farming tech", new Location(City.KULAI), "support@ecofarm.com", "0178901235"));
         companies.add(new Company("RoboTech", "Robotics and automation for industrial efficiency", new Location(City.BATU_PAHAT), "info@robotech.com", "0189012346"));
-        companies.add(new Company("Test", "Empty test company", new Location(City.SETAPAK), "test@test.com", "0119999999"));
 
         // 150 Job Postings (5 per company, Hard-Coded, Qualifications set to null)s
         // TechCorp (Company 0)
@@ -501,7 +500,6 @@ public class Initializer {
         applicants.add(new Applicant("Vince Ray", "vince.ray@email.com", "0127890123", t(), r(), re(), rw(), rl(), rs()));
         applicants.add(new Applicant("Wendy Fox", "wendy.fox@email.com", "0138901234", t(), r(), re(), rw(), rl(), rs()));
         applicants.add(new Applicant("Xander Lee", "xander.lee@email.com", "0149012345", t(), r(), re(), rw(), rl(), rs()));
-        applicants.add(new Applicant("Test", "test@test.com", "0119999999", t(), r(), re(), rw(), rl(), rs()));
         // endregion
 
         int jobPostingsSize = jobPostings.size();
@@ -512,14 +510,19 @@ public class Initializer {
         }
         for (Applicant applicant : applicants) {
             boolean hasAccepted = false;
-            for (int j = 0; j < 6; j++) {
+            int applicationCount = (int) Math.round(random.nextGaussian() * 1.5 + 6);
+            applicationCount = Math.max(3, Math.min(9, applicationCount));
+
+            for (int j = 0; j < applicationCount; j++) {
                 JobApplication.Status status;
                 do {
                     status = generateStatus(random);
                 } while (status == JobApplication.Status.ACCEPTED && hasAccepted);
+
                 if (status == JobApplication.Status.ACCEPTED) {
                     hasAccepted = true;
                 }
+
                 int idx = pickWeightedIndex(weights, random);
                 JobPosting jp = jobPostings.get(idx);
                 LocalDateTime appliedAt = appDate();
@@ -527,9 +530,9 @@ public class Initializer {
             }
         }
 
-//        // region JobApplication
-//        // 251 job applications
-//        // Applicant 0 (Alice Johnson)
+        // region Old Hardcoded JobApplication
+        // 251 job applications
+        // Applicant 0 (Alice Johnson)
 //        jobApplications.add(new JobApplication(jobPostings.get(12), applicants.get(0), pending(), appDate()));
 //        jobApplications.add(new JobApplication(jobPostings.get(21), applicants.get(0), shortlist(), appDate()));
 //        jobApplications.add(new JobApplication(jobPostings.get(2), applicants.get(0), interview(), appDate()));
@@ -879,11 +882,12 @@ public class Initializer {
 //        jobApplications.add(new JobApplication(jobPostings.get(64), applicants.get(49), offer(), appDate()));
 //        jobApplications.add(new JobApplication(jobPostings.get(69), applicants.get(49), accept(), appDate()));
 //
-//        //endregion
+          //endregion
 
         ListInterface<Integer> appWithPast = computeAppsWithPast();
         ListInterface<Integer> appWithFuture = computeAppsWithFuture();
         ListInterface<String> remarks = new DoublyLinkedList<>();
+
         // region Remarks
         remarks.add("Technical skills assessment");
         remarks.add("Behavioral fit interview");
@@ -1003,6 +1007,21 @@ public class Initializer {
             ScheduledInterview interview = genFutureSchedule(jobApplications.get(i), remark);
             interviews.add(interview);
         }
+
+        companies.add(new Company("Test 1", "Empty test company 1", new Location(City.SETAPAK), "test1@employer.com", "0119999999"));
+        companies.add(new Company("Test 2", "Empty test company 2", new Location(City.KUALA_LUMPUR), "test2@employer.com", "0118888888"));
+        companies.add(new Company("Test 3", "Empty test company 3", new Location(City.PENANG_HILL), "test3@employer.com", "011777777"));
+
+        jobPostings.add(new JobPosting("AI Engineer", companies.get(0), 1000, 1500, "Build and deploy AI models for intelligent systems", JobPosting.Type.IT_COMM_TEC, s(), re(), rw(), rl(), ra(), md(14), md(5)));
+        jobPostings.add(new JobPosting("LLM Specialist", companies.get(0), 2000, 2200, "Fine-tune and optimize large language models", JobPosting.Type.IT_COMM_TEC, s(), re(), rw(), rl(), ra(), md(30), md(3)));
+        jobPostings.add(new JobPosting("Data Analyst", companies.get(1), 1200, 1600, "Analyze datasets to support data-driven decisions", JobPosting.Type.IT_COMM_TEC, s(), re(), rw(), rl(), ra(), md(20), md(4)));
+        jobPostings.add(new JobPosting("Cloud Engineer", companies.get(1), 1800, 2100, "Maintain and optimize cloud infrastructure services", JobPosting.Type.IT_COMM_TEC, s(), re(), rw(), rl(), ra(), md(25), md(3)));
+
+        applicants.add(new Applicant("Test 1", "test1@applicant.com", "0112222222", t(), r(), re(), rw(), rl(), rs()));
+        applicants.add(new Applicant("Test 2", "test2@applicant.com", "0113333333", t(), r(), re(), rw(), rl(), rs()));
+        applicants.add(new Applicant("Test 3", "test3@applicant.com", "0114444444", t(), r(), re(), rw(), rl(), rs()));
+
+
     }
 
     public static LocalDateTime getRandomDateTimeBetween(LocalDateTime start, LocalDateTime end) {
@@ -1413,15 +1432,6 @@ public class Initializer {
 
     public static ListInterface<SkillOption> getSkillOptions() {
         return skillOptions;
-    }
-
-    public static <T> T getRandomElement(ListInterface<T> list) {
-        if (list == null || list.isEmpty()) {
-            return null;
-        }
-        Random random = new Random();
-        int index = random.nextInt(list.size());
-        return list.get(index);
     }
 
     private static int pickWeightedIndex(double[] weights, Random rand) {

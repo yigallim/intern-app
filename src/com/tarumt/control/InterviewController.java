@@ -482,7 +482,6 @@ public class InterviewController {
     }
 
     public void rescheduleInterview() {
-
         Applicant applicant = Context.getApplicant();
         if (applicant == null) return;
 
@@ -929,8 +928,7 @@ public class InterviewController {
         for (int i = 0; i < jobCounts.size(); i++) {
             JobInterviewCount jic = jobCounts.get(i);
 
-            String companyInfo = Context.isAdmin() ? jic.jobPosting.getCompany().toShortString() + " - " : "";
-            String category = companyInfo + jic.jobPosting.getTitle();
+            String category = jic.jobPosting.toShortString();
             categories.add(category);
             values.add(jic.interviewCount);
         }
@@ -986,7 +984,10 @@ public class InterviewController {
             applications = getAllJobApplications();
         }
 
-        applications = applications.filter(app -> !app.getAppliedAt().isBefore(reportStartDate));
+        applications = applications.filter(app ->
+                app.getTerminatedAt() != null
+                        && !app.getTerminatedAt().isBefore(reportStartDate)
+        );
 
         class JobAccepted {
             JobPosting job;
@@ -1078,7 +1079,10 @@ public class InterviewController {
             Company company = Context.getCompany();
             ListInterface<JobPosting> jobPostings = getEmployerJobPostings(company);
             ListInterface<JobApplication> applications = getEmployerJobApplications(company);
-            applications = applications.filter(app -> !app.getAppliedAt().isBefore(reportStartDate));
+            applications = applications.filter(app ->
+                    app.getTerminatedAt() != null
+                            && !app.getTerminatedAt().isBefore(reportStartDate)
+            );
             for (int i = 0; i < jobPostings.size(); i++) {
                 JobPosting job = jobPostings.get(i);
                 String title = job.getTitle();
@@ -1095,10 +1099,13 @@ public class InterviewController {
             for (Company company : companies) {
                 ListInterface<JobPosting> jobPostings = getEmployerJobPostings(company);
                 ListInterface<JobApplication> applications = getEmployerJobApplications(company);
-                applications = applications.filter(app -> !app.getAppliedAt().isBefore(reportStartDate));
+                applications = applications.filter(app ->
+                        app.getTerminatedAt() != null
+                                && !app.getTerminatedAt().isBefore(reportStartDate)
+                );
                 for (int i = 0; i < jobPostings.size(); i++) {
                     JobPosting job = jobPostings.get(i);
-                    String title = company.toShortString() + " - " + job.getTitle();
+                    String title = job.toShortString();
                     int acceptedCount = applications.filter(app ->
                             app.getJobPosting().equals(job) &&
                                     app.getStatus() == JobApplication.Status.ACCEPTED).size();
@@ -1133,7 +1140,10 @@ public class InterviewController {
         ListInterface<JobApplication> applications = Context.isEmployer()
                 ? getEmployerJobApplications(Context.getCompany())
                 : getAllJobApplications();
-        applications = applications.filter(app -> !app.getAppliedAt().isBefore(reportStartDate));
+        applications = applications.filter(app ->
+                app.getTerminatedAt() != null
+                        && !app.getTerminatedAt().isBefore(reportStartDate)
+        );
 
         int accepted = applications.filter(app -> app.getStatus() == JobApplication.Status.ACCEPTED).size();
         int rejected = applications.filter(app -> app.getStatus() == JobApplication.Status.REJECTED).size();
@@ -1147,7 +1157,7 @@ public class InterviewController {
     public String buildRecruitmentTable(Company company, LocalDateTime reportStartDate) {
         StringBuilder report = new StringBuilder();
         ListInterface<JobApplication> applications = getEmployerJobApplications(company)
-                .filter(app -> !app.getAppliedAt().isBefore(reportStartDate) && app.isTerminated());
+                .filter(app -> app.isTerminated() && app.getTerminatedAt() != null && !app.getTerminatedAt().isBefore(reportStartDate));
         if (applications.isEmpty()) return report.toString();
         report.append("\nCompany: " + company.toShortString() + "\n");
         report.append(this.buildJobApplicationStatusTable(applications));

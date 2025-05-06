@@ -29,7 +29,7 @@ public class AdminUI {
                         new Menu.Choice("💼 Manage Job", adminController::manageJob),
                         new Menu.Choice("👤 Manage Applicant", adminController::manageApplicant),
                         new Menu.Choice("📅 Manage Interview & Applications", adminController::manageInterview),
-                        new Menu.Choice("⏰ Modify Time", adminController::modifyTime))
+                        new Menu.Choice("⏰ Modify System Time", adminController::modifyTime))
                 .exit("<Logout>")
                 .beforeEach(System.out::println)
                 .afterEach(System.out::println)

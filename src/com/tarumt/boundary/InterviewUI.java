@@ -74,7 +74,7 @@ public class InterviewUI {
                         new Menu.Choice("🔎 Search All Interview", interviewController::searchAllInterview),
                         new Menu.Choice("⭐ Rate Completed Interviews", interviewController::rateCompletedInterviews),
                         new Menu.Choice("🕒 View Availability", interviewController::viewAvailability),
-                        new Menu.Choice("📝 Modify Availability", interviewController::modifyAvailability),
+                        new Menu.Choice("🔃 Modify Availability", interviewController::modifyAvailability),
                         new Menu.Choice("❌ Cancel Scheduled Interview", interviewController::cancelScheduledInterview),
                         new Menu.Choice("📝 Interview Report", interviewController::interviewReport),
                         new Menu.Choice("📝 Recruitment Report", interviewController::recruitmentReport)

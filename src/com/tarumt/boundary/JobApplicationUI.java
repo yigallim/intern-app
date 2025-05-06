@@ -42,7 +42,7 @@ public class JobApplicationUI {
 
     }
 
-    public JobApplication getShortlistApplicationChoice(ListInterface<JobApplication> jobApplications, ListInterface<JobApplication> recommended) {
+    public JobApplication getShortlistApplicationChoice(ListInterface<JobApplication> jobApplications) {
 
         if (jobApplications.isEmpty()) {
             Log.info("No pending applications found to shortlist");
@@ -51,7 +51,6 @@ public class JobApplicationUI {
         }
 
         System.out.println("<== Shortlist Job Application [ X to Exit ] ==>");
-
         return input.getObjectFromList("|\n| Select Job Application To Shortlist =>", jobApplications, 80, 2);
     }
 
@@ -72,7 +71,6 @@ public class JobApplicationUI {
         }
 
         System.out.println("<== Offer Job Application [ X to Exit ] ==>");
-        System.out.println(Strings.warnHighlight("| Recommended ==> "));
         return input.getObjectFromList("|\n| Select Job Application To Offer =>", jobApplications, 80, 2);
     }
 

@@ -178,7 +178,7 @@ public class JobApplicationController {
         ListInterface<JobApplication> pendingApplications = getEmployerJobApplications().filter(
                 application -> application.getStatus() == JobApplication.Status.PENDING);
 
-        JobApplication jobApplication = jobApplicationUI.getShortlistApplicationChoice(pendingApplications, null);
+        JobApplication jobApplication = jobApplicationUI.getShortlistApplicationChoice(pendingApplications);
         if (jobApplication == null) {
             return;
         }

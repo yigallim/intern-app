@@ -4,10 +4,6 @@
 package com.tarumt.entity;
 
 import com.tarumt.entity.location.Location;
-import com.tarumt.utility.common.Context;
-import com.tarumt.utility.pretty.annotation.ColumnIndex;
-import com.tarumt.utility.pretty.annotation.Computed;
-import com.tarumt.utility.pretty.annotation.ExcludeKey;
 import com.tarumt.utility.pretty.annotation.OutputLength;
 import com.tarumt.utility.search.annotation.Fuzzy;
 import com.tarumt.utility.validation.annotation.Max;
