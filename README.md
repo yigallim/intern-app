@@ -29,21 +29,52 @@ com.tarumt
 
 ### 🏭 Factory Pattern – `ConditionFactory`
 
-**Factory Design Pattern** in `ConditionFactory` to create the right type of validation condition (`IntegerCondition`, `DecimalCondition`, `StringCondition`) based on the input or annotation.
+**Factory Design Pattern** in `ConditionFactory` is used to create specific validation conditions (`IntegerCondition`, `DecimalCondition`, `StringCondition`) without exposing their instantiation logic. It also supports building conditions directly from class field metadata.
 
-#### ✅ Example:
+#### ✅ Factory Methods:
+
+##### **Integer Validation**
 
 ```java
-IntegerCondition condition = ConditionFactory.integer()
-    .min(0)
-    .max(100);
+// Basic integer range validation
+IntegerCondition ageCond = ConditionFactory.integer()
+    .min(18)
+    .max(65);
+
+// With custom failure message
+IntegerCondition scoreCond = ConditionFactory.integer("Invalid Score")
+    .min(0, "Score cannot be negative")
+    .max(100, "Maximum score is 100");
 ```
 
-Or dynamically from field annotations:
+##### **String Validation**
 
 ```java
-Field field = ValidationFieldReflection.getField(SomeClass.class, "age");
-Condition condition = ConditionFactory.fromField(field);
+// Email validation using regex
+StringCondition emailCond = ConditionFactory.string()
+    .regex("^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$", "Invalid email format");
+
+// Enumeration for specific choices
+StringCondition categoryCond = ConditionFactory.string()
+    .enumeration("IT", "Finance", "HR", "Marketing");
+```
+
+##### **Decimal Validation**
+
+```java
+// Salary or GPA validation
+DecimalCondition salaryCond = ConditionFactory.decimal()
+    .min(1500.0)
+    .max(50000.0);
+```
+
+#### ✅ Reflection-based Factory:
+
+You can also dynamically generate a condition from class field annotations:
+
+```java
+Field field = ValidationFieldReflection.getField(Applicant.class, "email");
+Condition condition = ConditionFactory.fromField(field); // Returns StringCondition with @Regex/@Min/@Max logic applied
 ```
 
 > This centralizes and abstracts condition creation, promoting maintainability and extensibility.
